@@ -6801,27 +6801,37 @@ void Player::RewardReputation(Unit *pVictim, float rate)
     if(!Rep)
         return;
 
-    uint32 Repfaction1 = Rep->repfaction1;
-    uint32 Repfaction2 = Rep->repfaction2;
+    uint32 repFaction1 = Rep->repfaction1;
+    uint32 repFaction2 = Rep->repfaction2;
 
     // Championning tabard reputation system
-    if (Rep->championingAura && HasAura(Rep->championingAura))
+    if (Rep->championingAura && GetMap()->IsNonRaidDungeon() && HasAura(Rep->championingAura))
     {
-        if (Item* pItem = GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_TABARD))
+        MapEntry const* storedMap = sMapStore.LookupEntry(GetMapId());
+        InstanceTemplate const* instance = ObjectMgr::GetInstanceTemplate(GetMapId());
+        Item const* pItem = GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_TABARD);
+        if (storedMap && instance && pItem)
         {
-            if (uint32 tabardFactionID = pItem->GetProto()->RequiredReputationFaction) 
+            ItemPrototype const* pProto = pItem->GetProto();// Checked on load
+            // The required MinLevel for the tabard to work is related to the item level of the tabard
+            if ((instance->levelMin + 1 >= pProto->ItemLevel || !GetMap()->IsRegularDifficulty())
+                // For ItemLevel == 75 (or 85) need to check expansion
+                && (pProto->ItemLevel == 75 && storedMap->Expansion() == 2))
             {
-                Repfaction1 = tabardFactionID;
-                Repfaction2 = tabardFactionID;
+                if (uint32 tabardFactionID = pItem->GetProto()->RequiredReputationFaction)
+                {
+                    repFaction1 = tabardFactionID;
+                    repFaction2 = tabardFactionID;
+                }
             }
         }
     }
 
-    if(Rep->repfaction1 && (!Rep->team_dependent || GetTeam()==ALLIANCE))
+    if (repFaction1 && (!Rep->team_dependent || GetTeam() == ALLIANCE))
     {
-        int32 donerep1 = CalculateReputationGain(REPUTATION_SOURCE_KILL, Rep->repvalue1, Repfaction1, pVictim->getLevel());
-        donerep1 = int32(donerep1*rate);
-        FactionEntry const *factionEntry1 = sFactionStore.LookupEntry(Repfaction1);
+        int32 donerep1 = CalculateReputationGain(REPUTATION_SOURCE_KILL, Rep->repvalue1, repFaction1, pVictim->getLevel());
+        donerep1 = int32(donerep1 * rate);
+        FactionEntry const* factionEntry1 = sFactionStore.LookupEntry(repFaction1);
         uint32 current_reputation_rank1 = GetReputationMgr().GetRank(factionEntry1);
         if (factionEntry1 && current_reputation_rank1 <= Rep->reputation_max_cap1)
             GetReputationMgr().ModifyReputation(factionEntry1, donerep1);
@@ -6835,11 +6845,11 @@ void Player::RewardReputation(Unit *pVictim, float rate)
         }
     }
 
-    if(Rep->repfaction2 && (!Rep->team_dependent || GetTeam()==HORDE))
+    if (repFaction2 && (!Rep->team_dependent || GetTeam() == HORDE))
     {
-        int32 donerep2 = CalculateReputationGain(REPUTATION_SOURCE_KILL, Rep->repvalue2, Repfaction2, pVictim->getLevel());
-        donerep2 = int32(donerep2*rate);
-        FactionEntry const *factionEntry2 = sFactionStore.LookupEntry(Repfaction2);
+        int32 donerep2 = CalculateReputationGain(REPUTATION_SOURCE_KILL, Rep->repvalue2, repFaction2, pVictim->getLevel());
+        donerep2 = int32(donerep2 * rate);
+        FactionEntry const* factionEntry2 = sFactionStore.LookupEntry(repFaction2);
         uint32 current_reputation_rank2 = GetReputationMgr().GetRank(factionEntry2);
         if (factionEntry2 && current_reputation_rank2 <= Rep->reputation_max_cap2)
             GetReputationMgr().ModifyReputation(factionEntry2, donerep2);
