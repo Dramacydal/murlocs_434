@@ -20,8 +20,32 @@
 #define _BYTEBUFFER_H
 
 #include "Common.h"
+<<<<<<< HEAD
 #include "Errors.h"
+=======
+#include "Log.h"
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
 #include "Utilities/ByteConverter.h"
+
+#define BITS_1 uint8 _1
+#define BITS_2 BITS_1, uint8 _2
+#define BITS_3 BITS_2, uint8 _3
+#define BITS_4 BITS_3, uint8 _4
+#define BITS_5 BITS_4, uint8 _5
+#define BITS_6 BITS_5, uint8 _6
+#define BITS_7 BITS_6, uint8 _7
+#define BITS_8 BITS_7, uint8 _8
+
+#define BIT_VALS_1 _1
+#define BIT_VALS_2 BIT_VALS_1, _2
+#define BIT_VALS_3 BIT_VALS_2, _3
+#define BIT_VALS_4 BIT_VALS_3, _4
+#define BIT_VALS_5 BIT_VALS_4, _5
+#define BIT_VALS_6 BIT_VALS_5, _6
+#define BIT_VALS_7 BIT_VALS_6, _7
+#define BIT_VALS_8 BIT_VALS_7, _8
+
+class ObjectGuid;
 
 class ByteBufferException
 {
@@ -32,12 +56,69 @@ class ByteBufferException
             PrintPosError();
         }
 
-        void PrintPosError() const;
+        void PrintPosError() const
+        {
+            char const* traceStr;
+
+#ifdef HAVE_ACE_STACK_TRACE_H
+            ACE_Stack_Trace trace;
+            traceStr = trace.c_str();
+#else
+            traceStr = NULL;
+#endif
+
+            sLog.outError(
+                "Attempted to %s in ByteBuffer (pos: " SIZEFMTD " size: "SIZEFMTD") "
+                "value with size: " SIZEFMTD "%s%s",
+                (add ? "put" : "get"), pos, size, esize,
+                traceStr ? "\n" : "", traceStr ? traceStr : "");
+        }
     private:
         bool add;
         size_t pos;
         size_t esize;
         size_t size;
+};
+
+class BitStream
+{
+    public:
+        BitStream(): _rpos(0), _wpos(0) {}
+
+        BitStream(uint32 val, size_t len): _rpos(0), _wpos(0)
+        {
+            WriteBits(val, len);
+        }
+
+        BitStream(BitStream const& bs) : _rpos(bs._rpos), _wpos(bs._wpos), _data(bs._data) {}
+
+        void Clear();
+        uint8 GetBit(uint32 bit);
+        uint8 ReadBit();
+        void WriteBit(uint32 bit);
+        template <typename T> void WriteBits(T value, size_t bits);
+        bool Empty();
+        void Reverse();
+        void Print();
+
+        size_t GetLength() { return _data.size(); }
+        uint32 GetReadPosition() { return _rpos; }
+        uint32 GetWritePosition() { return _wpos; }
+        void SetReadPos(uint32 pos) { _rpos = pos; }
+
+        uint8 const& operator[](uint32 const pos) const
+        {
+            return _data[pos];
+        }
+
+        uint8& operator[] (uint32 const pos)
+        {
+            return _data[pos];
+        }
+
+    private:
+        std::vector<uint8> _data;
+        uint32 _rpos, _wpos;
 };
 
 template<class T>
@@ -49,22 +130,26 @@ struct Unused
 class ByteBuffer
 {
     public:
-        const static size_t DEFAULT_SIZE = 0x1000;
+        const static size_t DEFAULT_SIZE = 64;
 
         // constructor
-        ByteBuffer(): _rpos(0), _wpos(0)
+        ByteBuffer(): _rpos(0), _wpos(0), _bitpos(8), _curbitval(0)
         {
             _storage.reserve(DEFAULT_SIZE);
         }
 
         // constructor
-        ByteBuffer(size_t res): _rpos(0), _wpos(0)
-        {
-            _storage.reserve(res);
-        }
+        ByteBuffer(size_t res, bool init = false);
 
         // copy constructor
+<<<<<<< HEAD
         ByteBuffer(const ByteBuffer &buf): _rpos(buf._rpos), _wpos(buf._wpos), _storage(buf._storage) { }
+=======
+        ByteBuffer(const ByteBuffer &buf) : _rpos(buf._rpos), _wpos(buf._wpos),
+            _storage(buf._storage), _bitpos(buf._bitpos), _curbitval(buf._curbitval)
+        {
+        }
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
 
         void clear()
         {
@@ -72,10 +157,171 @@ class ByteBuffer
             _rpos = _wpos = 0;
         }
 
+<<<<<<< HEAD
         template <typename T> void put(size_t pos,T value)
         {
             EndianConvert(value);
             put(pos,(uint8 *)&value,sizeof(value));
+=======
+        template <typename T> ByteBuffer& append(T value)
+        {
+            FlushBits();
+            EndianConvert(value);
+            return append((uint8*)&value, sizeof(value));
+        }
+
+        void FlushBits()
+        {
+            if (_bitpos == 8)
+                return;
+
+            append((uint8 *)&_curbitval, sizeof(uint8));
+            _curbitval = 0;
+            _bitpos = 8;
+        }
+
+        template <typename T> bool WriteBit(T bit)
+        {
+            --_bitpos;
+            if (bit)
+                _curbitval |= (1 << (_bitpos));
+
+            if (_bitpos == 0)
+            {
+                _bitpos = 8;
+                append((uint8 *)&_curbitval, sizeof(_curbitval));
+                _curbitval = 0;
+            }
+
+            return (bit != 0);
+        }
+
+        bool ReadBit()
+        {
+            ++_bitpos;
+            if (_bitpos > 7)
+            {
+                _bitpos = 0;
+                _curbitval = read<uint8>();
+            }
+
+            return ((_curbitval >> (7-_bitpos)) & 1) != 0;
+        }
+
+        template <typename T> void WriteBits(T value, size_t bits)
+        {
+            for (int32 i = bits-1; i >= 0; --i)
+                WriteBit((value >> i) & 1);
+        }
+
+        uint32 ReadBits(size_t bits)
+        {
+            uint32 value = 0;
+            for (int32 i = bits-1; i >= 0; --i)
+                if (ReadBit())
+                    value |= (1 << i);
+
+            return value;
+        }
+
+        BitStream ReadBitStream(uint32 len)
+        {
+            BitStream b;
+            for (uint32 i = 0; i < len; ++i)
+                b.WriteBit(ReadBit());
+            return b;
+        }
+
+        void WriteGuidMask(uint64 guid, uint8* maskOrder, uint8 maskCount, uint8 maskPos = 0)
+        {
+            uint8* guidByte = ((uint8*)&guid);
+
+            for (uint8 i = 0; i < maskCount; i++)
+                WriteBit(guidByte[maskOrder[i + maskPos]]);
+        }
+
+        void WriteGuidBytes(uint64 guid, uint8* byteOrder, uint8 byteCount, uint8 bytePos)
+        {
+            uint8* guidByte = ((uint8*)&guid);
+
+            for (uint8 i = 0; i < byteCount; i++)
+                if (guidByte[byteOrder[i + bytePos]])
+                    (*this) << uint8(guidByte[byteOrder[i + bytePos]] ^ 1);
+        }
+
+        template<BITS_1>
+            void ReadGuidMask(ObjectGuid& guid);
+        template<BITS_2>
+            void ReadGuidMask(ObjectGuid& guid);
+        template<BITS_3>
+            void ReadGuidMask(ObjectGuid& guid);
+        template<BITS_4>
+            void ReadGuidMask(ObjectGuid& guid);
+        template<BITS_5>
+            void ReadGuidMask(ObjectGuid& guid);
+        template<BITS_6>
+            void ReadGuidMask(ObjectGuid& guid);
+        template<BITS_7>
+            void ReadGuidMask(ObjectGuid& guid);
+        template<BITS_8>
+            void ReadGuidMask(ObjectGuid& guid);
+
+        template<BITS_1>
+            void WriteGuidMask(ObjectGuid& guid);
+        template<BITS_2>
+            void WriteGuidMask(ObjectGuid& guid);
+        template<BITS_3>
+            void WriteGuidMask(ObjectGuid& guid);
+        template<BITS_4>
+            void WriteGuidMask(ObjectGuid& guid);
+        template<BITS_5>
+            void WriteGuidMask(ObjectGuid& guid);
+        template<BITS_6>
+            void WriteGuidMask(ObjectGuid& guid);
+        template<BITS_7>
+            void WriteGuidMask(ObjectGuid& guid);
+        template<BITS_8>
+            void WriteGuidMask(ObjectGuid& guid);
+
+        template<BITS_1>
+            void ReadGuidBytes(ObjectGuid& guid);
+        template<BITS_2>
+            void ReadGuidBytes(ObjectGuid& guid);
+        template<BITS_3>
+            void ReadGuidBytes(ObjectGuid& guid);
+        template<BITS_4>
+            void ReadGuidBytes(ObjectGuid& guid);
+        template<BITS_5>
+            void ReadGuidBytes(ObjectGuid& guid);
+        template<BITS_6>
+            void ReadGuidBytes(ObjectGuid& guid);
+        template<BITS_7>
+            void ReadGuidBytes(ObjectGuid& guid);
+        template<BITS_8>
+            void ReadGuidBytes(ObjectGuid& guid);
+
+        template<BITS_1>
+            void WriteGuidBytes(ObjectGuid& guid);
+        template<BITS_2>
+            void WriteGuidBytes(ObjectGuid& guid);
+        template<BITS_3>
+            void WriteGuidBytes(ObjectGuid& guid);
+        template<BITS_4>
+            void WriteGuidBytes(ObjectGuid& guid);
+        template<BITS_5>
+            void WriteGuidBytes(ObjectGuid& guid);
+        template<BITS_6>
+            void WriteGuidBytes(ObjectGuid& guid);
+        template<BITS_7>
+            void WriteGuidBytes(ObjectGuid& guid);
+        template<BITS_8>
+            void WriteGuidBytes(ObjectGuid& guid);
+
+        template <typename T> void put(size_t pos, T value)
+        {
+            EndianConvert(value);
+            put(pos, (uint8 *)&value, sizeof(value));
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         }
 
         ByteBuffer &operator<<(uint8 value)
@@ -237,14 +483,21 @@ class ByteBuffer
         template<class T>
         ByteBuffer &operator>>(Unused<T> const&)
         {
-            read_skip<T>();
-            return *this;
+            return read_skip<T>();
         }
 
-
-        uint8 operator[](size_t pos) const
+        uint8& operator[](size_t const pos)
         {
-            return read<uint8>(pos);
+            if (pos >= size())
+                throw ByteBufferException(false, pos, 1, size());
+            return _storage[pos];
+        }
+
+        uint8 const& operator[](size_t const pos) const
+        {
+            if (pos >= size())
+                throw ByteBufferException(false, pos, 1, size());
+            return _storage[pos];
         }
 
         size_t rpos() const { return _rpos; }
@@ -253,6 +506,11 @@ class ByteBuffer
         {
             _rpos = rpos_;
             return _rpos;
+        }
+
+        void rfinish()
+        {
+            _rpos = wpos();
         }
 
         size_t wpos() const { return _wpos; }
@@ -264,13 +522,19 @@ class ByteBuffer
         }
 
         template<typename T>
-        void read_skip() { read_skip(sizeof(T)); }
+        ByteBuffer& read_skip()
+        {
+            read_skip(sizeof(T));
+            return *this;
+        }
 
-        void read_skip(size_t skip)
+        ByteBuffer& read_skip(size_t skip)
         {
             if(_rpos + skip > size())
                 throw ByteBufferException(false, _rpos, skip, size());
             _rpos += skip;
+
+            return *this;
         }
 
         template <typename T> T read()
@@ -289,12 +553,18 @@ class ByteBuffer
             return val;
         }
 
+<<<<<<< HEAD
         void read(uint8 *dest, size_t len)
+=======
+        ByteBuffer& read(uint8* dest, size_t len)
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         {
             if(_rpos  + len > size())
                 throw ByteBufferException(false, _rpos, len, size());
             memcpy(dest, &_storage[_rpos], len);
             _rpos += len;
+
+            return *this;
         }
 
         uint64 readPackGUID()
@@ -316,6 +586,96 @@ class ByteBuffer
             return guid;
         }
 
+<<<<<<< HEAD
+=======
+        uint8 ReadUInt8()
+        {
+            uint8 u = 0;
+            (*this) >> u;
+            return u;
+        }
+
+        uint16 ReadUInt16()
+        {
+            uint16 u = 0;
+            (*this) >> u;
+            return u;
+        }
+
+        uint32 ReadUInt32()
+        {
+            uint32 u = 0;
+            (*this) >> u;
+            return u;
+        }
+
+        uint64 ReadUInt64()
+        {
+            uint64 u = 0;
+            (*this) >> u;
+            return u;
+        }
+
+        int8 ReadInt8()
+        {
+            int8 u = 0;
+            (*this) >> u;
+            return u;
+        }
+
+        int16 ReadInt16()
+        {
+            int16 u = 0;
+            (*this) >> u;
+            return u;
+        }
+
+        int32 ReadInt32()
+        {
+            uint32 u = 0;
+            (*this) >> u;
+            return u;
+        }
+
+        int64 ReadInt64()
+        {
+            int64 u = 0;
+            (*this) >> u;
+            return u;
+        }
+
+        std::string ReadString()
+        {
+            std::string s = 0;
+            (*this) >> s;
+            return s;
+        }
+
+        std::string ReadString(uint32 count)
+        {
+            std::string out;
+            uint32 start = rpos();
+            while (rpos() < size() && rpos() < start + count)       // prevent crash at wrong string format in packet
+                out += read<char>();
+
+            return out;
+        }
+
+        bool ReadBoolean()
+        {
+            uint8 b = 0;
+            (*this) >> b;
+            return b > 0 ? true : false;
+        }
+
+        float ReadSingle()
+        {
+            float f = 0;
+            (*this) >> f;
+            return f;
+        }
+
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         const uint8 *contents() const { return &_storage[0]; }
 
         size_t size() const { return _storage.size(); }
@@ -334,25 +694,37 @@ class ByteBuffer
                 _storage.reserve(ressize);
         }
 
-        void append(const std::string& str)
+        ByteBuffer& append(const std::string& str)
         {
-            append((uint8 const*)str.c_str(), str.size() + 1);
+            return append((uint8 const*)str.c_str(), str.size() + 1);
         }
 
+<<<<<<< HEAD
         void append(const char *src, size_t cnt)
+=======
+        ByteBuffer& append(const char* src, size_t cnt)
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         {
             return append((const uint8 *)src, cnt);
         }
 
+<<<<<<< HEAD
         template<class T> void append(const T *src, size_t cnt)
+=======
+        template<class T> ByteBuffer& append(const T* src, size_t cnt)
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         {
             return append((const uint8 *)src, cnt * sizeof(T));
         }
 
+<<<<<<< HEAD
         void append(const uint8 *src, size_t cnt)
+=======
+        ByteBuffer& append(const uint8* src, size_t cnt)
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         {
             if (!cnt)
-                return;
+                return *this;
 
             MANGOS_ASSERT(size() < 10000000);
 
@@ -360,25 +732,36 @@ class ByteBuffer
                 _storage.resize(_wpos + cnt);
             memcpy(&_storage[_wpos], src, cnt);
             _wpos += cnt;
+
+            return *this;
         }
 
-        void append(const ByteBuffer& buffer)
+        ByteBuffer& append(const ByteBuffer& buffer)
         {
+<<<<<<< HEAD
             if(buffer.wpos())
                 append(buffer.contents(), buffer.wpos());
+=======
+            if (buffer.wpos())
+                return append(buffer.contents(), buffer.wpos());
+
+            return *this;
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         }
 
         // can be used in SMSG_MONSTER_MOVE opcode
-        void appendPackXYZ(float x, float y, float z)
+        ByteBuffer& appendPackXYZ(float x, float y, float z)
         {
             uint32 packed = 0;
             packed |= ((int)(x / 0.25f) & 0x7FF);
             packed |= ((int)(y / 0.25f) & 0x7FF) << 11;
             packed |= ((int)(z / 0.25f) & 0x3FF) << 22;
             *this << packed;
+
+            return *this;
         }
 
-        void appendPackGUID(uint64 guid)
+        ByteBuffer& appendPackGUID(uint64 guid)
         {
             uint8 packGUID[8+1];
             packGUID[0] = 0;
@@ -394,8 +777,7 @@ class ByteBuffer
 
                 guid >>= 8;
             }
-
-            append(packGUID, size);
+            return append(packGUID, size);
         }
 
         void put(size_t pos, const uint8 *src, size_t cnt)
@@ -405,25 +787,91 @@ class ByteBuffer
             memcpy(&_storage[pos], src, cnt);
         }
 
-        void print_storage() const;
-        void textlike() const;
-        void hexlike() const;
-
-    private:
-        // limited for internal use because can "append" any unexpected type (like pointer and etc) with hard detection problem
-        template <typename T> void append(T value)
+        void print_storage() const
         {
+            sLog.outDebug("STORAGE_SIZE: %lu", (unsigned long)size() );
+            for (uint32 i = 0; i < size(); ++i)
+                sLog.outDebug("%u - ", read<uint8>(i) );
+            sLog.outDebug(" ");
+        }
+
+        void textlike() const
+        {
+<<<<<<< HEAD
             EndianConvert(value);
             append((uint8 *)&value, sizeof(value));
+=======
+            sLog.outDebug("STORAGE_SIZE: %lu", (unsigned long)size() );
+            for (uint32 i = 0; i < size(); ++i)
+                sLog.outDebug("%c", read<uint8>(i) );
+            sLog.outDebug(" ");
+        }
+
+        void hexlike() const
+        {
+            uint32 j = 1, k = 1;
+            sLog.outDebug("STORAGE_SIZE: %lu", (unsigned long)size() );
+
+            for (uint32 i = 0; i < size(); ++i)
+            {
+                if ((i == (j * 8)) && ((i != (k * 16))))
+                {
+                    if (read<uint8>(i) < 0x10)
+                    {
+                        sLog.outDebug("| 0%X ", read<uint8>(i) );
+                    }
+                    else
+                    {
+                        sLog.outDebug("| %X ", read<uint8>(i) );
+                    }
+                    ++j;
+                }
+                else if (i == (k * 16))
+                {
+                    if (read<uint8>(i) < 0x10)
+                    {
+                        sLog.outDebug("\n");
+
+                        sLog.outDebug("0%X ", read<uint8>(i) );
+                    }
+                    else
+                    {
+                        sLog.outDebug("\n");
+
+                        sLog.outDebug("%X ", read<uint8>(i) );
+                    }
+
+                    ++k;
+                    ++j;
+                }
+                else
+                {
+                    if (read<uint8>(i) < 0x10)
+                    {
+                        sLog.outDebug("0%X ", read<uint8>(i) );
+                    }
+                    else
+                    {
+                        sLog.outDebug("%X ", read<uint8>(i) );
+                    }
+                }
+            }
+            sLog.outDebug("\n");
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         }
 
     protected:
-        size_t _rpos, _wpos;
+        size_t _rpos, _wpos, _bitpos;
+        uint8 _curbitval;
         std::vector<uint8> _storage;
 };
 
 template <typename T>
+<<<<<<< HEAD
 inline ByteBuffer &operator<<(ByteBuffer &b, std::vector<T> const& v)
+=======
+inline ByteBuffer &operator<<(ByteBuffer &b, std::vector<T> v)
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
 {
     b << (uint32)v.size();
     for (typename std::vector<T>::iterator i = v.begin(); i != v.end(); ++i)
@@ -449,7 +897,11 @@ inline ByteBuffer &operator>>(ByteBuffer &b, std::vector<T> &v)
 }
 
 template <typename T>
+<<<<<<< HEAD
 inline ByteBuffer &operator<<(ByteBuffer &b, std::list<T> const& v)
+=======
+inline ByteBuffer &operator<<(ByteBuffer &b, std::list<T> v)
+>>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
 {
     b << (uint32)v.size();
     for (typename std::list<T>::iterator i = v.begin(); i != v.end(); ++i)
@@ -501,22 +953,72 @@ inline ByteBuffer &operator>>(ByteBuffer &b, std::map<K, V> &m)
     return b;
 }
 
+// TODO: Make a ByteBuffer.cpp and move all this inlining to it.
+template<> inline std::string ByteBuffer::read<std::string>()
+{
+    std::string tmp;
+    *this >> tmp;
+    return tmp;
+}
+
 template<>
-inline void ByteBuffer::read_skip<char*>()
+inline ByteBuffer& ByteBuffer::read_skip<char*>()
 {
     std::string temp;
     *this >> temp;
+
+    return *this;
 }
 
 template<>
-inline void ByteBuffer::read_skip<char const*>()
+inline ByteBuffer& ByteBuffer::read_skip<char const*>()
 {
-    read_skip<char*>();
+    return read_skip<char*>();
 }
 
 template<>
-inline void ByteBuffer::read_skip<std::string>()
+inline ByteBuffer& ByteBuffer::read_skip<std::string>()
 {
-    read_skip<char*>();
+    return read_skip<char*>();
 }
+
+class BitConverter
+{
+    public:
+        static uint8 ToUInt8(ByteBuffer const& buff, size_t start = 0)
+        {
+            return buff.read<uint8>(start);
+        }
+
+        static uint16 ToUInt16(ByteBuffer const& buff, size_t start = 0)
+        {
+            return buff.read<uint16>(start);
+        }
+
+        static uint32 ToUInt32(ByteBuffer const& buff, size_t start = 0)
+        {
+            return buff.read<uint32>(start);
+        }
+
+        static uint64 ToUInt64(ByteBuffer const& buff, size_t start = 0)
+        {
+            return buff.read<uint64>(start);
+        }
+
+        static int16 ToInt16(ByteBuffer const& buff, size_t start = 0)
+        {
+            return buff.read<int16>(start);
+        }
+
+        static int32 ToInt32(ByteBuffer const& buff, size_t start = 0)
+        {
+            return buff.read<int32>(start);
+        }
+
+        static int64 ToInt64(ByteBuffer const& buff, size_t start = 0)
+        {
+            return buff.read<int64>(start);
+        }
+};
+
 #endif
