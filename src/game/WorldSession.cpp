@@ -146,7 +146,14 @@ void WorldSession::SendPacket(WorldPacket const* packet)
     if (!m_Socket)
         return;
 
+<<<<<<< HEAD
     #ifdef MANGOS_DEBUG
+=======
+    if (packet->GetOpcode() >= NUM_MSG_TYPES && packet->GetOpcode() != MSG_WOW_CONNECTION)
+        return;
+
+#ifdef MANGOS_DEBUG
+>>>>>>> 22ed51e... Fix AuthChallenge, AuthSession, AuthResponse.
 
     // Code for network use statistic
     static uint64 sendPacketCount = 0;
