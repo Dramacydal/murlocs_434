@@ -47,11 +47,15 @@ enum PetSaveMode
     PET_SAVE_REAGENTS          =  101                       // PET_SAVE_NOT_IN_SLOT with reagents return
 };
 
-enum HappinessState
+// There might be a lot more
+enum PetModeFlags
 {
-    UNHAPPY = 1,
-    CONTENT = 2,
-    HAPPY   = 3
+    PET_MODE_UNKNOWN_0         = 0x0000001,
+    PET_MODE_UNKNOWN_2         = 0x0000100,
+    PET_MODE_DISABLE_ACTIONS   = 0x8000000,
+
+    // autoset in client at summon
+    PET_MODE_DEFAULT           = PET_MODE_UNKNOWN_0 | PET_MODE_UNKNOWN_2,
 };
 
 enum PetSpellState
@@ -157,8 +161,6 @@ class MANGOS_DLL_SPEC Pet : public Creature
                 return m_autospells[pos];
         }
 
-        void LooseHappiness();
-        HappinessState GetHappinessState();
         void GivePetXP(uint32 xp);
         void GivePetLevel(uint32 level);
         void SynchronizeLevelWithOwner();
@@ -240,7 +242,6 @@ class MANGOS_DLL_SPEC Pet : public Creature
 
         bool    m_removed;                                  // prevent overwrite pet state in DB at next Pet::Update if pet already removed(saved)
     protected:
-        uint32  m_happinessTimer;
         PetType m_petType;
         int32   m_duration;                                 // time until unsummon (used mostly for summoned guardians and not used for controlled pets)
         int32   m_bonusdamage;
