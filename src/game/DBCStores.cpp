@@ -23,6 +23,7 @@
 #include "SharedDefines.h"
 #include "SpellAuraDefines.h"
 #include "ObjectGuid.h"
+#include "SpellAuraDefines.h"
 
 #include "DBCfmt.h"
 #include "DBCEnums.h"
