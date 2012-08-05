@@ -6339,30 +6339,26 @@ void Player::SendActionButtons(uint8 state) const
 {
     DETAIL_LOG( "Initializing Action Buttons for '%u' spec '%u'", GetGUIDLow(), m_activeSpec);
 
-    WorldPacket data(SMSG_ACTION_BUTTONS, 1+(MAX_ACTION_BUTTONS*4));
-    data << uint8(state);
-    /*
-        state can be 0, 1, 2
-        0 - Looks to be sent when initial action buttons get sent, however on Trinity we use 1 since 0 had some difficulties
-        1 - Used in any SMSG_ACTION_BUTTONS packet with button data on Trinity. Only used after spec swaps on retail.
-        2 - Clears the action bars client sided. This is sent during spec swap before unlearning and before sending the new buttons
-    */
-
+    WorldPacket data(SMSG_ACTION_BUTTONS, 1 + (MAX_ACTION_BUTTONS * 4));
     if (state != 2)
     {
         ActionButtonList const& currentActionButtonList = m_actionButtons[m_activeSpec];
-        for(uint8 button = 0; button < MAX_ACTION_BUTTONS; ++button)
+        for (uint8 button = 0; button < MAX_ACTION_BUTTONS; ++button)
         {
-            ActionButtonList::const_iterator itr = currentActionButtonList.find(button);
-            if(itr != currentActionButtonList.end() && itr->second.uState != ACTIONBUTTON_DELETED)
-                data << uint32(itr->second.packedData);
-            else
-                data << uint32(0);
+            ActionButtonList const& currentActionButtonList = m_actionButtons[m_activeSpec];
+            for(uint8 button = 0; button < MAX_ACTION_BUTTONS; ++button)
+            {
+                ActionButtonList::const_iterator itr = currentActionButtonList.find(button);
+                if(itr != currentActionButtonList.end() && itr->second.uState != ACTIONBUTTON_DELETED)
+                    data << uint32(itr->second.packedData);
+                else
+                    data << uint32(0);
+            }
         }
     }
-
-    GetSession()->SendPacket( &data );
-    DETAIL_LOG( "Action Buttons for '%u' spec '%u' Initialized", GetGUIDLow(), m_activeSpec );
+    data << uint8(state);                                   // talent spec amount (in packet)
+    GetSession()->SendPacket(&data);
+    DETAIL_LOG("Action Buttons for '%u' spec '%u' Initialized", GetGUIDLow(), m_activeSpec);
 }
 
 bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type, Player* player, bool msg)
