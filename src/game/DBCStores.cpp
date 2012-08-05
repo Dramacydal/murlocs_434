@@ -61,6 +61,7 @@ static WMOAreaInfoByTripple sWMOAreaInfoByTripple;
 DBCStorage <AchievementEntry> sAchievementStore(Achievementfmt);
 DBCStorage <AchievementCriteriaEntry> sAchievementCriteriaStore(AchievementCriteriafmt);
 DBCStorage <AreaTriggerEntry> sAreaTriggerStore(AreaTriggerEntryfmt);
+DBCStorage <ArmorLocationEntry> sArmorLocationStore(ArmorLocationfmt);
 DBCStorage <AuctionHouseEntry> sAuctionHouseStore(AuctionHouseEntryfmt);
 DBCStorage <BankBagSlotPricesEntry> sBankBagSlotPricesStore(BankBagSlotPricesEntryfmt);
 DBCStorage <BattlemasterListEntry> sBattlemasterListStore(BattlemasterListEntryfmt);
@@ -69,6 +70,7 @@ DBCStorage <CharStartOutfitEntry> sCharStartOutfitStore(CharStartOutfitEntryfmt)
 DBCStorage <CharTitlesEntry> sCharTitlesStore(CharTitlesEntryfmt);
 DBCStorage <ChatChannelsEntry> sChatChannelsStore(ChatChannelsEntryfmt);
 DBCStorage <ChrClassesEntry> sChrClassesStore(ChrClassesEntryfmt);
+DBCStorage <ChrPowerTypesEntry> sChrPowerTypesStore(ChrClassesXPowerTypesfmt);
 DBCStorage <ChrRacesEntry> sChrRacesStore(ChrRacesEntryfmt);
 DBCStorage <CinematicSequencesEntry> sCinematicSequencesStore(CinematicSequencesEntryfmt);
 DBCStorage <CreatureDisplayInfoEntry> sCreatureDisplayInfoStore(CreatureDisplayInfofmt);
@@ -77,7 +79,7 @@ DBCStorage <CreatureFamilyEntry> sCreatureFamilyStore(CreatureFamilyfmt);
 DBCStorage <CreatureModelDataEntry> sCreatureModelDataStore(CreatureModelDatafmt);
 DBCStorage <CreatureSpellDataEntry> sCreatureSpellDataStore(CreatureSpellDatafmt);
 DBCStorage <CreatureTypeEntry> sCreatureTypeStore(CreatureTypefmt);
-DBCStorage <CurrencyTypesEntry> sCurrencyTypesStore(CurrencyTypesfmt);
+//DBCStorage <CurrencyTypesEntry> sCurrencyTypesStore(CurrencyTypesfmt);
 
 DBCStorage <DestructibleModelDataEntry> sDestructibleModelDataStore(DestructibleModelDatafmt);
 DBCStorage <DungeonEncounterEntry> sDungeonEncounterStore(DungeonEncounterfmt);
@@ -104,19 +106,39 @@ DBCStorage <GtChanceToMeleeCritEntry>     sGtChanceToMeleeCritStore(GtChanceToMe
 DBCStorage <GtChanceToSpellCritBaseEntry> sGtChanceToSpellCritBaseStore(GtChanceToSpellCritBasefmt);
 DBCStorage <GtChanceToSpellCritEntry>     sGtChanceToSpellCritStore(GtChanceToSpellCritfmt);
 DBCStorage <GtOCTClassCombatRatingScalarEntry> sGtOCTClassCombatRatingScalarStore(GtOCTClassCombatRatingScalarfmt);
+<<<<<<< HEAD
 DBCStorage <GtOCTRegenHPEntry>            sGtOCTRegenHPStore(GtOCTRegenHPfmt);
 //DBCStorage <GtOCTRegenMPEntry>            sGtOCTRegenMPStore(GtOCTRegenMPfmt);  -- not used currently
 DBCStorage <GtRegenHPPerSptEntry>         sGtRegenHPPerSptStore(GtRegenHPPerSptfmt);
+=======
+//DBCStorage <GtOCTRegenHPEntry>            sGtOCTRegenHPStore(GtOCTRegenHPfmt);
+//DBCStorage <GtOCTRegenMPEntry>            sGtOCTRegenMPStore(GtOCTRegenMPfmt);  -- not used currently
+//DBCStorage <GtRegenHPPerSptEntry>         sGtRegenHPPerSptStore(GtRegenHPPerSptfmt);
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 DBCStorage <GtRegenMPPerSptEntry>         sGtRegenMPPerSptStore(GtRegenMPPerSptfmt);
 
 DBCStorage <HolidaysEntry>                sHolidaysStore(Holidaysfmt);
 
-DBCStorage <ItemEntry>                    sItemStore(Itemfmt);
+DBCStorage <ItemArmorQualityEntry>        sItemArmorQualityStore(ItemArmorQualityfmt);
+DBCStorage <ItemArmorShieldEntry>         sItemArmorShieldStore(ItemArmorShieldfmt);
+DBCStorage <ItemArmorTotalEntry>          sItemArmorTotalStore(ItemArmorTotalfmt);
 DBCStorage <ItemBagFamilyEntry>           sItemBagFamilyStore(ItemBagFamilyfmt);
 DBCStorage <ItemClassEntry>               sItemClassStore(ItemClassfmt);
 //DBCStorage <ItemCondExtCostsEntry> sItemCondExtCostsStore(ItemCondExtCostsEntryfmt);
+<<<<<<< HEAD
 //DBCStorage <ItemDisplayInfoEntry> sItemDisplayInfoStore(ItemDisplayTemplateEntryfmt); -- not used currently
 DBCStorage <ItemExtendedCostEntry> sItemExtendedCostStore(ItemExtendedCostEntryfmt);
+=======
+DBCStorage <ItemDamageEntry>              sItemDamageAmmoStore(ItemDamagefmt);
+DBCStorage <ItemDamageEntry>              sItemDamageOneHandStore(ItemDamagefmt);
+DBCStorage <ItemDamageEntry>              sItemDamageOneHandCasterStore(ItemDamagefmt);
+DBCStorage <ItemDamageEntry>              sItemDamageRangedStore(ItemDamagefmt);
+DBCStorage <ItemDamageEntry>              sItemDamageThrownStore(ItemDamagefmt);
+DBCStorage <ItemDamageEntry>              sItemDamageTwoHandStore(ItemDamagefmt);
+DBCStorage <ItemDamageEntry>              sItemDamageTwoHandCasterStore(ItemDamagefmt);
+DBCStorage <ItemDamageEntry>              sItemDamageWandStore(ItemDamagefmt);
+//DBCStorage <ItemDisplayInfoEntry> sItemDisplayInfoStore(ItemDisplayTemplateEntryfmt); -- not used currently
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 DBCStorage <ItemLimitCategoryEntry> sItemLimitCategoryStore(ItemLimitCategoryEntryfmt);
 DBCStorage <ItemRandomPropertiesEntry> sItemRandomPropertiesStore(ItemRandomPropertiesfmt);
 DBCStorage <ItemRandomSuffixEntry> sItemRandomSuffixStore(ItemRandomSuffixfmt);
@@ -141,6 +163,7 @@ DBCStorage <QuestFactionRewardEntry> sQuestFactionRewardStore(QuestFactionReward
 DBCStorage <QuestSortEntry> sQuestSortStore(QuestSortEntryfmt);
 DBCStorage <QuestXPLevel> sQuestXPLevelStore(QuestXPLevelfmt);
 
+DBCStorage <PhaseEntry> sPhaseStore(Phasefmt);
 DBCStorage <PvPDifficultyEntry> sPvPDifficultyStore(PvPDifficultyfmt);
 
 DBCStorage <RandomPropertiesPointsEntry> sRandomPropertiesPointsStore(RandomPropertiesPointsfmt);
@@ -159,6 +182,25 @@ DBCStorage <SpellEntry> sSpellStore(SpellEntryfmt);
 SpellCategoryStore sSpellCategoryStore;
 PetFamilySpellsStore sPetFamilySpellsStore;
 
+DBCStorage <SpellAuraOptionsEntry> sSpellAuraOptionsStore(SpellAuraOptionsEntryfmt);
+DBCStorage <SpellAuraRestrictionsEntry> sSpellAuraRestrictionsStore(SpellAuraRestrictionsEntryfmt);
+DBCStorage <SpellCastingRequirementsEntry> sSpellCastingRequirementsStore(SpellCastingRequirementsEntryfmt);
+DBCStorage <SpellCategoriesEntry> sSpellCategoriesStore(SpellCategoriesEntryfmt);
+DBCStorage <SpellClassOptionsEntry> sSpellClassOptionsStore(SpellClassOptionsEntryfmt);
+DBCStorage <SpellCooldownsEntry> sSpellCooldownsStore(SpellCooldownsEntryfmt);
+DBCStorage <SpellEffectEntry> sSpellEffectStore(SpellEffectEntryfmt);
+DBCStorage <SpellEquippedItemsEntry> sSpellEquippedItemsStore(SpellEquippedItemsEntryfmt);
+DBCStorage <SpellInterruptsEntry> sSpellInterruptsStore(SpellInterruptsEntryfmt);
+DBCStorage <SpellLevelsEntry> sSpellLevelsStore(SpellLevelsEntryfmt);
+DBCStorage <SpellPowerEntry> sSpellPowerStore(SpellPowerEntryfmt);
+DBCStorage <SpellReagentsEntry> sSpellReagentsStore(SpellReagentsEntryfmt);
+DBCStorage <SpellScalingEntry> sSpellScalingStore(SpellScalingEntryfmt);
+DBCStorage <SpellShapeshiftEntry> sSpellShapeshiftStore(SpellShapeshiftEntryfmt);
+DBCStorage <SpellTargetRestrictionsEntry> sSpellTargetRestrictionsStore(SpellTargetRestrictionsEntryfmt);
+DBCStorage <SpellTotemsEntry> sSpellTotemsStore(SpellTotemsEntryfmt);
+
+SpellEffectMap sSpellEffectMap;
+
 DBCStorage <SpellCastTimesEntry> sSpellCastTimesStore(SpellCastTimefmt);
 DBCStorage <SpellDifficultyEntry> sSpellDifficultyStore(SpellDifficultyfmt);
 DBCStorage <SpellDurationEntry> sSpellDurationStore(SpellDurationfmt);
@@ -167,7 +209,7 @@ DBCStorage <SpellRadiusEntry> sSpellRadiusStore(SpellRadiusfmt);
 DBCStorage <SpellRangeEntry> sSpellRangeStore(SpellRangefmt);
 DBCStorage <SpellRuneCostEntry> sSpellRuneCostStore(SpellRuneCostfmt);
 DBCStorage <SpellShapeshiftFormEntry> sSpellShapeshiftFormStore(SpellShapeshiftFormfmt);
-DBCStorage <StableSlotPricesEntry> sStableSlotPricesStore(StableSlotPricesfmt);
+//DBCStorage <StableSlotPricesEntry> sStableSlotPricesStore(StableSlotPricesfmt);
 DBCStorage <SummonPropertiesEntry> sSummonPropertiesStore(SummonPropertiesfmt);
 DBCStorage <TalentEntry> sTalentStore(TalentEntryfmt);
 TalentSpellPosMap sTalentSpellPosMap;
@@ -188,7 +230,6 @@ DBCStorage <TaxiPathEntry> sTaxiPathStore(TaxiPathEntryfmt);
 TaxiPathNodesByPath sTaxiPathNodesByPath;
 static DBCStorage <TaxiPathNodeEntry> sTaxiPathNodeStore(TaxiPathNodeEntryfmt);
 
-DBCStorage <TeamContributionPoints> sTeamContributionPoints(TeamContributionPointsfmt);
 DBCStorage <TotemCategoryEntry> sTotemCategoryStore(TotemCategoryEntryfmt);
 DBCStorage <VehicleEntry> sVehicleStore(VehicleEntryfmt);
 DBCStorage <VehicleSeatEntry> sVehicleSeatStore(VehicleSeatEntryfmt);
@@ -203,7 +244,11 @@ bool IsAcceptableClientBuild(uint32 build)
 {
     int accepted_versions[] = EXPECTED_MANGOSD_CLIENT_BUILD;
     for(int i = 0; accepted_versions[i]; ++i)
+<<<<<<< HEAD
         if(build == accepted_versions[i])
+=======
+        if(int(build) == accepted_versions[i])
+>>>>>>> 03a44c9... Mage 400 INTO master/434
             return true;
 
     return false;
@@ -235,7 +280,7 @@ static bool ReadDBCBuildFileText(const std::string& dbc_path, char const* locale
         return false;
 }
 
-static uint32 ReadDBCBuild(const std::string& dbc_path, LocaleNameStr const* localeNameStr = NULL)
+static uint32 ReadDBCBuild(const std::string& dbc_path, LocaleNameStr const*&localeNameStr)
 {
     std::string text;
 
@@ -281,10 +326,16 @@ static bool LoadDBC_assert_print(uint32 fsize,uint32 rsize, const std::string& f
 
 struct LocalData
 {
+<<<<<<< HEAD
     LocalData(uint32 build)
         : main_build(build), availableDbcLocales(0xFFFFFFFF),checkedDbcLocaleBuilds(0) {}
+=======
+    LocalData(uint32 build, LocaleConstant loc)
+        : main_build(build), defaultLocale(loc), availableDbcLocales(0xFFFFFFFF),checkedDbcLocaleBuilds(0) {}
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 
     uint32 main_build;
+    LocaleConstant defaultLocale;
 
     // bitmasks for index of fullLocaleNameList
     uint32 availableDbcLocales;
@@ -298,6 +349,7 @@ inline void LoadDBC(LocalData& localeData, BarGoLink& bar, StoreProblemList& err
     MANGOS_ASSERT(DBCFileLoader::GetFormatRecordSize(storage.GetFormat()) == sizeof(T) || LoadDBC_assert_print(DBCFileLoader::GetFormatRecordSize(storage.GetFormat()),sizeof(T),filename));
 
     std::string dbc_filename = dbc_path + filename;
+<<<<<<< HEAD
 
     SqlDbc * sql = NULL;
 
@@ -305,6 +357,9 @@ inline void LoadDBC(LocalData& localeData, BarGoLink& bar, StoreProblemList& err
         sql = new SqlDbc(&filename,custom_entries,idname,storage.GetFormat());
 
     if(storage.Load(dbc_filename.c_str(),sql))
+=======
+    if(storage.Load(dbc_filename.c_str(),localeData.defaultLocale))
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     {
         bar.step();
         for(uint8 i = 0; fullLocaleNameList[i].name; ++i)
@@ -340,7 +395,11 @@ inline void LoadDBC(LocalData& localeData, BarGoLink& bar, StoreProblemList& err
             }
 
             std::string dbc_filename_loc = dbc_path + localStr->name + "/" + filename;
+<<<<<<< HEAD
             if(!storage.LoadStringsFrom(dbc_filename_loc.c_str()))
+=======
+            if(!storage.LoadStringsFrom(dbc_filename_loc.c_str(),localStr->locale))
+>>>>>>> 03a44c9... Mage 400 INTO master/434
                 localeData.availableDbcLocales &= ~(1<<i);  // mark as not available for speedup next checks
         }
     }
@@ -367,7 +426,8 @@ void LoadDBCStores(const std::string& dataPath)
 {
     std::string dbcPath = dataPath+"dbc/";
 
-    uint32 build = ReadDBCBuild(dbcPath);
+    LocaleNameStr const* defaultLocaleNameStr = NULL;
+    uint32 build = ReadDBCBuild(dbcPath,defaultLocaleNameStr);
 
     // Check the expected DBC version
     if (!IsAcceptableClientBuild(build))
@@ -380,13 +440,17 @@ void LoadDBCStores(const std::string& dataPath)
         exit(1);
     }
 
+<<<<<<< HEAD
     const uint32 DBCFilesCount = 98;
+=======
+    const uint32 DBCFilesCount = 102;
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 
     BarGoLink bar(DBCFilesCount);
 
     StoreProblemList bad_dbc_files;
 
-    LocalData availableDbcLocales(build);
+    LocalData availableDbcLocales(build,defaultLocaleNameStr->locale);
 
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sAreaStore,                dbcPath,"AreaTable.dbc");
 
@@ -432,16 +496,25 @@ void LoadDBCStores(const std::string& dataPath)
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCharTitlesStore,          dbcPath,"CharTitles.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sChatChannelsStore,        dbcPath,"ChatChannels.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sChrClassesStore,          dbcPath,"ChrClasses.dbc");
+<<<<<<< HEAD
+=======
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sChrPowerTypesStore,       dbcPath, "ChrClassesXPowerTypes.dbc");
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sChrRacesStore,            dbcPath,"ChrRaces.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCinematicSequencesStore,  dbcPath,"CinematicSequences.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCreatureDisplayInfoStore, dbcPath,"CreatureDisplayInfo.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCreatureDisplayInfoExtraStore,dbcPath,"CreatureDisplayInfoExtra.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCreatureFamilyStore,      dbcPath,"CreatureFamily.dbc");
+<<<<<<< HEAD
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCreatureModelDataStore,   dbcPath,"CreatureModelData.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCreatureSpellDataStore,   dbcPath,"CreatureSpellData.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCreatureTypeStore,        dbcPath,"CreatureType.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCurrencyTypesStore,       dbcPath,"CurrencyTypes.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sDestructibleModelDataStore,dbcPath,"DestructibleModelData.dbc");
+=======
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCreatureSpellDataStore,   dbcPath,"CreatureSpellData.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sCreatureTypeStore,        dbcPath,"CreatureType.dbc");
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sDungeonEncounterStore,    dbcPath,"DungeonEncounter.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sDurabilityCostsStore,     dbcPath,"DurabilityCosts.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sDurabilityQualityStore,   dbcPath,"DurabilityQuality.dbc");
@@ -458,6 +531,7 @@ void LoadDBCStores(const std::string& dataPath)
         }
     }
 
+<<<<<<< HEAD
     // Hero of the Shattrath
     // Aldor Part
     AchievementCriteriaEntry* achentry = (AchievementCriteriaEntry*)sAchievementCriteriaStore.LookupEntry(13427);
@@ -500,6 +574,10 @@ void LoadDBCStores(const std::string& dataPath)
         }
     }
 
+=======
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sFactionTemplateStore,     dbcPath,"FactionTemplate.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGameObjectDisplayInfoStore,dbcPath,"GameObjectDisplayInfo.dbc");
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGemPropertiesStore,       dbcPath,"GemProperties.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGlyphPropertiesStore,     dbcPath,"GlyphProperties.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGlyphSlotStore,           dbcPath,"GlyphSlot.dbc");
@@ -514,6 +592,7 @@ void LoadDBCStores(const std::string& dataPath)
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGtChanceToSpellCritStore, dbcPath,"gtChanceToSpellCrit.dbc");
 
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGtOCTClassCombatRatingScalarStore,dbcPath,"gtOCTClassCombatRatingScalar.dbc");
+<<<<<<< HEAD
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGtOCTRegenHPStore,        dbcPath,"gtOCTRegenHP.dbc");
     //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGtOCTRegenMPStore,        dbcPath,"gtOCTRegenMP.dbc");       -- not used currently
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGtRegenHPPerSptStore,     dbcPath,"gtRegenHPPerSpt.dbc");
@@ -533,6 +612,17 @@ void LoadDBCStores(const std::string& dataPath)
     //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemDisplayInfoStore,     dbcPath,"ItemDisplayInfo.dbc");     -- not used currently
     //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemCondExtCostsStore,    dbcPath,"ItemCondExtCosts.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemExtendedCostStore,    dbcPath,"ItemExtendedCost.dbc");
+=======
+    //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGtOCTRegenHPStore,        dbcPath,"gtOCTRegenHP.dbc");
+    //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGtOCTRegenMPStore,        dbcPath,"gtOCTRegenMP.dbc");       -- not used currently
+    //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGtRegenHPPerSptStore,     dbcPath,"gtRegenHPPerSpt.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGtRegenMPPerSptStore,     dbcPath,"gtRegenMPPerSpt.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sHolidaysStore,            dbcPath,"Holidays.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemBagFamilyStore,       dbcPath,"ItemBagFamily.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemClassStore,           dbcPath,"ItemClass.dbc");
+    //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemDisplayInfoStore,     dbcPath,"ItemDisplayInfo.dbc");     -- not used currently
+    //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemCondExtCostsStore,    dbcPath,"ItemCondExtCosts.dbc");
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemLimitCategoryStore,   dbcPath,"ItemLimitCategory.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemRandomPropertiesStore,dbcPath,"ItemRandomProperties.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemRandomSuffixStore,    dbcPath,"ItemRandomSuffix.dbc");
@@ -544,18 +634,28 @@ void LoadDBCStores(const std::string& dataPath)
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sMapDifficultyStore,       dbcPath,"MapDifficulty.dbc");
     // fill data
     for(uint32 i = 1; i < sMapDifficultyStore.GetNumRows(); ++i)
+<<<<<<< HEAD
     {
         if(MapDifficultyEntry const* entry = sMapDifficultyStore.LookupEntry(i))
         {
             sMapDifficultyMap[MAKE_PAIR32(entry->MapId,entry->Difficulty)] = entry;
         }
     }
+=======
+        if(MapDifficultyEntry const* entry = sMapDifficultyStore.LookupEntry(i))
+            sMapDifficultyMap[MAKE_PAIR32(entry->MapId,entry->Difficulty)] = MapDifficulty(entry->resetTime,entry->maxPlayers);
+    sMapDifficultyStore.Clear();
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sMovieStore,               dbcPath,"Movie.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sOverrideSpellDataStore,   dbcPath,"OverrideSpellData.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sQuestFactionRewardStore,  dbcPath,"QuestFactionReward.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sQuestSortStore,           dbcPath,"QuestSort.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sQuestXPLevelStore,        dbcPath,"QuestXP.dbc");
+<<<<<<< HEAD
+=======
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sPhaseStore,               dbcPath,"Phase.dbc");
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sPvPDifficultyStore,       dbcPath,"PvpDifficulty.dbc");
     for(uint32 i = 0; i < sPvPDifficultyStore.GetNumRows(); ++i)
         if (PvPDifficultyEntry const* entry = sPvPDifficultyStore.LookupEntry(i))
@@ -569,6 +669,7 @@ void LoadDBCStores(const std::string& dataPath)
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSkillLineAbilityStore,    dbcPath,"SkillLineAbility.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSkillRaceClassInfoStore,  dbcPath,"SkillRaceClassInfo.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSoundEntriesStore,        dbcPath,"SoundEntries.dbc");
+<<<<<<< HEAD
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellStore,               dbcPath,"Spell.dbc", &CustomSpellEntryfmt, &CustomSpellEntryIndex);
     for(uint32 i = 1; i < sSpellStore.GetNumRows(); ++i)
     {
@@ -1084,7 +1185,48 @@ void LoadDBCStores(const std::string& dataPath)
         // Penance heal start trigger
         if (spell->IsFitToFamily(SPELLFAMILY_PRIEST, UI64LIT(0x1000000000000), 0x80))
             spell->AttributesEx &= ~SPELL_ATTR_EX_NEGATIVE;
+=======
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellStore,               dbcPath,"Spell.dbc");
+    for(uint32 i = 1; i < sSpellStore.GetNumRows(); ++i)
+    {
+        if(SpellEntry const * spell = sSpellStore.LookupEntry(i))
+        {
+            if(SpellCategoriesEntry const* category = spell->GetSpellCategories())
+                if(uint32 cat = category->Category)
+                    sSpellCategoryStore[cat].insert(i);
+
+            // DBC not support uint64 fields but SpellEntry have SpellFamilyFlags mapped at 2 uint32 fields
+            // uint32 field already converted to bigendian if need, but must be swapped for correct uint64 bigendian view
+            #if MANGOS_ENDIAN == MANGOS_BIGENDIAN
+            std::swap(*((uint32*)(&spell->SpellFamilyFlags)),*(((uint32*)(&spell->SpellFamilyFlags))+1));
+            #endif
+        }
     }
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellAuraOptionsStore,    dbcPath,"SpellAuraOptions.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellAuraRestrictionsStore, dbcPath,"SpellAuraRestrictions.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellCastingRequirementsStore, dbcPath,"SpellCastingRequirements.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellCategoriesStore,     dbcPath,"SpellCategories.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellClassOptionsStore,   dbcPath,"SpellClassOptions.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellCooldownsStore,      dbcPath,"SpellCooldowns.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellEffectStore,         dbcPath,"SpellEffect.dbc");
+
+    for(uint32 i = 1; i < sSpellEffectStore.GetNumRows(); ++i)
+    {
+        if(SpellEffectEntry const *spellEffect = sSpellEffectStore.LookupEntry(i))
+            sSpellEffectMap[spellEffect->EffectSpellId].effects[spellEffect->EffectIndex] = spellEffect;
+>>>>>>> 03a44c9... Mage 400 INTO master/434
+    }
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellEquippedItemsStore,  dbcPath,"SpellEquippedItems.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellInterruptsStore,     dbcPath,"SpellInterrupts.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellLevelsStore,         dbcPath,"SpellLevels.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellPowerStore,          dbcPath,"SpellPower.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellReagentsStore,       dbcPath,"SpellReagents.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellScalingStore,        dbcPath,"SpellScaling.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellShapeshiftStore,     dbcPath,"SpellShapeshift.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellTargetRestrictionsStore, dbcPath,"SpellTargetRestrictions.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellTotemsStore,         dbcPath,"SpellTotems.dbc");
 
     for (uint32 j = 0; j < sSkillLineAbilityStore.GetNumRows(); ++j)
     {
@@ -1094,6 +1236,7 @@ void LoadDBCStores(const std::string& dataPath)
             continue;
 
         SpellEntry const* spellInfo = sSpellStore.LookupEntry(skillLine->spellId);
+
         if (spellInfo && (spellInfo->Attributes & (SPELL_ATTR_UNK4 | SPELL_ATTR_PASSIVE | SPELL_ATTR_UNK7 | SPELL_ATTR_UNK8)) == (SPELL_ATTR_UNK4 | SPELL_ATTR_PASSIVE | SPELL_ATTR_UNK7 | SPELL_ATTR_UNK8))
         {
             for (unsigned int i = 1; i < sCreatureFamilyStore.GetNumRows(); ++i)
@@ -1120,7 +1263,11 @@ void LoadDBCStores(const std::string& dataPath)
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellRangeStore,          dbcPath,"SpellRange.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellRuneCostStore,       dbcPath,"SpellRuneCost.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellShapeshiftFormStore, dbcPath,"SpellShapeshiftForm.dbc");
+<<<<<<< HEAD
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sStableSlotPricesStore,    dbcPath,"StableSlotPrices.dbc");
+=======
+    //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sStableSlotPricesStore,    dbcPath,"StableSlotPrices.dbc");
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSummonPropertiesStore,    dbcPath,"SummonProperties.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTalentStore,              dbcPath,"Talent.dbc");
 
@@ -1129,7 +1276,11 @@ void LoadDBCStores(const std::string& dataPath)
     {
         TalentEntry const *talentInfo = sTalentStore.LookupEntry(i);
         if (!talentInfo) continue;
+<<<<<<< HEAD
         for (int j = 0; j < MAX_TALENT_RANK; ++j)
+=======
+        for (int j = 0; j < MAX_TALENT_RANK; j++)
+>>>>>>> 03a44c9... Mage 400 INTO master/434
             if(talentInfo->RankID[j])
                 sTalentSpellPosMap[talentInfo->RankID[j]] = TalentSpellPos(i,j);
     }
@@ -1192,8 +1343,14 @@ void LoadDBCStores(const std::string& dataPath)
         for(uint32 i = 1; i < sSpellStore.GetNumRows (); ++i)
             if(SpellEntry const* sInfo = sSpellStore.LookupEntry (i))
                 for(int j=0; j < MAX_EFFECT_INDEX; ++j)
+<<<<<<< HEAD
                     if(sInfo->Effect[j]==123 /*SPELL_EFFECT_SEND_TAXI*/)
                         spellPaths.insert(sInfo->EffectMiscValue[j]);
+=======
+                    if(SpellEffectEntry const* effect = sInfo->GetSpellEffect(SpellEffectIndex(j)))
+                        if(effect->Effect==123 /*SPELL_EFFECT_SEND_TAXI*/)
+                            spellPaths.insert(effect->EffectMiscValue);
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 
         memset(sTaxiNodesMask,0,sizeof(sTaxiNodesMask));
         memset(sOldContinentsNodesMask,0,sizeof(sTaxiNodesMask));
@@ -1232,7 +1389,10 @@ void LoadDBCStores(const std::string& dataPath)
         }
     }
 
+<<<<<<< HEAD
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTeamContributionPoints,   dbcPath,"TeamContributionPoints.dbc");
+=======
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTotemCategoryStore,       dbcPath,"TotemCategory.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sVehicleStore,             dbcPath,"Vehicle.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sVehicleSeatStore,         dbcPath,"VehicleSeat.dbc");
@@ -1246,9 +1406,12 @@ void LoadDBCStores(const std::string& dataPath)
         }
     }
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWorldMapOverlayStore,     dbcPath,"WorldMapOverlay.dbc");
+<<<<<<< HEAD
     // Undercity -> Ruins of Lordaeron
     if (WorldMapOverlayEntry* entry = (WorldMapOverlayEntry*)(uint32*)sWorldMapOverlayStore.LookupEntry(228))
         entry->areatableID[1] = 153;
+=======
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWorldSafeLocsStore,       dbcPath,"WorldSafeLocs.dbc");
 
     // error checks
@@ -1270,6 +1433,7 @@ void LoadDBCStores(const std::string& dataPath)
     }
 
     // Check loaded DBC files proper version
+<<<<<<< HEAD
     if (!sAreaStore.LookupEntry(3617)              ||       // last area (areaflag) added in 3.3.5a
         !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.5a
         !sGemPropertiesStore.LookupEntry(1629)     ||       // last gem property added in 3.3.5a
@@ -1277,6 +1441,13 @@ void LoadDBCStores(const std::string& dataPath)
         !sItemExtendedCostStore.LookupEntry(2997)  ||       // last item extended cost added in 3.3.5a
         !sMapStore.LookupEntry(724)                ||       // last map added in 3.3.5a
         !sSpellStore.LookupEntry(80864)            )        // last added spell in 3.3.5a
+=======
+    if (!sAreaStore.LookupEntry(4713)              ||       // last area (areaflag) added in 4.3.0a
+        !sCharTitlesStore.LookupEntry(287)         ||       // last char title added in 4.3.0a
+        !sGemPropertiesStore.LookupEntry(2250)     ||       // last gem property added in 4.3.0a
+        !sMapStore.LookupEntry(980)                ||       // last map added in 4.3.0a
+        !sSpellStore.LookupEntry(110966)           )        // last added spell in 4.3.0a
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     {
         sLog.outError("\nYou have mixed version DBC files. Please re-extract DBC files for one from client build: %s",AcceptableClientBuildsListStr().c_str());
         Log::WaitBeforeContinueIfNeed();
@@ -1312,6 +1483,15 @@ TalentSpellPos const* GetTalentSpellPos(uint32 spellId)
         return NULL;
 
     return &itr->second;
+}
+
+SpellEffectEntry const* GetSpellEffectEntry(uint32 spellId, SpellEffectIndex effect)
+{
+    SpellEffectMap::const_iterator itr = sSpellEffectMap.find(spellId);
+    if(itr == sSpellEffectMap.end())
+        return NULL;
+
+    return itr->second.effects[effect];
 }
 
 uint32 GetTalentSpellCost(TalentSpellPos const* pos)
@@ -1485,8 +1665,13 @@ MapDifficultyEntry const* GetMapDifficultyData(uint32 mapId, Difficulty difficul
 
 LFGDungeonExpansionEntry const* GetLFGExpansionEntry(uint32 dungeonId, uint32 expansion)
 {
+<<<<<<< HEAD
     LFGDungeonExpansionMap::const_iterator itr = sLFGDungeonExpansionMap.find(MAKE_PAIR32(dungeonId,expansion));
     return itr != sLFGDungeonExpansionMap.end() ? itr->second : NULL;
+=======
+    MapDifficultyMap::const_iterator itr = sMapDifficultyMap.find(MAKE_PAIR32(mapId,difficulty));
+    return itr != sMapDifficultyMap.end() ? &itr->second : NULL;
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 }
 
 PvPDifficultyEntry const* GetBattlegroundBracketByLevel( uint32 mapid, uint32 level )
@@ -1587,7 +1772,6 @@ MANGOS_DLL_SPEC DBCStorage <SoundEntriesEntry>  const* GetSoundEntriesStore()   
 MANGOS_DLL_SPEC DBCStorage <SpellEntry>         const* GetSpellStore()          { return &sSpellStore;          }
 MANGOS_DLL_SPEC DBCStorage <SpellRangeEntry>    const* GetSpellRangeStore()     { return &sSpellRangeStore;     }
 MANGOS_DLL_SPEC DBCStorage <FactionEntry>       const* GetFactionStore()        { return &sFactionStore;        }
-MANGOS_DLL_SPEC DBCStorage <ItemEntry>          const* GetItemDisplayStore()    { return &sItemStore;           }
 MANGOS_DLL_SPEC DBCStorage <CreatureDisplayInfoEntry> const* GetCreatureDisplayStore() { return &sCreatureDisplayInfoStore; }
 MANGOS_DLL_SPEC DBCStorage <EmotesEntry>        const* GetEmotesStore()         { return &sEmotesStore;         }
 MANGOS_DLL_SPEC DBCStorage <EmotesTextEntry>    const* GetEmotesTextStore()     { return &sEmotesTextStore;     }

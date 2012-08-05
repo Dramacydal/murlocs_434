@@ -22,7 +22,7 @@
 // Client expected level limitation, like as used in DBC item max levels for "until max player level"
 // use as default max player level, must be fit max level for used client
 // also see MAX_LEVEL and STRONG_MAX_LEVEL define
-#define DEFAULT_MAX_LEVEL 80
+#define DEFAULT_MAX_LEVEL 85
 
 // client supported max level for player/pets/etc. Avoid overflow or client stability affected.
 // also see GT_MAX_LEVEL define
@@ -68,7 +68,13 @@ enum AchievementFlags
     ACHIEVEMENT_FLAG_BAR                    = 0x00000080,   // ACHIEVEMENT_FLAG_HAS_PROGRESS_BAR Show as progress bar (value / max vale) depend from other flag (by def use last criteria value)
     ACHIEVEMENT_FLAG_REALM_FIRST_REACH      = 0x00000100,   // ACHIEVEMENT_FLAG_SERVER_FIRST
     ACHIEVEMENT_FLAG_REALM_FIRST_KILL       = 0x00000200,   //
-
+    ACHIEVEMENT_FLAG_UNK3                   = 0x00000400,   // ACHIEVEMENT_FLAG_HIDE_NAME_IN_TIE
+    ACHIEVEMENT_FLAG_REALM_FIRST_GUILD      = 0x00000800,   // first guild on realm done something
+    ACHIEVEMENT_FLAG_UNK4                   = 0x00001000,   // as guild group?
+    ACHIEVEMENT_FLAG_UNK5                   = 0x00002000,   // as guild group?
+    ACHIEVEMENT_FLAG_GUILD                  = 0x00004000,   //
+    ACHIEVEMENT_FLAG_SHOW_GUILD_MEMBERS	    = 0x00008000,   //
+    ACHIEVEMENT_FLAG_SHOW_CRITERIA_MEMBERS  = 0x00010000,   //
 };
 
 enum AchievementCriteriaCondition
@@ -208,10 +214,55 @@ enum AchievementCriteriaTypes
     // 121 unused
     // 122 unused
     // 123 unused
+<<<<<<< HEAD
     // 0..123 => 124 criteria types total
     ACHIEVEMENT_CRITERIA_TYPE_TOTAL = 124,
 };
 
+=======
+    // 124 Spend X gold on guildmember repairs.
+    // 125 Reach guild level X
+    // 126 Craft X items
+    // 127 Catch X fish from fishing pools.
+    // 128 Purchase the X guild bank tab.
+    // 129 Earn X guild achievement points.
+    // 130 Win X rated battlegrounds.
+    // 131 unused
+    // 132 Earn a battleground rating of X.
+    // 133 Create and purchase a guild crest.
+    // 134 Complete quests
+    // 135 Honorable kills
+    // 0..135 => 136 criteria types total
+};
+
+#define ACHIEVEMENT_CRITERIA_TYPE_TOTAL 136
+
+enum AchievementCriteriaMoreReqType
+{
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_ITEM_LEVEL             = 3,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_CREATURE_ID            = 4,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_SPELL                  = 8,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_SPELL_ON_TARGET        = 10,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_ITEM_QUALITY_EQUIPPED  = 14,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_ITEM_QUALITY_LOOTED    = 15,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_AREA_ID                = 17,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_AREA_ID2               = 18,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_RAID_DIFFICULTY        = 20,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_ARENA_TYPE             = 24,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_PLAYER_CLASS           = 26,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_PLAYER_RACE            = 27,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_PLAYER_CLASS2          = 28,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_CREATURE_TYPE          = 30,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_MAP_ID                 = 32,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_TIMED_QUEST            = 35,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_PLAYER_TITLE           = 38,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_PLAYER_LEVEL           = 39,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_PLAYER_LEVEL2          = 40,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_AREA_ID3               = 41,
+    ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_GUILD_REP              = 62,
+};
+
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 enum AreaFlags
 {
     AREA_FLAG_SNOW                  = 0x00000001,           // snow (only Dun Morogh, Naxxramas, Razorfen Downs and Winterspring)
@@ -353,56 +404,61 @@ enum TotemCategoryType
     TOTEM_CATEGORY_TYPE_SPANNER = 24
 };
 
-// SummonProperties.dbc, col 0          == Id               (m_id)
-// SummonProperties.dbc, col 1          == Group            (m_control)
+// SummonProperties.dbc, col 1
 enum SummonPropGroup
 {
+<<<<<<< HEAD
     SUMMON_PROP_GROUP_WILD              = 0,
     SUMMON_PROP_GROUP_FRIENDLY          = 1,
     SUMMON_PROP_GROUP_PETS              = 2,
     SUMMON_PROP_GROUP_CONTROLLABLE      = 3,
     SUMMON_PROP_GROUP_VEHICLE           = 4,
     SUMMON_PROP_GROUP_UNCONTROLLABLE_VEHICLE = 5
+=======
+    SUMMON_PROP_GROUP_WILD           = 0,
+    SUMMON_PROP_GROUP_FRIENDLY       = 1,
+    SUMMON_PROP_GROUP_PETS           = 2,
+    SUMMON_PROP_GROUP_CONTROLLABLE   = 3,
+    SUMMON_PROP_GROUP_VEHICLE        = 4
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 };
 
-// SummonProperties.dbc, col 2          == FactionId        (m_faction)
-// SummonProperties.dbc, col 3          == Title            (m_title)
+// SummonProperties.dbc, col 3
 enum UnitNameSummonTitle
 {
-    UNITNAME_SUMMON_TITLE_NONE          = 0,                // no default title, different summons, 1330 spells in 3.0.3
-    UNITNAME_SUMMON_TITLE_PET           = 1,                // 's Pet,           generic summons, 49 spells in 3.0.3
-    UNITNAME_SUMMON_TITLE_GUARDIAN      = 2,                // 's Guardian,      summon guardian, 393 spells in 3.0.3
-    UNITNAME_SUMMON_TITLE_MINION        = 3,                // 's Minion,        summon army, 5 spells in 3.0.3
-    UNITNAME_SUMMON_TITLE_TOTEM         = 4,                // 's Totem,         summon totem, 169 spells in 3.0.3
-    UNITNAME_SUMMON_TITLE_COMPANION     = 5,                // 's Companion,     critter/minipet, 195 spells in 3.0.3
-    UNITNAME_SUMMON_TITLE_RUNEBLADE     = 6,                // 's Runeblade,     summon DRW/Ghoul, 2 spells in 3.0.3"
-    UNITNAME_SUMMON_TITLE_CONSTRUCT     = 7,                // 's Construct,     summon bot/bomb, 4 spells in 3.0.3
-    UNITNAME_SUMMON_TITLE_OPPONENT      = 8,                // 's Opponent,      something todo with DK prequest line, 2 spells in 3.0.3
-    UNITNAME_SUMMON_TITLE_VEHICLE       = 9,                // 's Vehicle,       summon different vehicles, 14 spells in 3.0.3
-    UNITNAME_SUMMON_TITLE_MOUNT         = 10,               // 's Mount,         summon drake (vehicle), 3 spells
-    UNITNAME_SUMMON_TITLE_LIGHTWELL     = 11,               // 's Lightwell,     summon lightwell, 6 spells in 3.0.3
-    UNITNAME_SUMMON_TITLE_BUTLER        = 12                // 's Butler,        summon repair bot, 1 spells in 3.2.2a
+    UNITNAME_SUMMON_TITLE_NONE         = 0,                 // no default title, different summons, 1330 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_PET          = 1,                 // 's Pet,           generic summons, 49 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_GUARDIAN     = 2,                 // 's Guardian,      summon guardian, 393 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_MINION       = 3,                 // 's Minion,        summon army, 5 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_TOTEM        = 4,                 // 's Totem,         summon totem, 169 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_COMPANION    = 5,                 // 's Companion,     critter/minipet, 195 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_RUNEBLADE    = 6,                 // 's Runeblade,     summon DRW/Ghoul, 2 spells in 3.0.3"
+    UNITNAME_SUMMON_TITLE_CONSTRUCT    = 7,                 // 's Construct,     summon bot/bomb, 4 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_OPPONENT     = 8,                 // 's Opponent,      something todo with DK prequest line, 2 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_VEHICLE      = 9,                 // 's Vehicle,       summon different vehicles, 14 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_MOUNT        = 10,                // 's Mount,         summon drake (vehicle), 3 spells
+    UNITNAME_SUMMON_TITLE_LIGHTWELL    = 11,                // 's Lightwell,     summon lightwell, 6 spells in 3.0.3
+    UNITNAME_SUMMON_TITLE_BUTLER       = 12                 // 's Butler,        summon repair bot, 1 spells in 3.2.2a
 };
 
-// SummonProperties.dbc, col 4          == Slot             (m_slot)
-// SummonProperties.dbc, col 5          == Flags            (m_flags)
+// SummonProperties.dbc, col 5
 enum SummonPropFlags
 {
-    SUMMON_PROP_FLAG_NONE               = 0x0000,           // 1342 spells in 3.0.3
-    SUMMON_PROP_FLAG_UNK1               = 0x0001,           // 75 spells in 3.0.3, something unfriendly
-    SUMMON_PROP_FLAG_UNK2               = 0x0002,           // 616 spells in 3.0.3, something friendly
-    SUMMON_PROP_FLAG_UNK3               = 0x0004,           // 22 spells in 3.0.3, no idea...
-    SUMMON_PROP_FLAG_UNK4               = 0x0008,           // 49 spells in 3.0.3, some mounts
-    SUMMON_PROP_FLAG_UNK5               = 0x0010,           // 25 spells in 3.0.3, quest related?
-    SUMMON_PROP_FLAG_CANT_BE_DISMISSED  = 0x0020,           // 0 spells in 3.0.3, unused
-    SUMMON_PROP_FLAG_UNK7               = 0x0040,           // 12 spells in 3.0.3, no idea
-    SUMMON_PROP_FLAG_UNK8               = 0x0080,           // 4 spells in 3.0.3, no idea
-    SUMMON_PROP_FLAG_UNK9               = 0x0100,           // 51 spells in 3.0.3, no idea, many quest related
-    SUMMON_PROP_FLAG_UNK10              = 0x0200,           // 51 spells in 3.0.3, something defensive
-    SUMMON_PROP_FLAG_UNK11              = 0x0400,           // 3 spells, requires something near?
-    SUMMON_PROP_FLAG_UNK12              = 0x0800,           // 30 spells in 3.0.3, no idea
-    SUMMON_PROP_FLAG_UNK13              = 0x1000,           // 8 spells in 3.0.3, siege vehicle
-    SUMMON_PROP_FLAG_UNK14              = 0x2000,           // 2 spells in 3.0.3, escort?
+    SUMMON_PROP_FLAG_NONE              = 0x0000,            // 1342 spells in 3.0.3
+    SUMMON_PROP_FLAG_UNK1              = 0x0001,            // 75 spells in 3.0.3, something unfriendly
+    SUMMON_PROP_FLAG_UNK2              = 0x0002,            // 616 spells in 3.0.3, something friendly
+    SUMMON_PROP_FLAG_UNK3              = 0x0004,            // 22 spells in 3.0.3, no idea...
+    SUMMON_PROP_FLAG_UNK4              = 0x0008,            // 49 spells in 3.0.3, some mounts
+    SUMMON_PROP_FLAG_UNK5              = 0x0010,            // 25 spells in 3.0.3, quest related?
+    SUMMON_PROP_FLAG_CANT_BE_DISMISSED = 0x0020,            // 0 spells in 3.0.3, unused
+    SUMMON_PROP_FLAG_UNK7              = 0x0040,            // 12 spells in 3.0.3, no idea
+    SUMMON_PROP_FLAG_UNK8              = 0x0080,            // 4 spells in 3.0.3, no idea
+    SUMMON_PROP_FLAG_UNK9              = 0x0100,            // 51 spells in 3.0.3, no idea, many quest related
+    SUMMON_PROP_FLAG_UNK10             = 0x0200,            // 51 spells in 3.0.3, something defensive
+    SUMMON_PROP_FLAG_UNK11             = 0x0400,            // 3 spells, requires something near?
+    SUMMON_PROP_FLAG_UNK12             = 0x0800,            // 30 spells in 3.0.3, no idea
+    SUMMON_PROP_FLAG_UNK13             = 0x1000,            // 8 spells in 3.0.3, siege vehicle
+    SUMMON_PROP_FLAG_UNK14             = 0x2000,            // 2 spells in 3.0.3, escort?
 };
 
 // SpellEntry::Targets

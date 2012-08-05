@@ -1186,9 +1186,17 @@ bool ChatHandler::HandleDebugSpellCoefsCommand(char* args)
     bool isDirectHeal = false;
     for(int i = 0; i < 3; ++i)
     {
+        SpellEffectEntry const* spellEffect = spellEntry->GetSpellEffect(SpellEffectIndex(i));
+        if(!spellEffect)
+            continue;
         // Heals (Also count Mana Shield and Absorb effects as heals)
+<<<<<<< HEAD
         if (spellEntry->Effect[i] == SPELL_EFFECT_HEAL || spellEntry->Effect[i] == SPELL_EFFECT_HEAL_MAX_HEALTH ||
             (spellEntry->Effect[i] == SPELL_EFFECT_APPLY_AURA && (spellEntry->EffectApplyAuraName[i] == SPELL_AURA_SCHOOL_ABSORB || spellEntry->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_HEAL)) )
+=======
+        if (spellEffect->Effect == SPELL_EFFECT_HEAL || spellEffect->Effect == SPELL_EFFECT_HEAL_MAX_HEALTH ||
+            (spellEffect->Effect == SPELL_EFFECT_APPLY_AURA && (spellEffect->EffectApplyAuraName == SPELL_AURA_SCHOOL_ABSORB || spellEffect->EffectApplyAuraName == SPELL_AURA_PERIODIC_HEAL)))
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         {
             isDirectHeal = true;
             break;
@@ -1198,8 +1206,11 @@ bool ChatHandler::HandleDebugSpellCoefsCommand(char* args)
     bool isDotHeal = false;
     for(int i = 0; i < 3; ++i)
     {
+        SpellEffectEntry const* spellEffect = spellEntry->GetSpellEffect(SpellEffectIndex(i));
+        if(!spellEffect)
+            continue;
         // Periodic Heals
-        if (spellEntry->Effect[i] == SPELL_EFFECT_APPLY_AURA && spellEntry->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_HEAL)
+        if (spellEffect->Effect == SPELL_EFFECT_APPLY_AURA && spellEffect->EffectApplyAuraName == SPELL_AURA_PERIODIC_HEAL)
         {
             isDotHeal = true;
             break;

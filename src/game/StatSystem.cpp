@@ -248,13 +248,13 @@ void Player::UpdateAttackPowerAndDamage(bool ranged )
     UnitMods unitMod = ranged ? UNIT_MOD_ATTACK_POWER_RANGED : UNIT_MOD_ATTACK_POWER;
 
     uint16 index = UNIT_FIELD_ATTACK_POWER;
-    uint16 index_mod = UNIT_FIELD_ATTACK_POWER_MODS;
+    uint16 index_mod = UNIT_FIELD_ATTACK_POWER_MOD_POS;
     uint16 index_mult = UNIT_FIELD_ATTACK_POWER_MULTIPLIER;
 
     if(ranged)
     {
         index = UNIT_FIELD_RANGED_ATTACK_POWER;
-        index_mod = UNIT_FIELD_RANGED_ATTACK_POWER_MODS;
+        index_mod = UNIT_FIELD_RANGED_ATTACK_POWER_MOD_POS;
         index_mult = UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER;
 
         switch(getClass())
@@ -712,7 +712,11 @@ void Player::UpdateExpertise(WeaponAttackType attack)
     for(AuraList::const_iterator itr = expAuras.begin(); itr != expAuras.end(); ++itr)
     {
         // item neutral spell
+<<<<<<< HEAD
         if((*itr)->GetSpellProto()->EquippedItemClass == -1)
+=======
+        if((*itr)->GetSpellProto()->GetEquippedItemClass() == -1)
+>>>>>>> 03a44c9... Mage 400 INTO master/434
             expertise += (*itr)->GetModifier()->m_amount;
         // item dependent spell
         else if(weapon && weapon->IsFitToSpellRequirements((*itr)->GetSpellProto()))
@@ -738,7 +742,11 @@ void Player::UpdateArmorPenetration()
     for(AuraList::const_iterator itr = armorAuras.begin(); itr != armorAuras.end(); ++itr)
     {
         // affects all weapons
+<<<<<<< HEAD
         if((*itr)->GetSpellProto()->EquippedItemClass == -1)
+=======
+        if((*itr)->GetSpellProto()->GetEquippedItemClass() == -1)
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         {
             m_armorPenetrationPct += (*itr)->GetModifier()->m_amount;
             continue;
@@ -886,13 +894,13 @@ void Creature::UpdateAttackPowerAndDamage(bool ranged)
     UnitMods unitMod = ranged ? UNIT_MOD_ATTACK_POWER_RANGED : UNIT_MOD_ATTACK_POWER;
 
     uint16 index = UNIT_FIELD_ATTACK_POWER;
-    uint16 index_mod = UNIT_FIELD_ATTACK_POWER_MODS;
+    uint16 index_mod = UNIT_FIELD_ATTACK_POWER_MOD_POS;
     uint16 index_mult = UNIT_FIELD_ATTACK_POWER_MULTIPLIER;
 
     if(ranged)
     {
         index = UNIT_FIELD_RANGED_ATTACK_POWER;
-        index_mod = UNIT_FIELD_RANGED_ATTACK_POWER_MODS;
+        index_mod = UNIT_FIELD_RANGED_ATTACK_POWER_MOD_POS;
         index_mult = UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER;
     }
 
@@ -1069,7 +1077,11 @@ void Pet::UpdateAttackPowerAndDamage(bool ranged)
     //UNIT_FIELD_(RANGED)_ATTACK_POWER field
     SetInt32Value(UNIT_FIELD_ATTACK_POWER, (int32)base_attPower);
     //UNIT_FIELD_(RANGED)_ATTACK_POWER_MODS field
+<<<<<<< HEAD
     SetInt32Value(UNIT_FIELD_ATTACK_POWER_MODS, (int32)attPowerMod);
+=======
+    SetInt32Value(UNIT_FIELD_ATTACK_POWER_MOD_POS, (int32)attPowerMod);
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     //UNIT_FIELD_(RANGED)_ATTACK_POWER_MULTIPLIER field
     SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER, attPowerMultiplier);
 

@@ -93,7 +93,16 @@ inline float GetSpellMaxRange(SpellRangeEntry const *range, bool friendly = fals
         return 0;
     return (friendly ? range->maxRangeFriendly : range->maxRange);
 }
+<<<<<<< HEAD
 inline uint32 GetSpellRecoveryTime(SpellEntry const *spellInfo) { return spellInfo->RecoveryTime > spellInfo->CategoryRecoveryTime ? spellInfo->RecoveryTime : spellInfo->CategoryRecoveryTime; }
+=======
+inline uint32 GetSpellRecoveryTime(SpellEntry const *spellInfo)
+{
+    if(SpellCooldownsEntry const* cooldowns = spellInfo->GetSpellCooldowns())
+        return cooldowns->RecoveryTime > cooldowns->CategoryRecoveryTime ? cooldowns->RecoveryTime : cooldowns->CategoryRecoveryTime;
+    return 0;
+}
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 int32 GetSpellDuration(SpellEntry const *spellInfo);
 int32 GetSpellMaxDuration(SpellEntry const *spellInfo);
 int32 CalculateSpellDuration(SpellEntry const *spellInfo, Unit const* caster = NULL);
@@ -104,24 +113,37 @@ WeaponAttackType GetWeaponAttackType(SpellEntry const *spellInfo);
 inline bool IsSpellHaveEffect(SpellEntry const *spellInfo, SpellEffects effect)
 {
     for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
+<<<<<<< HEAD
         if(SpellEffects(spellInfo->Effect[i])==effect)
             return true;
+=======
+    {
+        if(SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i)))
+            if(SpellEffects(effectEntry->Effect) == effect)
+                return true;
+    }
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     return false;
 }
 
 inline bool IsAuraApplyEffect(SpellEntry const *spellInfo, SpellEffectIndex effecIdx)
 {
-    switch (spellInfo->Effect[effecIdx])
+    SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(effecIdx));
+    if (!spellEffect)
+        return false;
+
+    switch (spellEffect->Effect)
     {
-        case SPELL_EFFECT_APPLY_AURA:
-        case SPELL_EFFECT_APPLY_AREA_AURA_PARTY:
-        case SPELL_EFFECT_APPLY_AREA_AURA_RAID:
-        case SPELL_EFFECT_APPLY_AREA_AURA_PET:
-        case SPELL_EFFECT_APPLY_AREA_AURA_FRIEND:
-        case SPELL_EFFECT_APPLY_AREA_AURA_ENEMY:
-        case SPELL_EFFECT_APPLY_AREA_AURA_OWNER:
-            return true;
+    case SPELL_EFFECT_APPLY_AURA:
+    case SPELL_EFFECT_APPLY_AREA_AURA_PARTY:
+    case SPELL_EFFECT_APPLY_AREA_AURA_RAID:
+    case SPELL_EFFECT_APPLY_AREA_AURA_PET:
+    case SPELL_EFFECT_APPLY_AREA_AURA_FRIEND:
+    case SPELL_EFFECT_APPLY_AREA_AURA_ENEMY:
+    case SPELL_EFFECT_APPLY_AREA_AURA_OWNER:
+        return true;
     }
+
     return false;
 }
 
@@ -137,7 +159,10 @@ inline bool IsSpellAppliesAura(SpellEntry const *spellInfo, uint32 effectMask = 
 
 inline bool IsEffectHandledOnDelayedSpellLaunch(SpellEntry const *spellInfo, SpellEffectIndex effecIdx)
 {
-    switch (spellInfo->Effect[effecIdx])
+    SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(effecIdx);
+    if(!effectEntry)
+        return false;
+    switch (effectEntry->Effect)
     {
         case SPELL_EFFECT_SCHOOL_DAMAGE:
         case SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL:
@@ -152,7 +177,11 @@ inline bool IsEffectHandledOnDelayedSpellLaunch(SpellEntry const *spellInfo, Spe
 
 inline bool IsPeriodicRegenerateEffect(SpellEntry const *spellInfo, SpellEffectIndex effecIdx)
 {
-    switch (AuraType(spellInfo->EffectApplyAuraName[effecIdx]))
+    SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(effecIdx);
+    if(!effectEntry)
+        return false;
+
+    switch (AuraType(effectEntry->EffectApplyAuraName))
     {
         case SPELL_AURA_PERIODIC_ENERGIZE:
         case SPELL_AURA_PERIODIC_HEAL:
@@ -168,16 +197,34 @@ bool IsCastEndProcModifierAura(SpellEntry const *spellInfo, SpellEffectIndex eff
 inline bool IsSpellHaveAura(SpellEntry const *spellInfo, AuraType aura)
 {
     for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
+<<<<<<< HEAD
         if(AuraType(spellInfo->EffectApplyAuraName[i])==aura)
             return true;
+=======
+    {
+        if(SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i)))
+            if(AuraType(effectEntry->EffectApplyAuraName)==aura)
+                return true;
+    }
+
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     return false;
 }
 
 inline bool IsSpellLastAuraEffect(SpellEntry const *spellInfo, SpellEffectIndex effecIdx)
 {
     for(int i = effecIdx+1; i < MAX_EFFECT_INDEX; ++i)
+<<<<<<< HEAD
         if(spellInfo->EffectApplyAuraName[i])
             return false;
+=======
+    {
+        if(SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i)))
+            if(effectEntry->EffectApplyAuraName)
+                return false;
+    }
+
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     return true;
 }
 
@@ -185,32 +232,59 @@ bool IsNoStackAuraDueToAura(uint32 spellId_1, uint32 spellId_2);
 
 inline bool IsSealSpell(SpellEntry const *spellInfo)
 {
+<<<<<<< HEAD
     //Collection of all the seal family flags. No other paladin spell has any of those.
     return spellInfo->IsFitToFamily(SPELLFAMILY_PALADIN, UI64LIT(0x26000C000A000000)) &&
         // avoid counting target triggered effect as seal for avoid remove it or seal by it.
         spellInfo->EffectImplicitTargetA[EFFECT_INDEX_0] == TARGET_SELF;
+=======
+    SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
+    //Collection of all the seal family flags. No other paladin spell has any of those.
+    return spellInfo->IsFitToFamily(SPELLFAMILY_PALADIN, UI64LIT(0x26000C000A000000)) &&
+        // avoid counting target triggered effect as seal for avoid remove it or seal by it.
+        spellEffect && spellEffect->EffectImplicitTargetA == TARGET_SELF;
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 }
 
 inline bool IsElementalShield(SpellEntry const *spellInfo)
 {
+    SpellClassOptionsEntry const* classOptions = spellInfo->GetSpellClassOptions();
     // family flags 10 (Lightning), 42 (Earth), 37 (Water), proc shield from T2 8 pieces bonus
-    return (spellInfo->SpellFamilyFlags & UI64LIT(0x42000000400)) || spellInfo->Id == 23552;
+    return (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x42000000400)) || spellInfo->Id == 23552;
 }
 
 inline bool IsExplicitDiscoverySpell(SpellEntry const *spellInfo)
 {
+<<<<<<< HEAD
     return (((spellInfo->Effect[EFFECT_INDEX_0] == SPELL_EFFECT_CREATE_RANDOM_ITEM
         || spellInfo->Effect[EFFECT_INDEX_0] == SPELL_EFFECT_CREATE_ITEM_2)
         && spellInfo->Effect[EFFECT_INDEX_1] == SPELL_EFFECT_SCRIPT_EFFECT)
         || spellInfo->Id == 64323);                         // Book of Glyph Mastery (Effect0==SPELL_EFFECT_SCRIPT_EFFECT without any other data)
+=======
+    SpellEffectEntry const* spellEffect0 = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
+    SpellEffectEntry const* spellEffect1 = spellInfo->GetSpellEffect(EFFECT_INDEX_1);
+    return ((spellEffect0 && (spellEffect0->Effect == SPELL_EFFECT_CREATE_RANDOM_ITEM ||
+        spellEffect0->Effect == SPELL_EFFECT_CREATE_ITEM_2) &&
+        (spellEffect1 && spellEffect1->Effect == SPELL_EFFECT_SCRIPT_EFFECT)) ||
+        spellInfo->Id == 64323);                         // Book of Glyph Mastery (Effect0==SPELL_EFFECT_SCRIPT_EFFECT without any other data)
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 }
 
 inline bool IsLootCraftingSpell(SpellEntry const *spellInfo)
 {
+<<<<<<< HEAD
     return (spellInfo->Effect[EFFECT_INDEX_0] == SPELL_EFFECT_CREATE_RANDOM_ITEM ||
         // different random cards from Inscription (121==Virtuoso Inking Set category) r without explicit item
         (spellInfo->Effect[EFFECT_INDEX_0] == SPELL_EFFECT_CREATE_ITEM_2 &&
         (spellInfo->TotemCategory[0] != 0 || spellInfo->EffectItemType[0]==0)));
+=======
+    SpellEffectEntry const* spellEffect0 = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
+    SpellTotemsEntry const* totems = spellInfo->GetSpellTotems();
+    return (spellEffect0 && (spellEffect0->Effect == SPELL_EFFECT_CREATE_RANDOM_ITEM ||
+        // different random cards from Inscription (121==Virtuoso Inking Set category) r without explicit item
+        (spellEffect0->Effect == SPELL_EFFECT_CREATE_ITEM_2 &&
+        ((totems && totems->TotemCategory[0] != 0) || spellEffect0->EffectItemType==0))));
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 }
 
 int32 CompareAuraRanks(uint32 spellId_1, uint32 spellId_2);
@@ -233,6 +307,7 @@ inline bool IsPassiveSpellStackableWithRanks(SpellEntry const* spellProto)
 
 inline bool IsSpellRemoveAllMovementAndControlLossEffects(SpellEntry const* spellProto)
 {
+<<<<<<< HEAD
     return spellProto->Id == 42292 || spellProto->Id == 53490 ||
         spellProto->Id == 59752 || spellProto->Id == 65547;
 
@@ -241,6 +316,15 @@ inline bool IsSpellRemoveAllMovementAndControlLossEffects(SpellEntry const* spel
         spellProto->EffectApplyAuraName[EFFECT_INDEX_1] == 0 &&
         spellProto->EffectApplyAuraName[EFFECT_INDEX_2] == 0 &&
         spellProto->HasAttribute(SPELL_ATTR_EX_DISPEL_AURAS_ON_IMMUNITY)/* && -- all above selected spells have SPELL_ATTR_EX5_* mask
+=======
+    SpellEffectEntry const* spellEffect0 = spellProto->GetSpellEffect(EFFECT_INDEX_0);
+
+    return spellEffect0 && spellEffect0->EffectApplyAuraName == SPELL_AURA_MECHANIC_IMMUNITY &&
+        spellEffect0->EffectMiscValue == 1 &&
+        spellEffect0->EffectApplyAuraName == 0 &&
+        spellEffect0->EffectApplyAuraName == 0 &&
+        (spellProto->AttributesEx & SPELL_ATTR_EX_DISPEL_AURAS_ON_IMMUNITY)/* && -- all above selected spells have SPELL_ATTR_EX5_* mask
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         ((spellProto->AttributesEx5 &
             (SPELL_ATTR_EX5_USABLE_WHILE_CONFUSED|SPELL_ATTR_EX5_USABLE_WHILE_FEARED|SPELL_ATTR_EX5_USABLE_WHILE_STUNNED)) ==
             (SPELL_ATTR_EX5_USABLE_WHILE_CONFUSED|SPELL_ATTR_EX5_USABLE_WHILE_FEARED|SPELL_ATTR_EX5_USABLE_WHILE_STUNNED))*/;
@@ -309,11 +393,23 @@ inline bool IsSpellWithCasterSourceTargetsOnly(SpellEntry const* spellInfo)
 {
     for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
+<<<<<<< HEAD
         uint32 targetA = spellInfo->EffectImplicitTargetA[i];
         if(targetA && !IsCasterSourceTarget(targetA))
             return false;
 
         uint32 targetB = spellInfo->EffectImplicitTargetB[i];
+=======
+        SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+        if(!effectEntry)
+            continue;
+
+        uint32 targetA = effectEntry->EffectImplicitTargetA;
+        if(targetA && !IsCasterSourceTarget(targetA))
+            return false;
+
+        uint32 targetB = effectEntry->EffectImplicitTargetB;
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         if(targetB && !IsCasterSourceTarget(targetB))
             return false;
 
@@ -397,12 +493,24 @@ inline bool IsAreaEffectTarget( Targets target )
 
 inline bool IsAreaOfEffectSpell(SpellEntry const *spellInfo)
 {
+<<<<<<< HEAD
     if(IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetA[EFFECT_INDEX_0])) || IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetB[EFFECT_INDEX_0])))
         return true;
     if(IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetA[EFFECT_INDEX_1])) || IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetB[EFFECT_INDEX_1])))
         return true;
     if(IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetA[EFFECT_INDEX_2])) || IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetB[EFFECT_INDEX_2])))
+=======
+    SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
+    if(effectEntry && (IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetA)) || IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetB))))
         return true;
+    effectEntry = spellInfo->GetSpellEffect(EFFECT_INDEX_1);
+    if(effectEntry && (IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetA)) || IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetB))))
+        return true;
+    effectEntry = spellInfo->GetSpellEffect(EFFECT_INDEX_2);
+    if(effectEntry && (IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetA)) || IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetB))))
+>>>>>>> 03a44c9... Mage 400 INTO master/434
+        return true;
+
     return false;
 }
 
@@ -421,8 +529,13 @@ inline bool IsAreaAuraEffect(uint32 effect)
 inline bool HasAreaAuraEffect(SpellEntry const *spellInfo)
 {
     for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
-        if (IsAreaAuraEffect(spellInfo->Effect[i]))
+    {
+        SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+        if(!effectEntry)
+            continue;
+        if (IsAreaAuraEffect(effectEntry->Effect))
             return true;
+    }
     return false;
 }
 
@@ -430,7 +543,15 @@ inline bool HasAuraWithTriggerEffect(SpellEntry const *spellInfo)
 {
     for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
+<<<<<<< HEAD
         switch(spellInfo->Effect[i])
+=======
+        SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+        if(!effectEntry)
+            continue;
+
+        switch(effectEntry->Effect)
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         {
             case SPELL_AURA_PERIODIC_TRIGGER_SPELL:
             case SPELL_AURA_PROC_TRIGGER_SPELL:
@@ -459,7 +580,7 @@ inline bool IsAutoRepeatRangedSpell(SpellEntry const* spellInfo)
 
 inline bool IsSpellRequiresRangedAP(SpellEntry const* spellInfo)
 {
-    return (spellInfo->SpellFamilyName == SPELLFAMILY_HUNTER && spellInfo->DmgClass != SPELL_DAMAGE_CLASS_MELEE);
+    return (spellInfo->GetSpellFamilyName() == SPELLFAMILY_HUNTER && spellInfo->GetDmgClass() != SPELL_DAMAGE_CLASS_MELEE);
 }
 
 SpellCastResult GetErrorAtShapeshiftedCast (SpellEntry const *spellInfo, uint32 form);
@@ -474,8 +595,16 @@ inline bool IsNeedCastSpellAtFormApply(SpellEntry const* spellInfo, ShapeshiftFo
     if (!spellInfo->HasAttribute(SPELL_ATTR_PASSIVE) && !spellInfo->HasAttribute(SPELL_ATTR_UNK7) || !form)
         return false;
 
+    SpellShapeshiftEntry const* shapeShift = spellInfo->GetSpellShapeshift();
+    if (shapeShift)
+        return false;
+
     // passive spells with SPELL_ATTR_EX2_NOT_NEED_SHAPESHIFT are already active without shapeshift, do no recast!
+<<<<<<< HEAD
     return (spellInfo->Stances & (1<<(form-1)) && !spellInfo->HasAttribute(SPELL_ATTR_EX2_NOT_NEED_SHAPESHIFT));
+=======
+    return (shapeShift->Stances & (1<<(form-1)) && !(spellInfo->AttributesEx2 & SPELL_ATTR_EX2_NOT_NEED_SHAPESHIFT));
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 }
 
 
@@ -492,16 +621,26 @@ inline SpellSchoolMask GetSpellSchoolMask(SpellEntry const* spellInfo)
 inline uint32 GetSpellMechanicMask(SpellEntry const* spellInfo, uint32 effectMask)
 {
     uint32 mask = 0;
-    if (spellInfo->Mechanic)
-        mask |= 1 << (spellInfo->Mechanic - 1);
+
+    if (uint32 mech = spellInfo->GetMechanic())
+        mask |= 1 << (mech - 1);
 
     for (uint32 i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
         if (!(effectMask & (1 << i)))
             continue;
 
+<<<<<<< HEAD
         if (spellInfo->EffectMechanic[i])
             mask |= 1 << (spellInfo->EffectMechanic[i]-1);
+=======
+        SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+        if (!effectEntry)
+            continue;
+
+        if (effectEntry->EffectMechanic)
+            mask |= 1 << (effectEntry->EffectMechanic - 1);
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     }
 
     return mask;
@@ -509,21 +648,37 @@ inline uint32 GetSpellMechanicMask(SpellEntry const* spellInfo, uint32 effectMas
 
 inline uint32 GetAllSpellMechanicMask(SpellEntry const* spellInfo)
 {
+    SpellCategoriesEntry const* spellCategory = spellInfo->GetSpellCategories();
     uint32 mask = 0;
+<<<<<<< HEAD
     if (spellInfo->Mechanic)
         mask |= 1 << (spellInfo->Mechanic - 1);
     for (int i=0; i< MAX_EFFECT_INDEX; ++i)
         if (spellInfo->EffectMechanic[i])
             mask |= 1 << (spellInfo->EffectMechanic[i]-1);
+=======
+    if (spellCategory && spellCategory->Mechanic)
+        mask |= 1 << (spellCategory->Mechanic - 1);
+
+    for (int i=0; i< MAX_EFFECT_INDEX; ++i)
+    {
+        SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+        if (effectEntry && effectEntry->EffectMechanic)
+            mask |= 1 << (effectEntry->EffectMechanic-1);
+    }
+
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     return mask;
 }
 
 inline Mechanics GetEffectMechanic(SpellEntry const* spellInfo, SpellEffectIndex effect)
 {
-    if (spellInfo->EffectMechanic[effect])
-        return Mechanics(spellInfo->EffectMechanic[effect]);
-    if (spellInfo->Mechanic)
-        return Mechanics(spellInfo->Mechanic);
+    SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(effect));
+    if (effectEntry && effectEntry->EffectMechanic)
+        return Mechanics(effectEntry->EffectMechanic);
+    SpellCategoriesEntry const* spellCategory = spellInfo->GetSpellCategories();
+    if (spellCategory && spellCategory->Mechanic)
+        return Mechanics(spellCategory->Mechanic);
     return MECHANIC_NONE;
 }
 

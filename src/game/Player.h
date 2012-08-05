@@ -116,6 +116,36 @@ struct PlayerTalent
 typedef UNORDERED_MAP<uint32, PlayerSpell> PlayerSpellMap;
 typedef UNORDERED_MAP<uint32, PlayerTalent> PlayerTalentMap;
 
+// Spell modifier (used for modify other spells)
+struct SpellModifier
+{
+    SpellModifier() : charges(0), lastAffected(NULL) {}
+
+    SpellModifier(SpellModOp _op, SpellModType _type, int32 _value, uint32 _spellId, uint64 _mask, uint32 _mask2 = 0, int16 _charges = 0)
+        : op(_op), type(_type), charges(_charges), value(_value), mask(_mask, _mask2), spellId(_spellId), lastAffected(NULL)
+    {}
+
+    SpellModifier(SpellModOp _op, SpellModType _type, int32 _value, uint32 _spellId, ClassFamilyMask _mask, int16 _charges = 0)
+        : op(_op), type(_type), charges(_charges), value(_value), mask(_mask), spellId(_spellId), lastAffected(NULL)
+    {}
+
+    SpellModifier(SpellModOp _op, SpellModType _type, int32 _value, SpellEntry const* spellEntry, SpellEffectIndex eff, int16 _charges = 0);
+
+    SpellModifier(SpellModOp _op, SpellModType _type, int32 _value, Aura const* aura, int16 _charges = 0);
+
+    bool isAffectedOnSpell(SpellEntry const *spell) const;
+
+    SpellModOp   op   : 8;
+    SpellModType type : 8;
+    int16 charges     : 16;
+    int32 value;
+    ClassFamilyMask mask;
+    uint32 spellId;
+    Spell const* lastAffected;
+};
+
+typedef std::list<SpellModifier*> SpellModList;
+
 struct SpellCooldown
 {
     time_t end;
@@ -722,6 +752,9 @@ enum TransferAbortReason
     TRANSFER_ABORT_NOT_FOUND4                   = 0x0E,     // 3.2
     TRANSFER_ABORT_REALM_ONLY                   = 0x0F,     // All players on party must be from the same realm.
     TRANSFER_ABORT_MAP_NOT_ALLOWED              = 0x10,     // Map can't be entered at this time.
+    // 0x11 not found
+    TRANSFER_ABORT_LOCKED_TO_DIFFERENT_INSTANCE = 0x12,     // 4.0.1
+    TRANSFER_ABORT_ALREADY_COMPLETED_ENCOUNTER  = 0x13,     // 4.0.1
 };
 
 enum ReferAFriendError
@@ -1319,7 +1352,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         Item* GetItemFromBuyBackSlot( uint32 slot );
         void RemoveItemFromBuyBackSlot( uint32 slot, bool del );
 
-        void TakeExtendedCost(uint32 extendedCostId, uint32 count);
+        //void TakeExtendedCost(uint32 extendedCostId, uint32 count);
 
         uint32 GetMaxKeyringSize() const { return KEYRING_SLOT_END-KEYRING_SLOT_START; }
         void SendEquipError( InventoryResult msg, Item* pItem, Item *pItem2 = NULL, uint32 itemid = 0 ) const;
@@ -1650,8 +1683,13 @@ class MANGOS_DLL_SPEC Player : public Unit
         void learnQuestRewardedSpells(Quest const* quest);
         void learnSpellHighRank(uint32 spellid);
 
+<<<<<<< HEAD
         uint32 GetFreeTalentPoints() const { return GetUInt32Value(PLAYER_CHARACTER_POINTS1); }
         void SetFreeTalentPoints(uint32 points) { SetUInt32Value(PLAYER_CHARACTER_POINTS1,points); }
+=======
+        uint32 GetFreeTalentPoints() const { return GetUInt32Value(PLAYER_CHARACTER_POINTS); }
+        void SetFreeTalentPoints(uint32 points) { SetUInt32Value(PLAYER_CHARACTER_POINTS, points); }
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         void UpdateFreeTalentPoints(bool resetIfNeed = true);
         bool resetTalents(bool no_cost = false, bool all_specs = false);
         uint32 resetTalentsCost() const;
@@ -1680,8 +1718,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void ApplyGlyph(uint8 slot, bool apply);
         void ApplyGlyphs(bool apply);
 
-        uint32 GetFreePrimaryProfessionPoints() const { return GetUInt32Value(PLAYER_CHARACTER_POINTS2); }
-        void SetFreePrimaryProfessions(uint16 profs) { SetUInt32Value(PLAYER_CHARACTER_POINTS2, profs); }
+        uint32 GetFreePrimaryProfessionPoints() const { return GetUInt32Value(PLAYER_CHARACTER_POINTS); }
+        void SetFreePrimaryProfessions(uint16 profs) { SetUInt32Value(PLAYER_CHARACTER_POINTS, profs); }
         void InitPrimaryProfessions();
 
         PlayerSpellMap const& GetSpellMap() const { return m_spells; }
@@ -1794,10 +1832,14 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetAllowLowLevelRaid(bool allow) { ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_ENABLE_LOW_LEVEL_RAID, allow); }
         bool GetAllowLowLevelRaid() const { return HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_ENABLE_LOW_LEVEL_RAID); }
 
+<<<<<<< HEAD
         void SetInGuild(uint32 GuildId) { SetUInt32Value(PLAYER_GUILDID, GuildId); }
+=======
+        void SetInGuild(uint32 GuildId) { m_guildId = GuildId; }
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         void SetRank(uint32 rankId){ SetUInt32Value(PLAYER_GUILDRANK, rankId); }
         void SetGuildIdInvited(uint32 GuildId) { m_GuildIdInvited = GuildId; }
-        uint32 GetGuildId() { return GetUInt32Value(PLAYER_GUILDID);  }
+        uint32 GetGuildId() { return m_guildId; }
         static uint32 GetGuildIdFromDB(ObjectGuid guid);
         uint32 GetRank(){ return GetUInt32Value(PLAYER_GUILDRANK); }
         static uint32 GetRankFromDB(ObjectGuid guid);
@@ -2018,12 +2060,21 @@ class MANGOS_DLL_SPEC Player : public Unit
         void UpdateArenaFields();
         void UpdateHonorFields();
         bool RewardHonor(Unit *pVictim, uint32 groupsize, float honor = -1);
+<<<<<<< HEAD
         uint32 GetHonorPoints() const { return GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY); }
         uint32 GetArenaPoints() const { return GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY); }
         void SetHonorPoints(uint32 value);
         void SetArenaPoints(uint32 value);
         void ModifyHonorPoints(int32 value);
         void ModifyArenaPoints(int32 value);
+=======
+        uint32 GetHonorPoints() { return m_honorPoints; }
+        uint32 GetArenaPoints() { return m_arenaPoints; }
+        void SetHonorPoints(uint32 honor);
+        void SetArenaPoints(uint32 arena);
+        void ModifyHonorPoints( int32 value );
+        void ModifyArenaPoints( int32 value );
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 
         uint32 GetMaxPersonalArenaRatingRequirement(uint32 minarenaslot);
 
@@ -2640,6 +2691,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         /***                  HONOR SYSTEM                     ***/
         /*********************************************************/
         time_t m_lastHonorUpdateTime;
+        uint32 m_honorPoints;
+        uint32 m_arenaPoints;
 
         void outDebugStatsValues() const;
         ObjectGuid m_lootGuid;
@@ -2738,7 +2791,11 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint8 m_swingErrorMsg;
         float m_ammoDPS;
 
+<<<<<<< HEAD
         ////////////////////Rest System/////////////////////
+=======
+        //////////////////// Rest SystemPlayerSpell
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         time_t time_inn_enter;
         uint32 inn_trigger_id;
         float m_rest_bonus;
@@ -2754,6 +2811,10 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         // Social
         PlayerSocial *m_social;
+<<<<<<< HEAD
+=======
+        uint32 m_guildId;
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 
         // Groups
         GroupReference m_group;

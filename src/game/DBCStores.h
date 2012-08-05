@@ -35,6 +35,7 @@ char const* GetPetName(uint32 petfamily, uint32 dbclang);
 MANGOS_DLL_SPEC uint32 GetTalentSpellCost(uint32 spellId);
 uint32 GetTalentSpellCost(TalentSpellPos const* pos);
 TalentSpellPos const* GetTalentSpellPos(uint32 spellId);
+SpellEffectEntry const* GetSpellEffectEntry(uint32 spellId, SpellEffectIndex effect);
 
 int32 GetAreaFlagByAreaID(uint32 area_id);                  // -1 if not found
 uint32 GetAreaFlagByMapId(uint32 mapid);
@@ -62,11 +63,16 @@ bool IsTotemCategoryCompatiableWith(uint32 itemTotemCategoryId, uint32 requiredT
 bool Zone2MapCoordinates(float& x,float& y,uint32 zone);
 bool Map2ZoneCoordinates(float& x,float& y,uint32 zone);
 
+<<<<<<< HEAD
 typedef std::map<uint32/* pair32(dungeonId,expansion) */,LFGDungeonExpansionEntry const*> LFGDungeonExpansionMap;
 LFGDungeonExpansionEntry const* GetLFGExpansionEntry(uint32 dungeonId, uint32 expansion);
 
 typedef std::map<uint32/*pair32(map,diff)*/,MapDifficultyEntry const*> MapDifficultyMap;
 MapDifficultyEntry const* GetMapDifficultyData(uint32 mapId, Difficulty difficulty);
+=======
+typedef std::map<uint32/*pair32(map,diff)*/,MapDifficulty> MapDifficultyMap;
+MapDifficulty const* GetMapDifficultyData(uint32 mapId, Difficulty difficulty);
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 
 // natural order for difficulties up-down iteration
 // difficulties for dungeons/battleground ordered in normal way
@@ -104,6 +110,7 @@ extern DBCStorage <AchievementCriteriaEntry>     sAchievementCriteriaStore;
 extern DBCStorage <AreaTableEntry>               sAreaStore;// recommend access using functions
 extern DBCStorage <AreaGroupEntry>               sAreaGroupStore;
 extern DBCStorage <AreaTriggerEntry>             sAreaTriggerStore;
+extern DBCStorage <ArmorLocationEntry>           sArmorLocationStore;
 extern DBCStorage <AuctionHouseEntry>            sAuctionHouseStore;
 extern DBCStorage <BankBagSlotPricesEntry>       sBankBagSlotPricesStore;
 extern DBCStorage <BarberShopStyleEntry>         sBarberShopStyleStore;
@@ -112,6 +119,7 @@ extern DBCStorage <BattlemasterListEntry>        sBattlemasterListStore;
 extern DBCStorage <CharStartOutfitEntry>         sCharStartOutfitStore;
 extern DBCStorage <CharTitlesEntry>              sCharTitlesStore;
 extern DBCStorage <ChrClassesEntry>              sChrClassesStore;
+extern DBCStorage <ChrPowerTypesEntry>           sChrPowerTypesStore;
 extern DBCStorage <ChrRacesEntry>                sChrRacesStore;
 extern DBCStorage <CinematicSequencesEntry>      sCinematicSequencesStore;
 extern DBCStorage <CreatureDisplayInfoEntry>     sCreatureDisplayInfoStore;
@@ -120,8 +128,12 @@ extern DBCStorage <CreatureFamilyEntry>          sCreatureFamilyStore;
 extern DBCStorage <CreatureModelDataEntry>       sCreatureModelDataStore;
 extern DBCStorage <CreatureSpellDataEntry>       sCreatureSpellDataStore;
 extern DBCStorage <CreatureTypeEntry>            sCreatureTypeStore;
+<<<<<<< HEAD
 extern DBCStorage <CurrencyTypesEntry>           sCurrencyTypesStore;
 extern DBCStorage <DestructibleModelDataEntry>   sDestructibleModelDataStore;
+=======
+//extern DBCStorage <CurrencyTypesEntry>           sCurrencyTypesStore;
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 extern DBCStorage <DungeonEncounterEntry>        sDungeonEncounterStore;
 extern DBCStorage <DurabilityCostsEntry>         sDurabilityCostsStore;
 extern DBCStorage <DurabilityQualityEntry>       sDurabilityQualityStore;
@@ -141,16 +153,37 @@ extern DBCStorage <GtChanceToMeleeCritEntry>     sGtChanceToMeleeCritStore;
 extern DBCStorage <GtChanceToSpellCritBaseEntry> sGtChanceToSpellCritBaseStore;
 extern DBCStorage <GtChanceToSpellCritEntry>     sGtChanceToSpellCritStore;
 extern DBCStorage <GtOCTClassCombatRatingScalarEntry> sGtOCTClassCombatRatingScalarStore;
+<<<<<<< HEAD
 extern DBCStorage <GtOCTRegenHPEntry>            sGtOCTRegenHPStore;
 //extern DBCStorage <GtOCTRegenMPEntry>            sGtOCTRegenMPStore; -- not used currently
 extern DBCStorage <GtRegenHPPerSptEntry>         sGtRegenHPPerSptStore;
+=======
+//extern DBCStorage <GtOCTRegenHPEntry>            sGtOCTRegenHPStore;
+//extern DBCStorage <GtOCTRegenMPEntry>            sGtOCTRegenMPStore; -- not used currently
+//extern DBCStorage <GtRegenHPPerSptEntry>         sGtRegenHPPerSptStore;
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 extern DBCStorage <GtRegenMPPerSptEntry>         sGtRegenMPPerSptStore;
 extern DBCStorage <HolidaysEntry>                sHolidaysStore;
-extern DBCStorage <ItemEntry>                    sItemStore;
+extern DBCStorage <ItemArmorQualityEntry>        sItemArmorQualityStore;
+extern DBCStorage <ItemArmorShieldEntry>         sItemArmorShieldStore;
+extern DBCStorage <ItemArmorTotalEntry>          sItemArmorTotalStore;
 extern DBCStorage <ItemBagFamilyEntry>           sItemBagFamilyStore;
 extern DBCStorage <ItemClassEntry>               sItemClassStore;
+<<<<<<< HEAD
 //extern DBCStorage <ItemDisplayInfoEntry>      sItemDisplayInfoStore; -- not used currently
 extern DBCStorage <ItemExtendedCostEntry>        sItemExtendedCostStore;
+=======
+extern DBCStorage <ItemDamageEntry>              sItemDamageAmmoStore;
+extern DBCStorage <ItemDamageEntry>              sItemDamageOneHandStore;
+extern DBCStorage <ItemDamageEntry>              sItemDamageOneHandCasterStore;
+extern DBCStorage <ItemDamageEntry>              sItemDamageRangedStore;
+extern DBCStorage <ItemDamageEntry>              sItemDamageThrownStore;
+extern DBCStorage <ItemDamageEntry>              sItemDamageTwoHandStore;
+extern DBCStorage <ItemDamageEntry>              sItemDamageTwoHandCasterStore;
+extern DBCStorage <ItemDamageEntry>              sItemDamageWandStore;
+//extern DBCStorage <ItemExtendedCostEntry>        sItemExtendedCostStore;
+//extern DBCStorage <ItemDisplayInfoEntry>      sItemDisplayInfoStore; -- not used currently
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 extern DBCStorage <ItemLimitCategoryEntry>       sItemLimitCategoryStore;
 extern DBCStorage <ItemRandomPropertiesEntry>    sItemRandomPropertiesStore;
 extern DBCStorage <ItemRandomSuffixEntry>        sItemRandomSuffixStore;
@@ -161,13 +194,21 @@ extern LFGDungeonExpansionMap                    sLFGDungeonExpansionMap;
 extern DBCStorage <LockEntry>                    sLockStore;
 extern DBCStorage <MailTemplateEntry>            sMailTemplateStore;
 extern DBCStorage <MapEntry>                     sMapStore;
+<<<<<<< HEAD
 extern DBCStorage <MapDifficultyEntry>           sMapDifficultyStore;
+=======
+//extern DBCStorage <MapDifficultyEntry>           sMapDifficultyStore; -- use GetMapDifficultyData insteed
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 extern MapDifficultyMap                          sMapDifficultyMap;
 extern DBCStorage <MovieEntry>                   sMovieStore;
 extern DBCStorage <OverrideSpellDataEntry>       sOverrideSpellDataStore;
 extern DBCStorage <QuestFactionRewardEntry>      sQuestFactionRewardStore;
 extern DBCStorage <QuestSortEntry>               sQuestSortStore;
 extern DBCStorage <QuestXPLevel>                 sQuestXPLevelStore;
+<<<<<<< HEAD
+=======
+extern DBCStorage <PhaseEntry>                   sPhaseStore;
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 //extern DBCStorage <PvPDifficultyEntry>           sPvPDifficultyStore; -- use GetBattlegroundSlotByLevel for access
 extern DBCStorage <RandomPropertiesPointsEntry>  sRandomPropertiesPointsStore;
 extern DBCStorage <ScalingStatDistributionEntry> sScalingStatDistributionStore;
@@ -189,7 +230,23 @@ extern DBCStorage <SpellRangeEntry>              sSpellRangeStore;
 extern DBCStorage <SpellRuneCostEntry>           sSpellRuneCostStore;
 extern DBCStorage <SpellShapeshiftFormEntry>     sSpellShapeshiftFormStore;
 extern DBCStorage <SpellEntry>                   sSpellStore;
-extern DBCStorage <StableSlotPricesEntry>        sStableSlotPricesStore;
+extern DBCStorage <SpellAuraOptionsEntry>        sSpellAuraOptionsStore;
+extern DBCStorage <SpellAuraRestrictionsEntry>   sSpellAuraRestrictionsStore;
+extern DBCStorage <SpellCastingRequirementsEntry> sSpellCastingRequirementsStore;
+extern DBCStorage <SpellCategoriesEntry>         sSpellCategoriesStore;
+extern DBCStorage <SpellClassOptionsEntry>       sSpellClassOptionsStore;
+extern DBCStorage <SpellCooldownsEntry>          sSpellCooldownsStore;
+extern DBCStorage <SpellEffectEntry>             sSpellEffectStore;
+extern DBCStorage <SpellEquippedItemsEntry>      sSpellEquippedItemsStore;
+extern DBCStorage <SpellInterruptsEntry>         sSpellInterruptsStore;
+extern DBCStorage <SpellLevelsEntry>             sSpellLevelsStore;
+extern DBCStorage <SpellPowerEntry>              sSpellPowerStore;
+extern DBCStorage <SpellReagentsEntry>           sSpellReagentsStore;
+extern DBCStorage <SpellScalingEntry>            sSpellScalingStore;
+extern DBCStorage <SpellShapeshiftEntry>         sSpellShapeshiftStore;
+extern DBCStorage <SpellTargetRestrictionsEntry> sSpellTargetRestrictionsStore;
+extern DBCStorage <SpellTotemsEntry>             sSpellTotemsStore;
+//extern DBCStorage <StableSlotPricesEntry>        sStableSlotPricesStore;
 extern DBCStorage <SummonPropertiesEntry>        sSummonPropertiesStore;
 extern DBCStorage <TalentEntry>                  sTalentStore;
 extern DBCStorage <TalentTabEntry>               sTalentTabStore;
@@ -199,7 +256,6 @@ extern TaxiMask                                  sTaxiNodesMask;
 extern TaxiMask                                  sOldContinentsNodesMask;
 extern TaxiPathSetBySource                       sTaxiPathSetBySource;
 extern TaxiPathNodesByPath                       sTaxiPathNodesByPath;
-extern DBCStorage <TeamContributionPoints>       sTeamContributionPoints;
 extern DBCStorage <TotemCategoryEntry>           sTotemCategoryStore;
 extern DBCStorage <VehicleEntry>                 sVehicleStore;
 extern DBCStorage <VehicleSeatEntry>             sVehicleSeatStore;
@@ -215,11 +271,13 @@ MANGOS_DLL_SPEC DBCStorage <SoundEntriesEntry>          const* GetSoundEntriesSt
 MANGOS_DLL_SPEC DBCStorage <SpellEntry>                 const* GetSpellStore();
 MANGOS_DLL_SPEC DBCStorage <SpellRangeEntry>            const* GetSpellRangeStore();
 MANGOS_DLL_SPEC DBCStorage <FactionEntry>               const* GetFactionStore();
-MANGOS_DLL_SPEC DBCStorage <ItemEntry>                  const* GetItemDisplayStore();
 MANGOS_DLL_SPEC DBCStorage <CreatureDisplayInfoEntry>   const* GetCreatureDisplayStore();
 MANGOS_DLL_SPEC DBCStorage <EmotesEntry>                const* GetEmotesStore();
 MANGOS_DLL_SPEC DBCStorage <EmotesTextEntry>            const* GetEmotesTextStore();
+<<<<<<< HEAD
 MANGOS_DLL_SPEC DBCStorage <AchievementEntry>           const* GetAchievementStore();
 MANGOS_DLL_SPEC DBCStorage <CreatureModelDataEntry>     const* GetCreatureModelDataStore();
 MANGOS_DLL_SPEC DBCStorage <CreatureDisplayInfoEntry>   const* GetCreatureDisplayInfoStore();
+=======
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 #endif

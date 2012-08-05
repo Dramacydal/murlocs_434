@@ -789,6 +789,7 @@ void WorldSession::HandleBuyStableSlot( WorldPacket & recv_data )
 
     GetPlayer()->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_TALK);
     // remove fake death
+<<<<<<< HEAD
     //if(GetPlayer()->hasUnitState(UNIT_STAT_DIED))
     //    GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
 
@@ -806,6 +807,10 @@ void WorldSession::HandleBuyStableSlot( WorldPacket & recv_data )
     }
     else
         SendStableResult(STABLE_ERR_STABLE);
+=======
+    if (GetPlayer()->hasUnitState(UNIT_STAT_DIED))
+        GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 }
 
 void WorldSession::HandleStableRevivePet( WorldPacket &/* recv_data */)

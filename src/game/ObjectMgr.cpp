@@ -170,7 +170,9 @@ LanguageDesc lang_description[LANGUAGES_COUNT] =
     { LANG_DRAENEI,     29932, SKILL_LANG_DRAENEI      },
     { LANG_ZOMBIE,          0, 0                       },
     { LANG_GNOMISH_BINARY,  0, 0                       },
-    { LANG_GOBLIN_BINARY,   0, 0                       }
+    { LANG_GOBLIN_BINARY,   0, 0                       },
+    { LANG_WORGEN,      69270, SKILL_LANG_WORGEN       },
+    { LANG_GOBLIN,      69269, SKILL_LANG_GOBLIN       }
 };
 
 LanguageDesc const* GetLanguageDescByID(uint32 lang)
@@ -937,6 +939,7 @@ void ObjectMgr::LoadEquipmentTemplates()
         for(uint8 j = 0; j < 3; ++j)
         {
             if (!eqInfo->equipentry[j])
+<<<<<<< HEAD
                 continue;
 
             ItemEntry const *dbcitem = sItemStore.LookupEntry(eqInfo->equipentry[j]);
@@ -961,6 +964,33 @@ void ObjectMgr::LoadEquipmentTemplates()
                 sLog.outErrorDb("Item (entry=%u) in creature_equip_template.equipentry%u for entry = %u is not equipable in a hand, forced to 0.", eqInfo->equipentry[j], j+1, i);
                 const_cast<EquipmentInfo*>(eqInfo)->equipentry[j] = 0;
             }
+=======
+               continue;
+
+            //ItemEntry const *dbcitem = sItemStore.LookupEntry(eqInfo->equipentry[j]);
+
+            //if (!dbcitem)
+            //{
+            //    sLog.outErrorDb("Unknown item (entry=%u) in creature_equip_template.equipentry%u for entry = %u, forced to 0.", eqInfo->equipentry[j], j+1, i);
+            //    const_cast<EquipmentInfo*>(eqInfo)->equipentry[j] = 0;
+            //    continue;
+            //}
+
+            //if (dbcitem->InventoryType != INVTYPE_WEAPON &&
+            //    dbcitem->InventoryType != INVTYPE_SHIELD &&
+            //    dbcitem->InventoryType != INVTYPE_RANGED &&
+            //    dbcitem->InventoryType != INVTYPE_2HWEAPON &&
+            //    dbcitem->InventoryType != INVTYPE_WEAPONMAINHAND &&
+            //    dbcitem->InventoryType != INVTYPE_WEAPONOFFHAND &&
+            //    dbcitem->InventoryType != INVTYPE_HOLDABLE &&
+            //    dbcitem->InventoryType != INVTYPE_THROWN &&
+            //    dbcitem->InventoryType != INVTYPE_RANGEDRIGHT &&
+            //    dbcitem->InventoryType != INVTYPE_RELIC)
+            //{
+            //    sLog.outErrorDb("Item (entry=%u) in creature_equip_template.equipentry%u for entry = %u is not equipable in a hand, forced to 0.", eqInfo->equipentry[j], j+1, i);
+            //    const_cast<EquipmentInfo*>(eqInfo)->equipentry[j] = 0;
+            //}
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         }
     }
 
@@ -1935,7 +1965,11 @@ void ObjectMgr::LoadItemPrototypes()
     for(uint32 i = 1; i < sItemStorage.MaxEntry; ++i)
     {
         ItemPrototype const* proto = sItemStorage.LookupEntry<ItemPrototype >(i);
+<<<<<<< HEAD
         ItemEntry const *dbcitem = sItemStore.LookupEntry(i);
+=======
+        //ItemEntry const *dbcitem = sItemStore.LookupEntry(i);
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         if(!proto)
         {
             /* to many errors, and possible not all items really used in game
@@ -1948,6 +1982,7 @@ void ObjectMgr::LoadItemPrototypes()
         const_cast<ItemPrototype*>(proto)->BuyPrice = proto->BuyPrice * sWorld.getConfig(CONFIG_UINT32_RATE_BUY_PRICE);
         const_cast<ItemPrototype*>(proto)->SellPrice = proto->SellPrice * sWorld.getConfig(CONFIG_UINT32_RATE_SELL_PRICE);
 
+<<<<<<< HEAD
         if(dbcitem)
         {
             if(proto->Class != dbcitem->Class)
@@ -1955,6 +1990,15 @@ void ObjectMgr::LoadItemPrototypes()
                 sLog.outErrorDb("Item (Entry: %u) not correct class %u, must be %u (still using DB value).",i,proto->Class,dbcitem->Class);
                 // It safe let use Class from DB
             }
+=======
+        if(true/*dbcitem*/)
+        {
+            //if(proto->Class != dbcitem->Class)
+            //{
+            //    sLog.outErrorDb("Item (Entry: %u) not correct class %u, must be %u (still using DB value).",i,proto->Class,dbcitem->Class);
+            //    // It safe let use Class from DB
+            //}
+>>>>>>> 03a44c9... Mage 400 INTO master/434
             /* disabled: have some strange wrong cases for Subclass values.
                for enable also uncomment Subclass field in ItemEntry structure and in Itemfmt[]
             if(proto->SubClass != dbcitem->SubClass)
@@ -1964,6 +2008,7 @@ void ObjectMgr::LoadItemPrototypes()
             }
             */
 
+<<<<<<< HEAD
             if(proto->Unk0 != dbcitem->Unk0)
             {
                 sLog.outErrorDb("Item (Entry: %u) not correct %i Unk0, must be %i (still using DB value).",i,proto->Unk0,dbcitem->Unk0);
@@ -1992,6 +2037,36 @@ void ObjectMgr::LoadItemPrototypes()
                 sLog.outErrorDb("Item (Entry: %u) not correct %u sheath, must be %u  (using it).",i,proto->Sheath,dbcitem->Sheath);
                 const_cast<ItemPrototype*>(proto)->Sheath = dbcitem->Sheath;
             }
+=======
+            //if(proto->Unk0 != dbcitem->Unk0)
+            //{
+            //    sLog.outErrorDb("Item (Entry: %u) not correct %i Unk0, must be %i (still using DB value).",i,proto->Unk0,dbcitem->Unk0);
+            //    // It safe let use Unk0 from DB
+            //}
+
+            //if(proto->Material != dbcitem->Material)
+            //{
+            //    sLog.outErrorDb("Item (Entry: %u) not correct %i material, must be %i (still using DB value).",i,proto->Material,dbcitem->Material);
+            //    // It safe let use Material from DB
+            //}
+
+            //if(proto->InventoryType != dbcitem->InventoryType)
+            //{
+            //    sLog.outErrorDb("Item (Entry: %u) not correct %u inventory type, must be %u (still using DB value).",i,proto->InventoryType,dbcitem->InventoryType);
+            //    // It safe let use InventoryType from DB
+            //}
+
+            //if(proto->DisplayInfoID != dbcitem->DisplayId)
+            //{
+            //    sLog.outErrorDb("Item (Entry: %u) not correct %u display id, must be %u (using it).",i,proto->DisplayInfoID,dbcitem->DisplayId);
+            //    const_cast<ItemPrototype*>(proto)->DisplayInfoID = dbcitem->DisplayId;
+            //}
+            //if(proto->Sheath != dbcitem->Sheath)
+            //{
+            //    sLog.outErrorDb("Item (Entry: %u) not correct %u sheath, must be %u  (using it).",i,proto->Sheath,dbcitem->Sheath);
+            //    const_cast<ItemPrototype*>(proto)->Sheath = dbcitem->Sheath;
+            //}
+>>>>>>> 03a44c9... Mage 400 INTO master/434
         }
         else
         {
@@ -2362,15 +2437,15 @@ void ObjectMgr::LoadItemPrototypes()
                     continue;
                 }
 
-                if (BAG_FAMILY_MASK_CURRENCY_TOKENS & mask)
-                {
-                    CurrencyTypesEntry const* ctEntry = sCurrencyTypesStore.LookupEntry(proto->ItemId);
-                    if (!ctEntry)
-                    {
-                        sLog.outErrorDb("Item (Entry: %u) has currency bag family bit set in BagFamily but not listed in CurrencyTypes.dbc, remove bit", i);
-                        const_cast<ItemPrototype*>(proto)->BagFamily &= ~mask;
-                    }
-                }
+                //if(BAG_FAMILY_MASK_CURRENCY_TOKENS & mask)
+                //{
+                //    CurrencyTypesEntry const* ctEntry = sCurrencyTypesStore.LookupEntry(proto->ItemId);
+                //    if(!ctEntry)
+                //    {
+                //        sLog.outErrorDb("Item (Entry: %u) has currency bag family bit set in BagFamily but not listed in CurrencyTypes.dbc, remove bit",i);
+                //        const_cast<ItemPrototype*>(proto)->BagFamily &= ~mask;
+                //    }
+                //}
             }
         }
 
@@ -2713,10 +2788,21 @@ void ObjectMgr::LoadItemRequiredTarget()
 
                     for (int j = 0; j < MAX_EFFECT_INDEX; ++j)
                     {
+<<<<<<< HEAD
                         if (pSpellInfo->EffectImplicitTargetA[j] == TARGET_CHAIN_DAMAGE ||
                             pSpellInfo->EffectImplicitTargetB[j] == TARGET_CHAIN_DAMAGE ||
                             pSpellInfo->EffectImplicitTargetA[j] == TARGET_DUELVSPLAYER ||
                             pSpellInfo->EffectImplicitTargetB[j] == TARGET_DUELVSPLAYER)
+=======
+                        SpellEffectEntry const* spellEffect = pSpellInfo->GetSpellEffect(SpellEffectIndex(j));
+                        if(!pSpellInfo)
+                            continue;
+
+                        if (spellEffect->EffectImplicitTargetA == TARGET_CHAIN_DAMAGE ||
+                            spellEffect->EffectImplicitTargetB == TARGET_CHAIN_DAMAGE ||
+                            spellEffect->EffectImplicitTargetA == TARGET_DUELVSPLAYER ||
+                            spellEffect->EffectImplicitTargetB == TARGET_DUELVSPLAYER)
+>>>>>>> 03a44c9... Mage 400 INTO master/434
                         {
                             bIsItemSpellValid = true;
                             break;
@@ -4511,8 +4597,17 @@ void ObjectMgr::LoadQuests()
                     bool found = false;
                     for(int k = 0; k < MAX_EFFECT_INDEX; ++k)
                     {
+<<<<<<< HEAD
                         if ((spellInfo->Effect[k] == SPELL_EFFECT_QUEST_COMPLETE && uint32(spellInfo->EffectMiscValue[k]) == qinfo->QuestId) ||
                             spellInfo->Effect[k] == SPELL_EFFECT_SEND_EVENT)
+=======
+                        SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(k));
+                        if(!spellEffect)
+                            continue;
+
+                        if ((spellEffect->Effect == SPELL_EFFECT_QUEST_COMPLETE && uint32(spellEffect->EffectMiscValue) == qinfo->QuestId) ||
+                            spellEffect->Effect == SPELL_EFFECT_SEND_EVENT)
+>>>>>>> 03a44c9... Mage 400 INTO master/434
                         {
                             found = true;
                             break;
@@ -4787,10 +4882,13 @@ void ObjectMgr::LoadQuests()
 
         for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
         {
-            if (spellInfo->Effect[j] != SPELL_EFFECT_QUEST_COMPLETE)
+            SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(j));
+            if(!spellEffect)
+                continue;
+            if (spellEffect->Effect != SPELL_EFFECT_QUEST_COMPLETE)
                 continue;
 
-            uint32 quest_id = spellInfo->EffectMiscValue[j];
+            uint32 quest_id = spellEffect->EffectMiscValue;
 
             Quest const* quest = GetQuestTemplate(quest_id);
 
@@ -7533,6 +7631,7 @@ void ObjectMgr::LoadNPCSpellClickSpells()
     sLog.outString(">> Loaded %u spellclick definitions", count);
 }
 
+<<<<<<< HEAD
 static char* SERVER_SIDE_SPELL      = "MaNGOS server-side spell";
 
 struct SQLSpellLoader : public SQLStorageLoaderBase<SQLSpellLoader>
@@ -7586,6 +7685,8 @@ void ObjectMgr::LoadSpellTemplate()
     }
 }
 
+=======
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 void ObjectMgr::LoadWeatherZoneChances()
 {
     uint32 count = 0;
@@ -9216,15 +9317,28 @@ void ObjectMgr::LoadTrainers(char const* tableName, bool isTemplates)
         trainerSpell.learnedSpell = spell;
         for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
         {
+<<<<<<< HEAD
             if (spellinfo->Effect[i] == SPELL_EFFECT_LEARN_SPELL &&
                 SpellMgr::IsProfessionOrRidingSpell(spellinfo->EffectTriggerSpell[i]))
+=======
+            SpellEffectEntry const* spellEffect = spellinfo->GetSpellEffect(SpellEffectIndex(i));
+            if (!spellEffect)
+                continue;
+
+            if (spellEffect->Effect == SPELL_EFFECT_LEARN_SPELL &&
+                SpellMgr::IsProfessionOrRidingSpell(spellEffect->EffectTriggerSpell))
+>>>>>>> 03a44c9... Mage 400 INTO master/434
             {
                 // prof spells sometime only additions to main spell learn that have level data
                 for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
                 {
-                    if (spellinfo->Effect[j] == SPELL_EFFECT_LEARN_SPELL)
+                    SpellEffectEntry const* spellEff = spellinfo->GetSpellEffect(SpellEffectIndex(j));
+                    if (!spellEff)
+                        continue;
+
+                    if (spellEff->Effect == SPELL_EFFECT_LEARN_SPELL)
                     {
-                        trainerSpell.learnedSpell = spellinfo->EffectTriggerSpell[j];
+                        trainerSpell.learnedSpell = spellEff->EffectTriggerSpell;
                         break;
                     }
                 }
@@ -9255,11 +9369,11 @@ void ObjectMgr::LoadTrainers(char const* tableName, bool isTemplates)
         {
             if (trainerSpell.reqLevel)
             {
-                if (trainerSpell.reqLevel == learnSpellinfo->spellLevel)
+                if (trainerSpell.reqLevel == learnSpellinfo->GetSpellLevel())
                     ERROR_DB_STRICT_LOG("Table `%s` (Entry: %u) has redundant reqlevel %u (=spell level) for spell %u", tableName, entry, trainerSpell.reqLevel, spell);
             }
             else
-                trainerSpell.reqLevel = learnSpellinfo->spellLevel;
+                trainerSpell.reqLevel = learnSpellinfo->GetSpellLevel();
         }
         */
         ++count;
@@ -9832,7 +9946,7 @@ bool ObjectMgr::IsVendorItemValid(bool isTemplate, char const* tableName, uint32
         return false;
     }
 
-    if (ExtendedCost && !sItemExtendedCostStore.LookupEntry(ExtendedCost))
+    /*if (ExtendedCost && !sItemExtendedCostStore.LookupEntry(ExtendedCost))
     {
         if (pl)
             ChatHandler(pl).PSendSysMessage(LANG_EXTENDED_COST_NOT_EXIST,ExtendedCost);
@@ -9840,7 +9954,7 @@ bool ObjectMgr::IsVendorItemValid(bool isTemplate, char const* tableName, uint32
             sLog.outErrorDb("Table `%s` contain item (Entry: %u) with wrong ExtendedCost (%u) for %s %u, ignoring",
                 tableName, item_id, ExtendedCost, idStr, vendor_entry);
         return false;
-    }
+    }*/
 
     if (maxcount > 0 && incrtime == 0)
     {

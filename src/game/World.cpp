@@ -1098,7 +1098,7 @@ void World::SetInitialWorldSettings()
     {
         ERROR_LOG("Correct *.map files not found in path '%smaps' or *.vmtree/*.vmtile files in '%svmaps'. Please place *.map and vmap files in appropriate directories or correct the DataDir value in the mangosd.conf file.",m_dataPath.c_str(),m_dataPath.c_str());
         Log::WaitBeforeContinueIfNeed();
-        exit(1);
+        //exit(1);
     }
 
     ///- Loading strings. Getting no records means core load has to be canceled because no error message can be output.
@@ -1127,10 +1127,14 @@ void World::SetInitialWorldSettings()
     DetectDBCLang();
     sObjectMgr.SetDBCLocaleIndex(GetDefaultDbcLocale());    // Get once for all the locale index of DBC language (console/broadcasts)
 
+<<<<<<< HEAD
     sLog.outString( "Loading SpellTemplate..." );
     sObjectMgr.LoadSpellTemplate();
 
     sLog.outString( "Loading Script Names...");
+=======
+    sLog.outString("Loading Script Names...");
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     sScriptMgr.LoadScriptNames();
 
     sLog.outString( "Loading WorldTemplate..." );

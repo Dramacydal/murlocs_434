@@ -243,9 +243,13 @@ int WorldSocket::open (void *a)
     m_Address = remote_addr.get_host_addr ();
 
     // Send startup packet.
+<<<<<<< HEAD
     WorldPacket packet (SMSG_AUTH_CHALLENGE, 40);
     packet << uint32(1);                                    // 1...31
     packet << m_Seed;
+=======
+    WorldPacket packet (SMSG_AUTH_CHALLENGE, 37);
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 
     BigNumber seed1;
     seed1.SetRand(16 * 8);
@@ -255,6 +259,12 @@ int WorldSocket::open (void *a)
     seed2.SetRand(16 * 8);
     packet.append(seed2.AsByteArray(16), 16);               // new encryption seeds
 
+<<<<<<< HEAD
+=======
+    packet << uint8(1);                                     // 1...31
+    packet << uint32(m_Seed);
+
+>>>>>>> 03a44c9... Mage 400 INTO master/434
     if (SendPacket (packet) == -1)
         return -1;
 
@@ -477,7 +487,7 @@ int WorldSocket::handle_input_header (void)
     EndianConvertReverse(header.size);
     EndianConvert(header.cmd);
 
-    if ((header.size < 4) || (header.size > 10240) || (header.cmd  > 10240))
+    if ((header.size < 4) || (header.size > 10240))
     {
         sLog.outError ("WorldSocket::handle_input_header: client sent malformed packet size = %d , cmd = %d",
                        header.size, header.cmd);
@@ -743,7 +753,7 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     // NOTE: ATM the socket is singlethread, have this in mind ...
     uint8 digest[20];
     uint32 clientSeed, id, security;
-    uint32 ClientBuild;
+    uint16 ClientBuild;
     uint8 expansion = 0;
     LocaleConstant locale;
     std::string account;
@@ -752,16 +762,22 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     WorldPacket packet;
 
     // Read the content of the packet
-    recvPacket >> ClientBuild;
-    recvPacket.read_skip<uint32>();
-    recvPacket >> account;
+    recvPacket.read(digest, 20);
+    recvPacket.read_skip<uint64>();
     recvPacket.read_skip<uint32>();
     recvPacket >> clientSeed;
+<<<<<<< HEAD
     recvPacket.read_skip<uint32>();
     recvPacket.read_skip<uint32>();
     recvPacket.read_skip<uint32>();
     recvPacket.read_skip<uint64>();
     recvPacket.read (digest, 20);
+=======
+    recvPacket >> ClientBuild;
+    recvPacket.read_skip<uint8>();
+    recvPacket >> account;
+    recvPacket.read_skip<uint32>();                         // addon data size
+>>>>>>> 03a44c9... Mage 400 INTO master/434
 
     DEBUG_LOG ("WorldSocket::HandleAuthSession: client build %u, account %s, clientseed %X",
                 ClientBuild,

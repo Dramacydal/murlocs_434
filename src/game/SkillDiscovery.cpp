@@ -99,7 +99,11 @@ void LoadSkillDiscoveryTable()
             }
 
             // mechanic discovery
+<<<<<<< HEAD
             if (reqSpellEntry->Mechanic != MECHANIC_DISCOVERY &&
+=======
+            if (reqSpellEntry->GetMechanic() != MECHANIC_DISCOVERY &&
+>>>>>>> 03a44c9... Mage 400 INTO master/434
                 // explicit discovery ability
                 !IsExplicitDiscoverySpell(reqSpellEntry))
             {

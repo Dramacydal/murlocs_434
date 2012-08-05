@@ -731,19 +731,32 @@ void Pet::Unsummon(PetSaveMode mode, Unit* owner /*= NULL*/)
 
             if (mode == PET_SAVE_REAGENTS)
             {
+<<<<<<< HEAD
                 if (spellInfo)
+=======
+                // returning of reagents only for players, so best done here
+                uint32 spellId = GetUInt32Value(UNIT_CREATED_BY_SPELL);
+                SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
+                SpellReagentsEntry const* spellReagents = spellInfo ? spellInfo->GetSpellReagents() : NULL;
+
+                if (spellReagents)
+>>>>>>> 03a44c9... Mage 400 INTO master/434
                 {
                     for(uint32 i = 0; i < MAX_SPELL_REAGENTS; ++i)
                     {
-                        if (spellInfo->Reagent[i] > 0)
+                        if (spellReagents->Reagent[i] > 0)
                         {
                             ItemPosCountVec dest;           //for succubus, voidwalker, felhunter and felguard credit soulshard when despawn reason other than death (out of range, logout)
+<<<<<<< HEAD
                             uint8 msg = p_owner->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, spellInfo->Reagent[i], spellInfo->ReagentCount[i]);
+=======
+                            uint8 msg = p_owner->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, spellReagents->Reagent[i], spellReagents->ReagentCount[i]);
+>>>>>>> 03a44c9... Mage 400 INTO master/434
                             if (msg == EQUIP_ERR_OK)
                             {
-                                Item* item = p_owner->StoreNewItem(dest, spellInfo->Reagent[i], true);
+                                Item* item = p_owner->StoreNewItem(dest, spellReagents->Reagent[i], true);
                                 if (p_owner->IsInWorld())
-                                    p_owner->SendNewItem(item, spellInfo->ReagentCount[i], true, false);
+                                    p_owner->SendNewItem(item, spellReagents->ReagentCount[i], true, false);
                             }
                         }
                     }
@@ -1428,13 +1441,20 @@ void Pet::_LoadAuras(uint32 timediff)
             }
 
             // prevent wrong values of remaincharges
-            if (spellproto->procCharges == 0)
+            uint32 procCharges = spellproto->GetProcCharges();
+            if (procCharges)
+            {
+                if (remaincharges <= 0 || remaincharges > procCharges)
+                    remaincharges = procCharges;
+            }
+            else
                 remaincharges = 0;
 
-            if (!spellproto->StackAmount)
+            uint32 defstackamount = spellproto->GetStackAmount();
+            if (!defstackamount)
                 stackcount = 1;
-            else if (spellproto->StackAmount < stackcount)
-                stackcount = spellproto->StackAmount;
+            else if (defstackamount < stackcount)
+                stackcount = defstackamount;
             else if (!stackcount)
                 stackcount = 1;
 
@@ -1490,9 +1510,19 @@ void Pet::_SaveAuras()
         for (int32 j = 0; j < MAX_EFFECT_INDEX; ++j)
         {
             SpellEntry const* spellInfo = holder->GetSpellProto();
+<<<<<<< HEAD
             if (spellInfo->EffectApplyAuraName[j] == SPELL_AURA_MOD_STEALTH ||
                         spellInfo->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA_OWNER ||
                         spellInfo->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA_PET )
+=======
+            SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(j));
+            if(!effectEntry)
+                continue;
+
+            if (effectEntry->EffectApplyAuraName == SPELL_AURA_MOD_STEALTH ||
+                effectEntry->Effect == SPELL_EFFECT_APPLY_AREA_AURA_OWNER ||
+                effectEntry->Effect == SPELL_EFFECT_APPLY_AREA_AURA_PET )
+>>>>>>> 03a44c9... Mage 400 INTO master/434
             {
                 save = false;
                 break;
@@ -1722,7 +1752,11 @@ void Pet::InitLevelupSpellsForLevel()
                 continue;
 
             // will called first if level down
+<<<<<<< HEAD
             if(spellEntry->spellLevel > level)
+=======
+            if(spellEntry->GetSpellLevel() > level)
+>>>>>>> 03a44c9... Mage 400 INTO master/434
                 unlearnSpell(spellEntry->Id,true);
             // will called if level up
             else
