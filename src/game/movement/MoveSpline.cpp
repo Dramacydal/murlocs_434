@@ -180,7 +180,7 @@ void MoveSpline::Initialize(const MoveSplineInitArgs& args)
 
     // init parabolic / animation
     // spline initialized, duration known and i able to compute parabolic acceleration
-    if (args.flags & (MoveSplineFlag::Parabolic | MoveSplineFlag::Animation))
+    if (args.flags & (MoveSplineFlag::Trajectory | MoveSplineFlag::Animation))
     {
         effect_start_time = Duration() * args.time_perc;
         if (args.flags.parabolic && effect_start_time < Duration())
@@ -209,11 +209,11 @@ bool MoveSplineInitArgs::Validate() const
         ERROR_LOG("MoveSplineInitArgs::Validate: expression '%s' failed", #exp);\
         return false;\
     }
-    CHECK(path.size() > 1);
-    CHECK(velocity > 0.f);
-    CHECK(time_perc >= 0.f && time_perc <= 1.f);
-    //CHECK(_checkPathBounds());
-    return true;
+        CHECK(path.size() > 1);
+        CHECK(velocity > 0.1f);
+        CHECK(time_perc >= 0.f && time_perc <= 1.f);
+        // CHECK(_checkPathBounds());
+        return true;
 #undef CHECK
 }
 

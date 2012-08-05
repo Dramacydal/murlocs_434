@@ -724,7 +724,7 @@ bool WorldSession::VerifyMovementInfo(MovementInfo const& movementInfo, ObjectGu
     if (!MaNGOS::IsValidMapCoord(movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z, movementInfo.GetPos()->o))
         return false;
 
-    if (movementInfo.HasMovementFlag(MOVEFLAG_ONTRANSPORT))
+    if (movementInfo.GetTransportGuid())
     {
         float trans_rad = sqrt(movementInfo.GetTransportPos()->x * movementInfo.GetTransportPos()->x + movementInfo.GetTransportPos()->y * movementInfo.GetTransportPos()->y + movementInfo.GetTransportPos()->z * movementInfo.GetTransportPos()->z);
         if (trans_rad > 300.0f)
@@ -756,7 +756,7 @@ void WorldSession::HandleMoverRelocation(MovementInfo& movementInfo)
 
     if (plMover)
     {
-        if (movementInfo.HasMovementFlag(MOVEFLAG_ONTRANSPORT))
+        if (movementInfo.GetTransportGuid())
         {
             // if we boarded a transport, add us to it
             if (!plMover->GetTransport())
@@ -765,7 +765,7 @@ void WorldSession::HandleMoverRelocation(MovementInfo& movementInfo)
                 /* process anticheat check */
                 GetPlayer()->GetAntiCheat()->DoAntiCheatCheck(CHECK_TRANSPORT,movementInfo);
 
-                // elevators also cause the client to send MOVEFLAG_ONTRANSPORT - just unmount if the guid can be found in the transport list
+                // elevators also cause the client to send transport guid - just unmount if the guid can be found in the transport list
                 for (MapManager::TransportSet::const_iterator iter = sMapMgr.m_Transports.begin(); iter != sMapMgr.m_Transports.end(); ++iter)
                 {
                     Transport* transport = *iter;

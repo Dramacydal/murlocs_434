@@ -40,7 +40,9 @@ namespace Movement
 
         static Vector3 CalcTransportOffset(const MoveSpline& move_spline, Vector3 oldVec);
 
-        static void WriteCreate(const MoveSpline& mov, ByteBuffer& data);
+            static void WriteMonsterMove(const MoveSpline& mov, WorldPacket& data);
+            static void WriteCreateBits(const MoveSpline& mov, ByteBuffer& data);
+            static void WriteCreateBytes(const MoveSpline& mov, ByteBuffer& data);
     };
 }
 #endif // MANGOSSERVER_PACKET_BUILDER_H

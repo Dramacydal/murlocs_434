@@ -171,9 +171,8 @@ class MANGOS_DLL_SPEC Object
         void MarkForClientUpdate();
         void SendForcedObjectUpdate();
 
-        void BuildValuesUpdateBlockForPlayer( UpdateData *data, Player *target ) const;
-        void BuildOutOfRangeUpdateBlock( UpdateData *data ) const;
-        void BuildMovementUpdateBlock( UpdateData * data, uint16 flags = 0 ) const;
+        void BuildValuesUpdateBlockForPlayer(UpdateData* data, Player* target) const;
+        void BuildOutOfRangeUpdateBlock(UpdateData* data) const;
 
         virtual void DestroyForPlayer( Player *target, bool anim = false ) const;
 

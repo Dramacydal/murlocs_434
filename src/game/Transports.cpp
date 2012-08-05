@@ -192,7 +192,7 @@ void MapManager::LoadTransports()
 
 Transport::Transport() : GameObject(), m_movementInfoCheckTimer(TRANSPORT_UPDATE_TIMER)
 {
-    m_updateFlag = (UPDATEFLAG_TRANSPORT | UPDATEFLAG_HIGHGUID | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_ROTATION);
+    m_updateFlag = (UPDATEFLAG_TRANSPORT | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_ROTATION);
     m_lastMovementInfoTime = 0;
     m_lastWaypointUpdateTime = 0;
     miX = miY = miZ = miO = 0.0f;
@@ -740,7 +740,7 @@ void Transport::UpdateForMap(Map const* targetMap)
         {
             if(this != itr->getSource()->GetTransport())
             {
-                UpdateData transData;
+                UpdateData transData(itr->getSource()->GetMapId());
                 BuildCreateUpdateBlockForPlayer(&transData, itr->getSource());
                 WorldPacket packet;
                 transData.BuildPacket(&packet);
@@ -750,7 +750,7 @@ void Transport::UpdateForMap(Map const* targetMap)
     }
     else
     {
-        UpdateData transData;
+        UpdateData transData(GetMapId());
         BuildOutOfRangeUpdateBlock(&transData);
         WorldPacket out_packet;
         transData.BuildPacket(&out_packet);
