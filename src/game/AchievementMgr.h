@@ -298,10 +298,8 @@ class AchievementMgr
         void IncompletedAchievement(AchievementEntry const* entry);
         bool IsCompletedAchievement(AchievementEntry const* entry);
         void CompleteAchievementsWithRefs(AchievementEntry const* entry);
-        void BuildAllDataPacket(WorldPacket *data);
 
     private:
-
         Player* m_player;
         CriteriaProgressMap m_criteriaProgress;
         CompletedAchievementMap m_completedAchievements;
