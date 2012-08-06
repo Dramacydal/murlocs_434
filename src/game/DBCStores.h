@@ -52,9 +52,10 @@ enum ContentLevels
 {
     CONTENT_1_60 = 0,
     CONTENT_61_70,
-    CONTENT_71_80
+    CONTENT_71_80,
+    CONTENT_81_85,
 };
-ContentLevels GetContentLevelsForMapAndZone(uint32 mapid, uint32 zoneId);
+ContentLevels GetContentLevelsForMap(uint32 mapid);
 
 ChatChannelsEntry const* GetChannelEntryFor(uint32 channel_id);
 
@@ -162,7 +163,6 @@ extern DBCStorage <ItemDamageEntry>              sItemDamageThrownStore;
 extern DBCStorage <ItemDamageEntry>              sItemDamageTwoHandStore;
 extern DBCStorage <ItemDamageEntry>              sItemDamageTwoHandCasterStore;
 extern DBCStorage <ItemDamageEntry>              sItemDamageWandStore;
-//extern DBCStorage <ItemExtendedCostEntry>        sItemExtendedCostStore;
 //extern DBCStorage <ItemDisplayInfoEntry>      sItemDisplayInfoStore; -- not used currently
 extern DBCStorage <ItemLimitCategoryEntry>       sItemLimitCategoryStore;
 extern DBCStorage <ItemRandomPropertiesEntry>    sItemRandomPropertiesStore;
@@ -227,6 +227,9 @@ extern DBCStorage <TaxiNodesEntry>               sTaxiNodesStore;
 extern DBCStorage <TaxiPathEntry>                sTaxiPathStore;
 extern TaxiMask                                  sTaxiNodesMask;
 extern TaxiMask                                  sOldContinentsNodesMask;
+extern TaxiMask                                  sHordeTaxiNodesMask;
+extern TaxiMask                                  sAllianceTaxiNodesMask;
+extern TaxiMask                                  sDeathKnightTaxiNodesMask;
 extern TaxiPathSetBySource                       sTaxiPathSetBySource;
 extern TaxiPathNodesByPath                       sTaxiPathNodesByPath;
 extern DBCStorage <TotemCategoryEntry>           sTotemCategoryStore;
@@ -236,6 +239,7 @@ extern DBCStorage <WMOAreaTableEntry>            sWMOAreaTableStore;
 //extern DBCStorage <WorldMapAreaEntry>           sWorldMapAreaStore; -- use Zone2MapCoordinates and Map2ZoneCoordinates
 extern DBCStorage <WorldMapOverlayEntry>         sWorldMapOverlayStore;
 extern DBCStorage <WorldSafeLocsEntry>           sWorldSafeLocsStore;
+extern DBCStorage <WorldPvPAreaEntry>            sWorldPvPAreaStore;
 
 void LoadDBCStores(const std::string& dataPath);
 

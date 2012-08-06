@@ -321,7 +321,7 @@ class AchievementGlobalMgr
         bool IsRealmCompleted(AchievementEntry const* achievement) const;
         void SetRealmCompleted(AchievementEntry const* achievement);
 
-        //void LoadAchievementCriteriaList();
+        void LoadAchievementCriteriaList();
         void LoadAchievementCriteriaRequirements();
         void LoadAchievementReferenceList();
         void LoadCompletedAchievements();
