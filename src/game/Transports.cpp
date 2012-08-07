@@ -192,7 +192,7 @@ void MapManager::LoadTransports()
 
 Transport::Transport() : GameObject(), m_movementInfoCheckTimer(TRANSPORT_UPDATE_TIMER)
 {
-    m_updateFlag = (UPDATEFLAG_TRANSPORT | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_ROTATION);
+    m_updateFlag = UPDATEFLAG_TRANSPORT | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_ROTATION;
     m_lastMovementInfoTime = 0;
     m_lastWaypointUpdateTime = 0;
     miX = miY = miZ = miO = 0.0f;

@@ -281,15 +281,12 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     }
 
     /* extract packet */
-    ObjectGuid guid;
     MovementInfo movementInfo;
-
-    recv_data >> guid.ReadAsPacked();
     recv_data >> movementInfo;
 
     DEBUG_LOG("Guid: %s MoveFlags: %X, MoveFlags2: %X", guid.GetString().c_str(), movementInfo.GetMovementFlags(), movementInfo.GetMovementFlags2());
 
-    if (!VerifyMovementInfo(movementInfo, guid))
+    if (!VerifyMovementInfo(movementInfo, movementInfo.GetGuid()))
         return;
 
     if (mover && _player->GetObjectGuid() != mover->GetObjectGuid())
@@ -306,7 +303,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     }
 
     // fall damage generation (ignore in flight case that can be triggered also at lags in moment teleportation to another map).
-    if (opcode == MSG_MOVE_FALL_LAND && plMover && !plMover->IsTaxiFlying())
+    if (opcode == CMSG_MOVE_FALL_LAND && plMover && !plMover->IsTaxiFlying())
         plMover->HandleFall(movementInfo);
  
     /* process anticheat check */
@@ -322,9 +319,9 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     if (plMover && opcode == MSG_MOVE_HEARTBEAT && plMover->isMoving())
         plMover->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_NOT_SEATED);
 
-    WorldPacket data(opcode, recv_data.size());
-    data << mover->GetPackGUID();                   // write guid
-    movementInfo.Write(data);                       // write data
+    WorldPacket data(SMSG_PLAYER_MOVE, recv_data.size());
+    data << movementInfo;
+
     mover->SendMessageToSetExcept(&data, _player);
 
     if (mover && _player->GetObjectGuid() != mover->GetObjectGuid())

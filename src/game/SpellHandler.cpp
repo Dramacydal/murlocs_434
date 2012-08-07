@@ -443,7 +443,22 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
     // some spell cast packet including more data (for projectiles?)
     if (unk_flags & 0x02)
-        targets.ReadAdditionalData(recvPacket);
+    {
+        uint8 unk1;
+
+        recvPacket >> Unused<float>();                      // unk1, coords?
+        recvPacket >> Unused<float>();                      // unk1, coords?
+        recvPacket >> unk1;                                 // >> 1 or 0
+        if (unk1)
+        {
+            ObjectGuid guid;                                // guid - unused
+            MovementInfo movementInfo;
+
+            recvPacket >> Unused<uint32>();                 // >> CMSG_MOVE_STOP
+            recvPacket >> guid.ReadAsPacked();
+            recvPacket >> movementInfo;
+        }
+    }
 
     // auto-selection buff level base at target level (in spellInfo)
     if (Unit* target = targets.getUnitTarget())

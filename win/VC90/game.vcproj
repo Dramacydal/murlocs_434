@@ -1891,6 +1891,10 @@
 			Name="Movement"
 			>
 			<File
+				RelativePath="..\..\src\game\MovementStructures.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\Movement\MoveSpline.cpp"
 				>
 			</File>
