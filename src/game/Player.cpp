@@ -76,19 +76,6 @@
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
 
-// FIXME
-#define PLAYER_SKILL_INDEX(x)       (PLAYER_SKILL_LINEID_0 + ((x)*3))
-#define PLAYER_SKILL_VALUE_INDEX(x) (PLAYER_SKILL_INDEX(x)+1)
-#define PLAYER_SKILL_BONUS_INDEX(x) (PLAYER_SKILL_INDEX(x)+2)
-
-#define SKILL_VALUE(x)         PAIR32_LOPART(x)
-#define SKILL_MAX(x)           PAIR32_HIPART(x)
-#define MAKE_SKILL_VALUE(v, m) MAKE_PAIR32(v,m)
-
-#define SKILL_TEMP_BONUS(x)    int16(PAIR32_LOPART(x))
-#define SKILL_PERM_BONUS(x)    int16(PAIR32_HIPART(x))
-#define MAKE_SKILL_BONUS(t, p) MAKE_PAIR32(t,p)
-
 enum CharacterFlags
 {
     CHARACTER_FLAG_NONE                 = 0x00000000,
@@ -3622,13 +3609,13 @@ bool Player::addSpell(uint32 spell_id, bool active, bool learning, bool dependen
                 switch(GetSkillRangeType(pSkill, _spell_idx->second->racemask != 0))
                 {
                     case SKILL_RANGE_LANGUAGE:
-                        SetSkill(pSkill->id, 300, 300 );
+                        SetSkill(pSkill->id, 300, 300, GetSkillStep(pSkill->id));
                         break;
                     case SKILL_RANGE_LEVEL:
-                        SetSkill(pSkill->id, 1, GetMaxSkillValueForLevel() );
+                        SetSkill(pSkill->id, 1, GetMaxSkillValueForLevel(), GetSkillStep(pSkill->id));
                         break;
                     case SKILL_RANGE_MONO:
-                        SetSkill(pSkill->id, 1, 1 );
+                        SetSkill(pSkill->id, 1, 1, GetSkillStep(pSkill->id));
                         break;
                     default:
                         break;
@@ -3854,7 +3841,7 @@ void Player::removeSpell(uint32 spell_id, bool disabled, bool learn_low_rank, bo
                     (IsProfessionSkill(pSkill->id) || _spell_idx->second->racemask != 0))
                     continue;
 
-                SetSkill(pSkill->id, 0, 0);
+                SetSkill(pSkill->id, 0, 0, GetSkillStep(pSkill->id));
             }
         }
     }
@@ -5801,14 +5788,18 @@ bool Player::UpdateSkill(uint32 skill_id, uint32 step)
     if(!skill_id)
         return false;
 
+    if (skill_id == SKILL_FIST_WEAPONS)
+        skill_id = SKILL_UNARMED;
+
     SkillStatusMap::iterator itr = mSkillStatus.find(skill_id);
     if(itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
         return false;
 
-    uint32 valueIndex = PLAYER_SKILL_VALUE_INDEX(itr->second.pos);
-    uint32 data = GetUInt32Value(valueIndex);
-    uint32 value = SKILL_VALUE(data);
-    uint32 max = SKILL_MAX(data);
+    uint16 field = itr->second.pos / 2;
+    uint8 offset = itr->second.pos & 1; // itr->second.pos % 2
+
+    uint16 value = GetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset);
+    uint16 max = GetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset);
 
     if ((!max) || (!value) || (value >= max))
         return false;
@@ -5819,8 +5810,8 @@ bool Player::UpdateSkill(uint32 skill_id, uint32 step)
         if(new_value > max)
             new_value = max;
 
-        SetUInt32Value(valueIndex,MAKE_SKILL_VALUE(new_value,max));
-        if(itr->second.uState != SKILL_NEW)
+        SetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset, new_value);
+        if (itr->second.uState != SKILL_NEW)
             itr->second.uState = SKILL_CHANGED;
         GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL,skill_id);
         return true;
@@ -5934,11 +5925,11 @@ bool Player::UpdateSkillPro(uint16 SkillId, int32 Chance, uint32 step)
     if(itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
         return false;
 
-    uint32 valueIndex = PLAYER_SKILL_VALUE_INDEX(itr->second.pos);
+    uint16 field = itr->second.pos / 2;
+    uint8 offset = itr->second.pos & 1; // itr->second.pos % 2
 
-    uint32 data = GetUInt32Value(valueIndex);
-    uint16 SkillValue = SKILL_VALUE(data);
-    uint16 MaxValue   = SKILL_MAX(data);
+    uint16 SkillValue = GetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset);
+    uint16 MaxValue = GetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset);
 
     if ( !MaxValue || !SkillValue || SkillValue >= MaxValue )
         return false;
@@ -5947,16 +5938,16 @@ bool Player::UpdateSkillPro(uint16 SkillId, int32 Chance, uint32 step)
 
     if ( Roll <= Chance )
     {
-        uint32 new_value = SkillValue+step;
-        if(new_value > MaxValue)
+        uint16 new_value = SkillValue + step;
+        if (new_value > MaxValue)
             new_value = MaxValue;
 
-        SetUInt32Value(valueIndex,MAKE_SKILL_VALUE(new_value,MaxValue));
-        if(itr->second.uState != SKILL_NEW)
+        SetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset, new_value);
+        if (itr->second.uState != SKILL_NEW)
             itr->second.uState = SKILL_CHANGED;
         for(uint32* bsl = &bonusSkillLevels[0]; *bsl; ++bsl)
         {
-            if((SkillValue < *bsl && new_value >= *bsl))
+            if (SkillValue < *bsl && new_value >= *bsl)
             {
                 learnSkillRewardedSpells( SkillId, new_value);
                 break;
@@ -6043,16 +6034,12 @@ void Player::ModifySkillBonus(uint32 skillid,int32 val, bool talent)
     if(itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
         return;
 
-    uint32 bonusIndex = PLAYER_SKILL_BONUS_INDEX(itr->second.pos);
+    uint16 field = itr->second.pos / 2 + (talent ? PLAYER_SKILL_TALENT_0 : PLAYER_SKILL_MODIFIER_0);
+    uint8 offset = itr->second.pos & 1; // itr->second.pos % 2
 
-    uint32 bonus_val = GetUInt32Value(bonusIndex);
-    int16 temp_bonus = SKILL_TEMP_BONUS(bonus_val);
-    int16 perm_bonus = SKILL_PERM_BONUS(bonus_val);
+    uint16 bonus = GetUInt16Value(field, offset);
 
-    if(talent)                                          // permanent bonus stored in high part
-        SetUInt32Value(bonusIndex,MAKE_SKILL_BONUS(temp_bonus,perm_bonus+val));
-    else                                                // temporary/item bonus stored in low part
-        SetUInt32Value(bonusIndex,MAKE_SKILL_BONUS(temp_bonus+val,perm_bonus));
+    SetUInt16Value(field, offset, bonus + val);
 }
 
 void Player::UpdateSkillsForLevel()
@@ -6076,10 +6063,11 @@ void Player::UpdateSkillsForLevel()
         if(GetSkillRangeType(pSkill,false) != SKILL_RANGE_LEVEL)
             continue;
 
-        uint32 valueIndex = PLAYER_SKILL_VALUE_INDEX(itr->second.pos);
-        uint32 data = GetUInt32Value(valueIndex);
-        uint32 max = SKILL_MAX(data);
-        uint32 val = SKILL_VALUE(data);
+        uint16 field = itr->second.pos / 2;
+        uint8 offset = itr->second.pos & 1; // itr->second.pos % 2
+
+        uint16 val = GetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset);
+        uint16 max = GetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset);
 
         /// update only level dependent max skill values
         if(max!=1)
@@ -6087,15 +6075,17 @@ void Player::UpdateSkillsForLevel()
             /// maximize skill always
             if(alwaysMaxSkill)
             {
-                SetUInt32Value(valueIndex, MAKE_SKILL_VALUE(maxSkill,maxSkill));
-                if(itr->second.uState != SKILL_NEW)
+                SetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset, maxSkill);
+                SetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset, maxSkill);
+                if (itr->second.uState != SKILL_NEW)
                     itr->second.uState = SKILL_CHANGED;
                 GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, pskill);
             }
             else if(max != maxconfskill)                    /// update max skill value if current max skill not maximized
             {
-                SetUInt32Value(valueIndex, MAKE_SKILL_VALUE(val,maxSkill));
-                if(itr->second.uState != SKILL_NEW)
+                SetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset, val);
+                SetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset, maxSkill);
+                if (itr->second.uState != SKILL_NEW)
                     itr->second.uState = SKILL_CHANGED;
             }
         }
@@ -6112,15 +6102,15 @@ void Player::UpdateSkillsToMaxSkillsForLevel()
         uint32 pskill = itr->first;
         if( IsProfessionOrRidingSkill(pskill))
             continue;
-        uint32 valueIndex = PLAYER_SKILL_VALUE_INDEX(itr->second.pos);
-        uint32 data = GetUInt32Value(valueIndex);
+        uint16 field = itr->second.pos / 2;
+        uint8 offset = itr->second.pos & 1; // itr->second.pos % 2
 
-        uint32 max = SKILL_MAX(data);
+        uint16 max = GetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset);
 
         if(max > 1)
         {
-            SetUInt32Value(valueIndex,MAKE_SKILL_VALUE(max,max));
-            if(itr->second.uState != SKILL_NEW)
+            SetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset, max);
+            if (itr->second.uState != SKILL_NEW)
                 itr->second.uState = SKILL_CHANGED;
             GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, pskill);
         }
@@ -6137,30 +6127,36 @@ void Player::SetSkill(uint16 id, uint16 currVal, uint16 maxVal, uint16 step /*=0
     if(!id)
         return;
 
-    uint32 oldSkillVal = GetSkillValue(id);
+    uint16 oldVal;
     SkillStatusMap::iterator itr = mSkillStatus.find(id);
 
     // has skill
     if(itr != mSkillStatus.end() && itr->second.uState != SKILL_DELETED)
     {
-        if(currVal)
+        uint16 field = itr->second.pos / 2;
+        uint8 offset = itr->second.pos & 1; // itr->second.pos % 2
+        oldVal = GetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset);
+        if (currVal)
         {
-            if (step)                                      // need update step
-                SetUInt32Value(PLAYER_SKILL_INDEX(itr->second.pos), MAKE_PAIR32(id, step));
+            SetUInt16Value(PLAYER_SKILL_STEP_0 + field, offset, step);
             // update value
-            SetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos), MAKE_SKILL_VALUE(currVal, maxVal));
-            if(itr->second.uState != SKILL_NEW)
+            SetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset, currVal);
+            SetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset, maxVal);
+            if (itr->second.uState != SKILL_NEW)
                 itr->second.uState = SKILL_CHANGED;
-            learnSkillRewardedSpells(id, currVal);
+            learnSkillRewardedSpells(id, oldVal);
             GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, id);
             GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, id);
         }
         else                                                //remove
         {
             // clear skill fields
-            SetUInt32Value(PLAYER_SKILL_INDEX(itr->second.pos), 0);
-            SetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos), 0);
-            SetUInt32Value(PLAYER_SKILL_BONUS_INDEX(itr->second.pos), 0);
+            SetUInt16Value(PLAYER_SKILL_LINEID_0 + field, offset, 0);
+            SetUInt16Value(PLAYER_SKILL_STEP_0 + field, offset, 0);
+            SetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset, 0);
+            SetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset, 0);
+            SetUInt16Value(PLAYER_SKILL_MODIFIER_0 + field, offset, 0);
+            SetUInt16Value(PLAYER_SKILL_TALENT_0 + field, offset, 0);
 
             // mark as deleted or simply remove from map if not saved yet
             if(itr->second.uState != SKILL_NEW)
@@ -6181,7 +6177,10 @@ void Player::SetSkill(uint16 id, uint16 currVal, uint16 maxVal, uint16 step /*=0
     {
         for (int i = 0; i < PLAYER_MAX_SKILLS; ++i)
         {
-            if (!GetUInt32Value(PLAYER_SKILL_INDEX(i)))
+            uint16 field = i / 2;
+            uint8 offset = i & 1; // i % 2
+
+            if (!GetUInt16Value(PLAYER_SKILL_LINEID_0 + field, offset))
             {
                 SkillLineEntry const *pSkill = sSkillLineStore.LookupEntry(id);
                 if(!pSkill)
@@ -6190,8 +6189,10 @@ void Player::SetSkill(uint16 id, uint16 currVal, uint16 maxVal, uint16 step /*=0
                     return;
                 }
 
-                SetUInt32Value(PLAYER_SKILL_INDEX(i), MAKE_PAIR32(id, step));
-                SetUInt32Value(PLAYER_SKILL_VALUE_INDEX(i),MAKE_SKILL_VALUE(currVal, maxVal));
+                SetUInt16Value(PLAYER_SKILL_LINEID_0 + field, offset, id);
+                SetUInt16Value(PLAYER_SKILL_STEP_0 + field, offset, step);
+                SetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset, currVal);
+                SetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset, maxVal);
                 GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, id);
                 GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, id);
 
@@ -6205,7 +6206,8 @@ void Player::SetSkill(uint16 id, uint16 currVal, uint16 maxVal, uint16 step /*=0
                     mSkillStatus.insert(SkillStatusMap::value_type(id, SkillStatusData(i, SKILL_NEW)));
 
                 // apply skill bonuses
-                SetUInt32Value(PLAYER_SKILL_BONUS_INDEX(i), 0);
+                SetUInt16Value(PLAYER_SKILL_MODIFIER_0 + field, offset, 0);
+                SetUInt16Value(PLAYER_SKILL_TALENT_0 + field, offset, 0);
 
                 // temporary bonuses
                 AuraList const& mModSkill = GetAurasByType(SPELL_AURA_MOD_SKILL);
@@ -6239,6 +6241,18 @@ bool Player::HasSkill(uint32 skill) const
     return (itr != mSkillStatus.end() && itr->second.uState != SKILL_DELETED);
 }
 
+uint16 Player::GetSkillStep(uint16 skill) const
+{
+    if (!skill)
+        return 0;
+
+    SkillStatusMap::const_iterator itr = mSkillStatus.find(skill);
+    if (itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
+        return 0;
+
+    return GetUInt16Value(PLAYER_SKILL_STEP_0 + itr->second.pos / 2, itr->second.pos & 1);
+}
+
 uint16 Player::GetSkillValue(uint32 skill) const
 {
     if(!skill)
@@ -6248,11 +6262,12 @@ uint16 Player::GetSkillValue(uint32 skill) const
     if(itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
         return 0;
 
-    uint32 bonus = GetUInt32Value(PLAYER_SKILL_BONUS_INDEX(itr->second.pos));
+    uint16 field = itr->second.pos / 2;
+    uint8 offset = itr->second.pos & 1;
 
-    int32 result = int32(SKILL_VALUE(GetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos))));
-    result += SKILL_TEMP_BONUS(bonus);
-    result += SKILL_PERM_BONUS(bonus);
+    int32 result = int32(GetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset));
+    result += int32(GetUInt16Value(PLAYER_SKILL_MODIFIER_0 + field, offset));
+    result += int32(GetUInt16Value(PLAYER_SKILL_TALENT_0 + field, offset));
     return result < 0 ? 0 : result;
 }
 
@@ -6265,11 +6280,12 @@ uint16 Player::GetMaxSkillValue(uint32 skill) const
     if(itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
         return 0;
 
-    uint32 bonus = GetUInt32Value(PLAYER_SKILL_BONUS_INDEX(itr->second.pos));
+    uint16 field = itr->second.pos / 2;
+    uint8 offset = itr->second.pos & 1;
 
-    int32 result = int32(SKILL_MAX(GetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos))));
-    result += SKILL_TEMP_BONUS(bonus);
-    result += SKILL_PERM_BONUS(bonus);
+    int32 result = int32(GetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset));
+    result += int32(GetUInt16Value(PLAYER_SKILL_MODIFIER_0 + field, offset));
+    result += int32(GetUInt16Value(PLAYER_SKILL_TALENT_0 + field, offset));
     return result < 0 ? 0 : result;
 }
 
@@ -6282,7 +6298,10 @@ uint16 Player::GetPureMaxSkillValue(uint32 skill) const
     if(itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
         return 0;
 
-    return SKILL_MAX(GetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos)));
+    uint16 field = itr->second.pos / 2;
+    uint8 offset = itr->second.pos & 1;
+
+    return GetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset);
 }
 
 uint16 Player::GetBaseSkillValue(uint32 skill) const
@@ -6294,8 +6313,11 @@ uint16 Player::GetBaseSkillValue(uint32 skill) const
     if(itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
         return 0;
 
-    int32 result = int32(SKILL_VALUE(GetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos))));
-    result +=  SKILL_PERM_BONUS(GetUInt32Value(PLAYER_SKILL_BONUS_INDEX(itr->second.pos)));
+    uint16 field = itr->second.pos / 2;
+    uint8 offset = itr->second.pos & 1;
+
+    int32 result = int32(GetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset));
+    result += int32(GetUInt16Value(PLAYER_SKILL_TALENT_0 + field, offset));
     return result < 0 ? 0 : result;
 }
 
@@ -6308,7 +6330,10 @@ uint16 Player::GetPureSkillValue(uint32 skill) const
     if(itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
         return 0;
 
-    return SKILL_VALUE(GetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos)));
+    uint16 field = itr->second.pos / 2;
+    uint8 offset = itr->second.pos & 1;
+
+    return GetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset);
 }
 
 int16 Player::GetSkillPermBonusValue(uint32 skill) const
@@ -6320,7 +6345,10 @@ int16 Player::GetSkillPermBonusValue(uint32 skill) const
     if(itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
         return 0;
 
-    return SKILL_PERM_BONUS(GetUInt32Value(PLAYER_SKILL_BONUS_INDEX(itr->second.pos)));
+    uint16 field = itr->second.pos / 2;
+    uint8 offset = itr->second.pos & 1;
+
+    return GetUInt16Value(PLAYER_SKILL_TALENT_0 + field, offset);
 }
 
 int16 Player::GetSkillTempBonusValue(uint32 skill) const
@@ -6332,7 +6360,10 @@ int16 Player::GetSkillTempBonusValue(uint32 skill) const
     if(itr == mSkillStatus.end() || itr->second.uState == SKILL_DELETED)
         return 0;
 
-    return SKILL_TEMP_BONUS(GetUInt32Value(PLAYER_SKILL_BONUS_INDEX(itr->second.pos)));
+    uint16 field = itr->second.pos / 2;
+    uint8 offset = itr->second.pos & 1;
+
+    return GetUInt16Value(PLAYER_SKILL_MODIFIER_0 + field, offset);
 }
 
 void Player::SendActionButtons(uint8 state) const
@@ -19384,9 +19415,11 @@ void Player::_SaveSkills()
             continue;
         }
 
-        uint32 valueData = GetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos));
-        uint16 value = SKILL_VALUE(valueData);
-        uint16 max = SKILL_MAX(valueData);
+        uint16 field = itr->second.pos / 2;
+        uint8 offset = itr->second.pos & 1;
+
+        uint16 value = GetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset);
+        uint16 max = GetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset);
 
         switch (itr->second.uState)
         {
@@ -23415,6 +23448,7 @@ void Player::_LoadSkills(QueryResult *result)
     // SetPQuery(PLAYER_LOGIN_QUERY_LOADSKILLS,          "SELECT skill, value, max FROM character_skills WHERE guid = '%u'", GUID_LOPART(m_guid));
 
     uint32 count = 0;
+    uint8 professionCount = 0;
     if (result)
     {
         do
@@ -23452,9 +23486,28 @@ void Player::_LoadSkills(QueryResult *result)
                 continue;
             }
 
-            SetUInt32Value(PLAYER_SKILL_INDEX(count), MAKE_PAIR32(skill,0));
-            SetUInt32Value(PLAYER_SKILL_VALUE_INDEX(count),MAKE_SKILL_VALUE(value, max));
-            SetUInt32Value(PLAYER_SKILL_BONUS_INDEX(count),0);
+            uint16 field = count / 2;
+            uint8 offset = count & 1;
+
+            SetUInt16Value(PLAYER_SKILL_LINEID_0 + field, offset, skill);
+            uint16 step = 0;
+
+            if (pSkill->categoryId == SKILL_CATEGORY_SECONDARY)
+                step = max / 75;
+
+            if (pSkill->categoryId == SKILL_CATEGORY_PROFESSION)
+            {
+                step = max / 75;
+
+                if (professionCount < 2)
+                    SetUInt32Value(PLAYER_PROFESSION_SKILL_LINE_1 + professionCount++, skill);
+            }
+
+            SetUInt16Value(PLAYER_SKILL_STEP_0 + field, offset, step);
+            SetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset, value);
+            SetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset, max);
+            SetUInt16Value(PLAYER_SKILL_MODIFIER_0 + field, offset, 0);
+            SetUInt16Value(PLAYER_SKILL_TALENT_0 + field, offset, 0);
 
             mSkillStatus.insert(SkillStatusMap::value_type(skill, SkillStatusData(count, SKILL_UNCHANGED)));
 
@@ -23473,9 +23526,15 @@ void Player::_LoadSkills(QueryResult *result)
 
     for (; count < PLAYER_MAX_SKILLS; ++count)
     {
-        SetUInt32Value(PLAYER_SKILL_INDEX(count), 0);
-        SetUInt32Value(PLAYER_SKILL_VALUE_INDEX(count),0);
-        SetUInt32Value(PLAYER_SKILL_BONUS_INDEX(count),0);
+        uint16 field = count / 2;
+        uint8 offset = count & 1;
+
+        SetUInt16Value(PLAYER_SKILL_LINEID_0 + field, offset, 0);
+        SetUInt16Value(PLAYER_SKILL_STEP_0 + field, offset, 0);
+        SetUInt16Value(PLAYER_SKILL_RANK_0 + field, offset, 0);
+        SetUInt16Value(PLAYER_SKILL_MAX_RANK_0 + field, offset, 0);
+        SetUInt16Value(PLAYER_SKILL_MODIFIER_0 + field, offset, 0);
+        SetUInt16Value(PLAYER_SKILL_TALENT_0 + field, offset, 0);
     }
 
     // special settings
