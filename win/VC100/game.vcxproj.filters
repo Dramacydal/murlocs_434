@@ -1003,6 +1003,11 @@
     <ClInclude Include="..\..\src\game\MapUpdater.h" />
     <ClInclude Include="..\..\src\game\ChatLogger.h">
       <Filter>World/Handlers</Filter>
+    <ClInclude Include="..\..\src\game\movement\MovementStructures.h">
+      <Filter>Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\movement\MoveSpline.h">
+      <Filter>Movement</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\game\FileLogWriter.h">
       <Filter>World/Handlers</Filter>
