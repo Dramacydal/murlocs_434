@@ -972,6 +972,7 @@ enum MangosStrings
     // Use for not-in-offcial-sources patches
     //                                    10000-10999
 
+<<<<<<< HEAD
     LANG_OPVP_SI_CAPTURE_H              = 10001,
     LANG_OPVP_SI_CAPTURE_A              = 10002,
 
@@ -1191,6 +1192,8 @@ enum MangosStrings
     LANG_MUST_LEAVE_ARENA_TYPE          = 11133,
     LANG_MMR_RESET_FOR_TYPE             = 11134,
     LANG_YOUR_NXN_MMR                   = 11135,
+
+    LANG_INVALID_REALMID                = 11136,
 
     // Strand of the Ancients
     LANG_BG_SA_START_TWO_MINUTE                     = 20000,
