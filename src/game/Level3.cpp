@@ -1206,7 +1206,7 @@ bool ChatHandler::HandleAccountSetGmLevelCommand(char* args)
         return false;
 
     int32 gm;
-	uint32 gmRealmID = realmID;
+        uint32 gmRealmID = realmID;
     if (!ExtractInt32(&args, gm))
         return false;
 
@@ -1230,13 +1230,13 @@ bool ChatHandler::HandleAccountSetGmLevelCommand(char* args)
         SetSentErrorMessage(true);
         return false;
     }
-// Check if provided realmID is not current realmID, or isn't -1
-        if (gmRealmID != realmID && gmRealmID != -1)
-        {
-            SendSysMessage(LANG_INVALID_REALMID);
-            SetSentErrorMessage(true);
-            return false;
-        }
+    /// check if provided realmID is not current realmID, or isn't -1
+    if (gmRealmID != realmID && gmRealmID != -1)
+    {
+        SendSysMessage(LANG_INVALID_REALMID);
+        SetSentErrorMessage(true);
+        return false;
+    }
 
     if (targetPlayer)
     {
@@ -1245,18 +1245,19 @@ bool ChatHandler::HandleAccountSetGmLevelCommand(char* args)
     }
 
     PSendSysMessage(LANG_YOU_CHANGE_SECURITY, targetAccountName.c_str(), gm);
-	// If gmRealmID is -1, delete all values for the account id, else, insert values for the specific realmID
-        if (gmRealmID == -1)
-        {
-            LoginDatabase.PExecute("DELETE FROM account_access WHERE id = '%u'", targetAccountId);
-            LoginDatabase.PExecute("INSERT INTO account_access VALUES ('%u', '%d', -1)", targetAccountId, gm);
-        }
-        else
-        {
-            LoginDatabase.PExecute("DELETE FROM account_access WHERE id = '%u' AND RealmID = '%d'", targetAccountId, realmID);
-            LoginDatabase.PExecute("INSERT INTO account_access VALUES ('%u','%d','%d')", targetAccountId, gm, realmID);
-        }
     //LoginDatabase.PExecute("UPDATE account_access SET gmlevel = '%i' WHERE id = '%u'", gm, targetAccountId);
+
+    /// If gmRealmID is -1, delete all values for the account id, else, insert values for the specific realmID
+    if (gmRealmID == -1)
+    {
+        LoginDatabase.PExecute("DELETE FROM account_access WHERE id = '%u'", targetAccountId);
+        LoginDatabase.PExecute("INSERT INTO account_access VALUES ('%u', '%d', -1)", targetAccountId, gm);
+    }
+    else
+    {
+        LoginDatabase.PExecute("DELETE FROM account_access WHERE id = '%u' AND RealmID = '%d'", targetAccountId, realmID);
+        LoginDatabase.PExecute("INSERT INTO account_access VALUES ('%u','%d','%d')", targetAccountId, gm, realmID);
+    }
 
     return true;
 }
