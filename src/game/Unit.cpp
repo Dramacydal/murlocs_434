@@ -13276,5 +13276,5 @@ uint32 Unit::CalculateSpellDurationWithHaste(SpellEntry const* spellProto, uint3
 
 bool Unit::IsSplineEnabled() const
 {
-    return !movespline->Finalized();
+    return movespline->Initialized();
 }

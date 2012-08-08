@@ -55,14 +55,14 @@ Location MoveSpline::ComputePosition() const
             c.orientation = atan2(facing.f.y-c.y, facing.f.x-c.x);
         //nothing to do for MoveSplineFlag::Final_Target flag
     }
-    else
-    {
-        if (!splineflags.hasFlag(MoveSplineFlag::OrientationFixed|MoveSplineFlag::Falling))
+        else
         {
-            Vector3 hermite;
-            spline.evaluate_derivative(point_Idx,u,hermite);
-            c.orientation = atan2(hermite.y, hermite.x);
-        }
+            if (!splineflags.hasFlag(MoveSplineFlag::OrientationFixed | MoveSplineFlag::Falling | MoveSplineFlag::Unknown0))
+            {
+                Vector3 hermite;
+                spline.evaluate_derivative(point_Idx, u, hermite);
+                c.orientation = atan2(hermite.y, hermite.x);
+            }
 
         if (splineflags.orientationInversed)
             c.orientation = -c.orientation;
@@ -220,26 +220,27 @@ bool MoveSplineInitArgs::Validate() const
 // MONSTER_MOVE packet format limitation for not CatmullRom movement:
 // each vertex offset packed into 11 bytes
 bool MoveSplineInitArgs::_checkPathBounds() const
-{
-    if (!(flags & MoveSplineFlag::Mask_CatmullRom) && path.size() > 2)
     {
-        enum{
-            MAX_OFFSET = (1 << 11) / 2,
-        };
-        Vector3 middle = (path.front()+path.back()) / 2;
-        Vector3 offset;
-        for (uint32 i = 1; i < path.size()-1; ++i)
+        if (!(flags & MoveSplineFlag::Catmullrom) && path.size() > 2)
         {
-            offset = path[i] - middle;
-            if (fabs(offset.x) >= MAX_OFFSET || fabs(offset.y) >= MAX_OFFSET || fabs(offset.z) >= MAX_OFFSET)
+            enum
             {
-                sLog.outError("MoveSplineInitArgs::_checkPathBounds check failed");
-                return false;
+                MAX_OFFSET = (1 << 11) / 2,
+            };
+            Vector3 middle = (path.front() + path.back()) / 2;
+            Vector3 offset;
+            for (uint32 i = 1; i < path.size() - 1; ++i)
+            {
+                offset = path[i] - middle;
+                if (fabs(offset.x) >= MAX_OFFSET || fabs(offset.y) >= MAX_OFFSET || fabs(offset.z) >= MAX_OFFSET)
+                {
+                    sLog.outError("MoveSplineInitArgs::_checkPathBounds check failed");
+                    return false;
+                }
             }
         }
+        return true;
     }
-    return true;
-}
 
 void MoveSplineInitArgs::SetTransportData(Unit& unit)
 {
