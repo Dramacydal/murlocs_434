@@ -10937,7 +10937,7 @@ void SpellAuraHolder::BuildUpdatePacket(WorldPacket& data) const
     data << uint32(GetId());
 
     uint8 auraFlags = GetAuraFlags();
-    data << uint8(auraFlags);
+    data << uint16(auraFlags);
     data << uint8(GetAuraLevel());
     data << uint8(GetStackAmount() > 1 ? GetStackAmount() : (GetAuraCharges()) ? GetAuraCharges() : 1);
 
