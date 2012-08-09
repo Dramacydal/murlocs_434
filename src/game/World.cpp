@@ -1289,7 +1289,10 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading Quest POI" );
     sObjectMgr.LoadQuestPOI();
 
-    sLog.outString( "Loading Quests Relations..." );
+    sLog.outString("Loading Quest Phase Maps...");
+    sObjectMgr.LoadQuestPhaseMaps();
+
+    sLog.outString("Loading Quests Relations...");
     sLog.outString();
     sObjectMgr.LoadQuestRelations();                        // must be after quest load
     sLog.outString( ">>> Quests Relations loaded" );
