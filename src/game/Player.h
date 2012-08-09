@@ -302,6 +302,7 @@ struct PlayerInfo
     float positionY;
     float positionZ;
     float orientation;
+    uint16 phaseMap;
     uint16 displayId_m;
     uint16 displayId_f;
     PlayerCreateInfoItems item;

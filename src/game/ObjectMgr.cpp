@@ -3221,8 +3221,8 @@ void ObjectMgr::LoadPlayerInfo()
 {
     // Load playercreate
     {
-        //                                                0     1      2    3     4           5           6
-        QueryResult *result = WorldDatabase.Query("SELECT race, class, map, zone, position_x, position_y, position_z, orientation FROM playercreateinfo");
+        //                                                0     1      2    3     4           5           6           7            8
+        QueryResult* result = WorldDatabase.Query("SELECT race, class, map, zone, position_x, position_y, position_z, orientation, phaseMap FROM playercreateinfo");
 
         uint32 count = 0;
 
@@ -3251,6 +3251,7 @@ void ObjectMgr::LoadPlayerInfo()
             float  positionY     = fields[5].GetFloat();
             float  positionZ     = fields[6].GetFloat();
             float  orientation   = fields[7].GetFloat();
+            uint16 phaseMap      = fields[8].GetUInt16();
 
             ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(current_race);
             if(!rEntry || !((1 << (current_race-1)) & RACEMASK_ALL_PLAYABLE))
@@ -3287,6 +3288,7 @@ void ObjectMgr::LoadPlayerInfo()
             pInfo->positionY   = positionY;
             pInfo->positionZ   = positionZ;
             pInfo->orientation = orientation;
+            pInfo->phaseMap    = phaseMap;
 
             pInfo->displayId_m = rEntry->model_m;
             pInfo->displayId_f = rEntry->model_f;
