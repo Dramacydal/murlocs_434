@@ -343,10 +343,12 @@ class Guild
         bool LoadRanksFromDB(QueryResult *guildRanksResult);
         bool LoadMembersFromDB(QueryResult *guildMembersResult);
 
-        void BroadcastToGuild(WorldSession *session, const std::string& msg, uint32 language = LANG_UNIVERSAL);
-        void BroadcastToOfficers(WorldSession *session, const std::string& msg, uint32 language = LANG_UNIVERSAL);
-        void BroadcastPacketToRank(WorldPacket *packet, uint32 rankId);
-        void BroadcastPacket(WorldPacket *packet);
+        void BroadcastToGuild(WorldSession* session, const std::string& msg, uint32 language = LANG_UNIVERSAL);
+        void BroadcastAddonToGuild(WorldSession* session, const std::string& msg, const std::string& prefix);
+        void BroadcastToOfficers(WorldSession* session, const std::string& msg, uint32 language = LANG_UNIVERSAL);
+        void BroadcastAddonToOfficers(WorldSession* session, const std::string& msg, const std::string& prefix);
+        void BroadcastPacketToRank(WorldPacket* packet, uint32 rankId);
+        void BroadcastPacket(WorldPacket* packet);
 
         void BroadcastEvent(GuildEvents event, ObjectGuid guid, char const* str1 = NULL, char const* str2 = NULL, char const* str3 = NULL);
         void BroadcastEvent(GuildEvents event, char const* str1 = NULL, char const* str2 = NULL, char const* str3 = NULL)
