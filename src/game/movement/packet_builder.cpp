@@ -17,9 +17,10 @@
  */
 
 #include "packet_builder.h"
+#include "MoveSpline.h"
+#include "Util.h"
 #include "WorldPacket.h"
 #include "../Creature.h"
-
 
 namespace Movement
 {
@@ -65,21 +66,21 @@ namespace Movement
 
         switch(splineflags & MoveSplineFlag::Mask_Final_Facing)
         {
-        default:
-            data << uint8(MonsterMoveNormal);
-            break;
-        case MoveSplineFlag::Final_Target:
-            data << uint8(MonsterMoveFacingTarget);
-            data << move_spline.facing.target;
-            break;
-        case MoveSplineFlag::Final_Angle:
-            data << uint8(MonsterMoveFacingAngle);
-            data << move_spline.facing.angle;
-            break;
-        case MoveSplineFlag::Final_Point:
-            data << uint8(MonsterMoveFacingSpot);
-            data << move_spline.facing.f.x << move_spline.facing.f.y << move_spline.facing.f.z;
-            break;
+            default:
+                data << uint8(MonsterMoveNormal);
+                break;
+            case MoveSplineFlag::Final_Target:
+                data << uint8(MonsterMoveFacingTarget);
+                data << move_spline.facing.target;
+                break;
+            case MoveSplineFlag::Final_Angle:
+                data << uint8(MonsterMoveFacingAngle);
+                data << NormalizeOrientation(move_spline.facing.angle);
+                break;
+            case MoveSplineFlag::Final_Point:
+                data << uint8(MonsterMoveFacingSpot);
+                data << move_spline.facing.f.x << move_spline.facing.f.y << move_spline.facing.f.z;
+                break;
         }
 
         // add fake Enter_Cycle flag - needed for client-side cyclic movement (client will erase first spline vertex after first cycle done)
@@ -211,7 +212,7 @@ namespace Movement
             data << int32(move_spline.timePassed());
 
             if (move_spline.splineflags & MoveSplineFlag::Final_Angle)
-                data << float(move_spline.facing.angle);
+                data << float(NormalizeOrientation(move_spline.facing.angle));
             else if (move_spline.splineflags & MoveSplineFlag::Final_Target)
                  data.WriteGuidBytes<5, 3, 7, 1, 6, 4, 2, 0>(ObjectGuid(move_spline.facing.target));
 

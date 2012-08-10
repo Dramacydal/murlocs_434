@@ -366,7 +366,7 @@ void MovementInfo::Write(ByteBuffer& data, uint16 opcode) const
                 break;
             case MSEPositionO:
                 if (si.hasOrientation)
-                    data << float(pos.o);
+                    data << float(NormalizeOrientation(pos.o));
                 break;
             case MSEPitch:
                 if (si.hasPitch)
@@ -405,7 +405,7 @@ void MovementInfo::Write(ByteBuffer& data, uint16 opcode) const
                 break;
             case MSETransportPositionO:
                 if (hasTransportData)
-                    data << float(t_pos.o);
+                    data << float(NormalizeOrientation(t_pos.o));
                 break;
             case MSETransportPositionX:
                 if (hasTransportData)
