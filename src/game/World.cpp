@@ -2100,14 +2100,14 @@ void World::SendZoneText(uint32 zone, const char* text, WorldSession* self /*= N
 }
 
 /// Sends a server wide defense message to all players (or players of the specified team)
-void World::SendDefenseMessage(uint32 zoneId, int32 textId, Team team /*= TEAM_NONE*/)
+void World::SendDefenseMessage(uint32 zoneId, int32 textId)
 {
     for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
     {
         if (itr->second &&
                 itr->second->GetPlayer() &&
                 itr->second->GetPlayer()->IsInWorld() &&
-                (team == TEAM_NONE || itr->second->GetPlayer()->GetTeam() == team))
+                !itr->second->GetPlayer()->GetMap()->Instanceable())
         {
             char const* message = itr->second->GetMangosString(textId);
             uint32 messageLength = strlen(message) + 1;
@@ -2296,7 +2296,7 @@ void World::ShutdownServ(uint32 time, uint32 options, uint8 exitcode)
 }
 
 /// Display a shutdown message to the user(s)
-void World::ShutdownMsg(bool show, Player* player)
+void World::ShutdownMsg(bool show /*= false*/, Player* player /*= NULL*/)
 {
     // not show messages for idle shutdown mode
     if(m_ShutdownMask & SHUTDOWN_MASK_IDLE)
@@ -2349,7 +2349,26 @@ void World::SendServerMessage(ServerMessageType type, const char* text /*=""*/, 
         SendGlobalMessage(&data);
 }
 
-void World::UpdateSessions( uint32 diff )
+/// Sends a zone under attack message to all players not in an instance
+void World::SendZoneUnderAttackMessage(uint32 zoneId, Team team)
+{
+    WorldPacket data(SMSG_ZONE_UNDER_ATTACK, 4);
+    data << uint32(zoneId);
+
+    for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+    {
+        if (itr->second &&
+                itr->second->GetPlayer() &&
+                itr->second->GetPlayer()->IsInWorld() &&
+                itr->second->GetPlayer()->GetTeam() == team &&
+                !itr->second->GetPlayer()->GetMap()->Instanceable())
+        {
+            itr->second->SendPacket(&data);
+        }
+    }
+}
+
+void World::UpdateSessions(uint32 diff)
 {
     ///- Add new sessions
     WorldSession* sess;
