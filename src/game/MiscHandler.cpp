@@ -302,10 +302,9 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & /*recv_data*/ )
         if ((GetPlayer()->GetPositionZ() < height + 0.1f) && !(GetPlayer()->IsInWater()))
             GetPlayer()->SetStandState(UNIT_STAND_STATE_SIT);
 
-        WorldPacket data( SMSG_FORCE_MOVE_ROOT, (8+4) );    // guess size
-        data << GetPlayer()->GetPackGUID();
-        data << (uint32)2;
-        SendPacket( &data );
+        WorldPacket data;
+        GetPlayer()->BuildForceMoveRootPacket(&data, true, 2);
+        SendPacket(&data);
         GetPlayer()->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
     }
 
@@ -333,11 +332,9 @@ void WorldSession::HandleLogoutCancelOpcode( WorldPacket & /*recv_data*/ )
     // not remove flags if can't free move - its not set in Logout request code.
     if(GetPlayer()->CanFreeMove())
     {
-        //!we can move again
-        data.Initialize( SMSG_FORCE_MOVE_UNROOT, 8 );       // guess size
-        data << GetPlayer()->GetPackGUID();
-        data << uint32(0);
-        SendPacket( &data );
+        //! we can move again
+        GetPlayer()->BuildForceMoveRootPacket(&data, false, 0);
+        SendPacket(&data);
 
         //! Stand Up
         GetPlayer()->SetStandState(UNIT_STAND_STATE_STAND);
@@ -1049,13 +1046,16 @@ void WorldSession::HandleFeatherFallAck(WorldPacket &recv_data)
     DEBUG_LOG("WORLD: CMSG_MOVE_FEATHER_FALL_ACK");
 
     // not used
-    recv_data.rpos(recv_data.wpos());                       // prevent warnings spam
+    recv_data.rfinish();                                    // prevent warnings spam
+    /*
+        bitsream packet
+    */
 }
 
 void WorldSession::HandleMoveUnRootAck(WorldPacket& recv_data)
 {
     // not used
-    recv_data.rpos(recv_data.wpos());                       // prevent warnings spam
+    recv_data.rfinish();                                    // prevent warnings spam
     /*
         bitsream packet
     */
@@ -1063,8 +1063,8 @@ void WorldSession::HandleMoveUnRootAck(WorldPacket& recv_data)
 
 void WorldSession::HandleMoveRootAck(WorldPacket& recv_data)
 {
-    // no used
-    recv_data.rpos(recv_data.wpos());                       // prevent warnings spam
+    // not used
+    recv_data.rfinish();                                    // prevent warnings spam
     /*
         bitsream packet
     */
@@ -1543,15 +1543,9 @@ void WorldSession::HandleMoveSetCanFlyAckOpcode( WorldPacket & recv_data )
 {
     // fly mode on/off
     DEBUG_LOG("WORLD: CMSG_MOVE_SET_CAN_FLY_ACK");
-    //recv_data.hexlike();
 
-    ObjectGuid guid;
     MovementInfo movementInfo;
-
-    recv_data >> guid.ReadAsPacked();
-    recv_data >> Unused<uint32>();                          // unk
     recv_data >> movementInfo;
-    recv_data >> Unused<float>();                           // unk2
 
     Unit * target;
     if (GetPlayer()->GetObjectGuid() == guid)

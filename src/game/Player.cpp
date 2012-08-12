@@ -4804,17 +4804,24 @@ void Player::SetMovement(PlayerMovementType pType)
     WorldPacket data;
     switch(pType)
     {
-        case MOVE_ROOT:       data.Initialize(SMSG_FORCE_MOVE_ROOT,   GetPackGUID().size()+4); break;
-        case MOVE_UNROOT:     data.Initialize(SMSG_FORCE_MOVE_UNROOT, GetPackGUID().size()+4); break;
-        case MOVE_WATER_WALK: data.Initialize(SMSG_MOVE_WATER_WALK,   GetPackGUID().size()+4); break;
-        case MOVE_LAND_WALK:  data.Initialize(SMSG_MOVE_LAND_WALK,    GetPackGUID().size()+4); break;
+        case MOVE_ROOT:
+        case MOVE_UNROOT:
+        {
+            BuildForceMoveRootPacket(&data, pType == MOVE_ROOT, 0);
+            break;
+        }
+        case MOVE_WATER_WALK:
+        case MOVE_LAND_WALK:
+        {
+            BuildMoveWaterWalkPacket(&data, pType == MOVE_WATER_WALK, 0);
+            break;
+        }
         default:
             ERROR_LOG("Player::SetMovement: Unsupported move type (%d), data not sent to client.",pType);
             return;
     }
-    data << GetPackGUID();
-    data << uint32(0);
-    GetSession()->SendPacket( &data );
+
+    GetSession()->SendPacket(&data);
 }
 
 /* Preconditions:
@@ -21852,18 +21859,16 @@ void Player::SendInitialPacketsAfterAddToMap()
     // manual send package (have code in ApplyModifier(true,true); that don't must be re-applied.
     if(HasAuraType(SPELL_AURA_MOD_ROOT))
     {
-        WorldPacket data2(SMSG_FORCE_MOVE_ROOT, 10);
-        data2 << GetPackGUID();
-        data2 << (uint32)2;
-        SendMessageToSet(&data2,true);
+        WorldPacket data2;
+        BuildForceMoveRootPacket(&data2, true, 2);
+        SendMessageToSet(&data2, true);
     }
 
     if(GetVehicle())
     {
         WorldPacket data3(SMSG_FORCE_MOVE_ROOT, 10);
-        data3 << GetPackGUID();
-        data3 << uint32((m_movementInfo.GetVehicleSeatFlags() & SEAT_FLAG_CAN_CAST) ? 2 : 0);
-        SendMessageToSet(&data3,true);
+        BuildForceMoveRootPacket(&data3, true, (m_movementInfo.GetVehicleSeatFlags() & SEAT_FLAG_CAN_CAST) ? 2 : 0);
+        SendMessageToSet(&data3, true);
     }
 
     SendAurasForTarget(this);

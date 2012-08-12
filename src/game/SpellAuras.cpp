@@ -3782,12 +3782,7 @@ void Aura::HandleAuraWaterWalk(bool apply, bool Real)
         return;
 
     WorldPacket data;
-    if (apply)
-        data.Initialize(SMSG_MOVE_WATER_WALK, 8+4);
-    else
-        data.Initialize(SMSG_MOVE_LAND_WALK, 8+4);
-    data << GetTarget()->GetPackGUID();
-    data << uint32(0);
+    GetTarget()->BuildMoveWaterWalkPacket(&data, apply, 0);
     GetTarget()->SendMessageToSet(&data, true);
 }
 
@@ -5125,9 +5120,8 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
             target->SetStandState(UNIT_STAND_STATE_STAND);// in 1.5 client
         }
 
-        WorldPacket data(SMSG_FORCE_MOVE_ROOT, 8);
-        data << target->GetPackGUID();
-        data << uint32(0);
+        WorldPacket data;
+        target->BuildForceMoveRootPacket(&data, true, 0);
         target->SendMessageToSet(&data, true);
 
         // Summon the Naj'entus Spine GameObject on target if spell is Impaling Spine
@@ -5185,9 +5179,8 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
             if(target->getVictim() && target->isAlive())
                 target->SetTargetGuid(target->getVictim()->GetObjectGuid());
 
-            WorldPacket data(SMSG_FORCE_MOVE_UNROOT, 8+4);
-            data << target->GetPackGUID();
-            data << uint32(0);
+            WorldPacket data;
+            target->BuildForceMoveRootPacket(&data, false, 0);
             target->SendMessageToSet(&data, true);
         }
 
@@ -5455,13 +5448,9 @@ void Aura::HandleAuraModRoot(bool apply, bool Real)
 
         if(target->GetTypeId() == TYPEID_PLAYER)
         {
-            if(!target->hasUnitState(UNIT_STAT_ON_VEHICLE))
-            {
-                WorldPacket data(SMSG_FORCE_MOVE_ROOT, 10);
-                data << target->GetPackGUID();
-                data << uint32(2);
-                target->SendMessageToSet(&data, true);
-            }
+            WorldPacket data;
+            target->BuildForceMoveRootPacket(&data, true, 2);
+            target->SendMessageToSet(&data, true);
 
             //Clear unit movement flags
             ((Player*)target)->m_movementInfo.SetMovementFlags(MOVEFLAG_NONE);
@@ -5507,9 +5496,8 @@ void Aura::HandleAuraModRoot(bool apply, bool Real)
 
             if(target->GetTypeId() == TYPEID_PLAYER)
             {
-                WorldPacket data(SMSG_FORCE_MOVE_UNROOT, 10);
-                data << target->GetPackGUID();
-                data << (uint32)2;
+                WorldPacket data;
+                target->BuildForceMoveRootPacket(&data, false, 2);
                 target->SendMessageToSet(&data, true);
             }
         }
@@ -5673,13 +5661,7 @@ void Aura::HandleAuraModIncreaseFlightSpeed(bool apply, bool Real)
     if (m_modifier.m_auraname == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED)
     {
         WorldPacket data;
-        if(apply)
-            data.Initialize(SMSG_MOVE_SET_CAN_FLY, 12);
-        else
-            data.Initialize(SMSG_MOVE_UNSET_CAN_FLY, 12);
-
-        data << target->GetPackGUID();
-        data << uint32(0);                                      // unknown
+        target->BuildMoveSetCanFlyPacket(&data, apply, 0);
         target->SendMessageToSet(&data, true);
 
         //Players on flying mounts must be immune to polymorph
@@ -7982,13 +7964,7 @@ void Aura::HandleAuraAllowFlight(bool apply, bool Real)
 
     // allow fly
     WorldPacket data;
-    if(apply)
-        data.Initialize(SMSG_MOVE_SET_CAN_FLY, 12);
-    else
-        data.Initialize(SMSG_MOVE_UNSET_CAN_FLY, 12);
-
-    data << GetTarget()->GetPackGUID();
-    data << uint32(0);                                      // unk
+    GetTarget()->BuildMoveSetCanFlyPacket(&data, apply, 0);
     GetTarget()->SendMessageToSet(&data, true);
 }
 
