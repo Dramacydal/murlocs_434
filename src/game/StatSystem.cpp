@@ -219,6 +219,8 @@ void Player::UpdateMaxHealth()
 
 void Player::UpdateMaxPower(Powers power)
 {
+    MANGOS_ASSERT(power < MAX_POWERS);
+
     UnitMods unitMod = UnitMods(UNIT_MOD_POWER_START + power);
 
     uint32 create_power = GetCreatePowers(power);
@@ -879,6 +881,8 @@ void Creature::UpdateMaxHealth()
 
 void Creature::UpdateMaxPower(Powers power)
 {
+    MANGOS_ASSERT(power < MAX_POWERS);
+
     UnitMods unitMod = UnitMods(UNIT_MOD_POWER_START + power);
 
     float value  = GetTotalAuraModValue(unitMod);
@@ -1030,6 +1034,8 @@ void Pet::UpdateMaxHealth()
 
 void Pet::UpdateMaxPower(Powers power)
 {
+    MANGOS_ASSERT(power < MAX_POWERS);
+
     UnitMods unitMod = UnitMods(UNIT_MOD_POWER_START + power);
 
     float addValue = (power == POWER_MANA) ? GetStat(STAT_INTELLECT) - GetCreateStat(STAT_INTELLECT) : 0.0f;
