@@ -10818,7 +10818,7 @@ int32 Unit::GetPower(Powers power) const
     if (power == POWER_HEALTH)
         return GetHealth();
 
-    uint32 powerIndex = GetPowerIndexByClass(power, getClass());
+    uint32 powerIndex = GetPowerIndex(power);
     if (powerIndex == INVALID_POWER_INDEX)
         return 0;
 
@@ -10837,7 +10837,7 @@ uint32 Unit::GetMaxPower(Powers power) const
     if (power == POWER_HEALTH)
         return GetMaxHealth();
 
-    uint32 powerIndex = GetPowerIndexByClass(power, getClass());
+    uint32 powerIndex = GetPowerIndex(power);
     if (powerIndex == INVALID_POWER_INDEX)
         return 0;
 
@@ -10856,7 +10856,7 @@ void Unit::SetPower(Powers power, int32 val)
     if (power == POWER_HEALTH)
         return SetHealth(val >= 0 ? val : 0);
 
-    uint32 powerIndex = GetPowerIndexByClass(power, getClass());
+    uint32 powerIndex = GetPowerIndex(power);
     if (powerIndex == INVALID_POWER_INDEX)
         return;
 
@@ -10906,7 +10906,7 @@ void Unit::SetMaxPower(Powers power, int32 val)
     if (power == POWER_HEALTH)
         return SetMaxHealth(val >= 0 ? val : 0);
 
-    uint32 powerIndex = GetPowerIndexByClass(power, getClass());
+    uint32 powerIndex = GetPowerIndex(power);
     if (powerIndex == INVALID_POWER_INDEX)
         return;
 

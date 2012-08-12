@@ -125,7 +125,7 @@ bool Player::UpdateAllStats()
     UpdateAttackPowerAndDamage(true);
     UpdateMaxHealth();
 
-    for(int i = POWER_MANA; i < MAX_POWERS; ++i)
+    for (uint32 i = POWER_MANA; i < MAX_POWERS; ++i)
         UpdateMaxPower(Powers(i));
 
     UpdateAllRatings();
@@ -841,7 +841,11 @@ bool Creature::UpdateAllStats()
     UpdateMaxHealth();
     UpdateAttackPowerAndDamage();
 
+<<<<<<< HEAD
     for(int i = POWER_MANA; i < MAX_POWERS; ++i)
+=======
+    for (uint32 i = POWER_MANA; i < MAX_POWERS; ++i)
+>>>>>>> 55ae76f... Proper power uses.
         UpdateMaxPower(Powers(i));
 
     for(int i = SPELL_SCHOOL_NORMAL; i < MAX_SPELL_SCHOOL; ++i)
@@ -972,7 +976,11 @@ bool Pet::UpdateAllStats()
     for (int i = STAT_STRENGTH; i < MAX_STATS; ++i)
         UpdateStats(Stats(i));
 
+<<<<<<< HEAD
     for(int i = POWER_MANA; i < MAX_POWERS; ++i)
+=======
+    for (uint32 i = POWER_MANA; i < MAX_POWERS; ++i)
+>>>>>>> 55ae76f... Proper power uses.
         UpdateMaxPower(Powers(i));
 
     for (int i = SPELL_SCHOOL_NORMAL; i < MAX_SPELL_SCHOOL; ++i)
