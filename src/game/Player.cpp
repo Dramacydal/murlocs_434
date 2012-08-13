@@ -1914,7 +1914,7 @@ void Player::SendTeleportPacket(float oldX, float oldY, float oldZ, float oldO)
     ObjectGuid guid = GetObjectGuid();
     ObjectGuid transportGuid = m_movementInfo.GetTransportGuid();
 
-    WorldPacket data(MSG_MOVE_TELEPORT, 38);
+    WorldPacket data(SMSG_MOVE_TELEPORT, 38);
     data.WriteGuidMask<6, 0, 3, 2>(guid);
     data.WriteBit(0);       // unknown
     data.WriteBit(!transportGuid.IsEmpty());
@@ -1943,7 +1943,9 @@ void Player::SendTeleportPacket(float oldX, float oldY, float oldZ, float oldO)
 
 bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientation, uint32 options)
 {
-    if(!MapManager::IsValidMapCoord(mapid, x, y, z, orientation))
+    orientation = NormalizeOrientation(orientation);
+
+    if (!MapManager::IsValidMapCoord(mapid, x, y, z, orientation))
     {
         ERROR_LOG("TeleportTo: invalid map %d or absent instance template.", mapid);
         return false;
@@ -2039,10 +2041,10 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
         SetFallInformation(0, z);
 
         // code for finish transfer called in WorldSession::HandleMovementOpcodes()
-        // at client packet MSG_MOVE_TELEPORT_ACK
+        // at client packet CMSG_MOVE_TELEPORT_ACK
         SetSemaphoreTeleportNear(true);
-        // near teleport, triggering send MSG_MOVE_TELEPORT_ACK from client at landing
-        if(!GetSession()->PlayerLogout())
+        // near teleport, triggering send CMSG_MOVE_TELEPORT_ACK from client at landing
+        if (!GetSession()->PlayerLogout())
         {
             float oldX, oldY, oldZ;
             float oldO = GetOrientation();
@@ -2121,9 +2123,12 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
                 data.WriteBit(0);       // unknown
                 if (m_transport)
                 {
+                    data.WriteBit(1);   // has transport
                     data << uint32(GetMapId());
                     data << uint32(m_transport->GetEntry());
                 }
+                else
+                    data.WriteBit(0);   // has transport
 
                 data << uint32(mapid);
                 GetSession()->SendPacket(&data);
@@ -21915,14 +21920,8 @@ void Player::SendTransferAborted(uint32 mapid, uint8 reason, uint8 arg)
     WorldPacket data(SMSG_TRANSFER_ABORTED, 4+2);
     data << uint32(mapid);
     data << uint8(reason);                                  // transfer abort reason
-    switch(reason)
-    {
-        case TRANSFER_ABORT_INSUF_EXPAN_LVL:
-        case TRANSFER_ABORT_DIFFICULTY:
-        case TRANSFER_ABORT_UNIQUE_MESSAGE:
-            data << uint8(arg);
-            break;
-    }
+    data << uint8(arg);
+
     GetSession()->SendPacket(&data);
 }
 
@@ -24651,18 +24650,7 @@ void Player::SendClearCooldown( uint32 spell_id, Unit* target )
     SendDirectMessage(&data);
 }
 
-void Player::BuildTeleportAckMsg(WorldPacket& data, float x, float y, float z, float ang) const
-{
-    MovementInfo mi = m_movementInfo;
-    mi.ChangePosition(x, y, z, ang);
-
-    data.Initialize(MSG_MOVE_TELEPORT_ACK, 64);
-    data << GetPackGUID();
-    data << uint32(0);                                      // this value increments every time
-    data << mi;
-}
-
-bool Player::HasMovementFlag( MovementFlags f ) const
+bool Player::HasMovementFlag(MovementFlags f) const
 {
     return m_movementInfo.HasMovementFlag(f);
 }
