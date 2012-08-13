@@ -7512,7 +7512,7 @@ struct SQLSpellLoader : public SQLStorageLoaderBase<SQLSpellLoader>
     template<class S, class D>
     void default_fill(uint32 field_pos, S src, D &dst)
     {
-        if (field_pos == LOADED_SPELLDBC_FIELD_POS_EQUIPPED_ITEM_CLASS)
+        if (field_pos == 65)                                // EquippedItemClass
             dst = D(-1);
         else
             dst = D(src);
@@ -7520,7 +7520,7 @@ struct SQLSpellLoader : public SQLStorageLoaderBase<SQLSpellLoader>
 
     void default_fill_to_str(uint32 field_pos, char const* /*src*/, char * & dst)
     {
-        if (field_pos == LOADED_SPELLDBC_FIELD_POS_SPELLNAME_0)
+        if (field_pos == 132)                               // SpellName[0]
         {
             dst = SERVER_SIDE_SPELL;
         }
@@ -7550,7 +7550,7 @@ void ObjectMgr::LoadSpellTemplate()
         // insert serverside spell data
         if (sSpellStore.GetNumRows() <= i)
         {
-            sLog.outErrorDb("Loading Spell Template for spell %u, index out of bounds (max = %u)", i, sSpellStore.GetNumRows());
+            sLog.outErrorDb("Loading Spell Template for spell %u, index out of bounds (max = %)", i, sSpellStore.GetNumRows());
             continue;
         }
         else
