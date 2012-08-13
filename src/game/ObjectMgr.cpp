@@ -1297,6 +1297,8 @@ void ObjectMgr::LoadCreatures()
             for(int k = 0; k < MAX_DIFFICULTY; ++k)
                 if (GetMapDifficultyData(i,Difficulty(k)))
                     spawnMasks[i] |= (1 << k);
+    // Map 0 was removed from dbc as of 4.x.x
+    spawnMasks[0] = 1 << REGULAR_DIFFICULTY;
 
     BarGoLink bar(result->GetRowCount());
 
@@ -1345,8 +1347,6 @@ void ObjectMgr::LoadCreatures()
             continue;
         }
 
-        // Map 0 was removed from dbc as of 4.x.x
-        spawnMasks[0] = 1;
         if (data.spawnMask & ~spawnMasks[data.mapid])
             sLog.outErrorDb("Table `creature` have creature (GUID: %u) that have wrong spawn mask %u including not supported difficulty modes for map (Id: %u).", guid, data.spawnMask, data.mapid);
 
@@ -1564,6 +1564,8 @@ void ObjectMgr::LoadGameObjects()
             for(int k = 0; k < MAX_DIFFICULTY; ++k)
                 if (GetMapDifficultyData(i,Difficulty(k)))
                     spawnMasks[i] |= (1 << k);
+    // Map 0 was removed from dbc as of 4.x.x
+    spawnMasks[0] = 1 << REGULAR_DIFFICULTY;
 
     BarGoLink bar(result->GetRowCount());
 
