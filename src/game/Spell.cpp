@@ -126,14 +126,15 @@ SpellCastTargets::SpellCastTargets()
     m_srcX = m_srcY = m_srcZ = m_destX = m_destY = m_destZ = 0.0f;
     m_strTarget = "";
     m_targetMask = 0;
-    m_elevation = 0.0f;
-    m_speed = 0.0f;
 
     m_srcTransportGUID.Clear();
     m_destTransportGUID.Clear();
 
     m_srcTransOffsetX = m_srcTransOffsetY = m_srcTransOffsetZ = 0.0f;
     m_destTransOffsetX = m_destTransOffsetY = m_destTransOffsetZ = 0.0f;
+
+    m_elevation = 0.0f;
+    m_speed = 0.0f;
 }
 
 SpellCastTargets::~SpellCastTargets()
@@ -402,6 +403,7 @@ void SpellCastTargets::ReadAdditionalData(WorldPacket& data, uint8& cast_flags)
         {
             MovementInfo mi;
             data >> mi;
+            setSource(mi.GetPos()->x, mi.GetPos()->y, mi.GetPos()->z);
         }
     }
     else if (cast_flags & 0x08)         // has archaeology weight
@@ -1043,7 +1045,7 @@ void Spell::AddUnitTarget(Unit* pVictim, SpellEffectIndex effIndex)
     // spell fly from visual cast object
     WorldObject* affectiveObject = GetAffectiveCasterObject();
 
-    // Spell have trajectory - need calculate incoming time
+    // Spell has trajectory - need calculate incoming time
     if (affectiveObject && m_targets.GetSpeed() > 0.0f)
     {
         float dist;
@@ -1059,7 +1061,7 @@ void Spell::AddUnitTarget(Unit* pVictim, SpellEffectIndex effIndex)
         if (m_delayMoment == 0 || m_delayMoment>target.timeDelay)
             m_delayMoment = target.timeDelay;
     }
-    // Spell have speed - need calculate incoming time
+    // Spell has speed - need calculate incoming time
     else if (m_spellInfo->speed > 0.0f && affectiveObject && pVictim != affectiveObject)
     {
         // calculate spell incoming interval
@@ -1071,7 +1073,7 @@ void Spell::AddUnitTarget(Unit* pVictim, SpellEffectIndex effIndex)
         if (m_delayMoment == 0 || m_delayMoment>target.timeDelay)
             m_delayMoment = target.timeDelay;
     }
-    // Spell catsed on self - mostly TRIGGER_MISSILE code
+    // Spell casted on self - mostly TRIGGER_MISSILE code
     else if (m_spellInfo->speed > 0.0f && affectiveObject && pVictim == affectiveObject)
     {
         float dist = 0.0f;
@@ -1138,7 +1140,7 @@ void Spell::AddGOTarget(GameObject* pVictim, SpellEffectIndex effIndex)
     // spell fly from visual cast object
     WorldObject* affectiveObject = GetAffectiveCasterObject();
 
-    // Spell have trajectory - need calculate incoming time
+    // Spell has trajectory - need calculate incoming time
     if (affectiveObject && m_targets.GetSpeed() > 0.0f)
     {
         float dist;
@@ -1154,7 +1156,7 @@ void Spell::AddGOTarget(GameObject* pVictim, SpellEffectIndex effIndex)
         if (m_delayMoment == 0 || m_delayMoment > target.timeDelay)
             m_delayMoment = target.timeDelay;
     }
-    // Spell have speed - need calculate incoming time
+    // Spell has speed - need calculate incoming time
     else if (m_spellInfo->speed > 0.0f && affectiveObject && pVictim != affectiveObject)
     {
         // calculate spell incoming interval
