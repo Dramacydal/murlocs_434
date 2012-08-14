@@ -390,27 +390,44 @@ void SpellCastTargets::write( ByteBuffer& data ) const
         data << m_strTarget;
 }
 
-void SpellCastTargets::ReadAdditionalData(ByteBuffer& data)
+void SpellCastTargets::ReadAdditionalData(WorldPacket& data, uint8& cast_flags)
 {
-    data >> m_elevation;
-    data >> m_speed;
-
-    uint8 moveFlag;
-    data >> moveFlag;
-
-    if (moveFlag)
+    if (cast_flags & 0x02)              // has trajectory data
     {
-        ObjectGuid guid;                                // unk guid (possible - active mover) - unused
-        MovementInfo movementInfo;                      // MovementInfo
+        data >> m_elevation >> m_speed;
 
-        data >> Unused<uint32>();                       // >> MSG_MOVE_STOP
-        data >> guid.ReadAsPacked();
-        data >> movementInfo;
-        setSource(movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z);
+        bool hasMovementData;
+        data >> hasMovementData;
+        if (hasMovementData)
+        {
+            MovementInfo mi;
+            data >> mi;
+        }
+    }
+    else if (cast_flags & 0x08)         // has archaeology weight
+    {
+        uint32 count;
+        uint8 type;
+        data >> count;
+        for (uint32 i = 0; i < count; ++i)
+        {
+            data >> type;
+            switch (type)
+            {
+                case 1:                         // Fragments
+                    data >> Unused<uint32>();   // Currency entry
+                    data >> Unused<uint32>();   // Currency count
+                    break;
+                case 2:                         // Keystones
+                    data >> Unused<uint32>();   // Item entry
+                    data >> Unused<uint32>();   // Item count
+                    break;
+            }
+        }
     }
 }
 
-Spell::Spell( Unit* caster, SpellEntry const *info, bool triggered, ObjectGuid originalCasterGUID, SpellEntry const* triggeredBy )
+Spell::Spell(Unit* caster, SpellEntry const* info, bool triggered, ObjectGuid originalCasterGUID, SpellEntry const* triggeredBy)
 {
     MANGOS_ASSERT( caster != NULL && info != NULL );
     MANGOS_ASSERT( info == sSpellStore.LookupEntry( info->Id ) && "`info` must be pointer to sSpellStore element");
@@ -4687,9 +4704,6 @@ void Spell::SendSpellStart()
     DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Sending SMSG_SPELL_START id=%u", m_spellInfo->Id);
 
     uint32 castFlags = CAST_FLAG_UNKNOWN2;
-    if (IsRangedSpell())
-        castFlags |= CAST_FLAG_AMMO;
-
     if (m_spellInfo->runeCostID)
         castFlags |= CAST_FLAG_UNKNOWN19;
 
@@ -4697,8 +4711,12 @@ void Spell::SendSpellStart()
     if (!caster)
         caster = m_caster;
 
-    WorldPacket data(SMSG_SPELL_START, (8+8+4+4+2));
+    if ((m_caster->GetTypeId() == TYPEID_PLAYER ||
+        m_caster->GetTypeId() == TYPEID_UNIT && ((Creature*)m_caster)->IsPet()) &&
+        m_spellInfo->powerType != POWER_HEALTH)
+        castFlags |= CAST_FLAG_PREDICTED_POWER;
 
+    WorldPacket data(SMSG_SPELL_START, (8 + 8 + 4 + 4 + 2));
     if (m_CastItem)
         data << m_CastItem->GetPackGUID();
     else
@@ -4709,24 +4727,30 @@ void Spell::SendSpellStart()
     data << uint32(m_spellInfo->Id);                        // spellId
     data << uint32(castFlags);                              // cast flags
     data << uint32(m_timer);                                // delay?
+    data << uint32(m_casttime);                             // m_casttime
 
     data << m_targets;
 
     if (castFlags & CAST_FLAG_PREDICTED_POWER)              // predicted power
-        data << uint32(0);
+        data << uint32(m_caster->GetPower(Powers(m_spellInfo->powerType)));
 
     if (castFlags & CAST_FLAG_PREDICTED_RUNES)              // predicted runes
     {
-        uint8 v1 = 0;//m_runesState;
-        uint8 v2 = 0;//((Player*)m_caster)->GetRunesState();
-        data << uint8(v1);                                  // runes state before
-        data << uint8(v2);                                  // runes state after
-        for(uint8 i = 0; i < MAX_RUNES; ++i)
+        if (m_caster->GetTypeId() == TYPEID_PLAYER)
         {
-            uint8 m = (1 << i);
-            if(m & v1)                                      // usable before...
-                if(!(m & v2))                               // ...but on cooldown now...
-                    data << uint8(0);                       // some unknown byte (time?)
+            Player* caster = (Player*)m_caster;
+
+            data << uint8(m_runesState);
+            data << uint8(caster->GetRunesState());
+            for (uint8 i = 0; i < MAX_RUNES; ++i)
+                data << uint8(255 - ((caster->GetRuneCooldown(i) / REGEN_TIME_FULL) * 51));
+        }
+        else
+        {
+            data << uint8(0);
+            data << uint8(0);
+            for (uint8 i = 0; i < MAX_RUNES; ++i)
+                data << uint8(0);
         }
     }
 
@@ -4737,6 +4761,15 @@ void Spell::SendSpellStart()
     {
         data << uint32(0);                                  // used for SetCastSchoolImmunities
         data << uint32(0);                                  // used for SetCastImmunities
+    }
+
+    if (castFlags & CAST_FLAG_HEAL_PREDICTION)
+    {
+        uint8 unk = 0;
+        data << uint32(0);
+        data << uint8(unk);
+        if (unk == 2)
+            data << ObjectGuid().WriteAsPacked();
     }
 
     m_caster->SendMessageToSet(&data, true);
@@ -4751,13 +4784,15 @@ void Spell::SendSpellGo()
     DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Sending SMSG_SPELL_GO id=%u", m_spellInfo->Id);
 
     uint32 castFlags = CAST_FLAG_UNKNOWN9;
-    if (IsRangedSpell())
-        castFlags |= CAST_FLAG_AMMO;                        // arrows/bullets visual
 
-    if ((m_caster->GetTypeId() == TYPEID_PLAYER) && (m_caster->getClass() == CLASS_DEATH_KNIGHT) && m_spellInfo->runeCostID)
+    if ((m_caster->GetTypeId() == TYPEID_PLAYER ||
+        m_caster->GetTypeId() == TYPEID_UNIT && ((Creature*)m_caster)->IsPet()) &&
+        m_spellInfo->powerType != POWER_HEALTH)
+        castFlags |= CAST_FLAG_PREDICTED_POWER;
+
+    if (m_caster->GetTypeId() == TYPEID_PLAYER && m_caster->getClass() == CLASS_DEATH_KNIGHT && m_spellInfo->runeCostID)
     {
         castFlags |= CAST_FLAG_UNKNOWN19;                   // same as in SMSG_SPELL_START
-        castFlags |= CAST_FLAG_PREDICTED_POWER;             // makes cooldowns visible
         castFlags |= CAST_FLAG_PREDICTED_RUNES;             // rune cooldowns list
     }
 
@@ -4776,6 +4811,7 @@ void Spell::SendSpellGo()
     data << uint8(m_cast_count);                            // pending spell cast?
     data << uint32(m_spellInfo->Id);                        // spellId
     data << uint32(castFlags);                              // cast flags
+    data << uint32(m_timer);
     data << uint32(WorldTimer::getMSTime());                // timestamp
 
     WriteSpellGoTargets(&data);
@@ -4783,27 +4819,32 @@ void Spell::SendSpellGo()
     data << m_targets;
 
     if (castFlags & CAST_FLAG_PREDICTED_POWER)              // predicted power
-        data << uint32(m_caster->GetPower(m_caster->getPowerType())); // Yes, it is really predicted power.
+        data << uint32(m_caster->GetPower(Powers(m_spellInfo->powerType)));
 
     if (castFlags & CAST_FLAG_PREDICTED_RUNES)              // predicted runes
     {
-        uint8 v1 = m_runesState;
-        uint8 v2 =  m_caster->getClass() == CLASS_DEATH_KNIGHT ? ((Player*)m_caster)->GetRunesState() : 0;
-        data << uint8(v1);                                  // runes state before
-        data << uint8(v2);                                  // runes state after
-        for(uint8 i = 0; i < MAX_RUNES; ++i)
+        if (m_caster->GetTypeId() == TYPEID_PLAYER)
         {
-            uint8 m = (1 << i);
-            if(m & v1)                                      // usable before...
-                if(!(m & v2))                               // ...but on cooldown now...
-                    data << uint8(0);                       // some unknown byte (time?)
+            Player* caster = (Player*)m_caster;
+
+            data << uint8(m_runesState);
+            data << uint8(caster->GetRunesState());
+            for (uint8 i = 0; i < MAX_RUNES; ++i)
+                data << uint8(255 - ((caster->GetRuneCooldown(i) / REGEN_TIME_FULL) * 51));
+        }
+        else
+        {
+            data << uint8(0);
+            data << uint8(0);
+            for (uint8 i = 0; i < MAX_RUNES; ++i)
+                data << uint8(0);
         }
     }
 
     if (castFlags & CAST_FLAG_ADJUST_MISSILE)               // adjust missile trajectory duration
     {
-        data << float(0);
-        data << uint32(0);
+        data << float(m_targets.GetElevation());
+        data << uint32(m_delayMoment);
     }
 
     if (castFlags & CAST_FLAG_AMMO)                         // projectile info
