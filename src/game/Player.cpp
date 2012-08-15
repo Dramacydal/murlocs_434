@@ -20228,9 +20228,11 @@ void Player::AddSpellMod(Aura* aura, bool apply)
                     val += (*itr)->GetModifier()->m_amount;
             }
             val += apply ? mod->m_amount : -(mod->m_amount);
-            WorldPacket data(Opcode, (1+1+4));
-            data << uint8(eff);
+            WorldPacket data(Opcode, 4 + 4 + 1 + 1 + 4);
+            data << uint32(1);
+            data << uint32(1);
             data << uint8(mod->m_miscvalue);
+            data << uint8(eff);
             data << int32(val);
             SendDirectMessage(&data);
         }
@@ -20675,8 +20677,8 @@ void Player::ContinueTaxiFlight()
 
 void Player::ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs )
 {
-                                                            // last check 2.0.10
-    WorldPacket data(SMSG_SPELL_COOLDOWN, 8+1+m_spells.size()*8);
+    // last check 4.3.4
+    WorldPacket data(SMSG_SPELL_COOLDOWN, 8 + 1 + m_spells.size() * 8);
     data << GetObjectGuid();
     data << uint8(0x0);                                     // flags (0x1, 0x2)
     time_t curTime = time(NULL);

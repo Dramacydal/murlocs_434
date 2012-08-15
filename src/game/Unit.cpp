@@ -2247,40 +2247,43 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
         // victim's damage shield
         std::set<Aura*> alreadyDone;
         AuraList const& vDamageShields = pVictim->GetAurasByType(SPELL_AURA_DAMAGE_SHIELD);
-        for(AuraList::const_iterator i = vDamageShields.begin(); i != vDamageShields.end();)
+        for (AuraList::const_iterator i = vDamageShields.begin(); i != vDamageShields.end();)
         {
-           if (alreadyDone.find(*i) == alreadyDone.end())
-           {
-               alreadyDone.insert(*i);
-               uint32 damage=(*i)->GetModifier()->m_amount;
-               SpellEntry const *i_spellProto = (*i)->GetSpellProto();
+            if (alreadyDone.find(*i) == alreadyDone.end())
+            {
+                alreadyDone.insert(*i);
+                uint32 damage = (*i)->GetModifier()->m_amount;
+                SpellEntry const* i_spellProto = (*i)->GetSpellProto();
 
-               // Ranger: Thorns - from getmangos.com (+ sql part!)
-               if (i_spellProto->IsFitToFamily(SPELLFAMILY_DRUID, UI64LIT(0x00000100)))
-               {
-                   Unit::AuraList const& dummyList = pVictim->GetAurasByType(SPELL_AURA_DUMMY);
-                   for(Unit::AuraList::const_iterator iter = dummyList.begin(); iter != dummyList.end(); ++iter)
-                   {      
-                      // Brambles
-                      if ((*iter)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID &&
+                // Ranger: Thorns - from getmangos.com (+ sql part!)
+                if (i_spellProto->IsFitToFamily(SPELLFAMILY_DRUID, UI64LIT(0x00000100)))
+                {
+                    Unit::AuraList const& dummyList = pVictim->GetAurasByType(SPELL_AURA_DUMMY);
+                    for(Unit::AuraList::const_iterator iter = dummyList.begin(); iter != dummyList.end(); ++iter)
+                    {      
+                        // Brambles
+                        if ((*iter)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID &&
                             (*iter)->GetSpellProto()->SpellIconID == 53)
-                      {
-                          damage += uint32(damage * (*iter)->GetModifier()->m_amount / 100);
-                          break;
-                      }  
-                   }
+                        {
+                            damage += uint32(damage * (*iter)->GetModifier()->m_amount / 100);
+                            break;
+                        }
+                    }
 
-                   // Ranger - Thorns spell power coeff: 3,3% from www.wowwiki.com/Spell_power_coefficient
-                   damage += uint32(pVictim->SpellBaseDamageBonusDone(GetSpellSchoolMask(i_spellProto)) * 0.033f);
-               }
+                    // Ranger - Thorns spell power coeff: 3,3% from www.wowwiki.com/Spell_power_coefficient
+                    damage += uint32(pVictim->SpellBaseDamageBonusDone(GetSpellSchoolMask(i_spellProto)) * 0.033f);
+                }
 
-               //Calculate absorb resist ??? no data in opcode for this possibly unable to absorb or resist?
-               //uint32 absorb;
-               //uint32 resist;
-               //CalcAbsorbResist(pVictim, SpellSchools(spellProto->School), SPELL_DIRECT_DAMAGE, damage, &absorb, &resist);
-               //damage-=absorb + resist;
 
-                pVictim->DealDamageMods(this,damage,NULL);
+                uint32 absorb, resist;
+                CalculateDamageAbsorbAndResist(pVictim, GetSpellSchoolMask(i_spellProto), SPELL_DIRECT_DAMAGE, damage, &absorb, &resist);
+
+                if (damage >= absorb + resist)
+                    damage -= absorb + resist;
+                else
+                    damage = 0;
+
+                pVictim->DealDamageMods(this, damage, NULL);
 
                 uint32 targetHealth = GetHealth();
                 uint32 overkill = damage > targetHealth ? damage - targetHealth : 0;
@@ -2292,7 +2295,8 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
                 data << uint32(damage);                  // Damage
                 data << uint32(overkill);                // Overkill
                 data << uint32(i_spellProto->SchoolMask);
-                pVictim->SendMessageToSet(&data, true );
+                data << uint32(resist);                  // Resist
+                pVictim->SendMessageToSet(&data, true);
 
                 pVictim->DealDamage(this, damage, 0, SPELL_DIRECT_DAMAGE, GetSpellSchoolMask(i_spellProto), i_spellProto, true);
 
@@ -6057,11 +6061,16 @@ void Unit::SendSpellMiss(Unit *target, uint32 spellID, SpellMissInfo missInfo)
     WorldPacket data(SMSG_SPELLLOGMISS, (4+8+1+4+8+1));
     data << uint32(spellID);
     data << GetObjectGuid();
-    data << uint8(0);                                       // can be 0 or 1
+    data << uint8(0);                                       // can be 0 or 1, flag
     data << uint32(1);                                      // target count
     // for(i = 0; i < target count; ++i)
     data << target->GetObjectGuid();                        // target GUID
     data << uint8(missInfo);
+    //if (flag)
+    //{
+    //    data << float(0.0f);
+    //    data << float(0.0f);
+    //}
     // end loop
     SendMessageToSet(&data, true);
 }

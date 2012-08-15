@@ -1273,9 +1273,11 @@ bool ChatHandler::HandleDebugSpellModsCommand(char* args)
         ChatHandler(chr).PSendSysMessage(LANG_YOURS_SPELLMODS_CHANGED, GetNameLink().c_str(),
             opcode == SMSG_SET_FLAT_SPELL_MODIFIER ? "flat" : "pct", spellmodop, value, effidx);
 
-    WorldPacket data(opcode, (1+1+2+2));
-    data << uint8(effidx);
+    WorldPacket data(opcode, (1 + 1 + 2 + 2));
+    data << uint32(1);
+    data << uint32(1);
     data << uint8(spellmodop);
+    data << uint8(effidx);
     data << int32(value);
     chr->GetSession()->SendPacket(&data);
 
