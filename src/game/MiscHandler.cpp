@@ -1506,7 +1506,7 @@ void WorldSession::HandleSetRaidDifficultyOpcode( WorldPacket & recv_data )
             } 
 
             // the difficulty is set even if the instances can't be reset
-            //_player->SendDungeonDifficulty(true);
+            _player->SendDungeonDifficulty(true);
             pGroup->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, true, _player);
             pGroup->SetRaidDifficulty(Difficulty(mode));
         }
