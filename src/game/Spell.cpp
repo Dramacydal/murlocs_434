@@ -3834,6 +3834,8 @@ void Spell::cast(bool skipCheck)
                 AddTriggeredSpell(72757);                   // PvP trinket Cooldown
             else if(m_spellInfo->Id == 42292)               // PvP trinket
                 AddTriggeredSpell(72752);                   // Will of the Forsaken Cooldown
+            else if (m_spellInfo->Id == 68992)              // Darkflight
+                AddPrecastSpell(96223);                     // Run Speed Marker
             // Chaos Bane strength buff
             else if (m_spellInfo->Id == 71904)
                 AddTriggeredSpell(73422);
