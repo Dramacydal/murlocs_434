@@ -19,11 +19,11 @@
 #ifndef WORLD_PVP_GH
 #define WORLD_PVP_GH
 
+#include "Common.h"
+#include "OutdoorPvP.h"
+
 enum
 {
-    // zone ids
-    ZONE_ID_GRIZZLY_HILLS                   = 394,
-
     // npcs
     // alliance
     NPC_WESTFALL_BRIGADE_DEFENDER           = 27758,
@@ -55,28 +55,29 @@ enum
     EVENT_LIGHTHOUSE_NEUTRAL_HORDE          = 18042,
 };
 
-
 class OutdoorPvPGH : public OutdoorPvP
 {
     public:
-        OutdoorPvPGH(uint8 _id);
+        OutdoorPvPGH();
 
-        bool InitOutdoorPvPArea();
+        bool HandleEvent(uint32 eventId, GameObject* go) override;
 
-        void OnCreatureCreate(Creature* pCreature);
-        void OnGameObjectCreate(GameObject* pGo);
-        void ProcessEvent(uint32 uiEventId, GameObject* pGo, Player* pInvoker = NULL, uint32 spellId = 0);
+        void HandleCreatureCreate(Creature* creature) override;
+        void HandleCreatureDeath(Creature* creature) override;
+        void HandleGameObjectCreate(GameObject* go) override;
 
     private:
-        // respawn team soldiers
-        void RespawnSoldiers(const WorldObject* objRef);
+        // despawn team vendors, if not killed already
+        void DespawnVendors(const WorldObject* objRef);
+
+        void LockLighthouse(const WorldObject* objRef);
+        void UnlockLighthouse(const WorldObject* objRef);
 
         Team m_zoneOwner;
 
-        std::list<ObjectGuid> lAllianceSoldiers;
-        std::list<ObjectGuid> lHordeSoldiers;
-        std::list<ObjectGuid> lAllianceVendors;
-        std::list<ObjectGuid> lHordeVendors;
+        GuidList m_teamVendors;
+
+        ObjectGuid m_capturePoint;
 };
 
 #endif
