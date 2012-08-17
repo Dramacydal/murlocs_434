@@ -17,6 +17,11 @@
  */
 
 #include "OutdoorPvPMgr.h"
+#include "Policies/SingletonImp.h"
+#include "OutdoorPvP.h"
+#include "../GameObject.h"
+#include "../World.h"
+#include "Log.h"
 #include "OutdoorPvPEP.h"
 #include "OutdoorPvPGH.h"
 #include "OutdoorPvPHP.h"
@@ -25,252 +30,145 @@
 #include "OutdoorPvPTF.h"
 #include "OutdoorPvPWG.h"
 #include "OutdoorPvPZM.h"
-#include "Policies/SingletonImp.h"
 
 INSTANTIATE_SINGLETON_1(OutdoorPvPMgr);
 
 OutdoorPvPMgr::OutdoorPvPMgr()
 {
-    m_UpdateTimer.SetInterval(sWorld.getConfig(CONFIG_UINT32_INTERVAL_MAPUPDATE));
+    m_updateTimer.SetInterval(TIMER_OPVP_MGR_UPDATE);
+    memset(&m_scripts, 0, sizeof(m_scripts));
 }
 
 OutdoorPvPMgr::~OutdoorPvPMgr()
 {
-    for (OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
-        delete *itr;
+    for (uint8 i = 0; i < MAX_OPVP_ID; ++i)
+        delete m_scripts[i];
 }
 
 /**
-   Function which loads the world pvp scripts
+   Function which loads all outdoor pvp scripts
  */
 void OutdoorPvPMgr::InitOutdoorPvP()
 {
-    uint8 count = 0;
-    for (uint8 id = 0; id < OUTDOOR_PVP_COUNT; ++id)
-    {
-        OutdoorPvP* outdoorPvP = NULL;
-        switch (id)
-        {
-            case OUTDOOR_PVP_EP: outdoorPvP = new OutdoorPvPEP(id); break;
-            case OUTDOOR_PVP_SI: outdoorPvP = new OutdoorPvPSI(id); break;
-            case OUTDOOR_PVP_HP: outdoorPvP = new OutdoorPvPHP(id); break;
-            case OUTDOOR_PVP_NA: outdoorPvP = new OutdoorPvPNA(id); break;
-            case OUTDOOR_PVP_TF: outdoorPvP = new OutdoorPvPTF(id); break;
-            case OUTDOOR_PVP_ZM: outdoorPvP = new OutdoorPvPZM(id); break;
-            case OUTDOOR_PVP_GH: outdoorPvP = new OutdoorPvPGH(id); break;
-            case OUTDOOR_PVP_WG: outdoorPvP = new OutdoorPvPWG(id); break;
-        }
-
-        if (outdoorPvP->InitOutdoorPvPArea())
-        {
-            m_OutdoorPvPSet.push_back(outdoorPvP);
-            ++count;
-        }
-        else
-        {
-            sLog.outDebug("OutdoorPvP: Outdoor PvP id %u loading failed.", id);
-            delete outdoorPvP;
-        }
-    }
 
     sLog.outString();
-    sLog.outString(">> Loaded %u World PvP zones", count);
+    sLog.outString(">> Loaded %u Outdoor PvP zones", MAX_OPVP_ID);
 }
 
-/**
-   Function that adds a specific zone to a outdoor pvp script
-
-   @param   zone id used for the current outdoor pvp script
-   @param   outdoor pvp script object
- */
-void OutdoorPvPMgr::AddZone(uint32 uiZoneId, OutdoorPvP* pScriptHandler)
+OutdoorPvP* OutdoorPvPMgr::GetScript(uint32 zoneId)
 {
-    m_OutdoorPvPMap[uiZoneId] = pScriptHandler;
+    switch (zoneId)
+    {
+        case ZONE_ID_SILITHUS:
+            return m_scripts[OPVP_ID_SI];
+        case ZONE_ID_EASTERN_PLAGUELANDS:
+            return m_scripts[OPVP_ID_EP];
+        case ZONE_ID_HELLFIRE_PENINSULA:
+            return m_scripts[OPVP_ID_HP];
+        case ZONE_ID_ZANGARMARSH:
+            return m_scripts[OPVP_ID_ZM];
+        case ZONE_ID_TEROKKAR_FOREST:
+            return m_scripts[OPVP_ID_TF];
+        case ZONE_ID_NAGRAND:
+            return m_scripts[OPVP_ID_NA];
+        case ZONE_ID_GRIZZLY_HILLS:
+            return m_scripts[OPVP_ID_GH];
+        case ZONE_ID_WINTERGRASP:
+            return m_scripts[OPVP_ID_WG];
+        default:
+            return NULL;
+    }
+}
+
+OutdoorPvP* OutdoorPvPMgr::GetScriptOfAffectedZone(uint32 zoneId)
+{
+    switch (zoneId)
+    {
+        case ZONE_ID_TEMPLE_OF_AQ:
+        case ZONE_ID_RUINS_OF_AQ:
+        case ZONE_ID_GATES_OF_AQ:
+            return m_scripts[OPVP_ID_SI];
+        case ZONE_ID_STRATHOLME:
+        case ZONE_ID_SCHOLOMANCE:
+            return m_scripts[OPVP_ID_EP];
+        case ZONE_ID_HELLFIRE_RAMPARTS:
+        case ZONE_ID_HELLFIRE_CITADEL:
+        case ZONE_ID_BLOOD_FURNACE:
+        case ZONE_ID_SHATTERED_HALLS:
+        case ZONE_ID_MAGTHERIDON_LAIR:
+            return m_scripts[OPVP_ID_HP];
+        case ZONE_ID_SERPENTSHRINE_CAVERN:
+        case ZONE_ID_STREAMVAULT:
+        case ZONE_ID_UNDERBOG:
+        case ZONE_ID_SLAVE_PENS:
+            return m_scripts[OPVP_ID_ZM];
+        case ZONE_ID_SHADOW_LABYRINTH:
+        case ZONE_ID_AUCHENAI_CRYPTS:
+        case ZONE_ID_SETHEKK_HALLS:
+        case ZONE_ID_MANA_TOMBS:
+            return m_scripts[OPVP_ID_TF];
+        default:
+            return NULL;
+    }
 }
 
 /**
    Function that handles the players which enters a specific zone
 
    @param   player to be handled in the event
-   @param   zone id used for the current world pvp script
+   @param   zone id used for the current outdoor pvp script
  */
-void OutdoorPvPMgr::HandlePlayerEnterZone(Player* pPlayer, uint32 uiZoneId)
+void OutdoorPvPMgr::HandlePlayerEnterZone(Player* player, uint32 zoneId)
 {
-    OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(uiZoneId);
-    if (itr == m_OutdoorPvPMap.end())
-        return;
-
-    if (itr->second->HasPlayer(pPlayer))
-        return;
-
-    itr->second->HandlePlayerEnterZone(pPlayer);
+    if (OutdoorPvP* script = GetScript(zoneId))
+        script->HandlePlayerEnterZone(player, true);
+    else if (OutdoorPvP* script = GetScriptOfAffectedZone(zoneId))
+        script->HandlePlayerEnterZone(player, false);
 }
 
 /**
-   Function that handles the players which leaves a specific zone
+   Function that handles the player who leaves a specific zone
 
    @param   player to be handled in the event
    @param   zone id used for the current outdoor pvp script
  */
-void OutdoorPvPMgr::HandlePlayerLeaveZone(Player* pPlayer, uint32 uiZoneId)
+void OutdoorPvPMgr::HandlePlayerLeaveZone(Player* player, uint32 zoneId)
 {
-    OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(uiZoneId);
-    if (itr == m_OutdoorPvPMap.end())
-        return;
-
-    // teleport: remove once in removefromworld, once in updatezone
-    if (!itr->second->HasPlayer(pPlayer))
-        return;
-
-    itr->second->HandlePlayerLeaveZone(pPlayer);
+    // teleport: called once from Player::CleanupsBeforeDelete, once from Player::UpdateZone
+    if (OutdoorPvP* script = GetScript(zoneId))
+        script->HandlePlayerLeaveZone(player, true);
+    else if (OutdoorPvP* script = GetScriptOfAffectedZone(zoneId))
+        script->HandlePlayerLeaveZone(player, false);
 }
 
-/**
-   Function that handles the players which enters an area in specific zone
-
-   @param   player to be handled in the event
-   @param   zone id used for the current world pvp script
-   @param   area id
- */
-void OutdoorPvPMgr::HandlePlayerEnterArea(Player* pPlayer, uint32 uiZoneId, uint32 uiAreaId)
+void OutdoorPvPMgr::HandlePlayerEnterArea(Player* player, uint32 zoneId, uint32 areaId)
 {
-    OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(uiZoneId);
-    if (itr == m_OutdoorPvPMap.end())
-        return;
-
-    itr->second->HandlePlayerEnterArea(pPlayer, uiAreaId);
+    // teleport: called once from Player::CleanupsBeforeDelete, once from Player::UpdateZone
+    if (OutdoorPvP* script = GetScript(zoneId))
+        script->HandlePlayerEnterArea(player, areaId, true);
+    else if (OutdoorPvP* script = GetScriptOfAffectedZone(zoneId))
+        script->HandlePlayerEnterArea(player, areaId, false);
 }
 
-/**
-   Function that handles the players which leaves an area in specific zone
-
-   @param   player to be handled in the event
-   @param   zone id used for the current outdoor pvp script
-   @param   area id
- */
-void OutdoorPvPMgr::HandlePlayerLeaveArea(Player* pPlayer, uint32 uiZoneId, uint32 uiAreaId)
+void OutdoorPvPMgr::HandlePlayerLeaveArea(Player* player, uint32 zoneId, uint32 areaId)
 {
-    OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(uiZoneId);
-    if (itr == m_OutdoorPvPMap.end())
-        return;
-
-    itr->second->HandlePlayerLeaveArea(pPlayer, uiAreaId);
-}
-
-/**
-   Function that handles when a player drops a flag during an outtdoor pvp event
-
-   @param   player which executes the event
-   @param   spell id which acts as the flag
- */
-void OutdoorPvPMgr::HandleDropFlag(Player* pPlayer, uint32 uiSpellId)
-{
-    for (OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
-    {
-        if ((*itr)->HandleDropFlag(pPlayer, uiSpellId))
-            return;
-    }
-}
-
-/**
-   Function that handles the objective complete of a capture point
-
-   @param   player set to which to send the credit
-   @param   capture evetn id
- */
-void OutdoorPvPMgr::HandleObjectiveComplete(uint32 uiEventId, std::list<Player*> players, Team team)
-{
-    for (OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
-        (*itr)->HandleObjectiveComplete(uiEventId, players, team);
-}
-
-/**
-   Function that handles the player kill inside a capture point
-
-   @param   player
-   @param   victim
- */
-void OutdoorPvPMgr::HandlePlayerKill(Player* pPlayer, Unit* pVictim)
-{
-    for (OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
-        (*itr)->HandlePlayerKill(pPlayer, pVictim);
-}
-
-/**
-   Function that handles when a player uses a world pvp gameobject
-
-   @param   player which executes the event
-   @param   gameobject used
- */
-bool OutdoorPvPMgr::HandleObjectUse(Player* pPlayer, GameObject* pGo)
-{
-    for (OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
-    {
-        if ((*itr)->HandleObjectUse(pPlayer, pGo))
-            return true;
-    }
-    return false;
-}
-
-/**
-   Function that returns a specific world pvp script for a given zone id
-
-   @param   zone id used for the current world pvp script
- */
-OutdoorPvP* OutdoorPvPMgr::GetOutdoorPvPToZoneId(uint32 uiZoneId)
-{
-    OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(uiZoneId);
-
-    // no handle for this zone, return
-    if (itr == m_OutdoorPvPMap.end())
-        return NULL;
-
-    return itr->second;
-}
-
-/**
-   Function that returns the zone script for a specific zone id
-
-   @param   zone id used for the current world pvp script
- */
-ZoneScript* OutdoorPvPMgr::GetZoneScript(uint32 uiZoneId)
-{
-    OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(uiZoneId);
-
-    if (itr != m_OutdoorPvPMap.end())
-        return itr->second;
-    else
-        return NULL;
+    // teleport: called once from Player::CleanupsBeforeDelete, once from Player::UpdateZone
+    if (OutdoorPvP* script = GetScript(zoneId))
+        script->HandlePlayerLeaveArea(player, areaId, true);
+    else if (OutdoorPvP* script = GetScriptOfAffectedZone(zoneId))
+        script->HandlePlayerLeaveArea(player, areaId, false);
 }
 
 void OutdoorPvPMgr::Update(uint32 diff)
 {
-    m_UpdateTimer.Update(diff);
-    if (!m_UpdateTimer.Passed())
+    m_updateTimer.Update(diff);
+    if (!m_updateTimer.Passed())
         return;
 
-    for (OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
-        (*itr)->Update((uint32)m_UpdateTimer.GetCurrent());
+    for (uint8 i = 0; i < MAX_OPVP_ID; ++i)
+        (*m_scripts[i]).Update(m_updateTimer.GetCurrent());
 
-    m_UpdateTimer.SetCurrent(0);
-}
-
-OutdoorPvP* OutdoorPvPMgr::GetOutdoorPvPById(uint8 id)
-{
-    for (OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
-        if ((*itr)->GetId() == id)
-            return *itr;
-
-    return NULL;
-}
-
-OutdoorPvP* OutdoorPvPMgr::GetOutdoorPvPByBattlefieldId(uint8 id)
-{
-    for (OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
-        if ((*itr)->GetBatllefieldId() == id)
-            return *itr;
-
-    return NULL;
+    m_updateTimer.Reset();
 }
 
 /**
@@ -278,11 +176,12 @@ OutdoorPvP* OutdoorPvPMgr::GetOutdoorPvPByBattlefieldId(uint8 id)
 
    @param   capture point entry
  */
-int8 OutdoorPvPMgr::GetCapturePointSliderValue(uint32 uiEntry)
+int8 OutdoorPvPMgr::GetCapturePointSliderValue(uint32 entry)
 {
-    std::map<uint32, int8>::iterator find = m_CapturePointSlider.find(uiEntry);
-    if (find != m_CapturePointSlider.end())
-        return find->second;
+    std::map<uint32, int8>::iterator itr = m_capturePointSlider.find(entry);
+
+    if (itr != m_capturePointSlider.end())
+        return itr->second;
 
     // return default value if we can't find any
     return CAPTURE_SLIDER_NEUTRAL;
