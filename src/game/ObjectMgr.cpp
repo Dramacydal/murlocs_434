@@ -2189,7 +2189,7 @@ void ObjectMgr::LoadItemPrototypes()
         if (proto->DamageType >= MAX_SPELL_SCHOOL)
         {
             sLog.outErrorDb("Item (Entry: %u) has wrong damagetype (%u)", i, proto->DamageType);
-                const_cast<ItemPrototype*>(proto)->DamageType = 0;
+            const_cast<ItemPrototype*>(proto)->DamageType = 0;
         }
 
         // special format
