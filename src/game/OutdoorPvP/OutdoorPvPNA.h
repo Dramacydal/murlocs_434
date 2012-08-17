@@ -19,14 +19,15 @@
 #ifndef WORLD_PVP_NA
 #define WORLD_PVP_NA
 
+#include "Common.h"
+#include "OutdoorPvP.h"
+#include "../Language.h"
+
 enum
 {
     MAX_NA_GUARDS                           = 15,
     MAX_NA_ROOSTS                           = 4,                // roosts for each type and team
     MAX_FIRE_BOMBS                          = 10,
-
-    // zone ids
-    ZONE_ID_NAGRAND                         = 3518,
 
     // spells
     SPELL_STRENGTH_HALAANI                  = 33795,
@@ -136,85 +137,83 @@ enum
     WORLD_STATE_NA_HALAA_ALLIANCE           = 2673,
 };
 
-static const uint32 aFlightPathStartNodes[MAX_NA_ROOSTS]    = {103, 107, 109, 105};
-static const uint32 aFlightPathEndNodes[MAX_NA_ROOSTS]      = {104, 108, 110, 106};
+struct HalaaSoldiersSpawns
+{
+    float x, y, z, o;
+};
 
-static const uint32 aAllianceRoosts[MAX_NA_ROOSTS]          = {GO_WYVERN_ROOST_ALLIANCE_SOUTH,          GO_WYVERN_ROOST_ALLIANCE_NORTH,         GO_WYVERN_ROOST_ALLIANCE_EAST,          GO_WYVERN_ROOST_ALLIANCE_WEST};
-static const uint32 aHordeRoosts[MAX_NA_ROOSTS]             = {GO_WYVERN_ROOST_HORDE_SOUTH,             GO_WYVERN_ROOST_HORDE_NORTH,            GO_WYVERN_ROOST_HORDE_EAST,             GO_WYVERN_ROOST_HORDE_WEST};
-static const uint32 aAllianceBrokenRoosts[MAX_NA_ROOSTS]    = {GO_DESTROYED_ROOST_ALLIANCE_SOUTH,       GO_DESTROYED_ROOST_ALLIANCE_NORTH,      GO_DESTROYED_ROOST_ALLIANCE_EAST,       GO_DESTROYED_ROOST_ALLIANCE_WEST};
-static const uint32 aHordeBrokenRoosts[MAX_NA_ROOSTS]       = {GO_DESTROYED_ROOST_HORDE_SOUTH,          GO_DESTROYED_ROOST_HORDE_NORTH,         GO_DESTROYED_ROOST_HORDE_EAST,          GO_DESTROYED_ROOST_HORDE_WEST};
-static const uint32 aAllianceWagons[MAX_NA_ROOSTS]          = {GO_BOMB_WAGON_ALLIANCE_SOUTH,            GO_BOMB_WAGON_ALLIANCE_NORTH,           GO_BOMB_WAGON_ALLIANCE_EAST,            GO_BOMB_WAGON_ALLIANCE_WEST};
-static const uint32 aHordeWagons[MAX_NA_ROOSTS]             = {GO_BOMB_WAGON_HORDE_SOUTH,               GO_BOMB_WAGON_HORDE_NORTH,              GO_BOMB_WAGON_HORDE_EAST,               GO_BOMB_WAGON_HORDE_WEST};
+static const uint32 nagrandRoostsAlliance[MAX_NA_ROOSTS]                = {GO_WYVERN_ROOST_ALLIANCE_SOUTH,          GO_WYVERN_ROOST_ALLIANCE_NORTH,         GO_WYVERN_ROOST_ALLIANCE_EAST,          GO_WYVERN_ROOST_ALLIANCE_WEST};
+static const uint32 nagrandRoostsHorde[MAX_NA_ROOSTS]                   = {GO_WYVERN_ROOST_HORDE_SOUTH,             GO_WYVERN_ROOST_HORDE_NORTH,            GO_WYVERN_ROOST_HORDE_EAST,             GO_WYVERN_ROOST_HORDE_WEST};
+static const uint32 nagrandRoostsBrokenAlliance[MAX_NA_ROOSTS]          = {GO_DESTROYED_ROOST_ALLIANCE_SOUTH,       GO_DESTROYED_ROOST_ALLIANCE_NORTH,      GO_DESTROYED_ROOST_ALLIANCE_EAST,       GO_DESTROYED_ROOST_ALLIANCE_WEST};
+static const uint32 nagrandRoostsBrokenHorde[MAX_NA_ROOSTS]             = {GO_DESTROYED_ROOST_HORDE_SOUTH,          GO_DESTROYED_ROOST_HORDE_NORTH,         GO_DESTROYED_ROOST_HORDE_EAST,          GO_DESTROYED_ROOST_HORDE_WEST};
+static const uint32 nagrandWagonsAlliance[MAX_NA_ROOSTS]                = {GO_BOMB_WAGON_ALLIANCE_SOUTH,            GO_BOMB_WAGON_ALLIANCE_NORTH,           GO_BOMB_WAGON_ALLIANCE_EAST,            GO_BOMB_WAGON_ALLIANCE_WEST};
+static const uint32 nagrandWagonsHorde[MAX_NA_ROOSTS]                   = {GO_BOMB_WAGON_HORDE_SOUTH,               GO_BOMB_WAGON_HORDE_NORTH,              GO_BOMB_WAGON_HORDE_EAST,               GO_BOMB_WAGON_HORDE_WEST};
 
-static const uint32 aAllianceRoostStates[MAX_NA_ROOSTS]     = {WORLD_STATE_NA_WYVERN_SOUTH_A,           WORLD_STATE_NA_WYVERN_NORTH_A,          WORLD_STATE_NA_WYVERN_EAST_A,           WORLD_STATE_NA_WYVERN_WEST_A};
-static const uint32 aHordeRoostStates[MAX_NA_ROOSTS]        = {WORLD_STATE_NA_WYVERN_SOUTH_H,           WORLD_STATE_NA_WYVERN_NORTH_H,          WORLD_STATE_NA_WYVERN_EAST_H,           WORLD_STATE_NA_WYVERN_WEST_H};
-static const uint32 aAllianceNeutralStates[MAX_NA_ROOSTS]   = {WORLD_STATE_NA_WYVERN_SOUTH_NEUTRAL_A,   WORLD_STATE_NA_WYVERN_NORTH_NEUTRAL_A,  WORLD_STATE_NA_WYVERN_EAST_NEUTRAL_A,   WORLD_STATE_NA_WYVERN_WEST_NEUTRAL_A};
-static const uint32 aHordeNeutralStates[MAX_NA_ROOSTS]      = {WORLD_STATE_NA_WYVERN_SOUTH_NEUTRAL_H,   WORLD_STATE_NA_WYVERN_NORTH_NEUTRAL_H,  WORLD_STATE_NA_WYVERN_EAST_NEUTRAL_H,   WORLD_STATE_NA_WYVERN_WEST_NEUTRAL_H};
+static const uint32 nagrandRoostStatesAlliance[MAX_NA_ROOSTS]           = {WORLD_STATE_NA_WYVERN_SOUTH_A,           WORLD_STATE_NA_WYVERN_NORTH_A,          WORLD_STATE_NA_WYVERN_EAST_A,           WORLD_STATE_NA_WYVERN_WEST_A};
+static const uint32 nagrandRoostStatesHorde[MAX_NA_ROOSTS]              = {WORLD_STATE_NA_WYVERN_SOUTH_H,           WORLD_STATE_NA_WYVERN_NORTH_H,          WORLD_STATE_NA_WYVERN_EAST_H,           WORLD_STATE_NA_WYVERN_WEST_H};
+static const uint32 nagrandRoostStatesAllianceNeutral[MAX_NA_ROOSTS]    = {WORLD_STATE_NA_WYVERN_SOUTH_NEUTRAL_A,   WORLD_STATE_NA_WYVERN_NORTH_NEUTRAL_A,  WORLD_STATE_NA_WYVERN_EAST_NEUTRAL_A,   WORLD_STATE_NA_WYVERN_WEST_NEUTRAL_A};
+static const uint32 nagrandRoostStatesHordeNeutral[MAX_NA_ROOSTS]       = {WORLD_STATE_NA_WYVERN_SOUTH_NEUTRAL_H,   WORLD_STATE_NA_WYVERN_NORTH_NEUTRAL_H,  WORLD_STATE_NA_WYVERN_EAST_NEUTRAL_H,   WORLD_STATE_NA_WYVERN_WEST_NEUTRAL_H};
 
 class OutdoorPvPNA : public OutdoorPvP
 {
     public:
-        OutdoorPvPNA(uint8 _id);
+        OutdoorPvPNA();
 
-        bool InitOutdoorPvPArea();
+        void HandlePlayerEnterZone(Player* player, bool isMainZone) override;
+        void HandlePlayerLeaveZone(Player* player, bool isMainZone) override;
+        void FillInitialWorldStates(WorldPacket& data, uint32& count) override;
+        void SendRemoveWorldStates(Player* player) override;
 
-        void FillInitialWorldStates(WorldPacket& data, uint32& count);
-        void SendRemoveWorldStates(Player* pPlayer);
+        bool HandleEvent(uint32 eventId, GameObject* go) override;
+        void HandleObjectiveComplete(uint32 eventId, std::list<Player*> players, Team team) override;
 
-        void HandlePlayerEnterZone(Player* pPlayer);
-        void HandlePlayerLeaveZone(Player* pPlayer);
-        void HandleObjectiveComplete(uint32 uiEventId, std::list<Player*> players, Team team);
-        void HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim);
+        void HandleCreatureCreate(Creature* creature) override;
+        void HandleGameObjectCreate(GameObject* go) override;
+        void HandleCreatureDeath(Creature* creature) override;
 
-        void OnCreatureCreate(Creature* pCreature);
-        void OnCreatureDeath(Creature* pCreature);
-        void OnCreatureRespawn(Creature* pCreature);
-        void OnGameObjectCreate(GameObject* pGo);
-
-        void ProcessEvent(uint32 uiEventId, GameObject* pGo, Player* pInvoker = NULL, uint32 spellId = 0);
-
-        bool HandleObjectUse(Player* pPlayer, GameObject* pGo);
+        void HandlePlayerKillInsideArea(Player* player, Unit* victim) override;
+        bool HandleGameObjectUse(Player* player, GameObject* go) override;
+        void Update(uint32 diff) override;
 
     private:
         // world states handling
-        void UpdateWorldState(uint8 uiValue);
-        void UpdateWyvernsWorldState(uint8 uiValue);
+        void UpdateWorldState(uint32 value);
+        void UpdateWyvernsWorldState(uint32 value);
 
         // process capture events
-        void ProcessCaptureEvent(GameObject* pGo, Team team);
+        void ProcessCaptureEvent(GameObject* go, Team team);
 
-        // Functions to handle some missing spells
-        bool AddBombsToInventory(Player* pPlayer);
-        bool HandlePlayerTaxiDrive(Player* pPlayer, uint8 uiPos);
-
-        // Link graveyard on Halaa
-        void SetGraveyard(bool remove = false);
-
-        // set specific team soldiers and objects after capture
-        void RespawnSoldiers(const WorldObject* objRef);
+        // set specific team vendors and objects after capture
+        void DespawnVendors(const WorldObject* objRef);
         void HandleFactionObjects(const WorldObject* objRef);
 
         // handle a specific game objects
-        void RespawnGO(const WorldObject* objRef, ObjectGuid goGuid, bool respawn);
         void LockHalaa(const WorldObject* objRef);
         void UnlockHalaa(const WorldObject* objRef);
 
+        // handle soldier respawn on timer
+        void RespawnSoldier();
+
         Team m_zoneOwner;
-        uint32 m_uiZoneWorldState;
-        uint32 m_uiZoneMapState;
-        uint32 m_uiRoostWorldState[MAX_NA_ROOSTS];
-        uint32 m_uiGuardsLeft;
+        uint32 m_soldiersRespawnTimer;
+        uint32 m_zoneWorldState;
+        uint32 m_zoneMapState;
+        uint32 m_roostWorldState[MAX_NA_ROOSTS];
+        uint8 m_guardsLeft;
 
-        ObjectGuid m_capturePointGuid;
-        ObjectGuid m_AllianceRoost[MAX_NA_ROOSTS];
-        ObjectGuid m_HordeRoost[MAX_NA_ROOSTS];
-        ObjectGuid m_AllianceBrokenRoost[MAX_NA_ROOSTS];
-        ObjectGuid m_HordeBrokenRoost[MAX_NA_ROOSTS];
-        ObjectGuid m_AllianceWagons[MAX_NA_ROOSTS];
-        ObjectGuid m_HordeWagons[MAX_NA_ROOSTS];
+        bool m_isUnderSiege;
 
-        std::list<ObjectGuid> lAllianceSoldiers;
-        std::list<ObjectGuid> lHordeSoldiers;
+        ObjectGuid m_capturePoint;
+        ObjectGuid m_roostsAlliance[MAX_NA_ROOSTS];
+        ObjectGuid m_roostsHorde[MAX_NA_ROOSTS];
+        ObjectGuid m_roostsBrokenAlliance[MAX_NA_ROOSTS];
+        ObjectGuid m_roostsBrokenHorde[MAX_NA_ROOSTS];
+        ObjectGuid m_wagonsAlliance[MAX_NA_ROOSTS];
+        ObjectGuid m_wagonsHorde[MAX_NA_ROOSTS];
+
+        GuidList m_teamVendors;
+
+        std::queue<HalaaSoldiersSpawns> m_deadSoldiers;
 };
 
 #endif
