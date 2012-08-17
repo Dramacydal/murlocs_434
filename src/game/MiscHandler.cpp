@@ -38,8 +38,8 @@
 #include "ObjectAccessor.h"
 #include "Object.h"
 #include "BattleGround.h"
-#include "OutdoorPvPMgr.h"
-#include "OutdoorPvPWG.h"
+#include "OutdoorPvP/OutdoorPvP.h"
+#include "OutdoorPvP/OutdoorPvPWG.h"
 #include "Pet.h"
 #include "SocialMgr.h"
 #include "DBCEnums.h"
@@ -754,9 +754,9 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
         return;
     }
 
-    if (OutdoorPvP* outdoorBg = GetPlayer()->GetOutdoorPvP())
+    if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(pl->GetCachedZoneId()))
     {
-        if (outdoorBg->HandleAreaTrigger(pl, Trigger_ID))
+        if (outdoorPvP->HandleAreaTrigger(pl, Trigger_ID))
             return;
     }
 

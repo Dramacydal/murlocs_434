@@ -38,7 +38,7 @@
 #include "Creature.h"
 #include "Formulas.h"
 #include "BattleGround.h"
-#include "OutdoorPvPMgr.h"
+#include "OutdoorPvP/OutdoorPvP.h"
 #include "CreatureAI.h"
 #include "ScriptMgr.h"
 #include "Util.h"
@@ -5928,13 +5928,16 @@ void Aura::HandleAuraModEffectImmunity(bool apply, bool /*Real*/)
     if( !apply && target->GetTypeId() == TYPEID_PLAYER
         && (GetSpellProto()->GetAuraInterruptFlags() & AURA_INTERRUPT_FLAG_IMMUNE_OR_LOST_SELECTION) )
     {
-        if( BattleGround *bg = ((Player*)target)->GetBattleGround() )
-            bg->EventPlayerDroppedFlag(((Player*)target));
+        Player* player = (Player*)target;
+        if (BattleGround* bg = player->GetBattleGround())
+            bg->EventPlayerDroppedFlag(player);
         else
         {
-            if (InstanceData* mapInstance = ((Player*)target)->GetInstanceData())
-                mapInstance->OnPlayerDroppedFlag((Player*)target, GetSpellProto()->Id);
-            sOutdoorPvPMgr.HandleDropFlag((Player*)target, GetSpellProto()->Id);
+            if (InstanceData* mapInstance = player->GetInstanceData())
+                mapInstance->OnPlayerDroppedFlag(player, GetSpellProto()->Id);
+
+            if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(player->GetCachedZoneId()))
+                outdoorPvP->HandleDropFlag(player, GetSpellProto()->Id);
         }
     }
 

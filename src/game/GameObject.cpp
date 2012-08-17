@@ -176,6 +176,7 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
     if (InstanceData* iData = map->GetInstanceData())
         iData->OnObjectCreate(this);
 
+<<<<<<< HEAD
     if (goinfo->type == GAMEOBJECT_TYPE_TRANSPORT)
     {
         SetUInt32Value(GAMEOBJECT_LEVEL, goinfo->transport.pause);
@@ -187,6 +188,11 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
     SetZoneScript();
     if (m_zoneScript)
         m_zoneScript->OnGameObjectCreate(this);
+=======
+    // Notify the outdoor pvp script
+    if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(GetZoneId()))
+        outdoorPvP->HandleGameObjectCreate(this);
+>>>>>>> ffb601c... Add Outdoor PvP handlers to various files
 
     return true;
 }
@@ -1231,6 +1237,15 @@ void GameObject::Use(Unit* user)
         }
         case GAMEOBJECT_TYPE_GOOBER:                        // 10
         {
+            // Handle OutdoorPvP use cases
+            // Note: this may be also handled by DB spell scripts in the future, when the world state manager is implemented
+            if (user->GetTypeId() == TYPEID_PLAYER)
+            {
+                Player* player = (Player*)user;
+                if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(player->GetCachedZoneId()))
+                    outdoorPvP->HandleGameObjectUse(player, this);
+            }
+
             GameObjectInfo const* info = GetGOInfo();
 
             TriggerLinkedGameObject(user);
@@ -2277,7 +2292,12 @@ void GameObject::TickCapturePoint()
 
         // handle objective complete
         if (m_captureState == CAPTURE_STATE_NEUTRAL)
+<<<<<<< HEAD
             sOutdoorPvPMgr.HandleObjectiveComplete(eventId, capturingPlayers, progressFaction);
+=======
+            if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript((*capturingPlayers.begin())->GetCachedZoneId()))
+                outdoorPvP->HandleObjectiveComplete(eventId, capturingPlayers, progressFaction);
+>>>>>>> ffb601c... Add Outdoor PvP handlers to various files
 
         // set capture state to alliance
         m_captureState = CAPTURE_STATE_PROGRESS_ALLIANCE;
@@ -2289,7 +2309,12 @@ void GameObject::TickCapturePoint()
 
         // handle objective complete
         if (m_captureState == CAPTURE_STATE_NEUTRAL)
+<<<<<<< HEAD
             sOutdoorPvPMgr.HandleObjectiveComplete(eventId, capturingPlayers, progressFaction);
+=======
+            if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript((*capturingPlayers.begin())->GetCachedZoneId()))
+                outdoorPvP->HandleObjectiveComplete(eventId, capturingPlayers, progressFaction);
+>>>>>>> ffb601c... Add Outdoor PvP handlers to various files
 
         // set capture state to horde
         m_captureState = CAPTURE_STATE_PROGRESS_HORDE;
@@ -2325,9 +2350,19 @@ void GameObject::TickCapturePoint()
 
     if (eventId)
     {
+<<<<<<< HEAD
         // send zone script
         if (m_zoneScript)
             m_zoneScript->ProcessEvent(eventId, this);
+=======
+        // Notify the outdoor pvp script
+        if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript((*capturingPlayers.begin())->GetCachedZoneId()))
+        {
+            // Allow only certain events to be handled by other script engines
+            if (outdoorPvP->HandleEvent(eventId, this))
+                return;
+        }
+>>>>>>> ffb601c... Add Outdoor PvP handlers to various files
 
         // Send script event to SD2 and database as well - this can be used for summoning creatures, casting specific spells or spawning GOs
         if (!sScriptMgr.OnProcessEvent(eventId, this, this, true))

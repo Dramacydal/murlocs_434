@@ -41,7 +41,7 @@
 #include "InstanceData.h"
 #include "MapPersistentStateMgr.h"
 #include "BattleGroundMgr.h"
-#include "OutdoorPvPMgr.h"
+#include "OutdoorPvP/OutdoorPvP.h"
 #include "Spell.h"
 #include "Transports.h"
 #include "Util.h"
@@ -801,10 +801,9 @@ bool Creature::Create(uint32 guidlow, CreatureCreatePos& cPos, CreatureInfo cons
     if (InstanceData* iData = GetMap()->GetInstanceData())
         iData->OnCreatureCreate(this);
 
-    // Init and notify outdoor pvp script
-    SetZoneScript();
-    if (m_zoneScript)
-        m_zoneScript->OnCreatureCreate(this);
+    // Notify the outdoor pvp script
+    if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(GetZoneId()))
+        outdoorPvP->HandleCreatureCreate(this);
 
     switch (GetCreatureInfo()->rank)
     {
