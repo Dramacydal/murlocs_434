@@ -55,7 +55,7 @@
 #include "Language.h"
 #include "Policies/SingletonImp.h"
 #include "BattleGroundMgr.h"
-#include "OutdoorPvPMgr.h"
+#include "OutdoorPvP/OutdoorPvP.h"
 #include "TemporarySummon.h"
 #include "VMapFactory.h"
 #include "MoveMap.h"
@@ -1594,8 +1594,8 @@ void World::SetInitialWorldSettings()
     sBattleGroundMgr.CreateInitialBattleGrounds();
     sBattleGroundMgr.InitAutomaticArenaPointDistribution();
 
-    ///- Initialize World PvP
-    sLog.outString("Starting World PvP System");
+    ///- Initialize Outdoor PvP
+    sLog.outString("Starting Outdoor PvP System");
     sOutdoorPvPMgr.InitOutdoorPvP();
 
     sLog.outString( "Loading transports creatures..." );
