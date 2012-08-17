@@ -468,8 +468,8 @@ Spell::Spell(Unit* caster, SpellEntry const* info, bool triggered, ObjectGuid or
         // wand case
         if((m_caster->getClassMask() & CLASSMASK_WAND_USERS) != 0 && m_caster->GetTypeId() == TYPEID_PLAYER)
         {
-            if(Item* pItem = ((Player*)m_caster)->GetWeaponForAttack(RANGED_ATTACK))
-                m_spellSchoolMask = SpellSchoolMask(1 << pItem->GetProto()->Damage[0].DamageType);
+            if (Item* pItem = ((Player*)m_caster)->GetWeaponForAttack(RANGED_ATTACK))
+                m_spellSchoolMask = SpellSchoolMask(1 << pItem->GetProto()->DamageType);
         }
     }
     // Set health leech amount to zero
