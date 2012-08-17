@@ -1948,86 +1948,86 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="WorldPvP"
+			Name="OutdoorPvP"
 			>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvP.cpp"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvP.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvP.h"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvP.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPEP.cpp"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPEP.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPEP.h"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPEP.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPGH.cpp"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPGH.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPGH.h"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPGH.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPHP.cpp"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPHP.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPHP.h"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPHP.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPMgr.cpp"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPMgr.h"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPMgr.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPNA.cpp"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPNA.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPNA.h"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPNA.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPSI.cpp"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPSI.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPSI.h"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPSI.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPTF.cpp"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPTF.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPTF.h"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPTF.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPWG.cpp"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPZM.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPWG.h"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPZM.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPZM.cpp"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPWG.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPZM.h"
+				RelativePath="..\..\src\game\OutdoorPvP\OutdoorPvPWG.h"
 				>
 			</File>
 		</Filter>
