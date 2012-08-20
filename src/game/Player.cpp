@@ -3998,8 +3998,21 @@ void Player::RemoveAllSpellCooldown()
 {
     if(!m_spellCooldowns.empty())
     {
-        for(SpellCooldowns::const_iterator itr = m_spellCooldowns.begin();itr != m_spellCooldowns.end(); ++itr)
-            SendClearCooldown(itr->first, this);
+        ObjectGuid guid = GetObjectGuid();
+
+        WorldPacket data(SMSG_CLEAR_COOLDOWNS, 1 + 8 + m_spellCooldowns.size() * 4);
+        data.WriteGuidMask<1, 3, 6>(guid);
+        data.WriteBits(m_spellCooldowns.size(), 24);      // cooldown count
+        data.WriteGuidMask<7, 5, 2, 4, 0>(guid);
+
+        data.WriteGuidBytes<7, 2, 4, 5, 1, 3>(guid);
+
+        for (SpellCooldowns::const_iterator itr = m_spellCooldowns.begin(); itr != m_spellCooldowns.end(); ++itr)
+            data << uint32(itr->first);
+
+        data.WriteGuidBytes<0, 6>(guid);
+
+        SendDirectMessage(&data);
 
         m_spellCooldowns.clear();
     }
@@ -21933,7 +21946,7 @@ void Player::ApplyEquipCooldown( Item * pItem )
         AddSpellCooldown(spellData.SpellId, pItem->GetEntry(), time(NULL) + 30);
 
         WorldPacket data(SMSG_ITEM_COOLDOWN, 12);
-        data << ObjectGuid(pItem->GetObjectGuid());
+        data << pItem->GetObjectGuid();
         data << uint32(spellData.SpellId);
         GetSession()->SendPacket(&data);
     }
@@ -24606,9 +24619,17 @@ void Player::RemoveAtLoginFlag( AtLoginFlags f, bool in_db_also /*= false*/ )
 
 void Player::SendClearCooldown( uint32 spell_id, Unit* target )
 {
-    WorldPacket data(SMSG_CLEAR_COOLDOWN, 4+8);
+    ObjectGuid guid = target->GetObjectGuid();
+
+    WorldPacket data(SMSG_CLEAR_COOLDOWNS, 1 + 8 + 4);
+    data.WriteGuidMask<1, 3, 6>(guid);
+    data.WriteBits(1, 24);      // cooldown count
+    data.WriteGuidMask<7, 5, 2, 4, 0>(guid);
+
+    data.WriteGuidBytes<7, 2, 4, 5, 1, 3>(guid);
     data << uint32(spell_id);
-    data << target->GetObjectGuid();
+    data.WriteGuidBytes<0, 6>(guid);
+
     SendDirectMessage(&data);
 }
 
