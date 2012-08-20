@@ -741,6 +741,7 @@ bool IsExplicitNegativeTarget(uint32 targetA)
 
 bool IsPositiveAura(uint32 spellId)
 {
+<<<<<<< HEAD
     SpellEntry const *spellproto = sSpellStore.LookupEntry(spellId);
     if (!spellproto)
         return false;
@@ -1131,7 +1132,7 @@ bool IsPositiveEffect(SpellEntry const *spellproto, SpellEffectIndex effIndex)
     }
 
     // non-positive targets
-    if(spellEffect && !IsPositiveTarget(spellEffect->EffectImplicitTargetA, spellEffect->EffectImplicitTargetB))
+    if (spellEffect && !IsPositiveTarget(spellEffect->EffectImplicitTargetA, spellEffect->EffectImplicitTargetB))
         return false;
 
     // AttributesEx check
