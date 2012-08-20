@@ -2080,6 +2080,8 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         float GetPathLength(float destX, float destY, float destZ, bool forceDest = false, bool* ok = NULL) const;
         bool IsSplineEnabled() const;
 
+        bool IsInWorgenForm(bool inPermanent = false) const;
+
         // Packet builders
         void BuildForceMoveRootPacket(WorldPacket* data, bool apply, uint32 value);
         void BuildMoveWaterWalkPacket(WorldPacket* data, bool apply, uint32 value);

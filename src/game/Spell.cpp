@@ -3835,7 +3835,17 @@ void Spell::cast(bool skipCheck)
             else if(m_spellInfo->Id == 42292)               // PvP trinket
                 AddTriggeredSpell(72752);                   // Will of the Forsaken Cooldown
             else if (m_spellInfo->Id == 68992)              // Darkflight
+            {
                 AddPrecastSpell(96223);                     // Run Speed Marker
+                AddPrecastSpell(97709);                     // Altered Form
+            }
+            else if (m_spellInfo->Id == 68996)              // Two Forms
+            {
+                if (m_caster->IsInWorgenForm())
+                    m_caster->RemoveSpellsCausingAura(SPELL_AURA_WORGEN_TRANSFORM);
+                else
+                    AddPrecastSpell(97709);                 // Altered Form
+            }
             // Chaos Bane strength buff
             else if (m_spellInfo->Id == 71904)
                 AddTriggeredSpell(73422);
@@ -6325,7 +6335,12 @@ SpellCastResult Spell::CheckCast(bool strict)
                     if (m_caster->IsInWater())
                         return SPELL_FAILED_ONLY_ABOVEWATER;
                 }
-                else if (m_spellInfo->SpellIconID == 156)    // Holy Shock
+                else if (m_spellInfo->Id == 68996)          // Two forms
+                {
+                    if (m_caster->isInCombat())
+                        return SPELL_FAILED_AFFECTING_COMBAT;
+                }
+                else if (m_spellInfo->SpellIconID == 156)   // Holy Shock
                 {
                     // spell different for friends and enemies
                     // hart version required facing
