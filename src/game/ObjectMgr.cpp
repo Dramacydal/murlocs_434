@@ -4078,48 +4078,56 @@ void ObjectMgr::LoadQuests()
     m_ExclusiveQuestGroups.clear();
 
     //                                                0      1       2           3         4           5     6                7              8              9
-    QueryResult *result = WorldDatabase.Query("SELECT entry, Method, ZoneOrSort, MinLevel, QuestLevel, Type, RequiredClasses, RequiredRaces, RequiredSkill, RequiredSkillValue,"
-    //   10                   11                 12                     13                   14                     15                   16                17
-        "RepObjectiveFaction, RepObjectiveValue, RequiredMinRepFaction, RequiredMinRepValue, RequiredMaxRepFaction, RequiredMaxRepValue, SuggestedPlayers, LimitTime,"
-    //   18          19            20           21            22            23           24           25              26
-        "QuestFlags, SpecialFlags, CharTitleId, PlayersSlain, BonusTalents, PrevQuestId, NextQuestId, ExclusiveGroup, NextQuestInChain,"
-    //   27        28         29           30
-        "RewXPId, SrcItemId, SrcItemCount, SrcSpell,"
-    //   31     32       33          34               35                36       37             38              39              40              41
-        "Title, Details, Objectives, OfferRewardText, RequestItemsText, EndText, CompletedText, ObjectiveText1, ObjectiveText2, ObjectiveText3, ObjectiveText4,"
-    //   42          43          44          45          46          47          48             49             50             51             52             53
-        "ReqItemId1, ReqItemId2, ReqItemId3, ReqItemId4, ReqItemId5, ReqItemId6, ReqItemCount1, ReqItemCount2, ReqItemCount3, ReqItemCount4, ReqItemCount5, ReqItemCount6,"
-    //   54            55            56            57            58               59               60               61
-        "ReqSourceId1, ReqSourceId2, ReqSourceId3, ReqSourceId4, ReqSourceCount1, ReqSourceCount2, ReqSourceCount3, ReqSourceCount4,"
-    //   62                  63                  64                  65                  66                     67                     68                     69
-        "ReqCreatureOrGOId1, ReqCreatureOrGOId2, ReqCreatureOrGOId3, ReqCreatureOrGOId4, ReqCreatureOrGOCount1, ReqCreatureOrGOCount2, ReqCreatureOrGOCount3, ReqCreatureOrGOCount4,"
-    //   70             71             72             73
-        "ReqSpellCast1, ReqSpellCast2, ReqSpellCast3, ReqSpellCast4,"
-    //   74                75                76                77                78                79
-        "RewChoiceItemId1, RewChoiceItemId2, RewChoiceItemId3, RewChoiceItemId4, RewChoiceItemId5, RewChoiceItemId6,"
-    //   80                   81                   82                   83                   84                   85
-        "RewChoiceItemCount1, RewChoiceItemCount2, RewChoiceItemCount3, RewChoiceItemCount4, RewChoiceItemCount5, RewChoiceItemCount6,"
-    //   86          87          88          89          90             91             92             93
-        "RewItemId1, RewItemId2, RewItemId3, RewItemId4, RewItemCount1, RewItemCount2, RewItemCount3, RewItemCount4,"
-    //   94              95              96              97              98
-        "RewRepFaction1, RewRepFaction2, RewRepFaction3, RewRepFaction4, RewRepFaction5,"
-    //   99              100             101             102             103
-        "RewRepValueId1, RewRepValueId2, RewRepValueId3, RewRepValueId4, RewRepValueId5,"
-    //   104           105           106           107           108
-        "RewRepValue1, RewRepValue2, RewRepValue3, RewRepValue4, RewRepValue5,"
-    //   109               110                 111            112               113       114
-        "RewHonorAddition, RewHonorMultiplier, RewOrReqMoney, RewMoneyMaxLevel, RewSpell, RewSpellCast,"
-    //   115                116               117         118     119     120
-        "RewMailTemplateId, RewMailDelaySecs, PointMapId, PointX, PointY, PointOpt,"
-    //   121            122            123            124            125                 126                 127                 128
-        "DetailsEmote1, DetailsEmote2, DetailsEmote3, DetailsEmote4, DetailsEmoteDelay1, DetailsEmoteDelay2, DetailsEmoteDelay3, DetailsEmoteDelay4,"
-    //   129              130            131                132                133                134
-        "IncompleteEmote, CompleteEmote, OfferRewardEmote1, OfferRewardEmote2, OfferRewardEmote3, OfferRewardEmote4,"
-    //   135                     136                     137                     138
-        "OfferRewardEmoteDelay1, OfferRewardEmoteDelay2, OfferRewardEmoteDelay3, OfferRewardEmoteDelay4,"
-    //   139          140
-        "StartScript, CompleteScript"
-        " FROM quest_template");
+    QueryResult* result = WorldDatabase.Query("SELECT entry, Method, ZoneOrSort, MinLevel, QuestLevel, Type, RequiredClasses, RequiredRaces, RequiredSkill, RequiredSkillValue,"
+                          //   10                   11                 12                     13                   14                     15                   16                17
+                          "RepObjectiveFaction, RepObjectiveValue, RequiredMinRepFaction, RequiredMinRepValue, RequiredMaxRepFaction, RequiredMaxRepValue, SuggestedPlayers, LimitTime,"
+                          //   18          19            20           21            22            23           24           25              26
+                          "QuestFlags, SpecialFlags, CharTitleId, PlayersSlain, BonusTalents, PrevQuestId, NextQuestId, ExclusiveGroup, NextQuestInChain,"
+                          //   27        28         29           30
+                          "RewXPId, SrcItemId, SrcItemCount, SrcSpell,"
+                          //   31     32       33          34               35                36       37             38              39              40              41
+                          "Title, Details, Objectives, OfferRewardText, RequestItemsText, EndText, CompletedText, ObjectiveText1, ObjectiveText2, ObjectiveText3, ObjectiveText4,"
+                          //   42          43          44          45          46          47          48             49             50             51             52             53
+                          "ReqItemId1, ReqItemId2, ReqItemId3, ReqItemId4, ReqItemId5, ReqItemId6, ReqItemCount1, ReqItemCount2, ReqItemCount3, ReqItemCount4, ReqItemCount5, ReqItemCount6,"
+                          //   54            55            56            57            58               59               60               61
+                          "ReqSourceId1, ReqSourceId2, ReqSourceId3, ReqSourceId4, ReqSourceCount1, ReqSourceCount2, ReqSourceCount3, ReqSourceCount4,"
+                          //   62                  63                  64                  65                  66                     67                     68                     69
+                          "ReqCreatureOrGOId1, ReqCreatureOrGOId2, ReqCreatureOrGOId3, ReqCreatureOrGOId4, ReqCreatureOrGOCount1, ReqCreatureOrGOCount2, ReqCreatureOrGOCount3, ReqCreatureOrGOCount4,"
+                          //   70             71             72             73
+                          "ReqSpellCast1, ReqSpellCast2, ReqSpellCast3, ReqSpellCast4,"
+                          //   74                75                76                77                78                79
+                          "RewChoiceItemId1, RewChoiceItemId2, RewChoiceItemId3, RewChoiceItemId4, RewChoiceItemId5, RewChoiceItemId6,"
+                          //   80                   81                   82                   83                   84                   85
+                          "RewChoiceItemCount1, RewChoiceItemCount2, RewChoiceItemCount3, RewChoiceItemCount4, RewChoiceItemCount5, RewChoiceItemCount6,"
+                          //   86          87          88          89          90             91             92             93
+                          "RewItemId1, RewItemId2, RewItemId3, RewItemId4, RewItemCount1, RewItemCount2, RewItemCount3, RewItemCount4,"
+                          //   94              95              96              97              98
+                          "RewRepFaction1, RewRepFaction2, RewRepFaction3, RewRepFaction4, RewRepFaction5,"
+                          //   99              100             101             102             103
+                          "RewRepValueId1, RewRepValueId2, RewRepValueId3, RewRepValueId4, RewRepValueId5,"
+                          //   104           105           106           107           108
+                          "RewRepValue1, RewRepValue2, RewRepValue3, RewRepValue4, RewRepValue5,"
+                          //   109               110                 111            112               113       114
+                          "RewHonorAddition, RewHonorMultiplier, RewOrReqMoney, RewMoneyMaxLevel, RewSpell, RewSpellCast,"
+                          //   115                116               117         118     119     120
+                          "RewMailTemplateId, RewMailDelaySecs, PointMapId, PointX, PointY, PointOpt,"
+                          //   121            122            123            124            125                 126                 127                 128
+                          "DetailsEmote1, DetailsEmote2, DetailsEmote3, DetailsEmote4, DetailsEmoteDelay1, DetailsEmoteDelay2, DetailsEmoteDelay3, DetailsEmoteDelay4,"
+                          //   129              130            131                132                133                134
+                          "IncompleteEmote, CompleteEmote, OfferRewardEmote1, OfferRewardEmote2, OfferRewardEmote3, OfferRewardEmote4,"
+                          //   135                     136                     137                     138
+                          "OfferRewardEmoteDelay1, OfferRewardEmoteDelay2, OfferRewardEmoteDelay3, OfferRewardEmoteDelay4,"
+                          //   139          140
+                          "StartScript, CompleteScript, "
+                          //   141          142            143             144                145                146                 147
+                          "ReqSpellLearned, PortraitGiver, PortraitTurnIn, PortraitGiverText, PortraitGiverName, PortraitTurnInText, PortraitTurnInName, "
+                          //   148         149             150             151             152                153                154                155
+                          "ReqCurrencyId1, ReqCurrencyId2, ReqCurrencyId3, ReqCurrencyId4, ReqCurrencyCount1, ReqCurrencyCount2, ReqCurrencyCount3, ReqCurrencyCount4, "
+                          //   156         157             158             159             160                161                162                163
+                          "RewCurrencyId1, RewCurrencyId2, RewCurrencyId3, RewCurrencyId4, RewCurrencyCount1, RewCurrencyCount2, RewCurrencyCount3, RewCurrencyCount4, "
+                          //   164   165            166          167
+                          "RewSkill, RewSkillValue, SoundAccept, SoundTurnIn "
+                          " FROM quest_template");
     if (!result)
     {
         BarGoLink bar(1);
@@ -4707,6 +4715,145 @@ void ObjectMgr::LoadQuests()
             {
                 int32 signedQuestId = qinfo->NextQuestId < 0 ? -int32(qinfo->GetQuestId()) : int32(qinfo->GetQuestId());
                 qNextItr->second->prevQuests.push_back(signedQuestId);
+            }
+        }
+
+        if (qinfo->RewSkill)
+        {
+            if (!sSkillLineStore.LookupEntry(qinfo->RewSkill))
+            {
+                sLog.outErrorDb("Quest %u has `RewSkill` = %u but this skill does not exist",
+                                qinfo->GetQuestId(), qinfo->RewSkill);
+                qinfo->RewSkill = 0;
+                qinfo->RewSkillValue = 0;
+            }
+        }
+
+        if (qinfo->RewSkillValue)
+        {
+            if (qinfo->RewSkillValue > sWorld.GetConfigMaxSkillValue())
+            {
+                sLog.outErrorDb("Quest %u has `RewSkillValue` = %u which is more than max possible skill value %u.",
+                                qinfo->GetQuestId(), qinfo->RewSkillValue, sWorld.GetConfigMaxSkillValue());
+            }
+        }
+        else
+        {
+            if (qinfo->RewSkill)
+            {
+                sLog.outErrorDb("Quest %u has `RewSkillValue` = %u, but `RewSkill` exists and is %u.",
+                                    qinfo->GetQuestId(), qinfo->RewSkillValue, qinfo->RewSkill);
+                qinfo->RewSkill = 0;
+            }
+        }
+
+        if (qinfo->ReqSpellLearned)
+        {
+            SpellEntry const* spellInfo = sSpellStore.LookupEntry(qinfo->ReqSpellLearned);
+
+            if (!spellInfo)
+            {
+                sLog.outErrorDb("Quest %u has `ReqSpellLearned` = %u but spell %u does not exist, quest will not have a spell requirement.",
+                                qinfo->GetQuestId(), qinfo->ReqSpellLearned, qinfo->ReqSpellLearned);
+                qinfo->ReqSpellLearned = 0;
+            }
+            else if (!SpellMgr::IsSpellValid(spellInfo))
+            {
+                sLog.outErrorDb("Quest %u has `ReqSpellLearned` = %u but spell %u is broken, quest will not have a spell requirement.",
+                                qinfo->GetQuestId(), qinfo->ReqSpellLearned, qinfo->ReqSpellLearned);
+                qinfo->ReqSpellLearned = 0;
+            }
+        }
+
+        for (int j = 0; j < QUEST_REQUIRED_CURRENCY_COUNT; ++j)
+        {
+            if (qinfo->ReqCurrencyId[j])
+            {
+                CurrencyTypesEntry const * currencyEntry = sCurrencyTypesStore.LookupEntry(qinfo->ReqCurrencyId[j]);
+                if (!currencyEntry)
+                {
+                    sLog.outErrorDb("Quest %u has `ReqCurrencyId%d` = %u but currency with entry %u does not exist, quest can not be completed.",
+                                    qinfo->GetQuestId(), j + 1, qinfo->ReqCurrencyId[j], qinfo->ReqCurrencyId[j]);
+                    qinfo->ReqCurrencyId[j] = 0;
+                    qinfo->ReqCurrencyCount[j] = 0;
+                }
+                else
+                {
+                    if (!qinfo->ReqCurrencyCount[j])
+                    {
+                        sLog.outErrorDb("Quest %u has `ReqCurrencyId%d` = %u but `ReqCurrencyCount%d` = %u.",
+                                        qinfo->GetQuestId(), j + 1, qinfo->ReqCurrencyId[j], j + 1, qinfo->ReqCurrencyCount[j]);
+                        qinfo->ReqCurrencyId[j] = 0;
+                    }
+                    else if (currencyEntry->TotalCount && uint32(qinfo->ReqCurrencyCount[j] * currencyEntry->GetPrecision()) > currencyEntry->TotalCount)
+                    {
+                        sLog.outErrorDb("Quest %u has `ReqCurrencyCount%d` = %u but currency %u has max count %u / %u (precision).",
+                                        qinfo->GetQuestId(), j + 1, qinfo->ReqCurrencyCount[j], qinfo->ReqCurrencyId[j], currencyEntry->TotalCount, uint32(currencyEntry->GetPrecision()));
+                        qinfo->ReqCurrencyCount[j] = currencyEntry->TotalCount;
+                    }
+                }
+
+            }
+            else if (qinfo->ReqCurrencyCount[j])
+            {
+                if (!qinfo->ReqCurrencyId[j])
+                {
+                    sLog.outErrorDb("Quest %u has `ReqCurrencyId%d` = 0 but `ReqCurrencyCount%d` = %u.",
+                                    qinfo->GetQuestId(), j + 1, j + 1, qinfo->ReqCurrencyCount[j]);
+                    qinfo->ReqCurrencyCount[j] = 0;
+                }
+            }
+        }
+
+        for (int j = 0; j < QUEST_REWARD_CURRENCY_COUNT; ++j)
+        {
+            if (qinfo->RewCurrencyId[j])
+            {
+                CurrencyTypesEntry const * currencyEntry = sCurrencyTypesStore.LookupEntry(qinfo->RewCurrencyId[j]);
+                if (!currencyEntry)
+                {
+                    sLog.outErrorDb("Quest %u has `RewCurrencyId%d` = %u but currency with entry %u does not exist, quest will not reward that currency.",
+                                    qinfo->GetQuestId(), j + 1, qinfo->RewCurrencyId[j], qinfo->RewCurrencyId[j]);
+                    qinfo->RewCurrencyId[j] = 0;
+                    qinfo->RewCurrencyCount[j] = 0;
+                }
+                else if (!qinfo->RewCurrencyCount[j])
+                {
+                    sLog.outErrorDb("Quest %u has `RewCurrencyId%d` = %u but `RewCurrencyCount%d` = %u.",
+                                    qinfo->GetQuestId(), j + 1, qinfo->RewCurrencyId[j], j + 1, qinfo->RewCurrencyCount[j]);
+                    qinfo->RewCurrencyId[j] = 0;
+                }
+            }
+            else if (qinfo->RewCurrencyCount[j])
+            {
+                if (!qinfo->RewCurrencyId[j])
+                {
+                    sLog.outErrorDb("Quest %u has `RewCurrencyId%d` = 0 but `RewCurrencyCount%d` = %u.",
+                                    qinfo->GetQuestId(), j + 1, j + 1, qinfo->RewCurrencyCount[j]);
+                    qinfo->RewCurrencyCount[j] = 0;
+                }
+            }
+        }
+
+        if (qinfo->SoundAcceptId)
+        {
+            SoundEntriesEntry const * soundEntry = sSoundEntriesStore.LookupEntry(qinfo->SoundAcceptId);
+            if (!soundEntry)
+            {
+                sLog.outErrorDb("Quest %u has `SoundAcceptId` = %u but sound with that entry does not exists.",
+                   qinfo->GetQuestId(), qinfo->SoundAcceptId);
+                qinfo->SoundAcceptId = 0;
+            }
+        }
+
+        if (qinfo->SoundTurnInId)
+        {
+            SoundEntriesEntry const * soundEntry = sSoundEntriesStore.LookupEntry(qinfo->SoundTurnInId);
+            if (!soundEntry)
+            {
+                sLog.outErrorDb("Quest %u has `SoundTurnInId` = %u but sound with that entry does not exists.",
+                   qinfo->GetQuestId(), qinfo->SoundTurnInId);
+                qinfo->SoundTurnInId = 0;
             }
         }
 

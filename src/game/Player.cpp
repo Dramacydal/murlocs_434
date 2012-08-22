@@ -14791,6 +14791,8 @@ bool Player::CanCompleteQuest(uint32 quest_id) const
     if (repFacId && GetReputationMgr().GetReputation(repFacId) < qInfo->GetRepObjectiveValue())
         return false;
 
+    // FIXME: check req currencies
+
     return true;
 }
 
@@ -14846,6 +14848,8 @@ bool Player::CanRewardQuest(Quest const *pQuest, bool msg) const
     // prevent receive reward with low money and GetRewOrReqMoney() < 0
     if (pQuest->GetRewOrReqMoney() < 0 && GetMoney() < uint32(-pQuest->GetRewOrReqMoney()))
         return false;
+
+    // FIXME: check currencies max count ?
 
     return true;
 }
@@ -15062,6 +15066,8 @@ void Player::RewardQuest(Quest const *pQuest, uint32 reward, Object* questGiver,
         }
     }
 
+    // FIXME: take currency
+
     RemoveTimedQuest(quest_id);
 
     if (BattleGround* bg = GetBattleGround())
@@ -15137,9 +15143,7 @@ void Player::RewardQuest(Quest const *pQuest, uint32 reward, Object* questGiver,
     if (pQuest->GetRewOrReqMoney() < 0)
         ModifyMoney(pQuest->GetRewOrReqMoney());
 
-    // honor reward
-    if (uint32 honor = pQuest->CalculateRewardHonor(getLevel()))
-        RewardHonor(NULL, 0, honor);
+    // FIXME: reward currency
 
     // title reward
     if (pQuest->GetCharTitleId())
@@ -16250,29 +16254,32 @@ void Player::SendQuestCompleteEvent(uint32 quest_id)
 void Player::SendQuestReward( Quest const *pQuest, uint32 XP, Object * questGiver )
 {
     uint32 questid = pQuest->GetQuestId();
-    DEBUG_LOG( "WORLD: Sent SMSG_QUESTGIVER_QUEST_COMPLETE quest = %u", questid );
-    WorldPacket data( SMSG_QUESTGIVER_QUEST_COMPLETE, (4+4+4+4+4) );
-    data << uint32(questid);
+    DEBUG_LOG("WORLD: Sent SMSG_QUESTGIVER_QUEST_COMPLETE quest = %u", questid);
+    WorldPacket data(SMSG_QUESTGIVER_QUEST_COMPLETE, (4 + 4 + 4 + 4 + 4));
+    data << uint32(pQuest->GetBonusTalents());
+    data << uint32(pQuest->GetRewSkillValue());
 
     float moneyMod = IsPremiumActive() && pQuest->GetRewOrReqMoney() > 0 ? GetPremiumMoneyModifier() : 1.0f;
     if ( getLevel() < sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL) )
     {
-        data << uint32(XP);
         data << uint32(pQuest->GetRewOrReqMoney() * moneyMod);
+        data << uint32(XP);
     }
     else
     {
+        data << uint32(pQuest->GetRewOrReqMoney() + int32(pQuest->GetRewMoneyMaxLevel() * sWorld.getConfig(CONFIG_FLOAT_RATE_DROP_MONEY)));
         data << uint32(0);
-        data << uint32(pQuest->GetRewOrReqMoney() + int32(pQuest->GetRewMoneyMaxLevel() * sWorld.getConfig(CONFIG_FLOAT_RATE_DROP_MONEY) * moneyMod));
     }
 
-    data << uint32(10*MaNGOS::Honor::hk_honor_at_level(getLevel(), pQuest->GetRewHonorAddition()));
-    data << uint32(pQuest->GetBonusTalents());              // bonus talents
-    data << uint32(0);                                      // arena points
+    data << uint32(questid);
+    data << uint32(pQuest->GetRewSkill());
+
+    data.WriteBit(0);           // unk
+    data.WriteBit(1);           // unk
+
     GetSession()->SendPacket(&data);
 
-    QuestPhaseMapsVector const* QuestPhaseVector = sObjectMgr.GetQuestPhaseMapVector(questid);
-    if (QuestPhaseVector)
+    if (QuestPhaseMapsVector const* QuestPhaseVector = sObjectMgr.GetQuestPhaseMapVector(questid))
     {
         for (QuestPhaseMapsVector::const_iterator itr = QuestPhaseVector->begin(); itr != QuestPhaseVector->end(); ++itr)
         {
