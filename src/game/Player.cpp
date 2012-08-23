@@ -4827,28 +4827,17 @@ void Player::DeleteOldCharacters(uint32 keepDays)
     }
 }
 
-void Player::SetMovement(PlayerMovementType pType)
+void Player::SetRoot(bool enable)
 {
     WorldPacket data;
-    switch(pType)
-    {
-        case MOVE_ROOT:
-        case MOVE_UNROOT:
-        {
-            BuildForceMoveRootPacket(&data, pType == MOVE_ROOT, 0);
-            break;
-        }
-        case MOVE_WATER_WALK:
-        case MOVE_LAND_WALK:
-        {
-            BuildMoveWaterWalkPacket(&data, pType == MOVE_WATER_WALK, 0);
-            break;
-        }
-        default:
-            ERROR_LOG("Player::SetMovement: Unsupported move type (%d), data not sent to client.",pType);
-            return;
-    }
+    BuildForceMoveRootPacket(&data, enable, 0);
+    GetSession()->SendPacket(&data);
+}
 
+void Player::SetWaterWalk(bool enable)
+{
+    WorldPacket data;
+    BuildMoveWaterWalkPacket(&data, enable, 0);
     GetSession()->SendPacket(&data);
 }
 
@@ -4891,9 +4880,9 @@ void Player::BuildPlayerRepop()
     if (getDeathState() != GHOULED)
         SetHealth( 1 );
 
-    SetMovement(MOVE_WATER_WALK);
-    if(!GetSession()->isLogingOut())
-        SetMovement(MOVE_UNROOT);
+    SetWaterWalk(true);
+    if (!GetSession()->isLogingOut())
+        SetRoot(false);
 
     // BG - remove insignia related
     RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
@@ -4934,8 +4923,8 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
     if (GetAccountLinkedState() != STATE_NOT_LINKED)
         SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_REFER_A_FRIEND);
 
-    SetMovement(MOVE_LAND_WALK);
-    SetMovement(MOVE_UNROOT);
+    SetWaterWalk(false);
+    SetRoot(false);
 
     m_deathTimer = 0;
 
@@ -4988,7 +4977,7 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
 
 void Player::KillPlayer()
 {
-    SetMovement(MOVE_ROOT);
+    SetRoot(true);
 
     StopMirrorTimers();                                     //disable timers(bars)
 
@@ -21747,8 +21736,8 @@ void Player::SendInitialPacketsAfterAddToMap()
             auraList.front()->ApplyModifier(true,true);
     }
 
-    if(HasAuraType(SPELL_AURA_MOD_STUN))
-        SetMovement(MOVE_ROOT);
+    if (HasAuraType(SPELL_AURA_MOD_STUN))
+        SetRoot(true);
 
     // manual send package (have code in ApplyModifier(true,true); that don't must be re-applied.
     if(HasAuraType(SPELL_AURA_MOD_ROOT))

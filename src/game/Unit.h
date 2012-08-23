@@ -1529,8 +1529,11 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool IsLevitating() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_LEVITATING);}
         bool IsWalking() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_WALK_MODE);}
         bool IsFlying() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_FLYING); }
+        bool IsRooted() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_ROOT); }
 
         virtual bool SetPosition(float x, float y, float z, float orientation, bool teleport = false);
+        virtual void SetRoot(bool enabled) {}
+        virtual void SetWaterWalk(bool enabled) {}
 
         void SetInFront(Unit const* target);
         void SetFacingTo(float ori);
