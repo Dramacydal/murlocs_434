@@ -4047,12 +4047,11 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             {
                 switch(GetShapeshiftForm())
                 {
-                    case FORM_NONE:     trigger_spell_id = 37344;break;
-                    case FORM_CAT:      trigger_spell_id = 37341;break;
-                    case FORM_BEAR:
-                    case FORM_DIREBEAR: trigger_spell_id = 37340;break;
-                    case FORM_TREE:     trigger_spell_id = 37342;break;
-                    case FORM_MOONKIN:  trigger_spell_id = 37343;break;
+                    case FORM_NONE:     trigger_spell_id = 37344; break;
+                    case FORM_CAT:      trigger_spell_id = 37341; break;
+                    case FORM_BEAR:     trigger_spell_id = 37340; break;
+                    case FORM_TREE:     trigger_spell_id = 37342; break;
+                    case FORM_MOONKIN:  trigger_spell_id = 37343; break;
                     default:
                         return SPELL_AURA_PROC_FAILED;
                 }
@@ -4063,8 +4062,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 switch(GetShapeshiftForm())
                 {
                     case FORM_CAT:      trigger_spell_id = 67355; break;
-                    case FORM_BEAR:
-                    case FORM_DIREBEAR: trigger_spell_id = 67354; break;
+                    case FORM_BEAR:     trigger_spell_id = 67354; break;
                     default:
                         return SPELL_AURA_PROC_FAILED;
                 }
