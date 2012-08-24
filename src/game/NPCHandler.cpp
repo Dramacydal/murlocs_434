@@ -322,7 +322,7 @@ void WorldSession::HandleTrainerBuySpellOpcode( WorldPacket & recv_data )
     uint32 nSpellCost = uint32(floor(trainer_spell->spellCost * _player->GetReputationPriceDiscount(unit)));
 
     // check money requirement
-    if ((_player->GetMoney() < nSpellCost) && !trainState)
+    if ((_player->GetMoney() < nSpellCost) && trainState > 1)
         trainState = 0;
 
     if(trainState != 2)
@@ -354,7 +354,7 @@ void WorldSession::HandleTrainerBuySpellOpcode( WorldPacket & recv_data )
     
         sendData << ObjectGuid(guid);
         sendData << uint32(spellId);                                // should be same as in packet from client
-        sendData << uint32(2);
+        sendData << uint32(trainState);
         SendPacket(&sendData);
     }
 }
