@@ -281,7 +281,7 @@ void WorldSession::HandleTrainerBuySpellOpcode( WorldPacket & recv_data )
         return;
     }
 
-    data.Initialize(SMSG_TRAINER_SERVICE, 16);
+    WorldPacket sendData(SMSG_TRAINER_SERVICE, 16);
 
     uint32 trainState = 2;
 
@@ -327,10 +327,10 @@ void WorldSession::HandleTrainerBuySpellOpcode( WorldPacket & recv_data )
 
     if(trainState != 2)
     {
-        data << ObjectGuid(guid);
-        data << uint32(spellId);
-        data << trainState;
-        SendPacket(&data);            
+        sendData << ObjectGuid(guid);
+        sendData << uint32(spellId);
+        sendData << trainState;
+        SendPacket(&sendData);            
     }
     else
     {    
@@ -352,10 +352,10 @@ void WorldSession::HandleTrainerBuySpellOpcode( WorldPacket & recv_data )
             _player->learnSpell(spellId, false);
 
     
-        data << ObjectGuid(guid);
-        data << uint32(spellId);                                // should be same as in packet from client
-        data << uint32(2);
-        SendPacket(&data);
+        sendData << ObjectGuid(guid);
+        sendData << uint32(spellId);                                // should be same as in packet from client
+        sendData << uint32(2);
+        SendPacket(&sendData);
     }
 }
 
