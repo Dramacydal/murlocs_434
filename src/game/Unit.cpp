@@ -481,11 +481,13 @@ uint32 GlobalCooldownMgr::GetGlobalCooldown(SpellEntry const* spellInfo) const
 ////////////////////////////////////////////////////////////
 // Methods of class Unit
 
-Unit::Unit() : WorldObject(),
-    i_motionMaster(this), m_ThreatManager(this), m_HostileRefManager(this),
+Unit::Unit() :
+    movespline(new Movement::MoveSpline()),
     m_charmInfo(NULL),
-    //m_vehicleInfo(NULL)
-    movespline(new Movement::MoveSpline())
+    i_motionMaster(this),
+    //m_vehicleInfo(NULL),
+    m_ThreatManager(this),
+    m_HostileRefManager(this)
 {
     m_objectType |= TYPEMASK_UNIT;
     m_objectTypeId = TYPEID_UNIT;

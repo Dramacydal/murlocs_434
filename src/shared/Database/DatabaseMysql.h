@@ -50,9 +50,9 @@ public:
     //execute DML statement
     virtual bool execute() override;
 
-protected:
-    //bind parameters
-    void addParam(int nIndex, const SqlStmtFieldData& data);
+    protected:
+        // bind parameters
+        void addParam(unsigned int nIndex, const SqlStmtFieldData& data);
 
     static enum_field_types ToMySQLType( const SqlStmtFieldData &data, my_bool &bUnsigned );
 

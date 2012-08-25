@@ -38,9 +38,11 @@ class MANGOS_DLL_SPEC TargetedMovementGeneratorMedium
 : public MovementGeneratorMedium< T, D >, public TargetedMovementGeneratorBase
 {
     protected:
-        TargetedMovementGeneratorMedium(Unit &target, float offset, float angle) :
-            TargetedMovementGeneratorBase(target), i_offset(offset), i_angle(angle),
-            i_recalculateTravel(false), i_targetReached(false), i_recheckDistance(0),
+        TargetedMovementGeneratorMedium(Unit& target, float offset, float angle) :
+            TargetedMovementGeneratorBase(target),
+            i_recheckDistance(0),
+            i_offset(offset), i_angle(angle),
+            i_recalculateTravel(false), i_targetReached(false),
             i_path(NULL)
         {
         }
