@@ -609,7 +609,7 @@ void Spell::FillTargetMap()
         for (int j = 0; j < i; ++j)
         {
             SpellEffectEntry const* spellEffect1 = m_spellInfo->GetSpellEffect(SpellEffectIndex(j));
-            if (!spellEffect)
+            if (!spellEffect1)
                 continue;
 
             // Check if same target, but handle i.e. AreaAuras different
