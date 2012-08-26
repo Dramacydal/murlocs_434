@@ -1095,6 +1095,7 @@ void Group::SendUpdate()
             uint32 dungeonID = GetLFGState()->GetDungeon() ? GetLFGState()->GetDungeon()->ID : 0;
             data << uint8(GetLFGState()->GetState() == LFG_STATE_FINISHED_DUNGEON ? 2 : 0);
             data << uint32(dungeonID);
+            data << uint8(0);
         }
         data << GetObjectGuid();                            // group guid
         data << uint32(0);                                  // 3.3, this value increments every time SMSG_GROUP_LIST is sent
