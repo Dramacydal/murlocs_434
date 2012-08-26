@@ -28,7 +28,7 @@
 #include "Formulas.h"
 #include "ObjectAccessor.h"
 #include "BattleGound/BattleGround.h"
-#include "BattleGroundMgr.h"
+#include "BattleGound/BattleGroundMgr.h"
 #include "OutdoorPvP/OutdoorPvP.h"
 #include "OutdoorPvP/OutdoorPvPWG.h"
 #include "MapManager.h"
