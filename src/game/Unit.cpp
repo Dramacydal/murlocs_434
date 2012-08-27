@@ -12646,6 +12646,8 @@ void Unit::KnockBackWithAngle(float angle, float horizontalSpeed, float vertical
         float fx = ox + dis * vcos;
         float fy = oy + dis * vsin;
         float fz = oz;
+        GetMap()->GetObjectHitPos(ox, oy, oz + 0.5f, fx, fy, oz + 0.5f, fx, fy, fz, -0.5f);
+        UpdateAllowedPositionZ(fx, fy, fz);
 
         MonsterMoveJump(fx, fy, fz, horizontalSpeed, max_height);
     }
