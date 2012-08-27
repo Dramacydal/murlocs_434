@@ -2636,20 +2636,12 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             if (targetMode == TARGET_AREAEFFECT_GO_AROUND_SOURCE)
             {
                 if (m_targets.m_targetMask & TARGET_FLAG_SOURCE_LOCATION)
-                {
-                    x = m_targets.m_srcX;
-                    y = m_targets.m_srcY;
-                    z = m_targets.m_srcZ;
-                }
+                    m_targets.getSource(x, y, z);
                 else
                     m_caster->GetPosition(x, y, z);
             }
             else if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
-            {
-                x = m_targets.m_destX;
-                y = m_targets.m_destY;
-                z = m_targets.m_destZ;
-            }
+                m_targets.getDestination(x, y, z);
             else
                 m_caster->GetPosition(x, y, z);
 
