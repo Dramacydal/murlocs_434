@@ -1021,7 +1021,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
                         case 156:                           // AB, win while controlling all 5 flags (all nodes)
                         case 784:                           // EY, win while holding 4 bases (all nodes)
                         {
-                            if(!bg->IsAllNodesControlledByTeam(GetPlayer()->GetTeam()))
+                            if (!bg->IsAllNodesControlledByTeam(GetPlayer()->GetTeam()))
                                 continue;
                             break;
                         }

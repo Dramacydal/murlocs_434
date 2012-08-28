@@ -208,7 +208,7 @@ class BattleGroundAB : public BattleGround
         virtual void EventPlayerClickedOnFlag(Player *source, GameObject* target_obj) override;
 
         /* achievement req. */
-        bool IsAllNodesControlledByTeam(Team team) const;    // overwrited
+        bool IsAllNodesControlledByTeam(Team team) const override;
         bool IsTeamScores500Disadvantage(Team team) const { return m_TeamScores500Disadvantage[GetTeamIndex(team)]; }
 
         uint32 GetPlayerScore(Player *Source, uint32 type);

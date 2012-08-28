@@ -288,7 +288,7 @@ class BattleGroundEY : public BattleGround
         virtual void EventPlayerDroppedFlag(Player *Source) override;
 
         /* achievement req. */
-        bool IsAllNodesControlledByTeam(Team team) const;
+        bool IsAllNodesControlledByTeam(Team team) const override;
 
         uint32 GetPlayerScore(Player *Source, uint32 type);
 
