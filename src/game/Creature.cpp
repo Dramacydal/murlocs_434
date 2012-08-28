@@ -2192,7 +2192,7 @@ Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, S
             std::vector<Unit*> suitableUnits;
             suitableUnits.reserve(threatlist.size() - position);
             advance(itr, position);
-            for (itr; itr != threatlist.end(); ++itr)
+            for (; itr != threatlist.end(); ++itr)
                 if (Unit* pTarget = GetMap()->GetUnit((*itr)->getUnitGuid()))
                     if (!selectFlags || MeetsSelectAttackingRequirement(pTarget, pSpellInfo, selectFlags))
                         suitableUnits.push_back(pTarget);
@@ -2205,7 +2205,7 @@ Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, S
         case ATTACKING_TARGET_TOPAGGRO:
         {
             advance(itr, position);
-            for (itr; itr != threatlist.end(); ++itr)
+            for (; itr != threatlist.end(); ++itr)
                 if (Unit* pTarget = GetMap()->GetUnit((*itr)->getUnitGuid()))
                     if (!selectFlags || MeetsSelectAttackingRequirement(pTarget, pSpellInfo, selectFlags))
                         return pTarget;
@@ -2215,7 +2215,7 @@ Unit* Creature::SelectAttackingTarget(AttackingTarget target, uint32 position, S
         case ATTACKING_TARGET_BOTTOMAGGRO:
         {
             advance(ritr, position);
-            for (ritr; ritr != threatlist.rend(); ++ritr)
+            for (; ritr != threatlist.rend(); ++ritr)
                 if (Unit* pTarget = GetMap()->GetUnit((*itr)->getUnitGuid()))
                     if (!selectFlags || MeetsSelectAttackingRequirement(pTarget, pSpellInfo, selectFlags))
                         return pTarget;
