@@ -973,12 +973,9 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
                 setPowerType(POWER_ENERGY);
             break;
         }
+        case MINI_PET:
         default:
-        {
-            sLog.outError("Pet have incorrect type (%u) for levelup.", getPetType());
             return true;
-            break;
-        }
     }
 
     if(pInfo)                                       // exist in DB

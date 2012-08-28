@@ -579,7 +579,7 @@ void Channel::Say(ObjectGuid p, const char *what, uint32 lang, bool ignoreOn)
     data << p;
     data << uint32(messageLength);
     data << what;
-    data << uint8(plr ? plr->GetChatTag() : CHAT_TAG_NONE);
+    data << uint8(plr ? plr->GetChatTag() : uint8(CHAT_TAG_NONE));
 
     SendToAll(&data, IsOn(p) && !m_players[p].IsModerator() ? p : ObjectGuid());
 }
