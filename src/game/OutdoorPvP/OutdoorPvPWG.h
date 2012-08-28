@@ -22,8 +22,8 @@
 
 #include "Common.h"
 #include "OutdoorPvP.h"
-#include "../Language.h"
-#include "../World.h"
+#include "Language.h"
+#include "World.h"
 
 #define WG_COOLDOWN_DURATION (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_COOLDOWN_DURATION) * MINUTE * IN_MILLISECONDS)
 #define WG_BATTLE_TIME (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_BATTLE_DURATION) * MINUTE * IN_MILLISECONDS)

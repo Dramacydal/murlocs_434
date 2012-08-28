@@ -17,10 +17,10 @@
  */
 
 #include "OutdoorPvPWG.h"
-#include "../GameObject.h"
-#include "../MapManager.h"
-#include "../SpellAuras.h"
-#include "../ObjectMgr.h"
+#include "GameObject.h"
+#include "MapManager.h"
+#include "SpellAuras.h"
+#include "ObjectMgr.h"
 
 OutdoorPvPWG::OutdoorPvPWG(uint32 id) : OutdoorPvP(id)
 {
