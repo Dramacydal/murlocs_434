@@ -17,10 +17,10 @@
  */
 
 #include "OutdoorPvPGH.h"
-#include "../Map.h"
-#include "../Object.h"
-#include "../Creature.h"
-#include "../GameObject.h"
+#include "Map.h"
+#include "Object.h"
+#include "Creature.h"
+#include "GameObject.h"
 
 OutdoorPvPGH::OutdoorPvPGH(uint32 id) : OutdoorPvP(id),
     m_zoneOwner(TEAM_NONE)
