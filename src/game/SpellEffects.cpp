@@ -9969,7 +9969,6 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                         }
                         // These are not restored
                         case POWER_FOCUS:
-                        case POWER_HAPPINESS:
                         case POWER_RUNE:
                         case POWER_HEALTH:
                             break;
