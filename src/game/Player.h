@@ -594,7 +594,7 @@ enum PlayerSlots
     // first slot for item stored (in any way in player m_items data)
     PLAYER_SLOT_START           = 0,
     // last+1 slot for item stored (in any way in player m_items data)
-    PLAYER_SLOT_END             = 150,
+    PLAYER_SLOT_END             = 86,
     PLAYER_SLOTS_COUNT          = (PLAYER_SLOT_END - PLAYER_SLOT_START)
 };
 
@@ -654,18 +654,6 @@ enum BuyBackSlots                                           // 12 slots
     // stored in m_buybackitems
     BUYBACK_SLOT_START          = 74,
     BUYBACK_SLOT_END            = 86
-};
-
-enum KeyRingSlots                                           // 32 slots
-{
-    KEYRING_SLOT_START          = 86,
-    KEYRING_SLOT_END            = 118
-};
-
-enum CurrencyTokenSlots                                     // 32 slots
-{
-    CURRENCYTOKEN_SLOT_START    = 118,
-    CURRENCYTOKEN_SLOT_END      = 150
 };
 
 enum EquipmentSetUpdateState
@@ -1335,10 +1323,9 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         void TakeExtendedCost(uint32 extendedCostId, uint32 count);
 
-        uint32 GetMaxKeyringSize() const { return KEYRING_SLOT_END-KEYRING_SLOT_START; }
-        void SendEquipError( InventoryResult msg, Item* pItem, Item *pItem2 = NULL, uint32 itemid = 0 ) const;
-        void SendBuyError( BuyResult msg, Creature* pCreature, uint32 item, uint32 param );
-        void SendSellError( SellResult msg, Creature* pCreature, ObjectGuid itemGuid, uint32 param );
+        void SendEquipError(InventoryResult msg, Item* pItem, Item* pItem2 = NULL, uint32 itemid = 0) const;
+        void SendBuyError(BuyResult msg, Creature* pCreature, uint32 item, uint32 param);
+        void SendSellError(SellResult msg, Creature* pCreature, ObjectGuid itemGuid, uint32 param);
         void AddWeaponProficiency(uint32 newflag) { m_WeaponProficiency |= newflag; }
         void AddArmorProficiency(uint32 newflag) { m_ArmorProficiency |= newflag; }
         uint32 GetWeaponProficiency() const { return m_WeaponProficiency; }
@@ -2033,8 +2020,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         /*********************************************************/
         /***                  PVP SYSTEM                       ***/
         /*********************************************************/
-        void UpdateArenaFields();
-        void UpdateHonorFields();
         bool RewardHonor(Unit *pVictim, uint32 groupsize, float honor = -1);
         uint32 GetHonorPoints() { return m_honorPoints; }
         uint32 GetArenaPoints() { return m_arenaPoints; }
@@ -2809,8 +2794,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         InventoryResult _CanStoreItem_InInventorySlots( uint8 slot_begin, uint8 slot_end, ItemPosCountVec& dest, ItemPrototype const *pProto, uint32& count, bool merge, Item *pSrcItem, uint8 skip_bag, uint8 skip_slot ) const;
         Item* _StoreItem( uint16 pos, Item *pItem, uint32 count, bool clone, bool update );
 
-        void UpdateKnownCurrencies(uint32 itemId, bool apply);
-        void AdjustQuestReqItemCount( Quest const* pQuest, QuestStatusData& questStatusData );
+        void AdjustQuestReqItemCount(Quest const* pQuest, QuestStatusData& questStatusData);
 
         void SetCanDelayTeleport(bool setting) { m_bCanDelayTeleport = setting; }
         bool IsHasDelayedTeleport() const
