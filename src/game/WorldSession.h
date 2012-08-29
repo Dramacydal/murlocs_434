@@ -904,6 +904,8 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleBfEntryInviteResponse(WorldPacket& recv_data);
         void HandleBfExitRequest(WorldPacket& recv_data);
 
+        void HandleSetCurrencyFlagsOpcode(WorldPacket& recv_data);
+
     private:
         // private trade methods
         void moveItems(Item* myItems[], Item* hisItems[]);
