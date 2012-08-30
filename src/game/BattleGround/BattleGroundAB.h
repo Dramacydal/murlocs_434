@@ -237,11 +237,11 @@ class BattleGroundAB : public BattleGround
         BG_AB_BannerTimer   m_BannerTimers[BG_AB_NODES_MAX];
         uint32              m_NodeTimers[BG_AB_NODES_MAX];
         uint32              m_lastTick[PVP_TEAM_COUNT];
-        uint32              m_HonorScoreTics[PVP_TEAM_COUNT];
+        uint32              m_honorScoreTicks[PVP_TEAM_COUNT];
         uint32              m_ReputationScoreTics[PVP_TEAM_COUNT];
         uint32              m_ExperiencesTicks[PVP_TEAM_COUNT];
         bool                m_IsInformedNearVictory;
-        uint32              m_HonorTics;
+        uint32              m_honorTicks;
         uint32              m_ReputationTics;
         // need for achievements
         bool                m_TeamScores500Disadvantage[PVP_TEAM_COUNT];
