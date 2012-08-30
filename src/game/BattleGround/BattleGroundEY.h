@@ -185,8 +185,8 @@ enum EYBuffs
     EY_OBJECT_MAX                           = 13
 };
 
-#define EY_NORMAL_HONOR_TICKS           30
-#define EY_WEEKEND_HONOR_TICKS          200
+#define EY_NORMAL_HONOR_INTERVAL        260
+#define EY_WEEKEND_HONOR_INTERVAL       160
 #define BG_EY_ExperienceTicks           260
 #define EY_EVENT_START_BATTLE           13180
 
