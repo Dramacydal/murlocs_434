@@ -2064,6 +2064,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetCurrencyCount(uint32 id, uint32 count);
         void SendCurrencyWeekCap(uint32 id) const;
         void SetCurrencyFlags(uint32 currencyId, uint8 flags);
+        void ResetCurrencyWeekCounts();
 
         /*********************************************************/
         /***                  PVP SYSTEM                       ***/

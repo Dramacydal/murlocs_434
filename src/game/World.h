@@ -117,8 +117,13 @@ enum eConfigUInt32Values
     CONFIG_UINT32_START_PLAYER_LEVEL,
     CONFIG_UINT32_START_HEROIC_PLAYER_LEVEL,
     CONFIG_UINT32_START_PLAYER_MONEY,
-    CONFIG_UINT32_START_HONOR_POINTS,
-    CONFIG_UINT32_START_CONQUEST_POINTS,
+    CONFIG_UINT32_CURRENCY_START_HONOR_POINTS,
+    CONFIG_UINT32_CURRENCY_START_CONQUEST_POINTS,
+    CONFIG_UINT32_CURRENCY_CONQUEST_POINTS_DEFAULT_WEEK_CAP,
+    CONFIG_UINT32_CURRENCY_ARENA_CONQUEST_POINTS_REWARD,
+    CONFIG_UINT32_CURRENCY_RESET_TIME_HOUR,
+    CONFIG_UINT32_CURRENCY_RESET_INTERVAL,
+    CONFIG_UINT32_CURRENCY_RESET_TIME_WEEK_DAY,
     CONFIG_UINT32_INSTANCE_RESET_TIME_HOUR,
     CONFIG_UINT32_INSTANCE_UNLOAD_DELAY,
     CONFIG_UINT32_MAX_SPELL_CASTS_IN_CHAIN,
@@ -177,7 +182,6 @@ enum eConfigUInt32Values
     CONFIG_UINT32_BATTLEGROUND_QUEUE_ANNOUNCER_JOIN,
     CONFIG_UINT32_ARENA_MAX_RATING_DIFFERENCE,
     CONFIG_UINT32_ARENA_RATING_DISCARD_TIMER,
-    CONFIG_UINT32_ARENA_AUTO_DISTRIBUTE_INTERVAL_DAYS,
     CONFIG_UINT32_ARENA_SEASON_ID,
     CONFIG_UINT32_ARENA_SEASON_PREVIOUS_ID,
     CONFIG_UINT32_CLIENTCACHE_VERSION,
@@ -389,7 +393,6 @@ enum eConfigBoolValues
     CONFIG_BOOL_SKILL_FAIL_POSSIBLE_FISHINGPOOL,
     CONFIG_BOOL_BATTLEGROUND_CAST_DESERTER,
     CONFIG_BOOL_BATTLEGROUND_QUEUE_ANNOUNCER_START,
-    CONFIG_BOOL_ARENA_AUTO_DISTRIBUTE_POINTS,
     CONFIG_BOOL_ARENA_QUEUE_ANNOUNCER_JOIN,
     CONFIG_BOOL_ARENA_QUEUE_ANNOUNCER_EXIT,
     CONFIG_BOOL_OUTDOORPVP_SI_ENABLED,
@@ -754,10 +757,12 @@ class World
         // callback for UpdateRealmCharacters
         void _UpdateRealmCharCount(QueryResult *resultCharCount, uint32 accountId);
 
+        void InitCurrencyResetTime();
         void InitDailyQuestResetTime();
         void InitWeeklyQuestResetTime();
         void InitRandomBGResetTime();
         void SetMonthlyQuestResetTime(bool initialize = true);
+        void ResetCurrencyWeekCounts();
         void ResetDailyQuests();
         void ResetWeeklyQuests();
         void ResetRandomBG();
@@ -839,7 +844,8 @@ class World
         // CLI command holder to be thread safe
         ACE_Based::LockedQueue<CliCommandHolder*,ACE_Thread_Mutex> cliCmdQueue;
 
-        // next daily quests reset time
+        // scheduled reset times
+        time_t m_NextCurrencyReset;
         time_t m_NextDailyQuestReset;
         time_t m_NextWeeklyQuestReset;
         time_t m_NextRandomBGReset;
