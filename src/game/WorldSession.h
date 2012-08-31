@@ -756,13 +756,14 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleBattlemasterHelloOpcode(WorldPacket &recv_data);
         void HandleBattlemasterJoinOpcode(WorldPacket &recv_data);
         void HandleBattleGroundPlayerPositionsOpcode(WorldPacket& recv_data);
-        void HandlePVPLogDataOpcode( WorldPacket &recv_data );
-        void HandleBattlefieldStatusOpcode(WorldPacket &recv_data);
-        void HandleBattleFieldPortOpcode( WorldPacket &recv_data );
-        void HandleBattlefieldListOpcode( WorldPacket &recv_data );
-        void HandleLeaveBattlefieldOpcode( WorldPacket &recv_data );
-        void HandleBattlemasterJoinArena( WorldPacket &recv_data );
-        void HandleReportPvPAFK( WorldPacket &recv_data );
+        void HandlePVPLogDataOpcode(WorldPacket& recv_data);
+        void HandleBattlefieldStatusOpcode(WorldPacket& recv_data);
+        void HandleBattleFieldPortOpcode(WorldPacket& recv_data);
+        void HandleBattlefieldListOpcode(WorldPacket& recv_data);
+        void HandleLeaveBattlefieldOpcode(WorldPacket& recv_data);
+        void HandleBattlemasterJoinArena(WorldPacket& recv_data);
+        void HandleReportPvPAFK(WorldPacket& recv_data);
+        void HandleRequestPvPOptionsEnabled(WorldPacket& recv_data);
 
         void HandleWardenDataOpcode(WorldPacket& recv_data);
         void HandleWorldTeleportOpcode(WorldPacket& recv_data);

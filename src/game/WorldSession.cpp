@@ -586,8 +586,10 @@ void WorldSession::SendNotification(const char *format,...)
         vsnprintf( szStr, 1024, format, ap );
         va_end(ap);
 
-        WorldPacket data(SMSG_NOTIFICATION, (strlen(szStr)+1));
-        data << szStr;
+        WorldPacket data(SMSG_NOTIFICATION, (strlen(szStr) + 1));
+        data.WriteBits(strlen(szStr), 13);
+        data.FlushBits();
+        data.append(szStr, strlen(szStr));
         SendPacket(&data);
     }
 }
@@ -604,8 +606,10 @@ void WorldSession::SendNotification(int32 string_id,...)
         vsnprintf( szStr, 1024, format, ap );
         va_end(ap);
 
-        WorldPacket data(SMSG_NOTIFICATION, (strlen(szStr)+1));
-        data << szStr;
+        WorldPacket data(SMSG_NOTIFICATION, (strlen(szStr) + 1));
+        data.WriteBits(strlen(szStr), 13);
+        data.FlushBits();
+        data.append(szStr, strlen(szStr));
         SendPacket(&data);
     }
 }
