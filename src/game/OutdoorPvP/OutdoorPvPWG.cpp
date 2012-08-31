@@ -532,6 +532,8 @@ void OutdoorPvPWG::HandleCreatureDeath(Creature* pCreature)
 
 void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
 {
+    OutdoorPvP::HandleGameObjectCreate(pGo);
+
     switch(pGo->GetEntry())
     {
         case GO_WINTERGRASP_FORTRESS_DOOR:
