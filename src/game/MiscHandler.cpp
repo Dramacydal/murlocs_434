@@ -40,6 +40,8 @@
 #include "BattleGround/BattleGround.h"
 #include "OutdoorPvP/OutdoorPvP.h"
 #include "OutdoorPvP/OutdoorPvPWG.h"
+#include "Guild.h"
+
 #include "Pet.h"
 #include "SocialMgr.h"
 #include "DBCEnums.h"
@@ -1109,7 +1111,7 @@ void WorldSession::HandleInspectOpcode(WorldPacket& recv_data)
         return;
 
     WorldPacket data(SMSG_INSPECT_RESULTS, 50);
-    data << plr->GetPackGUID();
+    data << plr->GetObjectGuid();
 
     if(sWorld.getConfig(CONFIG_BOOL_TALENTS_INSPECTING) || _player->isGameMaster())
         plr->BuildPlayerTalentsInfoData(&data);
@@ -1121,6 +1123,13 @@ void WorldSession::HandleInspectOpcode(WorldPacket& recv_data)
     }
 
     plr->BuildEnchantmentsInfoData(&data);
+    if (Guild* guild = sGuildMgr.GetGuildById(plr->GetGuildId()))
+    {
+        data << uint64(0/*guild->GetGUID()*/);
+        data << uint32(0/*guild->GetLevel()*/);
+        data << uint64(0/*guild->GetXP()*/);
+        data << uint32(0/*guild->GetMembersCount()*/); // number of members
+    }
 
     SendPacket(&data);
 }

@@ -459,6 +459,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
     //statistics counting
     uint32 diff_time = WorldTimer::getMSTime();
+    spell->m_glyphIndex = glyphIndex;
     spell->prepare(&targets, triggeredByAura); //original line
     diff_time = WorldTimer::getMSTime() - diff_time;
     if(diff_time > sStatMgr.spell_work.first)
