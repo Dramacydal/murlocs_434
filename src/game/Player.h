@@ -1293,23 +1293,22 @@ class MANGOS_DLL_SPEC Player : public Unit
             return _CanStoreItem( bag, slot, dest, pItem->GetEntry(), count, pItem, swap, NULL );
 
         }
-        InventoryResult CanStoreItems(Item **pItem,int count) const;
-        InventoryResult CanEquipNewItem(uint8 slot, uint16 &dest, uint32 item, bool swap) const;
-        InventoryResult CanEquipItem(uint8 slot, uint16 &dest, Item *pItem, bool swap, bool direct_action = true) const;
+        InventoryResult CanStoreItems(Item** pItem, int count) const;
+        InventoryResult CanEquipNewItem(uint8 slot, uint16& dest, uint32 item, bool swap) const;
+        InventoryResult CanEquipItem(uint8 slot, uint16& dest, Item* pItem, bool swap, bool direct_action = true) const;
 
-        InventoryResult CanEquipUniqueItem( Item * pItem, uint8 except_slot = NULL_SLOT, uint32 limit_count = 1 ) const;
-        InventoryResult CanEquipUniqueItem( ItemPrototype const* itemProto, uint8 except_slot = NULL_SLOT, uint32 limit_count = 1 ) const;
-        InventoryResult CanUnequipItems( uint32 item, uint32 count ) const;
-        InventoryResult CanUnequipItem( uint16 src, bool swap ) const;
-        InventoryResult CanBankItem( uint8 bag, uint8 slot, ItemPosCountVec& dest, Item *pItem, bool swap, bool not_loading = true ) const;
-        InventoryResult CanUseItem(Item *pItem, bool direct_action = true) const;
-        bool HasItemTotemCategory(uint32 TotemCategory) const;
-        InventoryResult CanUseItem(ItemPrototype const *pItem) const;
-        InventoryResult CanUseAmmo( uint32 item ) const;
+        InventoryResult CanEquipUniqueItem(Item* pItem, uint8 except_slot = NULL_SLOT, uint32 limit_count = 1) const;
+        InventoryResult CanEquipUniqueItem(ItemPrototype const* itemProto, uint8 except_slot = NULL_SLOT, uint32 limit_count = 1) const;
+        InventoryResult CanUnequipItems(uint32 item, uint32 count) const;
+        InventoryResult CanUnequipItem(uint16 src, bool swap) const;
+        InventoryResult CanBankItem(uint8 bag, uint8 slot, ItemPosCountVec& dest, Item* pItem, bool swap, bool not_loading = true) const;
+        InventoryResult CanUseItem(Item* pItem, bool direct_action = true) const;
+        InventoryResult CanUseItem(ItemPrototype const* pItem) const;
+        InventoryResult CanUseAmmo(uint32 item) const;
         Item* StoreNewItem(ItemPosCountVec const& pos, uint32 item, bool update,int32 randomPropertyId = 0, AllowedLooterSet* allowedLooters = NULL);
-        Item* StoreItem( ItemPosCountVec const& pos, Item *pItem, bool update );
-        Item* EquipNewItem( uint16 pos, uint32 item, bool update );
-        Item* EquipItem( uint16 pos, Item *pItem, bool update );
+        Item* StoreItem(ItemPosCountVec const& pos, Item* pItem, bool update);
+        Item* EquipNewItem(uint16 pos, uint32 item, bool update);
+        Item* EquipItem(uint16 pos, Item* pItem, bool update);
         void AutoUnequipOffhandIfNeed();
         bool StoreNewItemInBestSlots(uint32 item_id, uint32 item_count);
         Item* StoreNewItemInInventorySlot(uint32 itemEntry, uint32 amount);
