@@ -54,7 +54,7 @@ class OutdoorPvP
 
     public:
         OutdoorPvP(uint32 _id) : m_id(_id) {}
-        ~OutdoorPvP() {}
+        virtual ~OutdoorPvP() {}
 
         // called when the zone is initialized
         virtual void FillInitialWorldStates(WorldPacket& /*data*/, uint32& /*count*/) {}
