@@ -2079,6 +2079,7 @@ void WorldObject::PlayDirectSound( uint32 sound_id, Player* target /*= NULL*/ )
 {
     WorldPacket data(SMSG_PLAY_SOUND, 4);
     data << uint32(sound_id);
+    data << ObjectGuid();
     if (target)
         target->SendDirectMessage( &data );
     else
