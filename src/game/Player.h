@@ -2073,6 +2073,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         /*********************************************************/
         void UpdateHonorKills();
         bool RewardHonor(Unit *pVictim, uint32 groupsize, float honor = -1);
+        void SendPvPRewards();
+        void SendRatedBGStats();
 
         uint32 GetMaxPersonalArenaRatingRequirement(uint32 minarenaslot);
 
@@ -2171,6 +2173,13 @@ class MANGOS_DLL_SPEC Player : public Unit
         }
 
         BattleGroundQueueTypeId GetBattleGroundQueueTypeId(uint32 index) const { return m_bgBattleGroundQueueID[index].bgQueueTypeId; }
+        BattleGroundQueueTypeId GetBattleGroundQueueTypeIdByClientInstance(uint32 instanceId) const
+        {
+            for (int i = 0; i < PLAYER_MAX_BATTLEGROUND_QUEUES; ++i)
+                if (m_bgBattleGroundQueueID[i].invitedToInstance == instanceId)
+                    return m_bgBattleGroundQueueID[i].bgQueueTypeId;
+            return BATTLEGROUND_QUEUE_NONE;
+        }
         uint32 GetBattleGroundQueueIndex(BattleGroundQueueTypeId bgQueueTypeId) const
         {
             for (int i=0; i < PLAYER_MAX_BATTLEGROUND_QUEUES; ++i)
