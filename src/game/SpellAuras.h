@@ -383,6 +383,7 @@ class MANGOS_DLL_SPEC Aura
         void HandleAuraFakeInebriation(bool apply, bool Real);
         void HandleAuraLinked(bool apply, bool Real);
         void HandleAllowOnlyAbility(bool apply, bool Real);
+        void HandleAuraMastery(bool apply, bool Real);
 
         virtual ~Aura();
 
