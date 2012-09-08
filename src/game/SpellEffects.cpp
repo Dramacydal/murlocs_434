@@ -7100,19 +7100,16 @@ void Spell::EffectTeleUnitsFaceCaster(SpellEffectEntry const * effect)
     if (!unitTarget || unitTarget->IsTaxiFlying())
         return;
 
+    float fx, fy, fz;
     if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
-    {
-        unitTarget->NearTeleportTo(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, -m_caster->GetOrientation(), unitTarget == m_caster);
-    }
+        m_targets.getDestination(fx, fy, fz);
     else
     {
         float dis = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->EffectRadiusIndex));
-
-        float fx, fy, fz;
         m_caster->GetClosePoint(fx, fy, fz, unitTarget->GetObjectBoundingRadius(), dis);
-
-        unitTarget->NearTeleportTo(fx, fy, fz, -m_caster->GetOrientation(), unitTarget == m_caster);
     }
+
+    unitTarget->NearTeleportTo(fx, fy, fz, -m_caster->GetOrientation(), unitTarget == m_caster);
 }
 
 void Spell::EffectLearnSkill(SpellEffectEntry const* effect)
