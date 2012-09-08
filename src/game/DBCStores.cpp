@@ -214,6 +214,8 @@ DBCStorage <TalentTreePrimarySpellsEntry> sTalentTreePrimarySpellsStore(TalentTr
 typedef std::map<uint32, std::vector<uint32> > TalentTreeSpellsMap;
 TalentTreeSpellsMap sTalentTreeMasterySpellsMap;
 TalentTreeSpellsMap sTalentTreePrimarySpellsMap;
+typedef std::map<uint32, uint32> TalentTreeRolesMap;
+TalentTreeRolesMap sTalentTreeRolesMap;
 
 // store absolute bit position for first rank for talent inspect
 static uint32 sTalentTabPages[MAX_CLASSES][3];
@@ -1278,6 +1280,8 @@ void LoadDBCStores(const std::string& dataPath)
             for (uint32 cls = 1; cls < MAX_CLASSES; ++cls)
                 if (talentTabInfo->ClassMask & (1 << (cls - 1)))
                     sTalentTabPages[cls][talentTabInfo->tabpage] = talentTabId;
+
+            sTalentTreeRolesMap[talentTabId] = talentTabInfo->rolesMask;
         }
     }
 
@@ -1695,6 +1699,15 @@ std::vector<uint32> const* GetTalentTreePrimarySpells(uint32 talentTree)
         return NULL;
 
     return &itr->second;
+}
+
+uint32 GetTalentTreeRolesMask(uint32 talentTree)
+{
+    TalentTreeRolesMap::const_iterator itr = sTalentTreeRolesMap.find(talentTree);
+    if (itr == sTalentTreeRolesMap.end())
+        return NULL;
+
+    return itr->second;
 }
 
 bool IsPointInAreaTriggerZone(AreaTriggerEntry const* atEntry, uint32 mapid, float x, float y, float z, float delta)
