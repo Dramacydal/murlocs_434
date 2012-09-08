@@ -139,6 +139,7 @@ enum SpellFacingFlags
 #define BASE_MINDAMAGE 1.0f
 #define BASE_MAXDAMAGE 2.0f
 #define BASE_ATTACK_TIME 2000
+#define BASE_BLOCK_DAMAGE_PERCENT 30
 
 // byte value (UNIT_FIELD_BYTES_1,0)
 enum UnitStandStateType
@@ -382,7 +383,7 @@ enum BaseModGroup
     CRIT_PERCENTAGE,
     RANGED_CRIT_PERCENTAGE,
     OFFHAND_CRIT_PERCENTAGE,
-    SHIELD_BLOCK_VALUE,
+    SHIELD_BLOCK_DAMAGE_VALUE,
     BASEMOD_END
 };
 
@@ -488,7 +489,7 @@ extern float baseMoveSpeed[MAX_MOVE_TYPE];
 enum CombatRating
 {
     CR_WEAPON_SKILL             = 0,
-    CR_DEFENSE_SKILL            = 1,
+    CR_DEFENSE_SKILL            = 1,                        // obsolete
     CR_DODGE                    = 2,
     CR_PARRY                    = 3,
     CR_BLOCK                    = 4,
@@ -1417,10 +1418,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         float GetUnitBlockChance()    const;
         float GetUnitCriticalChance(WeaponAttackType attackType, const Unit *pVictim) const;
 
-        virtual uint32 GetShieldBlockValue(bool capped = false) const =0;
-        uint32 GetUnitMeleeSkill(Unit const* target = NULL) const { return (target ? GetLevelForTarget(target) : getLevel()) * 5; }
-        uint32 GetDefenseSkillValue(Unit const* target = NULL) const;
-        uint32 GetWeaponSkillValue(WeaponAttackType attType, Unit const* target = NULL) const;
+        virtual uint32 GetShieldBlockDamageValue(bool capped = false) const = 0;
         float GetWeaponProcChance() const;
         float GetPPMProcChance(uint32 WeaponSpeed, float PPM) const;
 
