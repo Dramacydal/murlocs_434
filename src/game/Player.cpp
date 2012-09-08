@@ -2342,7 +2342,7 @@ void Player::RegenerateAll(uint32 diff)
 {
     // Not in combat or they have regeneration
     if (!isInCombat() || HasAuraType(SPELL_AURA_MOD_REGEN_DURING_COMBAT) ||
-        HasAuraType(SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT) || IsPolymorphed() || m_baseHealthRegen )
+            HasAuraType(SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT) || IsPolymorphed() || m_baseHealthRegen)
     {
         RegenerateHealth(diff);
         if (!isInCombat() && !HasAuraType(SPELL_AURA_INTERRUPT_REGEN))
@@ -2497,24 +2497,33 @@ void Player::RegenerateHealth(uint32 diff)
     // normal regen case (maybe partly in combat case)
     else if (!isInCombat() || HasAuraType(SPELL_AURA_MOD_REGEN_DURING_COMBAT) )
     {
-        addvalue = OCTRegenHPPerSpirit()* HealthIncreaseRate;
+        addvalue = HealthIncreaseRate;
         if (!isInCombat())
         {
+            if (getLevel() < 15)
+                addvalue = 0.20f * GetMaxHealth() * addvalue / getLevel();
+            else
+                addvalue = 0.015f * GetMaxHealth() * addvalue;
+
             AuraList const& mModHealthRegenPct = GetAurasByType(SPELL_AURA_MOD_HEALTH_REGEN_PERCENT);
             for(AuraList::const_iterator i = mModHealthRegenPct.begin(); i != mModHealthRegenPct.end(); ++i)
                 addvalue *= (100.0f + (*i)->GetModifier()->m_amount) / 100.0f;
+
+            addvalue += GetTotalAuraModifier(SPELL_AURA_MOD_REGEN) * 2.0f / 5.0f;
         }
         else if(HasAuraType(SPELL_AURA_MOD_REGEN_DURING_COMBAT))
             addvalue *= GetTotalAuraModifier(SPELL_AURA_MOD_REGEN_DURING_COMBAT) / 100.0f;
 
-        if(!IsStandState())
-            addvalue *= 1.5;
+        if (!IsStandState())
+            addvalue *= 1.33f;
     }
 
     // always regeneration bonus (including combat)
     addvalue += GetTotalAuraModifier(SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT);
-    addvalue += m_baseHealthRegen / 2.5f; //From ITEM_MOD_HEALTH_REGEN. It is correct tick amount?
-    if(addvalue < 0)
+
+    addvalue += m_baseHealthRegen / 2.5f;
+
+    if (addvalue < 0)
         addvalue = 0;
 
     if (HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREPARATION))
@@ -5645,27 +5654,6 @@ float Player::GetExpertiseDodgeOrParryReduction(WeaponAttackType attType) const
             break;
     }
     return 0.0f;
-}
-
-float Player::OCTRegenHPPerSpirit()
-{
-    //uint32 level = getLevel();
-    //uint32 pclass = getClass();
-
-    //if (level>GT_MAX_LEVEL) level = GT_MAX_LEVEL;
-
-    //GtOCTRegenHPEntry     const *baseRatio = sGtOCTRegenHPStore.LookupEntry((pclass-1)*GT_MAX_LEVEL + level-1);
-    //GtRegenHPPerSptEntry  const *moreRatio = sGtRegenHPPerSptStore.LookupEntry((pclass-1)*GT_MAX_LEVEL + level-1);
-    //if (baseRatio==NULL || moreRatio==NULL)
-        return 0.0f;
-
-    // Formula from PaperDollFrame script
-    //float spirit = GetStat(STAT_SPIRIT);
-    //float baseSpirit = spirit;
-    //if (baseSpirit>50) baseSpirit = 50;
-    //float moreSpirit = spirit - baseSpirit;
-    //float regen = baseSpirit * baseRatio->ratio + moreSpirit * moreRatio->ratio;
-    //return regen;
 }
 
 float Player::OCTRegenMPPerSpirit()
@@ -13305,13 +13293,8 @@ void Player::ApplyEnchantment(Item *item, EnchantmentSlot slot, bool apply, bool
                     DEBUG_LOG("Adding %u to stat nb %u",enchant_amount,enchant_spell_id);
                     switch (enchant_spell_id)
                     {
-<<<<<<< HEAD
-                        case ITEM_MOD_MANA:
-                            DEBUG_LOG("+ %u MANA",enchant_amount);
-=======
                         /*case ITEM_MOD_MANA:
                             DEBUG_LOG("+ %u MANA", enchant_amount);
->>>>>>> 9c809ca... [0146] Cleanup deprecated item mods and combat ratings
                             HandleStatModifier(UNIT_MOD_MANA, BASE_VALUE, float(enchant_amount), apply);
                             break;*/
                         case ITEM_MOD_HEALTH:
@@ -13398,19 +13381,13 @@ void Player::ApplyEnchantment(Item *item, EnchantmentSlot slot, bool apply, bool
                             ApplyModInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, -int32(enchant_amount), apply);
                             m_spellPenetrationItemMod += apply ? enchant_amount : -int32(enchant_amount);
                             DEBUG_LOG("+ %u SPELL_PENETRATION", -int32(enchant_amount));
-<<<<<<< HEAD
                         case ITEM_MOD_HEALTH_REGEN:
                             ApplyHealthRegenBonus(enchant_amount, apply);
                             DEBUG_LOG("+ %u HEALTH_REGENERATION", enchant_amount);
                             break;
-                        case ITEM_MOD_BLOCK_VALUE:
-                            HandleBaseModValue(SHIELD_BLOCK_VALUE, FLAT_MOD, float(enchant_amount), apply);
-=======
-                            break;
                         case ITEM_MOD_MASTERY_RATING:
                             ApplyRatingMod(CR_MASTERY, enchant_amount, apply);
                             DEBUG_LOG("+ %u MASTERY_RATING", enchant_amount);
->>>>>>> 9c809ca... [0146] Cleanup deprecated item mods and combat ratings
                             break;
                         // deprecated
                         case ITEM_MOD_DEFENSE_SKILL_RATING:

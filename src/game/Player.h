@@ -1895,7 +1895,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         float GetMeleeCritFromAgility();
         void GetDodgeFromAgility(float &diminishing, float &nondiminishing);
         float GetSpellCritFromIntellect();
-        float OCTRegenHPPerSpirit();
         float OCTRegenMPPerSpirit();
         float GetRatingMultiplier(CombatRating cr) const;
         float GetRatingBonusValue(CombatRating cr) const;
