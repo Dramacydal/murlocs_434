@@ -1705,7 +1705,7 @@ uint32 GetTalentTreeRolesMask(uint32 talentTree)
 {
     TalentTreeRolesMap::const_iterator itr = sTalentTreeRolesMap.find(talentTree);
     if (itr == sTalentTreeRolesMap.end())
-        return NULL;
+        return 0;
 
     return itr->second;
 }

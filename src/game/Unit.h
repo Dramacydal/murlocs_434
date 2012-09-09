@@ -1937,9 +1937,6 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
             return SPELL_AURA_PROC_CANT_TRIGGER;
         }
 
-        void SetLastManaUse();
-        bool IsUnderLastManaUseEffect() const { return m_lastManaUseTimer > 0; }
-
         uint32 GetRegenTimer() const { return m_regenTimer; }
 
         void SetContestedPvP(Player *attackedPlayer = NULL);
@@ -2127,7 +2124,6 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 
         uint32 m_reactiveTimer[MAX_REACTIVE];
         uint32 m_regenTimer;
-        uint32 m_lastManaUseTimer;
 
         // Transports
         Transport* m_transport;

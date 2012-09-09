@@ -5392,18 +5392,6 @@ void Spell::TakePower()
     }
 
     m_caster->ModifyPower(powerType, -(int32)m_powerCost);
-
-    // Set the five second timer
-    if (powerType == POWER_MANA && m_powerCost > 0)
-    {
-        uint32 delay = 0;
-        if (m_caster->GetCharmInfo())
-            delay = m_caster->GetCharmInfo()->GetGlobalCooldownMgr().GetGlobalCooldown(m_spellInfo);
-        else if (m_caster->GetTypeId() == TYPEID_PLAYER)
-            delay = ((Player*)m_caster)->GetGlobalCooldownMgr().HasGlobalCooldown(m_spellInfo);
-
-        m_caster->m_Events.AddEvent(new ManaUseEvent(*m_caster), delay);
-    }
 }
 
 SpellCastResult Spell::CheckOrTakeRunePower(bool take)
