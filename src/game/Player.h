@@ -946,15 +946,15 @@ class MANGOS_DLL_SPEC PlayerTaxi
 
         bool IsTaximaskNodeKnown(uint32 nodeidx) const
         {
-            uint8  field   = uint8((nodeidx - 1) / 32);
-            uint32 submask = 1<<((nodeidx-1)%32);
+            uint8 field   = uint8((nodeidx - 1) / 8);
+            uint8 submask = 1 << ((nodeidx - 1) % 8);
             return (m_taximask[field] & submask) == submask;
         }
         bool SetTaximaskNode(uint32 nodeidx)
         {
-            uint8  field   = uint8((nodeidx - 1) / 32);
-            uint32 submask = 1<<((nodeidx-1)%32);
-            if ((m_taximask[field] & submask) != submask )
+            uint8 field   = uint8((nodeidx - 1) / 8);
+            uint8 submask = 1 << ((nodeidx - 1) % 8);
+            if ((m_taximask[field] & submask) != submask)
             {
                 m_taximask[field] |= submask;
                 return true;

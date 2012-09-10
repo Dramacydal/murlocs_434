@@ -185,21 +185,22 @@ void PlayerTaxi::LoadTaxiMask(const char* data)
         (index < TaxiMaskSize) && (iter != tokens.end()); ++iter, ++index)
     {
         // load and set bits only for existing taxi nodes
-        m_taximask[index] = sTaxiNodesMask[index] & uint32(atol((*iter).c_str()));
+        m_taximask[index] = sTaxiNodesMask[index] & uint8(atol((*iter).c_str()));
     }
 }
 
 void PlayerTaxi::AppendTaximaskTo( ByteBuffer& data, bool all )
 {
-    if(all)
+    data << uint32(TaxiMaskSize);
+    if (all)
     {
-        for (uint8 i=0; i<TaxiMaskSize; ++i)
-            data << uint32(sTaxiNodesMask[i]);              // all existing nodes
+        for (uint8 i = 0; i < TaxiMaskSize; ++i)
+            data << uint8(sTaxiNodesMask[i]);               // all existing nodes
     }
     else
     {
-        for (uint8 i=0; i<TaxiMaskSize; ++i)
-            data << uint32(m_taximask[i]);                  // known nodes
+        for (uint8 i = 0; i < TaxiMaskSize; ++i)
+            data << uint8(m_taximask[i]);                   // known nodes
     }
 }
 
@@ -266,8 +267,8 @@ uint32 PlayerTaxi::GetCurrentTaxiPath() const
 
 std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi)
 {
-    for(int i = 0; i < TaxiMaskSize; ++i)
-        ss << taxi.m_taximask[i] << " ";
+    for (int i = 0; i < TaxiMaskSize; ++i)
+        ss << uint32(taxi.m_taximask[i]) << " ";    // cast to prevent conversion to char
     return ss;
 }
 
