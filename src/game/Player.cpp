@@ -4443,9 +4443,7 @@ void Player::BuildCreateUpdateBlockForPlayer( UpdateData *data, Player *target )
 
 void Player::SetPhaseAndMap(Player* target) const
 {
-    QueryResult *result = CharacterDatabase.PQuery("SELECT map, phase FROM character_phase_data WHERE guid = '%u'", target->GetGUIDLow());
-
-    if (result)
+    if (QueryResult *result = CharacterDatabase.PQuery("SELECT map, phase FROM character_phase_data WHERE guid = '%u'", target->GetGUIDLow()))
     {
         Field *fields = result->Fetch();
 
@@ -21247,7 +21245,8 @@ void Player::SetPhaseMask(uint32 newPhaseMask, bool update)
         bg->EventPlayerDroppedFlag(this);
 
     Unit::SetPhaseMask(newPhaseMask, update);
-    GetSession()->SendSetPhaseShift(GetPhaseMask());
+    if (IsInWorld())
+        GetSession()->SendSetPhaseShift(GetPhaseMask());
 }
 
 void Player::InitPrimaryProfessions()
