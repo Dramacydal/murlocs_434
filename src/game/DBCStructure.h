@@ -863,7 +863,7 @@ struct CreatureTypeEntry
 struct CurrencyTypesEntry
 {
     uint32  ID;                                             // 0
-    //uint32 Category;                                      // 1
+    uint32 Category;                                        // 1
     DBCString name;                                         // 2
     //char* iconName;                                       // 3
     //char* iconName2;                                      // 4

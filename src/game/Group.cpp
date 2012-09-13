@@ -556,6 +556,7 @@ void Group::SendLootStartRoll(uint32 CountDown, uint32 mapid, const Roll &r)
 
     size_t voteMaskPos = data.wpos();
     data << uint8(0);                                       // roll type mask, allowed choices (placeholder)
+    data << uint8(r.totalPlayersRolling);
 
     for (Roll::PlayerVote::const_iterator itr = r.playerVote.begin(); itr != r.playerVote.end(); ++itr)
     {
@@ -574,7 +575,7 @@ void Group::SendLootStartRoll(uint32 CountDown, uint32 mapid, const Roll &r)
     }
 }
 
-void Group::SendLootRoll(ObjectGuid const& targetGuid, uint8 rollNumber, uint8 rollType, const Roll &r)
+void Group::SendLootRoll(ObjectGuid const& targetGuid, uint32 rollNumber, uint8 rollType, const Roll& r)
 {
     WorldPacket data(SMSG_LOOT_ROLL, (8+4+8+4+4+4+1+1+1));
     data << r.lootedTargetGUID;                             // creature guid what we're looting
@@ -583,7 +584,7 @@ void Group::SendLootRoll(ObjectGuid const& targetGuid, uint8 rollNumber, uint8 r
     data << uint32(r.itemid);                               // the itemEntryId for the item that shall be rolled for
     data << uint32(r.itemRandomSuffix);                     // randomSuffix
     data << uint32(r.itemRandomPropId);                     // Item random property ID
-    data << uint8(rollNumber);                              // 0: "Need for: [item name]" > 127: "you passed on: [item name]"      Roll number
+    data << uint32(rollNumber);                             // 0: "Need for: [item name]", -1: "you passed on: [item name]"      Roll number
     data << uint8(rollType);                                // 0: "Need for: [item name]" 0: "You have selected need for [item name] 1: need roll 2: greed roll
     data << uint8(0);                                       // auto pass on loot
 
@@ -598,7 +599,7 @@ void Group::SendLootRoll(ObjectGuid const& targetGuid, uint8 rollNumber, uint8 r
     }
 }
 
-void Group::SendLootRollWon(ObjectGuid const& targetGuid, uint8 rollNumber, RollVote rollType, const Roll &r)
+void Group::SendLootRollWon(ObjectGuid const& targetGuid, uint32 rollNumber, RollVote rollType, const Roll& r)
 {
     WorldPacket data(SMSG_LOOT_ROLL_WON, (8+4+4+4+4+8+1+1));
     data << r.lootedTargetGUID;                             // creature guid what we're looting
@@ -607,7 +608,7 @@ void Group::SendLootRollWon(ObjectGuid const& targetGuid, uint8 rollNumber, Roll
     data << uint32(r.itemRandomSuffix);                     // randomSuffix
     data << uint32(r.itemRandomPropId);                     // Item random property
     data << targetGuid;                                     // guid of the player who won.
-    data << uint8(rollNumber);                              // rollnumber related to SMSG_LOOT_ROLL
+    data << uint32(rollNumber);                             // rollnumber related to SMSG_LOOT_ROLL
     data << uint8(rollType);                                // Rolltype related to SMSG_LOOT_ROLL
 
     for( Roll::PlayerVote::const_iterator itr = r.playerVote.begin(); itr != r.playerVote.end(); ++itr)
@@ -648,7 +649,10 @@ void Group::GroupLoot(WorldObject* object, Loot *loot)
     for(uint8 itemSlot = 0; itemSlot < loot->items.size(); ++itemSlot)
     {
         LootItem& lootItem = loot->items[itemSlot];
-        ItemPrototype const *itemProto = ObjectMgr::GetItemPrototype(lootItem.itemid);
+        if (lootItem.currency)
+            continue;
+
+        ItemPrototype const* itemProto = ObjectMgr::GetItemPrototype(lootItem.itemid);
         if (!itemProto)
         {
             DEBUG_LOG("Group::GroupLoot: missing item prototype for item with id: %d", lootItem.itemid);
@@ -670,7 +674,10 @@ void Group::NeedBeforeGreed(WorldObject* object, Loot *loot)
     for(uint8 itemSlot = 0; itemSlot < loot->items.size(); ++itemSlot)
     {
         LootItem& lootItem = loot->items[itemSlot];
-        ItemPrototype const *itemProto = ObjectMgr::GetItemPrototype(lootItem.itemid);
+        if (lootItem.currency)
+            continue;
+
+        ItemPrototype const* itemProto = ObjectMgr::GetItemPrototype(lootItem.itemid);
         if (!itemProto)
         {
             DEBUG_LOG("Group::NeedBeforeGreed: missing item prototype for item with id: %d", lootItem.itemid);
@@ -689,7 +696,10 @@ void Group::MasterLoot(WorldObject* object, Loot* loot)
 {
     for (LootItemList::iterator i=loot->items.begin(); i != loot->items.end(); ++i)
     {
-        ItemPrototype const *item = ObjectMgr::GetItemPrototype(i->itemid);
+        if (i->currency)
+            continue;
+
+        ItemPrototype const* item = ObjectMgr::GetItemPrototype(i->itemid);
         if (!item)
             continue;
         if (item->Quality < uint32(m_lootThreshold))
@@ -760,7 +770,7 @@ bool Group::CountRollVote(ObjectGuid const& playerGUID, Rolls::iterator& rollI, 
     {
         case ROLL_PASS:                                     // Player choose pass
         {
-            SendLootRoll(playerGUID, 128, 128, *roll);
+            SendLootRoll(playerGUID, uint32(-1), ROLL_PASS, *roll);
             ++roll->totalPass;
             itr->second = ROLL_PASS;
             break;
@@ -774,14 +784,14 @@ bool Group::CountRollVote(ObjectGuid const& playerGUID, Rolls::iterator& rollI, 
         }
         case ROLL_GREED:                                    // player choose Greed
         {
-            SendLootRoll(playerGUID, 128, ROLL_GREED, *roll);
+            SendLootRoll(playerGUID, uint32(-1), ROLL_GREED, *roll);
             ++roll->totalGreed;
             itr->second = ROLL_GREED;
             break;
         }
         case ROLL_DISENCHANT:                               // player choose Disenchant
         {
-            SendLootRoll(playerGUID, 128, ROLL_DISENCHANT, *roll);
+            SendLootRoll(playerGUID, uint32(-1), ROLL_DISENCHANT, *roll);
             ++roll->totalGreed;
             itr->second = ROLL_DISENCHANT;
             break;
@@ -804,7 +814,9 @@ void Group::StartLootRoll(WorldObject* lootTarget, LootMethod method, Loot* loot
     if (itemSlot >= loot->items.size())
         return;
 
-    LootItem const& lootItem =  loot->items[itemSlot];
+    LootItem const& lootItem = loot->items[itemSlot];
+    if (lootItem.currency)
+        return;
 
     Roll* r = new Roll(lootTarget->GetObjectGuid(), method, lootItem);
 
@@ -873,7 +885,7 @@ void Group::CountTheRoll(Rolls::iterator& rollI)
     {
         if(!roll->playerVote.empty())
         {
-            uint8 maxresul = 0;
+            uint32 maxresul = 0;
             ObjectGuid maxguid  = (*roll->playerVote.begin()).first;
             Player *player;
 
@@ -882,7 +894,7 @@ void Group::CountTheRoll(Rolls::iterator& rollI)
                 if (itr->second != ROLL_NEED)
                     continue;
 
-                uint8 randomN = urand(1, 100);
+                uint32 randomN = urand(1, 100);
                 SendLootRoll(itr->first, randomN, ROLL_NEED, *roll);
                 if (maxresul < randomN)
                 {
@@ -923,7 +935,7 @@ void Group::CountTheRoll(Rolls::iterator& rollI)
     {
         if(!roll->playerVote.empty())
         {
-            uint8 maxresul = 0;
+            uint32 maxresul = 0;
             ObjectGuid maxguid = (*roll->playerVote.begin()).first;
             Player *player;
             RollVote rollvote = ROLL_PASS;                  //Fixed: Using uninitialized memory 'rollvote'
@@ -934,7 +946,7 @@ void Group::CountTheRoll(Rolls::iterator& rollI)
                 if (itr->second != ROLL_GREED && itr->second != ROLL_DISENCHANT)
                     continue;
 
-                uint8 randomN = urand(1, 100);
+                uint32 randomN = urand(1, 100);
                 SendLootRoll(itr->first, randomN, itr->second, *roll);
                 if (maxresul < randomN)
                 {

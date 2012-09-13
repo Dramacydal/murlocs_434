@@ -378,13 +378,13 @@ class MANGOS_DLL_SPEC Group
         /***                   LOOT SYSTEM                     ***/
         /*********************************************************/
 
-        void SendLootStartRoll(uint32 CountDown, uint32 mapid, const Roll &r);
-        void SendLootRoll(ObjectGuid const& targetGuid, uint8 rollNumber, uint8 rollType, const Roll &r);
-        void SendLootRollWon(ObjectGuid const& targetGuid, uint8 rollNumber, RollVote rollType, const Roll &r);
-        void SendLootAllPassed(const Roll &r);
-        void GroupLoot(WorldObject* object, Loot *loot);
-        void NeedBeforeGreed(WorldObject* object, Loot *loot);
-        void MasterLoot(WorldObject* object, Loot *loot);
+        void SendLootStartRoll(uint32 CountDown, uint32 mapid, const Roll& r);
+        void SendLootRoll(ObjectGuid const& targetGuid, uint32 rollNumber, uint8 rollType, const Roll& r);
+        void SendLootRollWon(ObjectGuid const& targetGuid, uint32 rollNumber, RollVote rollType, const Roll& r);
+        void SendLootAllPassed(const Roll& r);
+        void GroupLoot(WorldObject* pSource, Loot* loot);
+        void NeedBeforeGreed(WorldObject* pSource, Loot* loot);
+        void MasterLoot(WorldObject* pSource, Loot* loot);
         bool CountRollVote(Player* player, ObjectGuid const& lootedTarget, uint32 itemSlot, RollVote vote);
         void StartLootRoll(WorldObject* lootTarget, LootMethod method, Loot* loot, uint8 itemSlot, uint32 maxEnchantingSkill);
         void EndRoll();

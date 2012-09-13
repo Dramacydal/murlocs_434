@@ -2140,8 +2140,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         std::vector<ItemSetEffect *> ItemSetEff;
 
         void SendLoot(ObjectGuid guid, LootType loot_type);
-        void SendLootRelease(ObjectGuid guid );
-        void SendNotifyLootItemRemoved(uint8 lootSlot);
+        void SendLootRelease(ObjectGuid guid);
+        void SendNotifyLootItemRemoved(uint8 lootSlot, bool currency = false);
         void SendNotifyLootMoneyRemoved();
 
         /*********************************************************/
