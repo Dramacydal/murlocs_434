@@ -129,8 +129,8 @@ enum Opcodes
     SMSG_PAGE_TEXT_QUERY_RESPONSE                         = 0x105C,
     CMSG_QUEST_QUERY                                      = 0x0D06, // 4.3.4 15595
     SMSG_QUEST_QUERY_RESPONSE                             = 0x6936, // 4.3.4 15595
-    CMSG_GAMEOBJECT_QUERY                                 = 0x105F,
-    SMSG_GAMEOBJECT_QUERY_RESPONSE                        = 0x1060,
+    CMSG_GAMEOBJECT_QUERY                                 = 0x4017, // 4.3.4 15595
+    SMSG_GAMEOBJECT_QUERY_RESPONSE                        = 0x0915, // 4.3.4 15595
     CMSG_CREATURE_QUERY                                   = 0x2706, // 4.3.4 15595
     SMSG_CREATURE_QUERY_RESPONSE                          = 0x6024, // 4.3.4 15595
     CMSG_WHO                                              = 0x6C15, // 4.3.4 15595
