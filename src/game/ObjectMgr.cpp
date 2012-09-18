@@ -4788,6 +4788,8 @@ void ObjectMgr::LoadQuests()
         {
             if (qinfo->ReqCurrencyId[j])
             {
+                qinfo->SetSpecialFlag(QUEST_SPECIAL_FLAG_DELIVER);
+
                 CurrencyTypesEntry const * currencyEntry = sCurrencyTypesStore.LookupEntry(qinfo->ReqCurrencyId[j]);
                 if (!currencyEntry)
                 {
@@ -4811,7 +4813,6 @@ void ObjectMgr::LoadQuests()
                         qinfo->ReqCurrencyCount[j] = currencyEntry->TotalCap;
                     }
                 }
-
             }
             else if (qinfo->ReqCurrencyCount[j])
             {
