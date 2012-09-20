@@ -8687,6 +8687,14 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     }
                     return;
                 }
+                case 37431:                                 // Spout
+                {
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->CastSpell(unitTarget, urand(0, 1) ? 37429 : 37430, true);
+                    return;
+                }
                 case 37473:                                 // Detect Whispers (related to quest 10607 - Whispers of the Raven God_Whispers of the Raven God)
                 {
                     if (!unitTarget)
@@ -8706,6 +8714,10 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
 
                     ((Player*)m_caster)->KilledMonsterCredit(21892);
                     break;
+=======
+                    unitTarget->CastSpell(unitTarget, urand(0, 1) ? 37429 : 37430, true);
+                    return;
+>>>>>>> 455c127... [12250] Implement spell 37431 and related auras
                 }
                 case 38358:                                 // Tidal Surge
                 {
