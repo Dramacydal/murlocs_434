@@ -7622,6 +7622,9 @@ int32 Unit::SpellBaseDamageBonusDone(SpellSchoolMask schoolMask)
         // Base value
         DoneAdvertisedBenefit +=((Player*)this)->GetBaseSpellPowerBonus();
 
+        if (GetPowerIndex(POWER_MANA) != INVALID_POWER_INDEX)
+            DoneAdvertisedBenefit += std::max(0, int32(GetStat(STAT_INTELLECT)) - 10);  // spellpower from intellect
+
         // Damage bonus from stats
         AuraList const& mDamageDoneOfStatPercent = GetAurasByType(SPELL_AURA_MOD_SPELL_DAMAGE_OF_STAT_PERCENT);
         for(AuraList::const_iterator i = mDamageDoneOfStatPercent.begin();i != mDamageDoneOfStatPercent.end(); ++i)
@@ -8158,6 +8161,9 @@ int32 Unit::SpellBaseHealingBonusDone(SpellSchoolMask schoolMask)
     {
         // Base value
         AdvertisedBenefit +=((Player*)this)->GetBaseSpellPowerBonus();
+
+        if (GetPowerIndex(POWER_MANA) != INVALID_POWER_INDEX)
+            AdvertisedBenefit += std::max(0, int32(GetStat(STAT_INTELLECT)) - 10);  // spellpower from intellect
 
         // Healing bonus from stats
         AuraList const& mHealingDoneOfStatPercent = GetAurasByType(SPELL_AURA_MOD_SPELL_HEALING_OF_STAT_PERCENT);
