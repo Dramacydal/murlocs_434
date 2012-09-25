@@ -230,7 +230,7 @@ void Player::UpdateMaxPower(Powers power)
 
     UnitMods unitMod = UnitMods(UNIT_MOD_POWER_START + power);
 
-    uint32 create_power = GetCreatePowers(power);
+    uint32 create_power = GetCreateMaxPowers(power);
 
     // ignore classes without mana
     float bonusPower = (power == POWER_MANA && create_power > 0) ? GetManaBonusFromIntellect() : 0;
@@ -1079,7 +1079,7 @@ void Pet::UpdateMaxPower(Powers power)
         default:    multiplicator = 15.0f; break;
     }
 
-    float value  = GetModifierValue(unitMod, BASE_VALUE) + GetCreatePowers(power);
+    float value  = GetModifierValue(unitMod, BASE_VALUE) + GetCreateMaxPowers(power);
     value *= GetModifierValue(unitMod, BASE_PCT);
     value += GetModifierValue(unitMod, TOTAL_VALUE) +  addValue * multiplicator;
     value *= GetModifierValue(unitMod, TOTAL_PCT);

@@ -366,6 +366,7 @@ class MANGOS_DLL_SPEC ChatHandler
         bool MazeAddStaircase(int x, int y, int z, int height);
         bool MazeAddGameObject(int id, float x, float y, float z, float o);
 
+        bool HandleModifyHolyPowerCommand(char* args);
         bool HandleModifyHPCommand(char* args);
         bool HandleModifyManaCommand(char* args);
         bool HandleModifyRageCommand(char* args);

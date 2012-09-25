@@ -435,6 +435,7 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
     m_freeTalentPoints = 0;
 
     m_regenTimer = REGEN_TIME_FULL;
+    m_holyPowerRegenTimer = REGEN_TIME_HOLY_POWER;
     m_weaponChangeTimer = 0;
     m_petScalingUpdateTimer = 0;
 
@@ -2363,7 +2364,23 @@ void Player::RegenerateAll(uint32 diff)
     if (getClass() == CLASS_HUNTER)
         Regenerate(POWER_FOCUS, diff);
 
-    m_regenTimer = IsUnderLastManaUseEffect() ? REGEN_TIME_PRECISE : REGEN_TIME_FULL;
+    if (getClass() == CLASS_PALADIN)
+    {
+        if (isInCombat())
+            ResetHolyPowerRegenTimer();
+        else if (m_holyPowerRegenTimer <= diff)
+            m_holyPowerRegenTimer = 0;
+        else
+            m_holyPowerRegenTimer -= diff;
+
+        if (!m_holyPowerRegenTimer)
+        {
+            Regenerate(POWER_HOLY_POWER, diff);
+            ResetHolyPowerRegenTimer();
+        }
+    }
+
+    m_regenTimer = REGEN_TIME_FULL;
 }
 
 // diff contains the time in milliseconds since last regen.
@@ -2411,9 +2428,16 @@ void Player::Regenerate(Powers power, uint32 diff)
         {
             float RageDecreaseRate = sWorld.getConfig(CONFIG_FLOAT_RATE_POWER_RAGE_LOSS);
             addvalue += 20 * RageDecreaseRate;               // 2 rage by tick (= 2 seconds => 1 rage/sec)
-        }   break;
+            break;
+        }
         case POWER_FOCUS:
             addvalue += 12;
+            break;
+        case POWER_HOLY_POWER:
+            if (!m_holyPowerRegenTimer)
+                addvalue = 1;
+            else
+                return;
             break;
         case POWER_ENERGY:                                  // Regenerate energy (rogue)
         {
@@ -2424,7 +2448,7 @@ void Player::Regenerate(Powers power, uint32 diff)
         case POWER_RUNIC_POWER:
         {
             float RunicPowerDecreaseRate = sWorld.getConfig(CONFIG_FLOAT_RATE_POWER_RUNICPOWER_LOSS);
-            addvalue += 30 * RunicPowerDecreaseRate;        // 3 RunicPower by tick
+            addvalue = 30 * RunicPowerDecreaseRate;         // 3 RunicPower by tick
             break;
         }
         case POWER_RUNE:
@@ -2444,7 +2468,8 @@ void Player::Regenerate(Powers power, uint32 diff)
                     SetRuneCooldown(rune, (cd < cd_diff) ? 0 : cd - cd_diff, -1);
                 }
             }
-        }   break;
+            break;
+        }
         case POWER_HEALTH:
             break;
     }
@@ -2462,7 +2487,7 @@ void Player::Regenerate(Powers power, uint32 diff)
     // addvalue computed on a 2sec basis. => update to diff time
     uint32 _addvalue = ceil(fabs(addvalue * float(diff) / float(REGEN_TIME_FULL)));
 
-    if (power != POWER_RAGE && power != POWER_RUNIC_POWER)
+    if (power != POWER_RAGE && power != POWER_RUNIC_POWER && power != POWER_HOLY_POWER)
     {
         curValue += _addvalue;
         if (curValue > maxValue)
@@ -3135,7 +3160,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
 
     // save new stats
     for (int i = POWER_MANA; i < MAX_POWERS; ++i)
-        SetMaxPower(Powers(i), GetCreatePowers(Powers(i)));
+        SetMaxPower(Powers(i), GetCreateMaxPowers(Powers(i)));
 
     SetMaxHealth(basehp);                     // stamina bonus will applied later
 
