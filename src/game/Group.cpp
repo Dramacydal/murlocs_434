@@ -1663,8 +1663,8 @@ void Group::UpdateLooterGuid( WorldObject* object, bool ifneed )
 GroupJoinBattlegroundResult Group::CanJoinBattleGroundQueue(BattleGround const* bgOrTemplate, BattleGroundQueueTypeId bgQueueTypeId, uint32 MinPlayerCount, uint32 MaxPlayerCount, bool isRated, uint32 arenaSlot)
 {
     BattlemasterListEntry const* bgEntry = sBattlemasterListStore.LookupEntry(bgOrTemplate->GetTypeID());
-    if(!bgEntry)
-        return ERR_GROUP_JOIN_BATTLEGROUND_FAIL;            // shouldn't happen
+    if (!bgEntry)
+        return ERR_BATTLEGROUND_JOIN_FAILED;                // shouldn't happen
 
     // check for min / max count
     uint32 memberscount = GetMembersCount();
@@ -1740,7 +1740,7 @@ GroupJoinBattlegroundResult Group::CanJoinBattleGroundQueue(BattleGround const* 
         }
     }
 
-    return GroupJoinBattlegroundResult(bgOrTemplate->GetTypeID());
+    return ERR_BATTLEGROUND_NONE;
 }
 
 void Group::SetDungeonDifficulty(Difficulty difficulty)
