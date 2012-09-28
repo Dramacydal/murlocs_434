@@ -398,8 +398,6 @@ void WorldSession::HandleBattleFieldPortOpcode( WorldPacket &recv_data )
         return;
     }
 
-    BattleGroundTypeId bgTypeId = BattleGroundMgr::BGTemplateId(bgQueueTypeId);
-
     // get GroupQueueInfo from BattleGroundQueue
     BattleGroundQueue& bgQueue = sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId];
     //we must use temporary variable, because GroupQueueInfo pointer can be deleted in BattleGroundQueue::RemovePlayer() function
@@ -416,17 +414,22 @@ void WorldSession::HandleBattleFieldPortOpcode( WorldPacket &recv_data )
         return;
     }
 
-    BattleGround *bg = sBattleGroundMgr.GetBattleGround(ginfo.IsInvitedToBGInstanceGUID, bgTypeId);
+    BattleGroundTypeId bgTypeId = BattleGroundMgr::BGTemplateId(bgQueueTypeId);
+    // ::BGTemplateId returns BATTLEGROUND_AA when it is arena queue.
+    // Do instance id search as there is no AA bg instances.
+    BattleGround* bg = sBattleGroundMgr.GetBattleGround(ginfo.IsInvitedToBGInstanceGUID, bgTypeId == BATTLEGROUND_AA ? BATTLEGROUND_TYPE_NONE : bgTypeId);
 
     // bg template might and must be used in case of leaving queue, when instance is not created yet
     if (!bg && action == 0)
         bg = sBattleGroundMgr.GetBattleGroundTemplate(bgTypeId);
     if (!bg)
     {
-        ERROR_LOG("BattlegroundHandler: bg_template not found for type id %u.", bgTypeId);
+        sLog.outError("BattlegroundHandler: bg_template not found for instance id %u type id %u.", ginfo.IsInvitedToBGInstanceGUID, bgTypeId);
         return;
     }
 
+    // get real bg type
+    bgTypeId = bg->GetTypeID();
     // expected bracket entry
     PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bg->GetMapId(),_player->getLevel());
     if (!bracketEntry)
@@ -656,24 +659,14 @@ void WorldSession::HandleBattlemasterJoinArena( WorldPacket & recv_data )
     if (_player->InBattleGround())
         return;
 
-    ArenaType arenatype;
+    ArenaType arenatype = ArenaTeam::GetTypeBySlot(arenaslot);
     uint32 arenaRating = 0;
     uint32 matchmakerRating = 0;
 
-    switch(arenaslot)
+    if (!IsArenaTypeValid(arenatype))
     {
-        case 0:
-            arenatype = ARENA_TYPE_2v2;
-            break;
-        case 1:
-            arenatype = ARENA_TYPE_3v3;
-            break;
-        case 2:
-            arenatype = ARENA_TYPE_5v5;
-            break;
-        default:
-            ERROR_LOG("Unknown arena slot %u at HandleBattlemasterJoinArena()", arenaslot);
-            return;
+        sLog.outError("Unknown arena slot %u at HandleBattlemasterJoinArena()", arenaslot);
+        return;
     }
 
     // check existence
@@ -690,16 +683,12 @@ void WorldSession::HandleBattlemasterJoinArena( WorldPacket & recv_data )
     if (!bracketEntry)
         return;
 
-    GroupJoinBattlegroundResult err;
-
     Group* grp = _player->GetGroup();
     // no group found, error
     if (!grp)
         return;
     if (grp->GetLeaderGuid() != _player->GetObjectGuid())
         return;
-    // may be Group::CanJoinBattleGroundQueue should be moved to player class...
-    err = grp->CanJoinBattleGroundQueue(bg, bgQueueTypeId, arenatype, arenatype, true, arenaslot);
 
     uint32 ateamId = _player->GetArenaTeamId(arenaslot);
     // check real arena team existence only here (if it was moved to group->CanJoin .. () then we would have to get it twice)
@@ -734,6 +723,8 @@ void WorldSession::HandleBattlemasterJoinArena( WorldPacket & recv_data )
     BattleGroundQueue& bgQueue = sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId];
     uint32 avgTime = 0;
 
+    // may be Group::CanJoinBattleGroundQueue should be moved to player class...
+    GroupJoinBattlegroundResult err = grp->CanJoinBattleGroundQueue(bg, bgQueueTypeId, arenatype, arenatype, true, arenaslot);
     if (!err)
     {
         DEBUG_LOG("Battleground: arena join as group start");
