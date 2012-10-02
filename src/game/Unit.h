@@ -1945,13 +1945,11 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void SetContestedPvP(Player *attackedPlayer = NULL);
 
         void ApplySpellImmune(uint32 spellId, uint32 op, uint32 type, bool apply);
-        void ApplySpellDispelImmunity(const SpellEntry * spellProto, DispelType type, bool apply);
-        virtual bool IsImmuneToSpell(SpellEntry const* spellInfo);
-                                                            // redefined in Creature
+        void ApplySpellDispelImmunity(const SpellEntry* spellProto, DispelType type, bool apply);
+        virtual bool IsImmuneToSpell(SpellEntry const* spellInfo, bool castOnSelf);
         bool IsImmunedToDamage(SpellEntry const* spellInfo);
-        bool IsImmunedToDamage(SpellSchoolMask schoolMask);
-        virtual bool IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex index) const;
-                                                            // redefined in Creature
+        bool IsImmunedToDamage(SpellSchoolMask meleeSchoolMask);
+        virtual bool IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex index, bool castOnSelf) const;
 
         uint32 CalcArmorReducedDamage(Unit* pVictim, const uint32 damage);
         uint8 CalculateResistanceBinom(Unit* pCaster, SpellSchoolMask schoolMask);
