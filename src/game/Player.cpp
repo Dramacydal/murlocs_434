@@ -6815,8 +6815,8 @@ void Player::RewardReputation(Unit *pVictim, float rate)
             ItemPrototype const* pProto = pItem->GetProto();// Checked on load
             // The required MinLevel for the tabard to work is related to the item level of the tabard
             if ((instance->levelMin + 1 >= pProto->ItemLevel || !GetMap()->IsRegularDifficulty())
-                // For ItemLevel == 75 (or 85) need to check expansion
-                && (pProto->ItemLevel == 75 && storedMap->Expansion() == 2))
+                    // For ItemLevel == 75 (or 85) need to check expansion
+                    && (pProto->ItemLevel == 75 && storedMap->Expansion() == 2))
             {
                 if (uint32 tabardFactionID = pItem->GetProto()->RequiredReputationFaction)
                 {

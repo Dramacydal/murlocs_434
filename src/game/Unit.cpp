@@ -688,8 +688,8 @@ bool Unit::UpdateMeleeAttackingState()
         setAttackTimer(OFF_ATTACK,100);
         swingError = 1;
     }
-    //120 degrees of radiant range
-    else if (!HasInArc(2*M_PI_F/3, victim))
+    // 120 degrees of radiant range
+    else if (!HasInArc(2 * M_PI_F / 3, victim))
     {
         setAttackTimer(BASE_ATTACK,100);
         setAttackTimer(OFF_ATTACK,100);

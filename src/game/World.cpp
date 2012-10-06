@@ -1577,7 +1577,7 @@ void World::SetInitialWorldSettings()
     m_timers[WUPDATE_AUTOBROADCAST].SetInterval(getConfig(CONFIG_UINT32_AUTOBROADCAST_TIMER));
 
     // for AhBot
-    m_timers[WUPDATE_AHBOT].SetInterval(20*IN_MILLISECONDS); // every 20 sec
+    m_timers[WUPDATE_AHBOT].SetInterval(20 * IN_MILLISECONDS); // every 20 sec
 
     m_timers[WUPDATE_UNBAN_CHAR].SetInterval(sConfig.GetIntDefault("World.Unban.Timer", 15) * MINUTE * IN_MILLISECONDS);
 
