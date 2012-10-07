@@ -8639,6 +8639,14 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
 
                     break;
                 }
+                case 30541:                                 // Blaze
+                {
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->CastSpell(unitTarget, 30542, true);
+                    break;
+                }
                 case 30769:                                 // Pick Red Riding Hood
                 {
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
@@ -8714,10 +8722,6 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
 
                     ((Player*)m_caster)->KilledMonsterCredit(21892);
                     break;
-=======
-                    unitTarget->CastSpell(unitTarget, urand(0, 1) ? 37429 : 37430, true);
-                    return;
->>>>>>> 455c127... [12250] Implement spell 37431 and related auras
                 }
                 case 38358:                                 // Tidal Surge
                 {
