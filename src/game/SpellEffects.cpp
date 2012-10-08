@@ -6351,8 +6351,6 @@ void Spell::EffectSummonType(SpellEffectEntry const* effect)
         case SUMMON_PROP_GROUP_VEHICLE:
         case SUMMON_PROP_GROUP_UNCONTROLLABLE_VEHICLE:
         {
-            // TODO
-            // EffectSummonVehicle(i);
             DoSummonVehicle(effect, summon_prop->FactionId);
             break;
         }
