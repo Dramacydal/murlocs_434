@@ -187,13 +187,11 @@ bool IsCastEndProcModifierAura(SpellEntry const *spellInfo, SpellEffectIndex eff
 
 inline bool IsSpellHaveAura(SpellEntry const *spellInfo, AuraType aura)
 {
-    for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
-    {
-        if(SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i)))
-            if(AuraType(effectEntry->EffectApplyAuraName)==aura)
-                return true;
-    }
-
+    for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+        if (effectMask & (1 << i))
+            if(SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i)))
+                if(AuraType(effectEntry->EffectApplyAuraName) == aura)
+                    return true;
     return false;
 }
 
