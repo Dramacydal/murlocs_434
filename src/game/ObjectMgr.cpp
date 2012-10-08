@@ -10351,7 +10351,7 @@ bool LoadMangosStrings(DatabaseType& db, char const* table,int32 start_value, in
         return false;
     }
 
-    return sObjectMgr.LoadMangosStrings(db,table,start_value,end_value);
+    return sObjectMgr.LoadMangosStrings(db, table, start_value, end_value);
 }
 
 CreatureInfo const* GetCreatureTemplateStore(uint32 entry)
