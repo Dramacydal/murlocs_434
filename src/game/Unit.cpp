@@ -2296,7 +2296,8 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
 
 void Unit::HandleEmoteCommand(uint32 emote_id)
 {
-    WorldPacket data( SMSG_EMOTE, 4 + 8 );
+    DEBUG_LOG("SMSG_EMOTE %u");
+    WorldPacket data(SMSG_EMOTE, 4 + 8);
     data << uint32(emote_id);
     data << GetObjectGuid();
     SendMessageToSet(&data, true);

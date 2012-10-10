@@ -525,24 +525,24 @@ void WorldSession::HandleAcceptTradeOpcode(WorldPacket& recvPacket)
         {
             if (_player->GetSession()->GetSecurity() > SEC_CURATOR && my_trade->GetMoney() > 0)
             {
-                sLog.outCommand(_player->GetSession()->GetAccountId(),"GM %s (Account: %u) give money (Amount: %u) to player: %s (Account: %u)",
-                    _player->GetName(),_player->GetSession()->GetAccountId(),
-                    my_trade->GetMoney(),
-                    trader->GetName(), trader->GetSession()->GetAccountId());
+                sLog.outCommand(_player->GetSession()->GetAccountId(), "GM %s (Account: %u) give money (Amount: " UI64FMTD ") to player: %s (Account: %u)",
+                                _player->GetName(), _player->GetSession()->GetAccountId(),
+                                my_trade->GetMoney(),
+                                trader->GetName(), trader->GetSession()->GetAccountId());
             }
             if (trader->GetSession()->GetSecurity() > SEC_CURATOR && his_trade->GetMoney() > 0)
             {
-                sLog.outCommand(trader->GetSession()->GetAccountId(),"GM %s (Account: %u) give money (Amount: %u) to player: %s (Account: %u)",
-                    trader->GetName(), trader->GetSession()->GetAccountId(),
-                    his_trade->GetMoney(),
-                    _player->GetName(),_player->GetSession()->GetAccountId());
+                sLog.outCommand(trader->GetSession()->GetAccountId(), "GM %s (Account: %u) give money (Amount: " UI64FMTD ") to player: %s (Account: %u)",
+                                trader->GetName(), trader->GetSession()->GetAccountId(),
+                                his_trade->GetMoney(),
+                                _player->GetName(), _player->GetSession()->GetAccountId());
             }
         }
 
         // update money
-        _player->ModifyMoney( -int32(my_trade->GetMoney()) );
+        _player->ModifyMoney(-int64(my_trade->GetMoney()));
         _player->ModifyMoney(his_trade->GetMoney());
-        trader->ModifyMoney( -int32(his_trade->GetMoney()) );
+        trader->ModifyMoney(-int64(his_trade->GetMoney()));
         trader->ModifyMoney(my_trade->GetMoney());
 
         if (my_spell)

@@ -3309,7 +3309,7 @@ void Player::SendNewMail()
 {
     // deliver undelivered mail
     WorldPacket data(SMSG_RECEIVED_MAIL, 4);
-    data << (uint32) 0;
+    data << float(0.0f);
     GetSession()->SendPacket(&data);
 }
 
@@ -4297,7 +4297,7 @@ bool Player::resetTalents(bool no_cost, bool all_specs)
 
     if(!no_cost)
     {
-        ModifyMoney(-(int32)cost);
+        ModifyMoney(-(int64)cost);
         GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GOLD_SPENT_FOR_TALENTS, cost);
         GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_TALENT_RESETS, 1);
 
@@ -4689,7 +4689,7 @@ void Player::DeleteFromDB(ObjectGuid playerguid, uint32 accountId, bool updateRe
                     uint32 sender        = fields[3].GetUInt32();
                     std::string subject  = fields[4].GetCppString();
                     std::string body     = fields[5].GetCppString();
-                    uint32 money         = fields[6].GetUInt32();
+                    uint64 money         = fields[6].GetUInt32();
                     bool has_items       = fields[7].GetBool();
 
                     //we can return mail now
@@ -5332,7 +5332,7 @@ uint32 Player::DurabilityRepair(uint16 pos, bool cost, float discountMod, bool g
                 return TotalCost;
             }
             else
-                ModifyMoney( -int32(costs) );
+                ModifyMoney(-int64(costs));
         }
     }
 
@@ -13860,7 +13860,7 @@ void Player::OnGossipSelect(WorldObject* pSource, uint32 gossipListId, uint32 me
     if (moneyTake > 0)
     {
         if (GetMoney() >= moneyTake)
-            ModifyMoney(-int32(moneyTake));
+            ModifyMoney(-int64(moneyTake));
         else
             return;                                         // cheating
     }
@@ -14336,7 +14336,7 @@ bool Player::CanCompleteQuest(uint32 quest_id) const
 
     if (qInfo->GetRewOrReqMoney() < 0)
     {
-        if (GetMoney() < uint32(-qInfo->GetRewOrReqMoney()))
+        if (GetMoney() < uint64(-qInfo->GetRewOrReqMoney()))
             return false;
     }
 
@@ -14422,7 +14422,7 @@ bool Player::CanRewardQuest(Quest const *pQuest, bool msg) const
     }
 
     // prevent receive reward with low money and GetRewOrReqMoney() < 0
-    if (pQuest->GetRewOrReqMoney() < 0 && GetMoney() < uint32(-pQuest->GetRewOrReqMoney()))
+    if (pQuest->GetRewOrReqMoney() < 0 && GetMoney() < uint64(-pQuest->GetRewOrReqMoney()))
         return false;
 
     if (uint32 spell = pQuest->GetReqSpellLearned())
@@ -14711,11 +14711,10 @@ void Player::RewardQuest(Quest const *pQuest, uint32 reward, Object* questGiver,
     else
     {
         // reward money for max level already included in pQuest->GetRewMoneyMaxLevel()
-        float moneymod = pQuest->GetRewOrReqMoney() > 0 && IsPremiumActive() ? GetPremiumMoneyModifier() : 1.0f;
-        uint32 money = uint32(pQuest->GetRewMoneyMaxLevel() * sWorld.getConfig(CONFIG_FLOAT_RATE_DROP_MONEY)*moneymod);
+        uint64 money = uint32(pQuest->GetRewMoneyMaxLevel() * sWorld.getConfig(CONFIG_FLOAT_RATE_DROP_MONEY));
 
         // reward money used if > xp replacement money
-        if (pQuest->GetRewOrReqMoney() > int32(money))
+        if (pQuest->GetRewOrReqMoney() > int64(money))
             money = pQuest->GetRewOrReqMoney();
 
         ModifyMoney(money);
@@ -16309,8 +16308,8 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
     // can triggering achievement criteria update that will be lost if this call will later
     m_achievementMgr.LoadFromDB(holder->GetResult(PLAYER_LOGIN_QUERY_LOADACHIEVEMENTS), holder->GetResult(PLAYER_LOGIN_QUERY_LOADCRITERIAPROGRESS));
 
-    uint32 money = fields[8].GetUInt32();
-    if(money > MAX_MONEY_AMOUNT)
+    uint64 money = fields[8].GetUInt64();
+    if (money > MAX_MONEY_AMOUNT)
         money = MAX_MONEY_AMOUNT;
     SetMoney(money);
 
@@ -18374,7 +18373,7 @@ void Player::SaveToDB()
     uberInsert.addUInt8(getGender());
     uberInsert.addUInt32(getLevel());
     uberInsert.addUInt32(GetUInt32Value(PLAYER_XP));
-    uberInsert.addUInt32(GetMoney());
+    uberInsert.addUInt64(GetMoney());
     uberInsert.addUInt32(GetUInt32Value(PLAYER_BYTES));
     uberInsert.addUInt32(GetUInt32Value(PLAYER_BYTES_2));
     uberInsert.addUInt32(GetUInt32Value(PLAYER_FLAGS));
@@ -20164,7 +20163,7 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
         return false;
     }
 
-    uint32 money = GetMoney();
+    uint64 money = GetMoney();
 
     if (npc)
         totalcost = (uint32)ceil(totalcost*GetReputationPriceDiscount(npc));
@@ -20177,8 +20176,8 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
         return false;
     }
 
-    //Checks and preparations done, DO FLIGHT
-    ModifyMoney(-(int32)totalcost);
+    // Checks and preparations done, DO FLIGHT
+    ModifyMoney(-(int64)totalcost);
     GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GOLD_SPENT_FOR_TRAVELLING, totalcost);
     GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_FLIGHT_PATHS_TAKEN, 1);
 
@@ -20571,11 +20570,11 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
         }
     }
 
-    uint32 price = (crItem->ExtendedCost == 0 || pProto->Flags2 & ITEM_FLAG2_EXT_COST_REQUIRES_GOLD) ? pProto->BuyPrice * count : 0;
+    uint64 price = (crItem->ExtendedCost == 0 || pProto->Flags2 & ITEM_FLAG2_EXT_COST_REQUIRES_GOLD) ? pProto->BuyPrice * count : 0;
 
     // reputation discount
     if (price)
-        price = uint32(floor(price * GetReputationPriceDiscount(pCreature)));
+        price = uint64(floor(price * GetReputationPriceDiscount(pCreature)));
 
     if (GetMoney() < price)
     {
@@ -20595,7 +20594,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
             return false;
         }
 
-        ModifyMoney(-int32(price));
+        ModifyMoney(-int64(price));
 
         if (crItem->ExtendedCost)
             TakeExtendedCost(crItem->ExtendedCost, count);
@@ -20618,7 +20617,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
             return false;
         }
 
-        ModifyMoney(-int32(price));
+        ModifyMoney(-int64(price));
 
         if (crItem->ExtendedCost)
             TakeExtendedCost(crItem->ExtendedCost, count);
