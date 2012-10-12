@@ -344,10 +344,6 @@ void World::AddQueuedSession(WorldSession* sess)
     m_QueuedSessions.push_back (sess);
 
     // The 1st SMSG_AUTH_RESPONSE needs to contain other info too.
-<<<<<<< HEAD
-    WorldPacket packet (SMSG_AUTH_RESPONSE, 1 + 4 + 1 + 4 + 1 + 4 + 1);
-    packet << uint8(AUTH_WAIT_QUEUE);
-=======
     WorldPacket packet (SMSG_AUTH_RESPONSE, 21);
 
     packet.WriteBit(true);
@@ -356,7 +352,7 @@ void World::AddQueuedSession(WorldSession* sess)
     packet << uint8(0);                                     // unk 3.3.0
     packet << uint32(0);                                    // Unknown - 4.3.2
     packet << uint8(sess->Expansion());                        // 0 - normal, 1 - TBC, 2 - WotLK, 3 - CT. must be set in database manually for each account
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
+
     packet << uint32(0);                                    // BillingTimeRemaining
     packet << uint8(sess->Expansion());                        // 0 - normal, 1 - TBC, 2 - WotLK, 3 - CT. Must be set in database manually for each account.
     packet << uint32(0);                                    // BillingTimeRested

@@ -20,11 +20,8 @@
 #define _BYTEBUFFER_H
 
 #include "Common.h"
-<<<<<<< HEAD
 #include "Errors.h"
-=======
 #include "Log.h"
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
 #include "Utilities/ByteConverter.h"
 
 #define BITS_1 uint8 _1
@@ -142,14 +139,10 @@ class ByteBuffer
         ByteBuffer(size_t res, bool init = false);
 
         // copy constructor
-<<<<<<< HEAD
-        ByteBuffer(const ByteBuffer &buf): _rpos(buf._rpos), _wpos(buf._wpos), _storage(buf._storage) { }
-=======
         ByteBuffer(const ByteBuffer &buf) : _rpos(buf._rpos), _wpos(buf._wpos),
             _storage(buf._storage), _bitpos(buf._bitpos), _curbitval(buf._curbitval)
         {
         }
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
 
         void clear()
         {
@@ -157,12 +150,6 @@ class ByteBuffer
             _rpos = _wpos = 0;
         }
 
-<<<<<<< HEAD
-        template <typename T> void put(size_t pos,T value)
-        {
-            EndianConvert(value);
-            put(pos,(uint8 *)&value,sizeof(value));
-=======
         template <typename T> ByteBuffer& append(T value)
         {
             FlushBits();
@@ -321,7 +308,6 @@ class ByteBuffer
         {
             EndianConvert(value);
             put(pos, (uint8 *)&value, sizeof(value));
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         }
 
         ByteBuffer &operator<<(uint8 value)
@@ -553,11 +539,7 @@ class ByteBuffer
             return val;
         }
 
-<<<<<<< HEAD
-        void read(uint8 *dest, size_t len)
-=======
         ByteBuffer& read(uint8* dest, size_t len)
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         {
             if(_rpos  + len > size())
                 throw ByteBufferException(false, _rpos, len, size());
@@ -586,8 +568,6 @@ class ByteBuffer
             return guid;
         }
 
-<<<<<<< HEAD
-=======
         uint8 ReadUInt8()
         {
             uint8 u = 0;
@@ -675,7 +655,6 @@ class ByteBuffer
             return f;
         }
 
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         const uint8 *contents() const { return &_storage[0]; }
 
         size_t size() const { return _storage.size(); }
@@ -699,29 +678,17 @@ class ByteBuffer
             return append((uint8 const*)str.c_str(), str.size() + 1);
         }
 
-<<<<<<< HEAD
-        void append(const char *src, size_t cnt)
-=======
         ByteBuffer& append(const char* src, size_t cnt)
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         {
             return append((const uint8 *)src, cnt);
         }
 
-<<<<<<< HEAD
-        template<class T> void append(const T *src, size_t cnt)
-=======
         template<class T> ByteBuffer& append(const T* src, size_t cnt)
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         {
             return append((const uint8 *)src, cnt * sizeof(T));
         }
 
-<<<<<<< HEAD
-        void append(const uint8 *src, size_t cnt)
-=======
         ByteBuffer& append(const uint8* src, size_t cnt)
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         {
             if (!cnt)
                 return *this;
@@ -738,15 +705,10 @@ class ByteBuffer
 
         ByteBuffer& append(const ByteBuffer& buffer)
         {
-<<<<<<< HEAD
-            if(buffer.wpos())
-                append(buffer.contents(), buffer.wpos());
-=======
             if (buffer.wpos())
                 return append(buffer.contents(), buffer.wpos());
 
             return *this;
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         }
 
         // can be used in SMSG_MONSTER_MOVE opcode
@@ -797,10 +759,6 @@ class ByteBuffer
 
         void textlike() const
         {
-<<<<<<< HEAD
-            EndianConvert(value);
-            append((uint8 *)&value, sizeof(value));
-=======
             sLog.outDebug("STORAGE_SIZE: %lu", (unsigned long)size() );
             for (uint32 i = 0; i < size(); ++i)
                 sLog.outDebug("%c", read<uint8>(i) );
@@ -857,7 +815,6 @@ class ByteBuffer
                 }
             }
             sLog.outDebug("\n");
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         }
 
     protected:
@@ -867,11 +824,7 @@ class ByteBuffer
 };
 
 template <typename T>
-<<<<<<< HEAD
-inline ByteBuffer &operator<<(ByteBuffer &b, std::vector<T> const& v)
-=======
 inline ByteBuffer &operator<<(ByteBuffer &b, std::vector<T> v)
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
 {
     b << (uint32)v.size();
     for (typename std::vector<T>::iterator i = v.begin(); i != v.end(); ++i)
@@ -897,11 +850,7 @@ inline ByteBuffer &operator>>(ByteBuffer &b, std::vector<T> &v)
 }
 
 template <typename T>
-<<<<<<< HEAD
-inline ByteBuffer &operator<<(ByteBuffer &b, std::list<T> const& v)
-=======
 inline ByteBuffer &operator<<(ByteBuffer &b, std::list<T> v)
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
 {
     b << (uint32)v.size();
     for (typename std::list<T>::iterator i = v.begin(); i != v.end(); ++i)

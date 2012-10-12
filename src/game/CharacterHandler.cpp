@@ -138,11 +138,7 @@ class CharacterHandler
         }
 } chrHandler;
 
-<<<<<<< HEAD
-void WorldSession::HandleCharEnum(QueryResult * result)
-=======
 struct charEnumInfo
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
 {
     uint8 nameLenghts;
     bool firstLogin;
@@ -170,12 +166,6 @@ void WorldSession::HandleCharEnum(QueryResult * result)
 
         do
         {
-<<<<<<< HEAD
-            uint32 guidlow = (*result)[0].GetUInt32();
-            DETAIL_LOG("Build enum data for char guid %u from account %u.", guidlow, GetAccountId());
-            if(Player::BuildEnumData(result, &data))
-                ++num;
-=======
             uint32 GuidLow = (*result)[0].GetUInt32();
             uint32 atLoginFlags = (*result)[15].GetUInt32();
             uint64 GuildGuid = (*result)[13].GetUInt64();
@@ -198,7 +188,6 @@ void WorldSession::HandleCharEnum(QueryResult * result)
                 return;
             }
             _allowedCharsToLogin.insert(GuidLow);
->>>>>>> 4ad0aac... Fix CMSG_CHAR_ENUM
         }
         while( result->NextRow() );
 
