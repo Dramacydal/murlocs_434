@@ -32,6 +32,8 @@
 #include "OutdoorPvPMgr.h"
 #include "Util.h"
 #include "Chat.h"
+#include "DB2Structure.h"
+#include "DB2Stores.h"
 
 /* differeces from off:
     -you can uninvite yourself - is is useful

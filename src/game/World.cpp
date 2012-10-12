@@ -45,6 +45,7 @@
 #include "Mail.h"
 #include "Chat.h"
 #include "DBCStores.h"
+#include "DB2Stores.h"
 #include "MassMailMgr.h"
 #include "LootMgr.h"
 #include "ItemEnchantmentMgr.h"
@@ -1124,6 +1125,7 @@ void World::SetInitialWorldSettings()
     ///- Load the DBC files
     sLog.outString("Initialize data stores...");
     LoadDBCStores(m_dataPath);
+    LoadDB2Stores(m_dataPath);
     DetectDBCLang();
     sObjectMgr.SetDBCLocaleIndex(GetDefaultDbcLocale());    // Get once for all the locale index of DBC language (console/broadcasts)
 
