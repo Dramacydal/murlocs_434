@@ -141,9 +141,6 @@ uint32 DBCFileLoader::GetFormatRecordSize(const char * format,int32* index_pos)
     return recordsize;
 }
 
-<<<<<<< HEAD
-char* DBCFileLoader::AutoProduceData(const char* format, uint32& records, char**& indexTable, uint32 sqlRecordCount, uint32 sqlHighestIndex, char *& sqlDataTable)
-=======
 uint32 DBCFileLoader::GetFormatStringsFields(const char * format)
 {
     uint32 stringfields = 0;
@@ -154,8 +151,7 @@ uint32 DBCFileLoader::GetFormatStringsFields(const char * format)
     return stringfields;
 }
 
-char* DBCFileLoader::AutoProduceData(const char* format, uint32& records, char**& indexTable)
->>>>>>> 03a44c9... Mage 400 INTO master/434
+char* DBCFileLoader::AutoProduceData(const char* format, uint32& records, char**& indexTable, uint32 sqlRecordCount, uint32 sqlHighestIndex, char *& sqlDataTable)
 {
     /*
     format STRING, NA, FLOAT,NA,INT <=>
@@ -320,12 +316,9 @@ char* DBCFileLoader::AutoProduceStrings(const char* format, char* dataTable, Loc
     if(strlen(format)!=fieldCount)
         return NULL;
 
-<<<<<<< HEAD
-=======
     // each string field at load have array of string for each locale
     size_t stringHolderSize = sizeof(char*) * MAX_LOCALE;
 
->>>>>>> 03a44c9... Mage 400 INTO master/434
     char* stringPool= new char[stringSize];
     memcpy(stringPool,stringTable,stringSize);
 
@@ -353,12 +346,7 @@ char* DBCFileLoader::AutoProduceStrings(const char* format, char* dataTable, Loc
                     char** slot = &holder[loc];
 
                     // fill only not filled entries
-<<<<<<< HEAD
-                    char** slot = (char**)(&dataTable[offset]);
-                    if(!*slot || !**slot)
-=======
                     if (*slot == nullStr)
->>>>>>> 03a44c9... Mage 400 INTO master/434
                     {
                         const char * st = getRecord(y).getString(x);
                         *slot=stringPool+(st-(const char*)stringTable);

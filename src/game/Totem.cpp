@@ -183,22 +183,26 @@ void Totem::SetTypeBySummonSpell(SpellEntry const * spellProto)
 
 bool Totem::IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex index) const
 {
-<<<<<<< HEAD
-    switch(spellInfo->Effect[index])
+    SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(index);
+    if(spellEffect)
     {
-        case SPELL_EFFECT_ATTACK_ME:
-        // immune to any type of regeneration effects hp/mana etc.
-        case SPELL_EFFECT_HEAL:
-        case SPELL_EFFECT_HEAL_MAX_HEALTH:
-        case SPELL_EFFECT_HEAL_MECHANICAL:
-        case SPELL_EFFECT_HEAL_PCT:
-        case SPELL_EFFECT_ENERGIZE:
-        case SPELL_EFFECT_ENERGIZE_PCT:
-            return true;
-        default:
-            break;
+        // TODO: possibly all negative auras immune?
+        switch(spellEffect->Effect)
+        {
+            case SPELL_EFFECT_ATTACK_ME:
+            // immune to any type of regeneration effects hp/mana etc.
+            case SPELL_EFFECT_HEAL:
+            case SPELL_EFFECT_HEAL_MAX_HEALTH:
+            case SPELL_EFFECT_HEAL_MECHANICAL:
+            case SPELL_EFFECT_HEAL_PCT:
+            case SPELL_EFFECT_ENERGIZE:
+            case SPELL_EFFECT_ENERGIZE_PCT:
+                return true;
+            default:
+                break;
+        }
     }
-    
+
     if (!IsPositiveSpell(spellInfo))
     {
         // immune to all negative auras
@@ -210,30 +214,6 @@ bool Totem::IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex 
         // immune to any type of regeneration auras hp/mana etc.
         if (IsPeriodicRegenerateEffect(spellInfo, index))
             return true;
-=======
-    SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(index);
-    if(spellEffect)
-    {
-        // TODO: possibly all negative auras immune?
-        switch(spellEffect->Effect)
-        {
-            case SPELL_EFFECT_ATTACK_ME:
-                return true;
-            default:
-                break;
-        }
-        switch(spellEffect->EffectApplyAuraName)
-        {
-            case SPELL_AURA_PERIODIC_DAMAGE:
-            case SPELL_AURA_PERIODIC_LEECH:
-            case SPELL_AURA_MOD_FEAR:
-            case SPELL_AURA_TRANSFORM:
-            case SPELL_AURA_MOD_TAUNT:
-                return true;
-            default:
-                break;
-        }
->>>>>>> 03a44c9... Mage 400 INTO master/434
     }
 
     return Creature::IsImmuneToSpellEffect(spellInfo, index);

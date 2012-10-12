@@ -1048,16 +1048,6 @@ bool Item::IsFitToSpellRequirements(SpellEntry const* spellInfo) const
         return true;
 
     // Enchant spells only use Effect[0] (patch 3.3.2)
-<<<<<<< HEAD
-    if(proto->IsVellum() && spellInfo->Effect[EFFECT_INDEX_0] == SPELL_EFFECT_ENCHANT_ITEM)
-    {
-        // EffectItemType[0] is the associated scroll itemID, if a scroll can be made
-        if(spellInfo->EffectItemType[EFFECT_INDEX_0] == 0)
-            return false;
-        // Other checks do not apply to vellum enchants, so return final result
-        return ((proto->SubClass == ITEM_SUBCLASS_WEAPON_ENCHANTMENT && spellInfo->EquippedItemClass == ITEM_CLASS_WEAPON) ||
-                (proto->SubClass == ITEM_SUBCLASS_ARMOR_ENCHANTMENT && spellInfo->EquippedItemClass == ITEM_CLASS_ARMOR));
-=======
     if (proto->IsVellum())
     {
         SpellEffectEntry const* spellEffect_0 = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
@@ -1072,7 +1062,6 @@ bool Item::IsFitToSpellRequirements(SpellEntry const* spellInfo) const
             return ((proto->SubClass == ITEM_SUBCLASS_WEAPON_ENCHANTMENT && eqItemClass == ITEM_CLASS_WEAPON) ||
                     (proto->SubClass == ITEM_SUBCLASS_ARMOR_ENCHANTMENT && eqItemClass == ITEM_CLASS_ARMOR));
         }
->>>>>>> 03a44c9... Mage 400 INTO master/434
     }
 
     if (equippedItems->EquippedItemClass != -1)             // -1 == any item class
@@ -1080,11 +1069,7 @@ bool Item::IsFitToSpellRequirements(SpellEntry const* spellInfo) const
         if (equippedItems->EquippedItemClass != int32(proto->Class))
             return false;                                   //  wrong item class
 
-<<<<<<< HEAD
-        if (spellInfo->EquippedItemSubClassMask != 0)        // 0 == any subclass
-=======
         if (equippedItems->EquippedItemSubClassMask != 0)   // 0 == any subclass
->>>>>>> 03a44c9... Mage 400 INTO master/434
         {
             if ((equippedItems->EquippedItemSubClassMask & (1 << proto->SubClass)) == 0)
                 return false;                               // subclass not present in mask
@@ -1467,8 +1452,9 @@ bool Item::HasTriggeredByAuraSpell(SpellEntry const* spellInfo) const
             continue;
 
         for (int j = 0; j < MAX_EFFECT_INDEX; j++)
-            if (spellproto->EffectTriggerSpell[j] && spellproto->EffectTriggerSpell[j] == spellInfo->Id)
-                return true;
+            if (SpellEffectEntry const * effect = spellproto->GetSpellEffect(SpellEffectIndex(j)))
+                if (effect->EffectTriggerSpell && effect->EffectTriggerSpell == spellInfo->Id)
+                    return true;
     }
     return false;
 }

@@ -390,13 +390,9 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, SpellAuraHolder* holder, S
     // Check if current equipment allows aura to proc
     if(!isVictim && GetTypeId() == TYPEID_PLAYER)
     {
-<<<<<<< HEAD
-        if(spellProto->EquippedItemClass == ITEM_CLASS_WEAPON)
-=======
         SpellEquippedItemsEntry const* eqItems = spellProto->GetSpellEquippedItems();
 
         if(eqItems && eqItems->EquippedItemClass == ITEM_CLASS_WEAPON)
->>>>>>> 03a44c9... Mage 400 INTO master/434
         {
             Item *item = NULL;
             if(attType == BASE_ATTACK)
@@ -406,17 +402,7 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, SpellAuraHolder* holder, S
             else
                 item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_RANGED);
 
-<<<<<<< HEAD
-            if(!item || item->IsBroken() || !CanUseEquippedWeapon(attType) || item->GetProto()->Class != ITEM_CLASS_WEAPON || !((1<<item->GetProto()->SubClass) & spellProto->EquippedItemSubClassMask))
-                return false;
-        }
-        else if(spellProto->EquippedItemClass == ITEM_CLASS_ARMOR)
-        {
-            // Check if player is wearing shield
-            Item *item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
-            if(!item || item->IsBroken() || !CanUseEquippedWeapon(OFF_ATTACK) || item->GetProto()->Class != ITEM_CLASS_ARMOR || !((1<<item->GetProto()->SubClass) & spellProto->EquippedItemSubClassMask))
-=======
-            if(!item || item->IsBroken() || item->GetProto()->Class != ITEM_CLASS_WEAPON || !((1<<item->GetProto()->SubClass) & eqItems->EquippedItemSubClassMask))
+            if(!item || item->IsBroken() || !CanUseEquippedWeapon(attType) || item->GetProto()->Class != ITEM_CLASS_WEAPON || !((1<<item->GetProto()->SubClass) & eqItems->EquippedItemSubClassMask))
                 return false;
         }
         else if(eqItems && eqItems->EquippedItemClass == ITEM_CLASS_ARMOR)
@@ -424,17 +410,12 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, SpellAuraHolder* holder, S
             // Check if player is wearing shield
             Item *item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
             if(!item || item->IsBroken() || !CanUseEquippedWeapon(OFF_ATTACK) || item->GetProto()->Class != ITEM_CLASS_ARMOR || !((1<<item->GetProto()->SubClass) & eqItems->EquippedItemSubClassMask))
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 return false;
         }
     }
     // Get chance from spell
-<<<<<<< HEAD
-    float chance = (float)spellProto->procChance;
-
-=======
     float chance = (float)spellProto->GetProcChance();
->>>>>>> 03a44c9... Mage 400 INTO master/434
+
     // If in spellProcEvent exist custom chance, chance = spellProcEvent->customChance;
     if(spellProcEvent && spellProcEvent->customChance)
         chance = spellProcEvent->customChance;
@@ -442,7 +423,7 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, SpellAuraHolder* holder, S
     // Missile Barrage hack
     if (spellProto->Id == 44404 || spellProto->Id == 54486 || spellProto->Id == 54488 || spellProto->Id == 54489 || spellProto->Id == 54490)
         // Arcane Barrage, Fireball, Frostbolt, Frostfire Bolt
-        if (procSpell && procSpell->SpellFamilyFlags & UI64LIT(0x367FE00000021))
+        if (procSpell && procSpell->IsFitToFamilyMask(UI64LIT(0x367FE00000021)))
             chance /= 2;
 
     // If PPM exist calculate chance from PPM
@@ -481,11 +462,7 @@ SpellAuraProcResult Unit::HandleHasteAuraProc(Unit *pVictim, uint32 damage, uint
     Unit* target = pVictim;
     int32 basepoints0 = 0;
 
-<<<<<<< HEAD
-    switch(hasteSpell->SpellFamilyName)
-=======
     switch(hasteSpell->GetSpellFamilyName())
->>>>>>> 03a44c9... Mage 400 INTO master/434
     {
         case SPELLFAMILY_ROGUE:
         {
@@ -551,11 +528,7 @@ SpellAuraProcResult Unit::HandleSpellCritChanceAuraProc(Unit *pVictim, uint32 /*
     Unit* target = pVictim;
     int32 basepoints0 = 0;
 
-<<<<<<< HEAD
-    switch(triggeredByAuraSpell->SpellFamilyName)
-=======
     switch(triggeredByAuraSpell->GetSpellFamilyName())
->>>>>>> 03a44c9... Mage 400 INTO master/434
     {
         case SPELLFAMILY_MAGE:
         {
@@ -608,11 +581,7 @@ SpellAuraProcResult Unit::HandleSpellCritChanceAuraProc(Unit *pVictim, uint32 /*
 
 SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint32 absorb, Aura* triggeredByAura, SpellEntry const * procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown)
 {
-<<<<<<< HEAD
-    SpellEntry const *dummySpell = triggeredByAura->GetSpellProto ();
-=======
     SpellEntry const *dummySpell = triggeredByAura->GetSpellProto();
->>>>>>> 03a44c9... Mage 400 INTO master/434
     SpellEffectIndex effIndex = triggeredByAura->GetEffIndex();
     SpellEffectEntry const* dummySpellEffect = dummySpell->GetSpellEffect(effIndex);
     SpellClassOptionsEntry const* dummyClassOptions = dummySpell->GetSpellClassOptions();
@@ -627,11 +596,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
     Unit* target = pVictim;
     int32  basepoints[MAX_EFFECT_INDEX] = {0, 0, 0};
 
-<<<<<<< HEAD
-    switch(dummySpell->SpellFamilyName)
-=======
     switch(dummySpell->GetSpellFamilyName())
->>>>>>> 03a44c9... Mage 400 INTO master/434
     {
         case SPELLFAMILY_GENERIC:
         {
@@ -707,12 +672,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     {
                         if(SpellEntry const* iterSpellProto = (*iter)->GetSpellProto())
                         {
-<<<<<<< HEAD
-                            if(iterSpellProto->SpellFamilyName==SPELLFAMILY_MAGE && (iterSpellProto->SpellFamilyFlags & UI64LIT(0x10000000)))
-=======
                             SpellClassOptionsEntry const* iterClassOptions = iterSpellProto->GetSpellClassOptions();
                             if(iterClassOptions && iterClassOptions->SpellFamilyName == SPELLFAMILY_MAGE && (iterClassOptions->SpellFamilyFlags & UI64LIT(0x10000000)))
->>>>>>> 03a44c9... Mage 400 INTO master/434
                             {
                                 found=true;
                                 break;
@@ -1286,11 +1247,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     return SPELL_AURA_PROC_FAILED;
 
                 // mana cost save
-<<<<<<< HEAD
-                int32 cost = procSpell->manaCost + procSpell->ManaCostPercentage * GetCreateMana() / 100;
-=======
                 int32 cost = procSpell->GetManaCost() + procSpell->GetManaCostPercentage() * GetCreateMana() / 100;
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 basepoints[0] = cost * triggerAmount/100;
                 if (basepoints[0] <=0)
                     return SPELL_AURA_PROC_FAILED;
@@ -1351,11 +1308,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 if(!procSpell)
                     return SPELL_AURA_PROC_FAILED;
 
-<<<<<<< HEAD
-                int32 cost = procSpell->manaCost + procSpell->ManaCostPercentage * GetCreateMana() / 100;
-=======
                 int32 cost = procSpell->GetManaCost() + procSpell->GetManaCostPercentage() * GetCreateMana() / 100;
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 basepoints[0] = cost * triggerAmount/100;
                 if (basepoints[0] <=0)
                     return SPELL_AURA_PROC_FAILED;
@@ -1409,7 +1362,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                                 case 31657:
                                 case 31658:
                                 {
-                                    if (roll_chance_i(int32((*i)->GetSpellProto()->procChance)))
+                                    if (roll_chance_i(int32((*i)->GetSpellProto()->GetProcChance())))
                                     {
                                         caster->CastSpell(caster, 67545, true);
                                         return SPELL_AURA_PROC_OK;
@@ -1661,7 +1614,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     for (AuraList::const_iterator itr = pDummyAuras.begin(); itr != pDummyAuras.end(); ++itr)
                     {
                        SpellEntry const* spellInfo = (*itr)->GetSpellProto();
-                        if (spellInfo->SpellFamilyName != SPELLFAMILY_WARLOCK || (*itr)->GetSpellProto()->SpellIconID != 3176)
+                        if (spellInfo->GetSpellFamilyName() != SPELLFAMILY_WARLOCK || (*itr)->GetSpellProto()->SpellIconID != 3176)
                             continue;
                         if ((*itr)->GetEffIndex() == EFFECT_INDEX_0)
                         {
@@ -2208,7 +2161,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // Glyph of Backstab
                 case 56800:
                 {
-                    if (!procSpell || procSpell->SpellFamilyName != SPELLFAMILY_ROGUE || procSpell->SpellIconID != 243) // Amaru: e?eaua oeaae o aaenoaaa!
+                    if (!procSpell || procSpell->GetSpellFamilyName() != SPELLFAMILY_ROGUE || procSpell->SpellIconID != 243) // Amaru: e?eaua oeaae o aaenoaaa!
                         return SPELL_AURA_PROC_FAILED;
 
                     if (Aura* rupture = target->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_ROGUE, UI64LIT(0x00100000), 0, GetGUID()))
@@ -2256,14 +2209,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 for(AuraList::const_iterator itr = sd.begin(); itr != sd.end(); ++itr)
                 {
                     SpellEntry const *spellProto = (*itr)->GetSpellProto();
-<<<<<<< HEAD
-                    if (spellProto->SpellFamilyName == SPELLFAMILY_ROGUE &&
-                        (spellProto->SpellFamilyFlags & UI64LIT(0x0000000000040000)))
-=======
                     SpellClassOptionsEntry const* itrClassOptions = spellProto->GetSpellClassOptions();
                     if (itrClassOptions && itrClassOptions->SpellFamilyName == SPELLFAMILY_ROGUE &&
                         (itrClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000040000)))
->>>>>>> 03a44c9... Mage 400 INTO master/434
                     {
                         int32 duration = GetSpellMaxDuration(spellProto);
                         if(GetTypeId() == TYPEID_PLAYER)
@@ -2292,11 +2240,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     return SPELL_AURA_PROC_FAILED;
 
                 // energy cost save
-<<<<<<< HEAD
-                basepoints[0] = procSpell->manaCost * triggerAmount/100;
-=======
                 basepoints[0] = procSpell->GetManaCost() * triggerAmount/100;
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 if (basepoints[0] <= 0)
                     return SPELL_AURA_PROC_FAILED;
 
@@ -2315,8 +2259,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     return SPELL_AURA_PROC_FAILED;
 
                 // mana cost save
-<<<<<<< HEAD
-                int32 mana = procSpell->manaCost + procSpell->ManaCostPercentage * GetCreateMana() / 100;
+                int32 mana = procSpell->GetManaCost() + procSpell->GetManaCostPercentage() * GetCreateMana() / 100;
 
                 // Explosive Shot returns only 1/3 of 40% per critical
                 if (procSpell->Id == 53352)
@@ -2325,13 +2268,10 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     SpellEntry const* explosiveShot = sSpellStore.LookupEntry(53301);
                     if (!explosiveShot)
                         return SPELL_AURA_PROC_FAILED;
-                    mana = explosiveShot->manaCost + explosiveShot->ManaCostPercentage * GetCreateMana() / 100;
+                    mana = explosiveShot->GetManaCost() + explosiveShot->GetManaCostPercentage() * GetCreateMana() / 100;
                     mana /= 3;
                 }
 
-=======
-                int32 mana = procSpell->GetManaCost() + procSpell->GetManaCostPercentage() * GetCreateMana() / 100;
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 basepoints[0] = mana * 40/100;
                 if (basepoints[0] <= 0)
                     return SPELL_AURA_PROC_FAILED;
@@ -2574,11 +2514,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 case 31877:
                 case 31878:
                     // triggered only at casted Judgement spells, not at additional Judgement effects
-<<<<<<< HEAD
-                    if(!procSpell || procSpell->Category != 1210)
-=======
                     if(!procSpell || procSpell->GetCategory() != 1210)
->>>>>>> 03a44c9... Mage 400 INTO master/434
                         return SPELL_AURA_PROC_FAILED;
 
                     target = this;
@@ -2691,25 +2627,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     basepoints[0] = triggerAmount * damage / 100;
                     break;
                 }
-<<<<<<< HEAD
-=======
-                // Sacred Shield (buff)
-                case 58597:
-                {
-                    triggered_spell_id = 66922;
-                    SpellEntry const* triggeredEntry = sSpellStore.LookupEntry(triggered_spell_id);
-                    if (!triggeredEntry)
-                        return SPELL_AURA_PROC_FAILED;
-
-                    SpellEffectEntry const* spellEffect = triggeredEntry->GetSpellEffect(EFFECT_INDEX_0);
-                    if(!spellEffect)
-                        return SPELL_AURA_PROC_FAILED;
-
-                    basepoints[0] = int32(damage / (GetSpellDuration(triggeredEntry) / spellEffect->EffectAmplitude));
-                    target = this;
-                    break;
-                }
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 // Sacred Shield (talent rank)
                 case 53601:
                 {
@@ -3002,15 +2919,10 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     for(AuraList::const_iterator i = spellPower.begin();i != spellPower.end(); ++i)
                     {
                         // select proper aura for format aura type in spell proto
-<<<<<<< HEAD
-                        if ((*i)->GetTarget()==totem && (*i)->GetSpellProto()->EffectApplyAuraName[(*i)->GetEffIndex()] == SPELL_AURA_MOD_HEALING_DONE &&
-                            (*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_SHAMAN && (*i)->GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000004000000))
-=======
                         SpellEffectEntry const* itrSpellEffect = (*i)->GetSpellProto()->GetSpellEffect((*i)->GetEffIndex());
                         SpellClassOptionsEntry const* itrClassOptions = (*i)->GetSpellProto()->GetSpellClassOptions();
                         if ((*i)->GetTarget()==totem && itrSpellEffect && itrSpellEffect->EffectApplyAuraName == SPELL_AURA_MOD_HEALING_DONE &&
                             itrClassOptions && itrClassOptions->SpellFamilyName == SPELLFAMILY_SHAMAN && itrClassOptions->SpellFamilyFlags & UI64LIT(0x0000000004000000))
->>>>>>> 03a44c9... Mage 400 INTO master/434
                         {
                             basepoints[0] = triggerAmount * (*i)->GetModifier()->m_amount / 100;
                             break;
@@ -3154,7 +3066,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     Unit::AuraList const& mAuras = caster->GetAurasByType(SPELL_AURA_ADD_PCT_MODIFIER);
                     for(Unit::AuraList::const_iterator i = mAuras.begin(); i != mAuras.end() && counter < 2; ++i)
                     {
-                        if ((*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_SHAMAN && ((*i)->GetSpellProto()->SpellIconID == 19 || (*i)->GetSpellProto()->SpellIconID == 2015) && (*i)->GetEffIndex() == EFFECT_INDEX_1)
+                        if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_SHAMAN && ((*i)->GetSpellProto()->SpellIconID == 19 || (*i)->GetSpellProto()->SpellIconID == 2015) && (*i)->GetEffIndex() == EFFECT_INDEX_1)
                         {
                             int32 aur_mod = (*i)->GetModifier()->m_amount;
                             bp0 = int32(bp0 * (aur_mod + 100.0f) / 100.0f);
@@ -3169,7 +3081,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 break;
             }
             // Flametongue Weapon (Passive)
-            if (dummySpell->SpellFamilyFlags & UI64LIT(0x200000))
+            if (dummySpell->IsFitToFamilyMask(UI64LIT(0x200000)))
             {
                 if(GetTypeId()!=TYPEID_PLAYER)
                     return SPELL_AURA_PROC_FAILED;
@@ -3178,7 +3090,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     return SPELL_AURA_PROC_FAILED;
 
                 //  firehit =  dummySpell->EffectBasePoints[0] / ((4*19.25) * 1.3);
-                float fire_onhit = dummySpell->EffectBasePoints[0] / 100.0;
+                SpellEffectEntry const * effect = dummySpell->GetSpellEffect(EFFECT_INDEX_0);
+                float fire_onhit = effect ? effect->EffectBasePoints / 100.0 : 0.0f;
 
                 float add_spellpower = SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_FIRE)
                                      + pVictim->SpellBaseDamageBonusTaken(SPELL_SCHOOL_MASK_FIRE);
@@ -3230,14 +3143,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 AuraList const& vs = GetAurasByType(SPELL_AURA_PROC_TRIGGER_SPELL);
                 for(AuraList::const_iterator itr = vs.begin(); itr != vs.end(); ++itr)
                 {
-<<<<<<< HEAD
-                    if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_SHAMAN &&
-                        ((*itr)->GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000002000000000)))
-=======
                     SpellClassOptionsEntry const* itrClassOptions = (*itr)->GetSpellProto()->GetSpellClassOptions();
                     if (itrClassOptions && itrClassOptions->SpellFamilyName == SPELLFAMILY_SHAMAN &&
                         (itrClassOptions->SpellFamilyFlags & UI64LIT(0x0000002000000000)))
->>>>>>> 03a44c9... Mage 400 INTO master/434
                     {
                         SpellEffectEntry const* itrSpellEffect = (*itr)->GetSpellProto()->GetSpellEffect((*itr)->GetEffIndex());
                         uint32 spell = itrSpellEffect ? itrSpellEffect->EffectTriggerSpell : 0;
@@ -3309,14 +3217,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 AuraList const& vs = GetAurasByType(SPELL_AURA_PROC_TRIGGER_SPELL);
                 for(AuraList::const_iterator itr = vs.begin(); itr != vs.end(); ++itr)
                 {
-<<<<<<< HEAD
-                    if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_SHAMAN &&
-                        ((*itr)->GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000000400)))
-=======
                     SpellClassOptionsEntry const* itrClassOptions = (*itr)->GetSpellProto()->GetSpellClassOptions();
                     if (itrClassOptions && itrClassOptions->SpellFamilyName == SPELLFAMILY_SHAMAN &&
                         (itrClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000000400)))
->>>>>>> 03a44c9... Mage 400 INTO master/434
                     {
                         uint32 spell = 0;
                         switch ((*itr)->GetId())
@@ -3534,7 +3437,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 if (!procSpell)
                     return SPELL_AURA_PROC_FAILED;
                 // prevent proc from other types than disease
-                if (procSpell->Dispel != DISPEL_DISEASE)
+                if (procSpell->GetDispel() != DISPEL_DISEASE)
                     return SPELL_AURA_PROC_FAILED; 
                 if (!roll_chance_f(GetUnitCriticalChance(BASE_ATTACK, pVictim)))
                     return SPELL_AURA_PROC_FAILED;
@@ -3589,7 +3492,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     triggered_spell_id = 54445;
                     target = this;
                     if (pVictim)
-                        pVictim->AddThreat(this,procSpell->EffectBasePoints[0] * triggerAmount / 100.0f);
+                        if (SpellEffectEntry const * effect = procSpell->GetSpellEffect(EFFECT_INDEX_0))
+                            pVictim->AddThreat(this, effect->EffectBasePoints * triggerAmount / 100.0f);
                     break;
                 }
                 // Silverback
@@ -3907,11 +3811,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             break;
         case SPELLFAMILY_WARRIOR:
             // Deep Wounds (replace triggered spells to directly apply DoT), dot spell have familyflags
-<<<<<<< HEAD
-            if (!auraSpellInfo->SpellFamilyFlags.Flags && auraSpellInfo->SpellIconID == 243)
-=======
             if (auraClassOptions && auraClassOptions->SpellFamilyFlags == UI64LIT(0x0) && auraSpellInfo->SpellIconID == 243)
->>>>>>> 03a44c9... Mage 400 INTO master/434
             {
                 bool bOffHand = procFlags & PROC_FLAG_SUCCESSFUL_OFFHAND_HIT;
                 if (bOffHand && !haveOffhandWeapon())
@@ -3944,7 +3844,11 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 if (!triggerspellInfo || !f_damage)
                     return SPELL_AURA_PROC_FAILED;
 
-                uint32 tickcount = GetSpellDuration(triggerspellInfo) / triggerspellInfo->EffectAmplitude[EFFECT_INDEX_0];
+                SpellEffectEntry const * effect = triggerspellInfo->GetSpellEffect(EFFECT_INDEX_0);
+                if (!effect)
+                    return SPELL_AURA_PROC_FAILED;
+
+                uint32 tickcount = GetSpellDuration(triggerspellInfo) / effect->EffectAmplitude;
 
                 basepoints[0] = floor( f_damage / tickcount);
 
@@ -4187,7 +4091,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Piercing Shots
             if (auraSpellInfo->SpellIconID == 3247 && auraSpellInfo->SpellVisual[0] == 0)
             {
-                if (!procSpell || !(procSpell->SpellFamilyFlags & UI64LIT(0x0000000100020000))    //Aimed Shot & Steady Shot
+                if (!procSpell || !procSpell->IsFitToFamilyMask(UI64LIT(0x0000000100020000))    //Aimed Shot & Steady Shot
                     && !procSpell->IsFitToFamilyMask(UI64LIT(0x0), 0x1))    // Chimera Shot
                     return SPELL_AURA_PROC_FAILED;
 
@@ -4291,11 +4195,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     return SPELL_AURA_PROC_FAILED;
                 }
                 // percent stored in effect 1 (class scripts) base points
-<<<<<<< HEAD
-                int32 cost = originalSpell->manaCost + originalSpell->ManaCostPercentage * GetCreateMana() / 100;
-=======
                 int32 cost = originalSpell->GetManaCost() + originalSpell->GetManaCostPercentage() * GetCreateMana() / 100;
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 basepoints[0] = cost*auraSpellInfo->CalculateSimpleValue(EFFECT_INDEX_1)/100;
                 trigger_spell_id = 20272;
                 target = this;
@@ -4618,7 +4518,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Shaman T10 Enhancement 4P Bonus
             if (Aura* mw = GetAura(53817, EFFECT_INDEX_0))
                 if (Aura* dummy = GetDummyAura(70832))
-                    if (mw->GetStackAmount() == mw->GetSpellProto()->StackAmount && roll_chance_i(dummy->GetBasePoints()))
+                    if (mw->GetStackAmount() == mw->GetSpellProto()->GetStackAmount() && roll_chance_i(dummy->GetBasePoints()))
                         CastSpell(this, 70831, true,castItem, triggeredByAura);
 
             // have rank dependent proc chance, ignore too often cases
@@ -4635,11 +4535,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             if(!procSpell)
                 return SPELL_AURA_PROC_FAILED;
             // For trigger from Blizzard need exist Improved Blizzard
-<<<<<<< HEAD
-            if (procSpell->SpellFamilyName==SPELLFAMILY_MAGE && (procSpell->SpellFamilyFlags & UI64LIT(0x0000000000000080)))
-=======
             if (procClassOptions && procClassOptions->SpellFamilyName==SPELLFAMILY_MAGE && (procClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000000080)))
->>>>>>> 03a44c9... Mage 400 INTO master/434
             {
                 bool found = false;
                 AuraList const& mOverrideClassScript = GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
@@ -4689,7 +4585,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 return SPELL_AURA_PROC_FAILED;
             }
             // don't proc Explosive Trap on triggering (only on periodic, in other aura proc)
-            else if (procSpell->SpellFamilyFlags & UI64LIT(0x0000000000000004))
+            else if (procSpell->IsFitToFamilyMask(UI64LIT(0x0000000000000004)))
                 return SPELL_AURA_PROC_FAILED;
 
             break;
@@ -4966,23 +4862,15 @@ SpellAuraProcResult Unit::HandleModPowerCostSchoolAuraProc(Unit* /*pVictim*/, ui
 {
     // Skip melee hits and spells ws wrong school or zero cost
     return !(procSpell == NULL ||
-<<<<<<< HEAD
-            (procSpell->manaCost == 0 && procSpell->ManaCostPercentage == 0) ||           // Cost check
-=======
             (procSpell->GetManaCost() == 0 && procSpell->GetManaCostPercentage() == 0) || // Cost check
->>>>>>> 03a44c9... Mage 400 INTO master/434
             (triggeredByAura->GetModifier()->m_miscvalue & procSpell->SchoolMask) == 0) ? SPELL_AURA_PROC_OK : SPELL_AURA_PROC_FAILED;  // School check
 }
 
 SpellAuraProcResult Unit::HandleMechanicImmuneResistanceAuraProc(Unit* /*pVictim*/, uint32 /*damage*/, uint32 /*absorb*/, Aura* triggeredByAura, SpellEntry const* procSpell, uint32 /*procFlag*/, uint32 /*procEx*/, uint32 /*cooldown*/)
 {
     // Compare mechanic
-<<<<<<< HEAD
-    return !(procSpell==NULL || procSpell->Mechanic != triggeredByAura->GetModifier()->m_miscvalue)  ? SPELL_AURA_PROC_OK : SPELL_AURA_PROC_FAILED;
-=======
    return !(procSpell==NULL || int32(procSpell->GetMechanic()) != triggeredByAura->GetModifier()->m_miscvalue)
        ? SPELL_AURA_PROC_OK : SPELL_AURA_PROC_FAILED;
->>>>>>> 03a44c9... Mage 400 INTO master/434
 }
 
 SpellAuraProcResult Unit::HandleIgnoreUnitStateAuraProc(Unit* pVictim, uint32 damage, uint32 absorb, Aura* triggeredByAura, SpellEntry const* procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown)
@@ -4991,7 +4879,7 @@ SpellAuraProcResult Unit::HandleIgnoreUnitStateAuraProc(Unit* pVictim, uint32 da
     SpellEffectIndex effIdx = triggeredByAura->GetEffIndex();
     ObjectGuid caster_guid = triggeredByAura->GetCasterGuid();
 
-    switch (spellProto->SpellFamilyName)
+    switch (spellProto->GetSpellFamilyName())
     {
         case SPELLFAMILY_WARRIOR:
         {
@@ -5021,7 +4909,7 @@ SpellAuraProcResult Unit::HandleAddFlatModifierAuraProc(Unit* pVictim, uint32 /*
 {
     SpellEntry const *spellInfo = triggeredByAura->GetSpellProto();
 
-    switch(spellInfo->SpellFamilyName)
+    switch(spellInfo->GetSpellFamilyName())
     {
         case SPELLFAMILY_MAGE:
         {
@@ -5103,11 +4991,7 @@ SpellAuraProcResult Unit::HandleAddPctModifierAuraProc(Unit* /*pVictim*/, uint32
     Item* castItem = triggeredByAura->GetCastItemGuid() && GetTypeId()==TYPEID_PLAYER
         ? ((Player*)this)->GetItemByGuid(triggeredByAura->GetCastItemGuid()) : NULL;
 
-<<<<<<< HEAD
-    switch(spellInfo->SpellFamilyName)
-=======
     switch(spellInfo->GetSpellFamilyName())
->>>>>>> 03a44c9... Mage 400 INTO master/434
     {
         case SPELLFAMILY_MAGE:
         {
@@ -5175,7 +5059,7 @@ SpellAuraProcResult Unit::HandleAddPctModifierAuraProc(Unit* /*pVictim*/, uint32
             // Maelstrom Weapon proc remove
             if (spellInfo->Id == 53817)
             {
-                if (!procSpell || (procSpell->SpellFamilyFlags & UI64LIT(0x8000000001C3)) == 0)
+                if (!procSpell || !procSpell->IsFitToFamilyMask(UI64LIT(0x8000000001C3)))
                     return SPELL_AURA_PROC_FAILED;
             }
             break;
@@ -5204,13 +5088,6 @@ SpellAuraProcResult Unit::HandleModDamagePercentDoneAuraProc(Unit* /*pVictim*/, 
 
         CastCustomSpell(this, 34075, &bp, NULL, NULL, true, castItem, triggeredByAura);
     }
-<<<<<<< HEAD
-=======
-    // Arcane Blast
-    else if (spellInfo->Id == 36032 && procSpell->GetSpellFamilyName() == SPELLFAMILY_MAGE && procSpell->SpellIconID == 2294)
-        // prevent proc from self(spell that triggered this aura)
-        return SPELL_AURA_PROC_FAILED;
->>>>>>> 03a44c9... Mage 400 INTO master/434
 
     return SPELL_AURA_PROC_OK;
 }
@@ -5246,10 +5123,7 @@ SpellAuraProcResult Unit::HandleSpellMagnetAuraProc(Unit* /*pVictim*/, uint32 da
 SpellAuraProcResult Unit::HandleManaShieldAuraProc(Unit *pVictim, uint32 /*damage*/, uint32 /*absorb*/, Aura* triggeredByAura, SpellEntry const* /*procSpell*/, uint32 /*procFlag*/, uint32 /*procEx*/, uint32 cooldown)
 {
     SpellEntry const *dummySpell = triggeredByAura->GetSpellProto ();
-<<<<<<< HEAD
-=======
     SpellClassOptionsEntry const* dummyClassOptions = dummySpell->GetSpellClassOptions();
->>>>>>> 03a44c9... Mage 400 INTO master/434
 
     Item* castItem = triggeredByAura->GetCastItemGuid() && GetTypeId()==TYPEID_PLAYER
         ? ((Player*)this)->GetItemByGuid(triggeredByAura->GetCastItemGuid()) : NULL;
@@ -5257,11 +5131,7 @@ SpellAuraProcResult Unit::HandleManaShieldAuraProc(Unit *pVictim, uint32 /*damag
     uint32 triggered_spell_id = 0;
     Unit* target = pVictim;
 
-<<<<<<< HEAD
-    switch(dummySpell->SpellFamilyName)
-=======
     switch(dummyClassOptions->SpellFamilyName)
->>>>>>> 03a44c9... Mage 400 INTO master/434
     {
         case SPELLFAMILY_MAGE:
         {
@@ -5329,7 +5199,7 @@ SpellAuraProcResult Unit::HandleRemoveByDamageProc(Unit* pVictim, uint32 damage,
     if (!fullDamage)
         return SPELL_AURA_PROC_FAILED;
 
-    if (!triggeredByAura->GetSpellProto()->procFlags)
+    if (!triggeredByAura->GetSpellProto()->GetProcFlags())
         return SPELL_AURA_PROC_FAILED;
 
     // root type spells do not dispel the root effect
@@ -5356,11 +5226,10 @@ SpellAuraProcResult Unit::HandleRemoveByDamageProc(Unit* pVictim, uint32 damage,
 
     return SPELL_AURA_PROC_FAILED;
 }
-<<<<<<< HEAD
 
 SpellAuraProcResult Unit::HandlePeriodicDummyAuraProc(Unit* pVictim, uint32 damage, uint32 absorb, Aura* triggeredByAura, SpellEntry const *procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown)
 {
-    switch (triggeredByAura->GetSpellProto()->SpellFamilyName)
+    switch (triggeredByAura->GetSpellProto()->GetSpellFamilyName())
     {
         case SPELLFAMILY_GENERIC:
         {
@@ -5388,5 +5257,3 @@ SpellAuraProcResult Unit::HandlePeriodicDummyAuraProc(Unit* pVictim, uint32 dama
     if (procEx & PR
     return SPELL_AURA_PROC_OK;
 }*/
-=======
->>>>>>> 03a44c9... Mage 400 INTO master/434

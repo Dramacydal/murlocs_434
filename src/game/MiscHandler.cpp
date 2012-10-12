@@ -836,7 +836,9 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
         case AREA_LOCKSTATUS_MISSING_ITEM:
             {
                 MapDifficultyEntry const* mapDiff = GetMapDifficultyData(mapEntry->MapID,GetPlayer()->GetDifficulty(mapEntry->IsRaid()));
-                if (mapDiff && mapDiff->mapDifficultyFlags & MAP_DIFFICULTY_FLAG_CONDITION)
+                // FIXME
+                //if (mapDiff && mapDiff->mapDifficultyFlags & MAP_DIFFICULTY_FLAG_CONDITION)
+                if (mapDiff->areaTriggerText[GetSessionDbcLocale()])
                 {
                     SendAreaTriggerMessage(mapDiff->areaTriggerText[GetSessionDbcLocale()]);
                 }

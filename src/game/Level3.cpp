@@ -2411,11 +2411,7 @@ bool ChatHandler::HandleLearnAllMySpellsCommand(char* /*args*/)
             continue;
 
         // skip server-side/triggered spells
-<<<<<<< HEAD
-        if(spellInfo->spellLevel==0)
-=======
         if(spellInfo->GetSpellLevel()==0)
->>>>>>> 03a44c9... Mage 400 INTO master/434
             continue;
 
         // skip wrong class/race skills
@@ -2423,11 +2419,7 @@ bool ChatHandler::HandleLearnAllMySpellsCommand(char* /*args*/)
             continue;
 
         // skip other spell families
-<<<<<<< HEAD
-        if( spellInfo->SpellFamilyName != family)
-=======
         if( spellInfo->GetSpellFamilyName() != family)
->>>>>>> 03a44c9... Mage 400 INTO master/434
             continue;
 
         // skip spells with first rank learned as talent (and all talents then also)
@@ -4101,13 +4093,8 @@ bool ChatHandler::HandleAuraCommand(char* args)
 
     for(uint32 i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
-<<<<<<< HEAD
-        uint8 eff = spellInfo->Effect[i];
-        if (eff>=TOTAL_SPELL_EFFECTS)
-=======
         SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(i));
         if(!spellEffect)
->>>>>>> 03a44c9... Mage 400 INTO master/434
             continue;
 
         uint8 eff = spellEffect->Effect;

@@ -2043,18 +2043,8 @@ bool GameObject::BlocksLineOfSight(float x1, float y1, float z1, float x2, float
     else if (checkz && z2 > checkzvalue && dist3 < radius && dist < dist2)
         return false;
 
-<<<<<<< HEAD
     float angle = atan2(y2 - y1, x2 - x1);
     angle = (angle >= 0) ? angle : 2 * M_PI_F + angle;
-=======
-float GameObject::GetObjectBoundingRadius() const
-{
-    // FIXME:
-    // 1. This is clearly hack way because GameObjectDisplayInfoEntry have 6 floats related to GO sizes, but better that use DEFAULT_WORLD_OBJECT_SIZE
-    // 2. In some cases this must be only interactive size, not GO size, current way can affect creature target point auto-selection in strange ways for big underground/virtual GOs
-    /*if (m_displayInfo)
-        return fabs(m_displayInfo->unknown12) * GetObjectScale();*/
->>>>>>> 03a44c9... Mage 400 INTO master/434
 
     float tempdist;
     for (tempdist = step; tempdist < dist; tempdist += step)

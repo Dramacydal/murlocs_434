@@ -82,7 +82,7 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &/*recv_data*/)
 
         data << uint32(mapid);
         data << uint32(period);
-        data << uint32(map->instanceResetOffset);
+        data << uint32(map->unkTime);
         ++counter;
     }
     data.put<uint32>(p_counter,counter);

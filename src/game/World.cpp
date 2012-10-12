@@ -1127,14 +1127,10 @@ void World::SetInitialWorldSettings()
     DetectDBCLang();
     sObjectMgr.SetDBCLocaleIndex(GetDefaultDbcLocale());    // Get once for all the locale index of DBC language (console/broadcasts)
 
-<<<<<<< HEAD
     sLog.outString( "Loading SpellTemplate..." );
-    sObjectMgr.LoadSpellTemplate();
+    //sObjectMgr.LoadSpellTemplate();
 
-    sLog.outString( "Loading Script Names...");
-=======
     sLog.outString("Loading Script Names...");
->>>>>>> 03a44c9... Mage 400 INTO master/434
     sScriptMgr.LoadScriptNames();
 
     sLog.outString( "Loading WorldTemplate..." );

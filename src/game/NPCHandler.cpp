@@ -789,28 +789,9 @@ void WorldSession::HandleBuyStableSlot( WorldPacket & recv_data )
 
     GetPlayer()->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_TALK);
     // remove fake death
-<<<<<<< HEAD
+
     //if(GetPlayer()->hasUnitState(UNIT_STAT_DIED))
     //    GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
-
-    if(GetPlayer()->m_stableSlots < MAX_PET_STABLES)
-    {
-        StableSlotPricesEntry const *SlotPrice = sStableSlotPricesStore.LookupEntry(GetPlayer()->m_stableSlots+1);
-        if(_player->GetMoney() >= SlotPrice->Price)
-        {
-            ++GetPlayer()->m_stableSlots;
-            _player->ModifyMoney(-int32(SlotPrice->Price));
-            SendStableResult(STABLE_SUCCESS_BUY_SLOT);
-        }
-        else
-            SendStableResult(STABLE_ERR_MONEY);
-    }
-    else
-        SendStableResult(STABLE_ERR_STABLE);
-=======
-    if (GetPlayer()->hasUnitState(UNIT_STAT_DIED))
-        GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
->>>>>>> 03a44c9... Mage 400 INTO master/434
 }
 
 void WorldSession::HandleStableRevivePet( WorldPacket &/* recv_data */)

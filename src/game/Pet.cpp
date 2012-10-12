@@ -520,9 +520,10 @@ void Pet::SetDeathState(DeathState s)                       // overwrite virtual
             {
                 p_owner->SendCooldownEvent(spellInfo);
                 // Raise Dead hack
-                if (spellInfo->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && spellInfo->SpellFamilyFlags & 0x1000)
-                    if (spellInfo = sSpellStore.LookupEntry(46584))
-                        p_owner->SendCooldownEvent(spellInfo);
+                if (SpellClassOptionsEntry const * opt = spellInfo->GetSpellClassOptions())
+                    if (opt->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && opt->SpellFamilyFlags & 0x1000)
+                        if (spellInfo = sSpellStore.LookupEntry(46584))
+                            p_owner->SendCooldownEvent(spellInfo);
             }
         }
     }
@@ -731,27 +732,16 @@ void Pet::Unsummon(PetSaveMode mode, Unit* owner /*= NULL*/)
 
             if (mode == PET_SAVE_REAGENTS)
             {
-<<<<<<< HEAD
-                if (spellInfo)
-=======
-                // returning of reagents only for players, so best done here
-                uint32 spellId = GetUInt32Value(UNIT_CREATED_BY_SPELL);
-                SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
                 SpellReagentsEntry const* spellReagents = spellInfo ? spellInfo->GetSpellReagents() : NULL;
 
                 if (spellReagents)
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 {
                     for(uint32 i = 0; i < MAX_SPELL_REAGENTS; ++i)
                     {
                         if (spellReagents->Reagent[i] > 0)
                         {
                             ItemPosCountVec dest;           //for succubus, voidwalker, felhunter and felguard credit soulshard when despawn reason other than death (out of range, logout)
-<<<<<<< HEAD
-                            uint8 msg = p_owner->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, spellInfo->Reagent[i], spellInfo->ReagentCount[i]);
-=======
                             uint8 msg = p_owner->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, spellReagents->Reagent[i], spellReagents->ReagentCount[i]);
->>>>>>> 03a44c9... Mage 400 INTO master/434
                             if (msg == EQUIP_ERR_OK)
                             {
                                 Item* item = p_owner->StoreNewItem(dest, spellReagents->Reagent[i], true);
@@ -768,9 +758,10 @@ void Pet::Unsummon(PetSaveMode mode, Unit* owner /*= NULL*/)
                 {
                     p_owner->SendCooldownEvent(spellInfo);
                     // Raise Dead hack
-                    if (spellInfo->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && spellInfo->SpellFamilyFlags & 0x1000)
-                        if (spellInfo = sSpellStore.LookupEntry(46584))
-                            p_owner->SendCooldownEvent(spellInfo);
+                    if (SpellClassOptionsEntry const * opt = spellInfo->GetSpellClassOptions())
+                        if (opt->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && opt->SpellFamilyFlags & 0x1000)
+                            if (spellInfo = sSpellStore.LookupEntry(46584))
+                                p_owner->SendCooldownEvent(spellInfo);
                 }
 
             if (isControlled())
@@ -1510,11 +1501,6 @@ void Pet::_SaveAuras()
         for (int32 j = 0; j < MAX_EFFECT_INDEX; ++j)
         {
             SpellEntry const* spellInfo = holder->GetSpellProto();
-<<<<<<< HEAD
-            if (spellInfo->EffectApplyAuraName[j] == SPELL_AURA_MOD_STEALTH ||
-                        spellInfo->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA_OWNER ||
-                        spellInfo->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA_PET )
-=======
             SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(j));
             if(!effectEntry)
                 continue;
@@ -1522,7 +1508,6 @@ void Pet::_SaveAuras()
             if (effectEntry->EffectApplyAuraName == SPELL_AURA_MOD_STEALTH ||
                 effectEntry->Effect == SPELL_EFFECT_APPLY_AREA_AURA_OWNER ||
                 effectEntry->Effect == SPELL_EFFECT_APPLY_AREA_AURA_PET )
->>>>>>> 03a44c9... Mage 400 INTO master/434
             {
                 save = false;
                 break;
@@ -1752,11 +1737,7 @@ void Pet::InitLevelupSpellsForLevel()
                 continue;
 
             // will called first if level down
-<<<<<<< HEAD
-            if(spellEntry->spellLevel > level)
-=======
             if(spellEntry->GetSpellLevel() > level)
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 unlearnSpell(spellEntry->Id,true);
             // will called if level up
             else
@@ -1916,8 +1897,9 @@ bool Pet::resetTalents(bool no_cost)
 
                 SpellEntry const *spellInfo = sSpellStore.LookupEntry(talentInfo->RankID[j]);
                 for (int k = 0; k < MAX_EFFECT_INDEX; ++k)
-                    if (spellInfo->EffectTriggerSpell[k])
-                        removeSpell(spellInfo->EffectTriggerSpell[k], false);
+                    if (SpellEffectEntry const * effect = spellInfo->GetSpellEffect(SpellEffectIndex(k)))
+                        if (effect->EffectTriggerSpell)
+                            removeSpell(effect->EffectTriggerSpell, false);
             }
     }
 
@@ -2288,14 +2270,15 @@ void Pet::UpdateScalingAuras()
 void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellEffectIndex effect_index)
 {
     Player* owner = GetCharmerOrOwnerPlayerOrPlayerItself();
-    if (!owner || spellInfo->Effect[effect_index] != SPELL_EFFECT_APPLY_AURA)
+    SpellEffectEntry const * effect = spellInfo->GetSpellEffect(effect_index);
+    if (!owner || !effect || effect->Effect != SPELL_EFFECT_APPLY_AURA)
         return;
 
     uint32 ownerValue = 0;
     uint32 bonusValue = 0;
     float scale = 0;
 
-    switch (spellInfo->EffectApplyAuraName[effect_index])
+    switch (effect->EffectApplyAuraName)
     {
         case SPELL_AURA_MOD_DAMAGE_DONE:
         {
@@ -2335,12 +2318,12 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
         case SPELL_AURA_MOD_STAT:
         {
             // only single stats in scaling auras (otherwise scaling not possible)
-            if (spellInfo->EffectMiscValue[effect_index] < 0 || spellInfo->EffectMiscValue[effect_index] > 4)
+            if (effect->EffectMiscValue < 0 || effect->EffectMiscValue > 4)
                 return;
 
-            ownerValue = uint32(owner->GetTotalStatValue(Stats(spellInfo->EffectMiscValue[effect_index])));
+            ownerValue = uint32(owner->GetTotalStatValue(Stats(effect->EffectMiscValue)));
 
-            switch(spellInfo->EffectMiscValue[effect_index])
+            switch(effect->EffectMiscValue)
             {
                 case STAT_STRENGTH:
                 {
@@ -2350,11 +2333,14 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                     // search for "Ravenous Dead"
                     AuraList const& mStat = owner->GetAurasByType(SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE);
                     for(Unit::AuraList::const_iterator itr = mStat.begin(); itr != mStat.end(); ++itr)
-                        if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && (*itr)->GetSpellProto()->SpellIconID == 3010)
+                    {
+                        SpellClassOptionsEntry const * opt = (*itr)->GetSpellProto()->GetSpellClassOptions();
+                        if (opt && opt->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && (*itr)->GetSpellProto()->SpellIconID == 3010)
                         {
                             scale *= float((*itr)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) + 100) / 100.0f;
                             break;
                         }
+                    }
 
                     // "Glyph of Ghoul"
                     if (Aura* glyph = owner->GetDummyAura(58686))
@@ -2389,7 +2375,8 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                             Unit::AuraList const& flatmodauras = owner->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
                             for (Unit::AuraList::const_iterator i = flatmodauras.begin(); i != flatmodauras.end(); ++i)
                             {
-                                if ((*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_HUNTER && (*i)->GetSpellProto()->SpellIconID == 24 && (*i)->GetEffIndex() == EFFECT_INDEX_0)
+                                SpellClassOptionsEntry const * opt = (*i)->GetSpellProto()->GetSpellClassOptions();
+                                if (opt && opt->SpellFamilyName == SPELLFAMILY_HUNTER && (*i)->GetSpellProto()->SpellIconID == 24 && (*i)->GetEffIndex() == EFFECT_INDEX_0)
                                 {
                                     bonusValue += float(baseHP * (*i)->GetModifier()->m_amount + 100) / 100.0f;
                                     scale *= ((*i)->GetModifier()->m_amount + 100) / 100.0f;
@@ -2416,11 +2403,14 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                             // search for "Ravenous Dead"
                             AuraList const& mStat = owner->GetAurasByType(SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE);
                             for(Unit::AuraList::const_iterator itr = mStat.begin(); itr != mStat.end(); ++itr)
-                                if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && (*itr)->GetSpellProto()->SpellIconID == 3010)
+                            {
+                                SpellClassOptionsEntry const * opt = (*itr)->GetSpellProto()->GetSpellClassOptions();
+                                if (opt && opt->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && (*itr)->GetSpellProto()->SpellIconID == 3010)
                                 {
                                     scale *= float((*itr)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) + 100) / 100.0f;
                                     break;
                                 }
+                            }
 
                             // "Glyph of Ghoul"
                             if (Aura* glyph = owner->GetDummyAura(58686))
@@ -2463,11 +2453,14 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                     // search for "Hunter vs. Wild"
                     AuraList const& mAttackPowerMod = owner->GetAurasByType(SPELL_AURA_MOD_ATTACK_POWER_OF_STAT_PERCENT);
                     for(AuraList::const_iterator itr = mAttackPowerMod.begin(); itr != mAttackPowerMod.end(); ++itr)
-                        if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_HUNTER && (*itr)->GetSpellProto()->SpellIconID == 3647)
+                    {
+                        SpellClassOptionsEntry const * opt = (*itr)->GetSpellProto()->GetSpellClassOptions();
+                        if (opt && opt->SpellFamilyName == SPELLFAMILY_HUNTER && (*itr)->GetSpellProto()->SpellIconID == 3647)
                         {
                             bonusValue += (*itr)->GetModifier()->m_amount * owner->GetTotalStatValue(Stats((*itr)->GetModifier()->m_miscvalue)) / 100;
                             break;
                         }
+                    }
                     break;
                 }
                 // warlock pet scaling aura
@@ -2483,7 +2476,7 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
         case SPELL_AURA_MOD_RESISTANCE:
         {
             // only single schools in scaling auras (otherwise scaling not possible)
-            SpellSchools school = GetFirstSchoolInMask(SpellSchoolMask(spellInfo->EffectMiscValue[effect_index]));
+            SpellSchools school = GetFirstSchoolInMask(SpellSchoolMask(effect->EffectMiscValue));
             ownerValue = owner->GetResistance(school);
 
             switch(school)

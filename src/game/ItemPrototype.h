@@ -642,22 +642,8 @@ struct ItemPrototype
         return false;
     }
 
-<<<<<<< HEAD
-    uint32 GetMaxStackSize() const { return Stackable > 0 ? uint32(Stackable) : uint32(0x7FFFFFFF-1); }
-
-    float getDPS() const
-    {
-        if (Delay == 0)
-            return 0;
-        float temp = 0;
-        for (int i = 0; i < MAX_ITEM_PROTO_DAMAGES; ++i)
-            temp+=Damage[i].DamageMin + Damage[i].DamageMax;
-        return temp*500/Delay;
-    }
-=======
     uint32 GetMaxStackSize() const { return Stackable > 0 ? uint32(Stackable) : uint32(0x7FFFFFFF - 1); }
     float getDPS() const;
->>>>>>> 03a44c9... Mage 400 INTO master/434
 
     int32 getFeralBonus(int32 extraDPS = 0) const
     {
@@ -672,13 +658,10 @@ struct ItemPrototype
         return 0;
     }
 
-<<<<<<< HEAD
-=======
     uint32 GetArmor() const;
     float GetMinDamage() const { return floor(getDPS() * float(Delay) / 1000.0f * 0.7f + 0.5f); }
     float GetMaxDamage() const { return floor(getDPS() * float(Delay) / 1000.0f * 1.3f + 0.5f); }
 
->>>>>>> 03a44c9... Mage 400 INTO master/434
     bool IsPotion() const { return Class==ITEM_CLASS_CONSUMABLE && SubClass==ITEM_SUBCLASS_POTION; }
     bool IsConjuredConsumable() const { return Class == ITEM_CLASS_CONSUMABLE && (Flags & ITEM_FLAG_CONJURED); }
     bool IsRestrictedByTitanGrip() const { return InventoryType == INVTYPE_2HWEAPON && (SubClass == ITEM_SUBCLASS_WEAPON_POLEARM || SubClass == ITEM_SUBCLASS_WEAPON_STAFF); }

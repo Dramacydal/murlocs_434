@@ -1341,13 +1341,6 @@ enum Opcodes
     MSG_MOVE_SET_COLLISION_HGT                      = 0x518,
     CMSG_CLEAR_RANDOM_BG_WIN_TIME                   = 0x519,
     CMSG_CLEAR_HOLIDAY_BG_WIN_TIME                  = 0x51A,
-<<<<<<< HEAD
-    CMSG_COMMENTATOR_SKIRMISH_QUEUE_COMMAND         = 0x51B, // lua: CommentatorSetSkirmishMatchmakingMode/CommentatorRequestSkirmishQueueData/CommentatorRequestSkirmishMode/CommentatorStartSkirmishMatch
-    SMSG_COMMENTATOR_SKIRMISH_QUEUE_RESULT1         = 0x51C, // event EVENT_COMMENTATOR_SKIRMISH_QUEUE_REQUEST, CGCommentator::QueueNode
-    SMSG_COMMENTATOR_SKIRMISH_QUEUE_RESULT2         = 0x51D, // event EVENT_COMMENTATOR_SKIRMISH_QUEUE_REQUEST
-    SMSG_COMPRESSED_UNKNOWN_1310                    = 0x51E, // some compressed packet
-    NUM_MSG_TYPES                                   = 0x51F
-=======
     CMSG_COMMENTATOR_SKIRMISH_QUEUE_COMMAND         = 0x51B, // Lua_CommentatorSetSkirmishMatchmakingMode and Lua_CommentatorRequestSkirmishQueueData
     SMSG_COMMENTATOR_SKIRMISH_QUEUE_RESULT1         = 0x51C, // event EVENT_COMMENTATOR_SKIRMISH_QUEUE_REQUEST, CGCommentator::QueueNode
     SMSG_COMMENTATOR_SKIRMISH_QUEUE_RESULT2         = 0x51D, // event EVENT_COMMENTATOR_SKIRMISH_QUEUE_REQUEST
@@ -1377,7 +1370,6 @@ enum Opcodes
     UMSG_UNKNOWN_1333                               = 0x535, // not found
     UMSG_UNKNOWN_1334                               = 0x536, // not found
     NUM_MSG_TYPES                                   = 0x537
->>>>>>> 03a44c9... Mage 400 INTO master/434
 };
 
 /// Player state

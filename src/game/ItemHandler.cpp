@@ -336,21 +336,12 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
         }
         data << pProto->ScalingStatDistribution;            // scaling stats distribution
         data << pProto->ScalingStatValue;                   // some kind of flags used to determine stat values column
-<<<<<<< HEAD
-        for(int i = 0; i < MAX_ITEM_PROTO_DAMAGES; ++i)
-        {
-            data << pProto->Damage[i].DamageMin;
-            data << pProto->Damage[i].DamageMax;
-            data << pProto->Damage[i].DamageType;
-        }
-=======
         //for(int i = 0; i < MAX_ITEM_PROTO_DAMAGES; ++i)
         //{
         //    data << pProto->Damage[i].DamageMin;
         //    data << pProto->Damage[i].DamageMax;
         //    data << pProto->Damage[i].DamageType;
         //}
->>>>>>> 03a44c9... Mage 400 INTO master/434
 
         // resistances (7)
         //data << pProto->Armor;
@@ -432,12 +423,9 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
         data << uint32(pProto->Duration);                   // added in 2.4.2.8209, duration (seconds)
         data << uint32(pProto->ItemLimitCategory);          // WotLK, ItemLimitCategory
         data << uint32(pProto->HolidayId);                  // Holiday.dbc?
-<<<<<<< HEAD
-=======
         data << float(0);                                   // damage/armor scaling factor
         data << uint32(0);                                  // 4.0.0
         data << uint32(0);                                  // 4.0.0
->>>>>>> 03a44c9... Mage 400 INTO master/434
         SendPacket( &data );
     }
     else
@@ -1111,13 +1099,8 @@ void WorldSession::HandleItemNameQueryOpcode(WorldPacket & recv_data)
     else
     {
         // listed in dbc or not expected to exist unknown item
-<<<<<<< HEAD
-        if(sItemStore.LookupEntry(itemid))
-            ERROR_LOG("WORLD: CMSG_ITEM_NAME_QUERY for item %u failed (item listed in Item.dbc but not exist in DB)", itemid);
-=======
         if(true/*sItemStore.LookupEntry(itemid)*/)
             sLog.outErrorDb("WORLD: CMSG_ITEM_NAME_QUERY for item %u failed (item listed in Item.dbc but not exist in DB)", itemid);
->>>>>>> 03a44c9... Mage 400 INTO master/434
         else
             ERROR_LOG("WORLD: CMSG_ITEM_NAME_QUERY for item %u failed (unknown item, not listed in Item.dbc)", itemid);
     }

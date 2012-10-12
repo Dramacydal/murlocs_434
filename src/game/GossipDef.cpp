@@ -696,11 +696,6 @@ void PlayerMenu::SendQuestQueryResponse( Quest const *pQuest )
     for (iI = 0; iI < QUEST_OBJECTIVES_COUNT; ++iI)
         data << ObjectiveText[iI];
 
-<<<<<<< HEAD
-    GetMenuSession()->SendPacket( &data );
-
-    DEBUG_LOG( "WORLD: Sent SMSG_QUEST_QUERY_RESPONSE questid=%u", pQuest->GetQuestId() );
-=======
     for(iI = 0; iI < 4; ++iI)                               // 4.0.0 currency reward id and count
     {
         data << uint32(0);
@@ -715,7 +710,6 @@ void PlayerMenu::SendQuestQueryResponse( Quest const *pQuest )
 
     GetMenuSession()->SendPacket( &data );
     DEBUG_LOG("WORLD: Sent SMSG_QUEST_QUERY_RESPONSE questid=%u", pQuest->GetQuestId());
->>>>>>> 03a44c9... Mage 400 INTO master/434
 }
 
 void PlayerMenu::SendQuestGiverOfferReward(Quest const* pQuest, ObjectGuid npcGUID, bool EnableNext)

@@ -75,11 +75,7 @@ class DBCStorage
         char const* GetFormat() const { return fmt; }
         uint32 GetFieldCount() const { return fieldCount; }
 
-<<<<<<< HEAD
-        bool Load(char const* fn, SqlDbc * sql)
-=======
-        bool Load(char const* fn, LocaleConstant loc)
->>>>>>> 03a44c9... Mage 400 INTO master/434
+        bool Load(char const* fn, LocaleConstant loc, SqlDbc * sql)
         {
             DBCFileLoader dbc;
             // Check if load was sucessful, only then continue
@@ -124,11 +120,7 @@ class DBCStorage
             // create string holders for loaded string fields
             m_stringPoolList.push_back(dbc.AutoProduceStringsArrayHolders(fmt,(char*)m_dataTable));
 
-            // load strings from dbc data
-<<<<<<< HEAD
-            m_stringPoolList.push_back(dbc.AutoProduceStrings(fmt,(char*)m_dataTable));
-
-			// Insert sql data into arrays
+            // Insert sql data into arrays
             if (result)
             {
                 if (indexTable)
@@ -227,9 +219,9 @@ class DBCStorage
                     }while (result->NextRow());
                 }
             }
-=======
+
+            // load strings from dbc data
             m_stringPoolList.push_back(dbc.AutoProduceStrings(fmt,(char*)m_dataTable,loc));
->>>>>>> 03a44c9... Mage 400 INTO master/434
 
             // error in dbc file at loading if NULL
             return indexTable!=NULL;
@@ -247,11 +239,7 @@ class DBCStorage
                 return false;
 
             // load strings from another locale dbc data
-<<<<<<< HEAD
-            m_stringPoolList.push_back(dbc.AutoProduceStrings(fmt,(char*)m_dataTable));
-=======
             m_stringPoolList.push_back(dbc.AutoProduceStrings(fmt,(char*)m_dataTable,loc));
->>>>>>> 03a44c9... Mage 400 INTO master/434
 
             return true;
         }

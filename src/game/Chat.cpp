@@ -2106,11 +2106,7 @@ valid examples:
                     }
                     else if(linkedItem)
                     {
-<<<<<<< HEAD
-                        char* const* suffix = itemSuffix?itemSuffix->nameSuffix:(itemProperty?itemProperty->nameSuffix:NULL);
-=======
                         DBCString suffix = itemSuffix?itemSuffix->nameSuffix:(itemProperty?itemProperty->nameSuffix:NULL);
->>>>>>> 03a44c9... Mage 400 INTO master/434
 
                         std::string expectedName = std::string(linkedItem->Name1);
                         if (suffix)

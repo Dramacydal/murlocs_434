@@ -214,12 +214,6 @@ enum AchievementCriteriaTypes
     // 121 unused
     // 122 unused
     // 123 unused
-<<<<<<< HEAD
-    // 0..123 => 124 criteria types total
-    ACHIEVEMENT_CRITERIA_TYPE_TOTAL = 124,
-};
-
-=======
     // 124 Spend X gold on guildmember repairs.
     // 125 Reach guild level X
     // 126 Craft X items
@@ -262,7 +256,6 @@ enum AchievementCriteriaMoreReqType
     ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_GUILD_REP              = 62,
 };
 
->>>>>>> 03a44c9... Mage 400 INTO master/434
 enum AreaFlags
 {
     AREA_FLAG_SNOW                  = 0x00000001,           // snow (only Dun Morogh, Naxxramas, Razorfen Downs and Winterspring)
@@ -407,20 +400,12 @@ enum TotemCategoryType
 // SummonProperties.dbc, col 1
 enum SummonPropGroup
 {
-<<<<<<< HEAD
-    SUMMON_PROP_GROUP_WILD              = 0,
-    SUMMON_PROP_GROUP_FRIENDLY          = 1,
-    SUMMON_PROP_GROUP_PETS              = 2,
-    SUMMON_PROP_GROUP_CONTROLLABLE      = 3,
-    SUMMON_PROP_GROUP_VEHICLE           = 4,
-    SUMMON_PROP_GROUP_UNCONTROLLABLE_VEHICLE = 5
-=======
     SUMMON_PROP_GROUP_WILD           = 0,
     SUMMON_PROP_GROUP_FRIENDLY       = 1,
     SUMMON_PROP_GROUP_PETS           = 2,
     SUMMON_PROP_GROUP_CONTROLLABLE   = 3,
-    SUMMON_PROP_GROUP_VEHICLE        = 4
->>>>>>> 03a44c9... Mage 400 INTO master/434
+    SUMMON_PROP_GROUP_VEHICLE        = 4,
+    SUMMON_PROP_GROUP_UNCONTROLLABLE_VEHICLE = 5
 };
 
 // SummonProperties.dbc, col 3

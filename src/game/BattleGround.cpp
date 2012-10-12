@@ -510,7 +510,7 @@ void BattleGround::Update(uint32 diff)
                                 (!(holder->GetSpellProto()->Attributes & SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY) ||
                                 !(holder->GetSpellProto()->Attributes & SPELL_ATTR_UNK8)) &&
                                                                                 // not unaffected by invulnerability auras or not having that unknown flag (that seemed the most probable)
-                                holder->GetSpellProto()->Dispel != DISPEL_NONE &&
+                                holder->GetSpellProto()->GetDispel() != DISPEL_NONE &&
                                 holder->GetAuraMaxDuration() > 0 && iter->second->GetAuraMaxDuration() <= 30 * IN_MILLISECONDS &&
                                 holder->IsPositive())
                             {

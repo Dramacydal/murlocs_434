@@ -188,13 +188,8 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
         {
             SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
             // for implicit area/coord target spells
-<<<<<<< HEAD
-            if (IsPointEffectTarget(Targets(spellInfo->EffectImplicitTargetA[EFFECT_INDEX_0])) ||
-                IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetA[EFFECT_INDEX_0])))
-=======
             if (spellEffect && (IsPointEffectTarget(Targets(spellEffect->EffectImplicitTargetA)) ||
                 IsAreaEffectTarget(Targets(spellEffect->EffectImplicitTargetA))))
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 Spell::SendCastResult(_player,spellInfo,cast_count,SPELL_FAILED_NO_VALID_TARGETS);
             // for explicit target spells
             else
@@ -531,14 +526,9 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket)
             bool allow = false;
             for(int k = 0; k < MAX_EFFECT_INDEX; ++k)
             {
-<<<<<<< HEAD
-                if (spellInfo->EffectApplyAuraName[k] == SPELL_AURA_MOD_POSSESS ||
-                    spellInfo->EffectApplyAuraName[k] == SPELL_AURA_MOD_POSSESS_PET)
-=======
                 SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(k));
                 if (spellEffect && (spellEffect->EffectApplyAuraName == SPELL_AURA_MOD_POSSESS ||
                     spellEffect->EffectApplyAuraName == SPELL_AURA_MOD_POSSESS_PET))
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 {
                     allow = true;
                     break;

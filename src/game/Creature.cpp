@@ -1729,12 +1729,6 @@ SpellEntry const *Creature::ReachWithSpellAttack(Unit *pVictim)
         bool bcontinue = true;
         for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
         {
-<<<<<<< HEAD
-            if( (spellInfo->Effect[j] == SPELL_EFFECT_SCHOOL_DAMAGE )       ||
-                (spellInfo->Effect[j] == SPELL_EFFECT_INSTAKILL)            ||
-                (spellInfo->Effect[j] == SPELL_EFFECT_ENVIRONMENTAL_DAMAGE) ||
-                (spellInfo->Effect[j] == SPELL_EFFECT_HEALTH_LEECH )
-=======
             SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(j));
             if(!spellEffect)
                 continue;
@@ -1742,23 +1736,16 @@ SpellEntry const *Creature::ReachWithSpellAttack(Unit *pVictim)
                 (spellEffect->Effect == SPELL_EFFECT_INSTAKILL)            ||
                 (spellEffect->Effect == SPELL_EFFECT_ENVIRONMENTAL_DAMAGE) ||
                 (spellEffect->Effect == SPELL_EFFECT_HEALTH_LEECH )
->>>>>>> 03a44c9... Mage 400 INTO master/434
                 )
             {
                 bcontinue = false;
                 break;
             }
         }
-<<<<<<< HEAD
-        if(bcontinue) continue;
-
-        if(spellInfo->manaCost > GetPower(POWER_MANA))
-=======
         if (bcontinue)
             continue;
 
         if(spellInfo->GetManaCost() > GetPower(POWER_MANA))
->>>>>>> 03a44c9... Mage 400 INTO master/434
             continue;
 
         SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(spellInfo->rangeIndex);
@@ -1771,17 +1758,10 @@ SpellEntry const *Creature::ReachWithSpellAttack(Unit *pVictim)
         //    continue;
         if( dist > range || dist < minrange )
             continue;
-<<<<<<< HEAD
-        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-            continue;
-        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-=======
-
 
         if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
             continue;
         if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
->>>>>>> 03a44c9... Mage 400 INTO master/434
             continue;
 
         return spellInfo;
@@ -1809,12 +1789,8 @@ SpellEntry const *Creature::ReachWithSpellCure(Unit *pVictim)
         bool bcontinue = true;
         for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
         {
-<<<<<<< HEAD
-            if( (spellInfo->Effect[j] == SPELL_EFFECT_HEAL ) )
-=======
             SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(j));
             if( spellEffect && (spellEffect->Effect == SPELL_EFFECT_HEAL) )
->>>>>>> 03a44c9... Mage 400 INTO master/434
             {
                 bcontinue = false;
                 break;
@@ -1823,11 +1799,7 @@ SpellEntry const *Creature::ReachWithSpellCure(Unit *pVictim)
         if(bcontinue)
             continue;
 
-<<<<<<< HEAD
-        if(spellInfo->manaCost > GetPower(POWER_MANA))
-=======
         if(spellInfo->GetManaCost() > GetPower(POWER_MANA))
->>>>>>> 03a44c9... Mage 400 INTO master/434
             continue;
 
         SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(spellInfo->rangeIndex);
@@ -1840,16 +1812,10 @@ SpellEntry const *Creature::ReachWithSpellCure(Unit *pVictim)
         //    continue;
         if( dist > range || dist < minrange )
             continue;
-<<<<<<< HEAD
-        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-            continue;
-        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-=======
 
         if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
             continue;
         if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
->>>>>>> 03a44c9... Mage 400 INTO master/434
             continue;
 
         return spellInfo;
@@ -2289,13 +2255,8 @@ void Creature::AddCreatureSpellCooldown(uint32 spellid)
     if(cooldown)
         _AddCreatureSpellCooldown(spellid, time(NULL) + cooldown/IN_MILLISECONDS);
 
-<<<<<<< HEAD
-    if(spellInfo->Category)
-        _AddCreatureCategoryCooldown(spellInfo->Category, time(NULL));
-=======
     if(uint32 category = spellInfo->GetCategory())
         _AddCreatureCategoryCooldown(category, time(NULL));
->>>>>>> 03a44c9... Mage 400 INTO master/434
 }
 
 bool Creature::HasCategoryCooldown(uint32 spell_id) const
