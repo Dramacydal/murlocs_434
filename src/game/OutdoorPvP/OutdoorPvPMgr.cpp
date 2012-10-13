@@ -48,7 +48,7 @@ OutdoorPvPMgr::~OutdoorPvPMgr()
 #define LOAD_OPVP_ZONE(a)                                           \
     if (sWorld.getConfig(CONFIG_BOOL_OUTDOORPVP_##a##_ENABLED))     \
     {                                                               \
-        m_scripts[OPVP_ID_##a] = new OutdoorPvP##a();               \
+        m_scripts[OPVP_ID_##a] = new OutdoorPvP##a(OPVP_ID_##a);    \
         ++counter;                                                  \
     }
 /**
@@ -90,6 +90,8 @@ OutdoorPvP* OutdoorPvPMgr::GetScript(uint32 zoneId)
             return m_scripts[OPVP_ID_GH];
         case ZONE_ID_WINTERGRASP:
             return m_scripts[OPVP_ID_WG];
+        case ZONE_ID_TOL_BARAD:
+            return m_scripts[OPVP_ID_TB];
         default:
             return NULL;
     }
@@ -122,6 +124,8 @@ OutdoorPvP* OutdoorPvPMgr::GetScriptOfAffectedZone(uint32 zoneId)
         case ZONE_ID_SETHEKK_HALLS:
         case ZONE_ID_MANA_TOMBS:
             return m_scripts[OPVP_ID_TF];
+        case ZONE_ID_TOL_BARAD_PENINSULA:
+            return m_scripts[OPVP_ID_TB];
         default:
             return NULL;
     }
@@ -201,4 +205,14 @@ int8 OutdoorPvPMgr::GetCapturePointSliderValue(uint32 entry)
 
     // return default value if we can't find any
     return CAPTURE_SLIDER_NEUTRAL;
+}
+
+OutdoorPvP* OutdoorPvPMgr::GetBattlefieldById(uint32 id)
+{
+    for (uint8 i = 0; i < MAX_OPVP_ID; ++i)
+        if (OutdoorPvP* opvp = m_scripts[i])
+            if (opvp->GetBattlefieldId() == id)
+                return opvp;
+
+    return NULL;
 }

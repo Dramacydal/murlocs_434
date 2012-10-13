@@ -111,6 +111,7 @@ namespace Movement
             void EnableFacingTarget()        { raw() = (raw() & ~Mask_Final_Facing) | Final_Target;}
             void EnableTransportEnter()      { raw() = (raw() & ~TransportExit) | TransportEnter; }
             void EnableTransportExit()       { raw() = (raw() & ~TransportEnter) | TransportExit; }
+            void EnableTransport()           { raw() = (raw() & ~Mask_No_Monster_Move);}
 
             uint8 animId             : 3;
             bool unknown0            : 1;

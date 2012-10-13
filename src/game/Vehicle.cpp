@@ -215,7 +215,6 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
 
     m_pBase->SetPhaseMask(passenger->GetPhaseMask(), true);
 
-    passenger->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
     passenger->m_movementInfo.SetTransportData(m_pBase->GetObjectGuid(),
         seatInfo->m_attachmentOffsetX, seatInfo->m_attachmentOffsetY, seatInfo->m_attachmentOffsetZ,
         seatInfo->m_passengerYaw, WorldTimer::getMSTime(), seat->first, seatInfo);
@@ -356,7 +355,6 @@ void VehicleKit::RemovePassenger(Unit *passenger)
     po = m_pBase->GetOrientation();
 
     passenger->m_movementInfo.ClearTransportData();
-    passenger->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
 
     //if (seat->second.seatInfo->m_flags & SEAT_FLAG_UNATTACKABLE || seat->second.seatInfo->m_flags & SEAT_FLAG_CAN_CONTROL)
     //{

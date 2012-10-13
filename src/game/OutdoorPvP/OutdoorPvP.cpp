@@ -67,11 +67,29 @@ void OutdoorPvP::SendUpdateWorldState(uint32 field, uint32 value)
         if (!itr->second)
             continue;
 
-        if (!IsMember((*itr)->GetObjectGuid()))
+        if (!IsMember(itr->first))
             continue;
 
         if (Player* player = sObjectMgr.GetPlayer(itr->first))
             player->SendUpdateWorldState(field, value);
+    }
+}
+
+/**
+   Function that updates world state for all the players in an outdoor pvp map
+
+   @param   world state it to update
+   @param   value which should update the world state
+ */
+void OutdoorPvP::SendUpdateWorldStateForMap(uint32 uiField, uint32 uiValue, Map* map)
+{
+    Map::PlayerList const& pList = map->GetPlayers();
+    for (Map::PlayerList::const_iterator itr = pList.begin(); itr != pList.end(); ++itr)
+    {
+        if (!itr->getSource() || !itr->getSource()->IsInWorld())
+            continue;
+
+        itr->getSource()->SendUpdateWorldState(uiField, uiValue);
     }
 }
 
@@ -115,7 +133,7 @@ void OutdoorPvP::HandlePlayerKill(Player* killer, Unit* victim)
 }
 
 // apply a team buff for the main and affected zones
-void OutdoorPvP::BuffTeam(Team team, uint32 spellId, bool remove /*= false*/)
+void OutdoorPvP::BuffTeam(Team team, uint32 spellId, bool remove /*= false*/, bool onlyMembers /*= true*/, uint32 area /*= 0*/)
 {
     for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
     {
@@ -125,7 +143,7 @@ void OutdoorPvP::BuffTeam(Team team, uint32 spellId, bool remove /*= false*/)
 
         if (player && (team == TEAM_NONE || player->GetTeam() == team) && (!onlyMembers || IsMember(player->GetObjectGuid())))
         {
-            if (!area || area == (*itr)->GetAreaId())
+            if (!area || area == player->GetAreaId())
             {
                 if (remove)
                     player->RemoveAurasDueToSpell(spellId);
@@ -172,6 +190,19 @@ void OutdoorPvP::RespawnGO(const WorldObject* objRef, ObjectGuid goGuid, bool re
             go->Refresh();
         else if (go->isSpawned())
             go->SetLootState(GO_JUST_DEACTIVATED);
+    }
+}
+
+uint32 OutdoorPvP::GetBattlefieldId() const
+{
+    switch (m_id)
+    {
+        case OPVP_ID_WG:
+            return BATTLEFIELD_WG;
+        case OPVP_ID_TB:
+            return BATTLEFIELD_TB;
+        default:
+            return 0;
     }
 }
 

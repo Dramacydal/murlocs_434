@@ -602,7 +602,7 @@ void WorldSession::HandleAddonMessagechatOpcode(WorldPacket& recv_data)
             std::string prefix = recv_data.ReadString(prefixLen);
 
             Group* group = _player->GetGroup();
-            if (!group || !group->isBGGroup())
+            if (!group || !group->isBattleGroup())
                 return;
 
             WorldPacket data;
@@ -664,7 +664,7 @@ void WorldSession::HandleAddonMessagechatOpcode(WorldPacket& recv_data)
             std::string msg = recv_data.ReadString(msgLen);
 
             Group* group = _player->GetGroup();
-            if (!group || group->isBGGroup())
+            if (!group || group->isBattleGroup())
                 break;
 
             WorldPacket data;

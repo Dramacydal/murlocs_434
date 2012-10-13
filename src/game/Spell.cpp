@@ -6700,7 +6700,7 @@ SpellCastResult Spell::CheckCast(bool strict)
             {
                 if (m_caster->GetTypeId() == TYPEID_PLAYER)
                 {
-                    if (((Player*)m_caster)->HasMovementFlag(MOVEFLAG_ONTRANSPORT))
+                    if (!((Player*)m_caster)->GetTransportGuid().IsEmpty())
                         return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
 
                     if (BattleGround* bg = ((Player*)m_caster)->GetBattleGround())
@@ -6796,7 +6796,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                         if(bg->GetStatus() != STATUS_IN_PROGRESS)
                             return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
 
-                if(((Player*)m_caster)->HasMovementFlag(MOVEFLAG_ONTRANSPORT))
+                if (!((Player*)m_caster)->GetTransportGuid().IsEmpty())
                     return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
                 break;
             }
@@ -6821,7 +6821,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                         if(bg->GetStatus() != STATUS_IN_PROGRESS)
                             return SPELL_FAILED_TRY_AGAIN;
 
-                if(((Player*)m_caster)->HasMovementFlag(MOVEFLAG_ONTRANSPORT))
+                if (!((Player*)m_caster)->GetTransportGuid().IsEmpty())
                     return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
                 break;
             }

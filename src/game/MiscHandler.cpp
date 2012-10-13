@@ -1548,15 +1548,15 @@ void WorldSession::HandleMoveSetCanFlyAckOpcode( WorldPacket & recv_data )
     recv_data >> movementInfo;
 
     Unit * target;
-    if (GetPlayer()->GetObjectGuid() == guid)
+    if (GetPlayer()->GetObjectGuid() == movementInfo.GetGuid())
         target = GetPlayer();
-    else if (!GetPlayer()->IsSelfMover() && GetPlayer()->GetMover()->GetObjectGuid() == guid)
+    else if (!GetPlayer()->IsSelfMover() && GetPlayer()->GetMover()->GetObjectGuid() == movementInfo.GetGuid())
         target = GetPlayer()->GetMover();
     else
     {
         DEBUG_LOG("WorldSession::HandleMoveSetCanFlyAckOpcode: player %s, "
             "mover %s, received %s", _player->GetGuidStr().c_str(),
-            GetPlayer()->GetMover()->GetGuidStr().c_str(), guid.GetString().c_str());
+            GetPlayer()->GetMover()->GetGuidStr().c_str(), movementInfo.GetGuid().GetString().c_str());
         return;
     }
 
@@ -1612,7 +1612,7 @@ void WorldSession::HandleHearthandResurrect(WorldPacket & /*recv_data*/)
     DEBUG_LOG("WORLD: CMSG_HEARTH_AND_RESURRECT");
 
     bool ok = false;
-    if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPByBattlefieldId(BATTLEFIELD_WG))
+    if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP))
     {
         if (ok = opvp->IsMember(_player->GetObjectGuid()))
         {

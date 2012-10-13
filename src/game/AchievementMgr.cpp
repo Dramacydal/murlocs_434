@@ -42,8 +42,8 @@
 #include "BattleGroundIC.h"
 #include "BattleGroundSA.h"
 #include "BattleGroundWS.h"
-#include "OutdoorPvPMgr.h"
-#include "OutdoorPvPWG.h"
+#include "OutdoorPvP/OutdoorPvPMgr.h"
+#include "OutdoorPvP/OutdoorPvPWG.h"
 #include "Map.h"
 #include "InstanceData.h"
 #include "SharedDefines.h"
@@ -1472,7 +1472,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
                     }
                     case 7666:      // Within Our Grasp
                     {
-                        OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPById(OUTDOOR_PVP_WG);
+                        OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
                         if (!opvp || !opvp->CriteriaMeets(achievementCriteria->ID, GetPlayer()))
                             continue;
                         break;
@@ -1942,7 +1942,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
                         if (!GetPlayer()->GetVehicle() || GetPlayer()->GetVehicle()->GetBase()->GetTypeId() != TYPEID_UNIT)
                             continue;
 
-                        OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPById(OUTDOOR_PVP_WG);
+                        OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
                         if (!opvp || opvp->GetState() != WG_STATE_IN_PROGRESS)
                             continue;
 
@@ -1978,7 +1978,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
                         if (GetPlayer()->GetVehicle()->GetBase()->GetEntry() != 28366)
                             continue;
 
-                        OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPById(OUTDOOR_PVP_WG);
+                        OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
                         if (!opvp || opvp->GetState() != WG_STATE_IN_PROGRESS)
                             continue;
 

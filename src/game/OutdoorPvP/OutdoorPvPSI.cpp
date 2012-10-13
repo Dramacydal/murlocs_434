@@ -16,8 +16,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-esourcesHorde(0),
-=======
 #include "OutdoorPvPSI.h"
 #include "WorldPacket.h"
 #include "../World.h"
@@ -27,7 +25,7 @@ esourcesHorde(0),
 #include "../GameObject.h"
 #include "../Player.h"
 
-OutdoorPvPSI::OutdoorPvPSI() : OutdoorPvP(),
+OutdoorPvPSI::OutdoorPvPSI(uint32 id) : OutdoorPvP(id),
     m_resourcesAlliance(0),
     m_resourcesHorde(0),
     m_zoneOwner(TEAM_NONE)

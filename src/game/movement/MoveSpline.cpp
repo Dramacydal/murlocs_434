@@ -263,13 +263,11 @@ void MoveSplineInitArgs::SetTransportData(Unit& unit)
     if (!transport)
     {
         ERROR_LOG("MoveSplineInitArgs: Unsupported transport %s for %s", _transportGuid.GetString().c_str(), unit.GetObjectGuid().GetString().c_str());
-        flags.onTransport = false;
         return;
     }
     else
         DEBUG_LOG("MoveSplineInitArgs: Set transport %s for %s", _transportGuid.GetString().c_str(), unit.GetObjectGuid().GetString().c_str());
 
-    flags.EnableTransport();
     transportGuid = _transportGuid.GetRawValue();
     transportSeat = unit.GetTransSeat();
     transportPos = Location(transport->GetPositionX(), transport->GetPositionY(), transport->GetPositionZ(), transport->GetOrientation());

@@ -61,7 +61,7 @@ namespace Movement
         if (!move_spline.Finalized())
             real_position = move_spline.ComputePosition();
 
-        if (args.flags.onTransport)
+        if (!unit.GetTransportGuid().IsEmpty())
             args.SetTransportData(unit);
 
         if (args.path.empty())
@@ -104,7 +104,6 @@ namespace Movement
         // mix existing state into new
         args.flags.walkmode = unit.m_movementInfo.HasMovementFlag(MOVEFLAG_WALK_MODE);
         args.flags.flying = unit.m_movementInfo.HasMovementFlag((MovementFlags)(MOVEFLAG_FLYING|MOVEFLAG_LEVITATING));
-        args.flags.onTransport = !unit.GetTransportGuid().IsEmpty();
     }
 
     void MoveSplineInit::SetFacing(const Unit * target)

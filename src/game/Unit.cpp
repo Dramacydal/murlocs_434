@@ -1184,10 +1184,6 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         if (GetTypeId() == TYPEID_UNIT && ((Creature*)this)->AI())
             ((Creature*)this)->AI()->KilledUnit(pVictim);
 
-        // Call World pvp scripts for player kill
-        if (player_tap)
-            sOutdoorPvPMgr.HandlePlayerKill(player_tap, pVictim);
-
         // Call AI OwnerKilledUnit (for any current summoned minipet/guardian/protector)
         PetOwnerKilledUnit(pVictim);
 
@@ -7214,8 +7210,6 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
     {
         if (!((Creature*)this)->IsPet())
             DoneTotalMod *= ((Creature*)this)->GetSpellDamageMod(((Creature*)this)->GetCreatureInfo()->rank);
-        else
-            DoneTotalMod *= ((Pet*)this)->GetHappinessDamageMod();
     }
 
     AuraList const& mModDamagePercentDone = GetAurasByType(SPELL_AURA_MOD_DAMAGE_PERCENT_DONE);
@@ -8502,8 +8496,6 @@ uint32 Unit::MeleeDamageBonusDone(Unit *pVictim, uint32 pdamage,WeaponAttackType
         {
             if (!((Creature*)this)->IsPet())
                 DonePercent *= ((Creature*)this)->GetSpellDamageMod(((Creature*)this)->GetCreatureInfo()->rank);
-            else
-                DonePercent *= ((Pet*)this)->GetHappinessDamageMod();
         }
     }
 

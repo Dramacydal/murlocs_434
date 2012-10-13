@@ -685,21 +685,27 @@ void WorldSession::HandlePetCastSpellOpcode(WorldPacket& recvPacket)
     if (!pet || (guid != _player->GetPetGuid() && guid != _player->GetCharmGuid()))
     {
         ERROR_LOG("HandlePetCastSpellOpcode: %s isn't pet of %s .", guid.GetString().c_str(), GetPlayer()->GetGuidStr().c_str());
+        recvPacket.rfinish();
         return;
     }
-
-    SpellCastTargets targets;
-    recvPacket >> targets.ReadForCaster(pet);
 
     SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellid);
     if (!spellInfo)
     {
         ERROR_LOG("WORLD: unknown PET spell id %i", spellid);
+        recvPacket.rfinish();
         return;
     }
 
     if (pet->GetCharmInfo() && pet->GetCharmInfo()->GetGlobalCooldownMgr().HasGlobalCooldown(spellInfo))
+    {
+        recvPacket.rfinish();
         return;
+    }
+
+    SpellCastTargets targets;
+    recvPacket >> targets.ReadForCaster(pet);
+    targets.ReadAdditionalData(recvPacket, cast_flags);
 
     bool triggered = false;
     SpellEntry const * triggeredBy = NULL;
@@ -714,12 +720,6 @@ void WorldSession::HandlePetCastSpellOpcode(WorldPacket& recvPacket)
     // do not cast not learned spells
     if (!pet->HasSpell(spellid) && !triggered || IsPassiveSpell(spellInfo))
         return;
-
-    SpellCastTargets targets;
-
-    recvPacket >> targets.ReadForCaster(pet);
-
-    targets.ReadAdditionalData(recvPacket, cast_flags);
 
     pet->clearUnitState(UNIT_STAT_MOVING);
 

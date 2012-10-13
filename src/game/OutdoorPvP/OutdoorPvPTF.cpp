@@ -25,7 +25,7 @@
 #include "../GameObject.h"
 #include "../Player.h"
 
-OutdoorPvPTF::OutdoorPvPTF() : OutdoorPvP(),
+OutdoorPvPTF::OutdoorPvPTF(uint32 id) : OutdoorPvP(id),
     m_zoneWorldState(WORLD_STATE_TF_TOWERS_CONTROLLED),
     m_zoneOwner(TEAM_NONE),
     //m_zoneUpdateTimer(TIMER_TF_UPDATE_TIME),
@@ -133,7 +133,7 @@ void OutdoorPvPTF::HandleObjectiveComplete(uint32 eventId, std::list<Player*> pl
 }
 
 // process the capture events
-bool OutdoorPvPTF::HandleEvent(uint32 eventId, GameObject* go)
+bool OutdoorPvPTF::HandleEvent(uint32 eventId, GameObject* go, Player* pInvoker, uint32 spellId)
 {
     for (uint8 i = 0; i < MAX_TF_TOWERS; ++i)
     {

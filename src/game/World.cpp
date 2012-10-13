@@ -74,7 +74,7 @@
 #include "CreatureLinkingMgr.h"
 #include "WardenDataStorage.h"
 #include "ProgressBar.h"
-#include "OutdoorPvPWG.h"
+#include "OutdoorPvP/OutdoorPvPWG.h"
 
 INSTANTIATE_SINGLETON_1( World );
 

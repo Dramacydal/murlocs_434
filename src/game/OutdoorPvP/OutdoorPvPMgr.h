@@ -38,8 +38,15 @@ enum OutdoorPvPTypes
     OPVP_ID_NA,
     OPVP_ID_GH,
     OPVP_ID_WG,
+    OPVP_ID_TB,
 
     MAX_OPVP_ID
+};
+
+enum BattlefieldTypes
+{
+    BATTLEFIELD_WG          = 1,
+    BATTLEFIELD_TB          = 21,
 };
 
 enum OutdoorPvPZones
@@ -74,7 +81,11 @@ enum OutdoorPvPZones
 
     ZONE_ID_NAGRAND                 = 3518,
 
-    ZONE_ID_GRIZZLY_HILLS           = 394
+    ZONE_ID_GRIZZLY_HILLS           = 394,
+
+    ZONE_ID_WINTERGRASP             = 4197,
+    ZONE_ID_TOL_BARAD               = 5095,
+    ZONE_ID_TOL_BARAD_PENINSULA     = 5389,
 };
 
 class Player;
@@ -111,6 +122,8 @@ class OutdoorPvPMgr
         // Handle capture point stuff
         int8 GetCapturePointSliderValue(uint32 entry);
         void SetCapturePointSlider(uint32 entry, int8 value) { m_capturePointSlider[entry] = value; }
+
+        OutdoorPvP* GetBattlefieldById(uint32 id);
 
     private:
         // return assigned outdoor pvp script

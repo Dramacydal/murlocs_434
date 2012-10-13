@@ -157,14 +157,14 @@ static const uint32 nagrandRoostStatesHordeNeutral[MAX_NA_ROOSTS]       = {WORLD
 class OutdoorPvPNA : public OutdoorPvP
 {
     public:
-        OutdoorPvPNA();
+        OutdoorPvPNA(uint32 id);
 
         void HandlePlayerEnterZone(Player* player, bool isMainZone) override;
         void HandlePlayerLeaveZone(Player* player, bool isMainZone) override;
         void FillInitialWorldStates(WorldPacket& data, uint32& count) override;
         void SendRemoveWorldStates(Player* player) override;
 
-        bool HandleEvent(uint32 eventId, GameObject* go) override;
+        bool HandleEvent(uint32 eventId, GameObject* go, Player* pInvoker, uint32 spellId) override;
         void HandleObjectiveComplete(uint32 eventId, std::list<Player*> players, Team team) override;
 
         void HandleCreatureCreate(Creature* creature) override;

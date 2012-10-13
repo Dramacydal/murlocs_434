@@ -47,7 +47,7 @@
 #include "BattleGroundEY.h"
 #include "BattleGroundWS.h"
 #include "BattleGroundSA.h"
-#include "OutdoorPvPMgr.h"
+#include "OutdoorPvP/OutdoorPvPMgr.h"
 #include "Language.h"
 #include "SocialMgr.h"
 #include "VMapFactory.h"
@@ -62,8 +62,8 @@
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
 #include "CellImpl.h"
-#include "OutdoorPvP.h"
-#include "OutdoorPvPWG.h"
+#include "OutdoorPvP/OutdoorPvP.h"
+#include "OutdoorPvP/OutdoorPvPWG.h"
 #include <G3D/Vector3.h>
 
 pEffect SpellEffects[TOTAL_SPELL_EFFECTS]=
@@ -6016,8 +6016,9 @@ void Spell::EffectOpenLock(SpellEffectEntry const* effect)
         {
             // Check if object is handled by outdoor pvp
             // GameObject is handling some events related to world battleground events
-            if (sOutdoorPvPMgr.HandleObjectUse(player, gameObjTarget))
-                return;
+            if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(player->GetCachedZoneId()))
+                if (opvp->HandleGameObjectUse(player, gameObjTarget))
+                    return;
         }
         //Ranger: WEH safe-check!
         /*else if (goInfo->type == GAMEOBJECT_TYPE_CHEST && gameObjTarget->IsInWorld())
@@ -9850,7 +9851,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
                         return;
 
-                    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPByBattlefieldId(BATTLEFIELD_WG);
+                    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
                     if (!opvp)
                         return;
 
@@ -13132,11 +13133,9 @@ void Spell::EffectWMODamage(SpellEffectEntry const* effect)
             if (!bg->CanDamageGO(gameObjTarget, pWho))
                 return;
 
-        if (OutdoorPvP* opvp = pWho->GetOutdoorPvP())
-        {
+        if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
             if (!opvp->CanDamageGO(gameObjTarget, pWho))
                 return;
-        }
 
         float mod = 1.0f;
         Unit::AuraList const& mModDamagePercentDone = pWho->GetAurasByType(SPELL_AURA_MOD_DAMAGE_PERCENT_DONE);

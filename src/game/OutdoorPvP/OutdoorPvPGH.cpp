@@ -22,7 +22,7 @@
 #include "../Creature.h"
 #include "../GameObject.h"
 
-OutdoorPvPGH::OutdoorPvPGH() : OutdoorPvP(),
+OutdoorPvPGH::OutdoorPvPGH(uint32 id) : OutdoorPvP(id),
     m_zoneOwner(TEAM_NONE)
 {
 }
@@ -71,7 +71,7 @@ void OutdoorPvPGH::HandleGameObjectCreate(GameObject* go)
 }
 
 // process the capture events
-bool OutdoorPvPGH::HandleEvent(uint32 eventId, GameObject* go)
+bool OutdoorPvPGH::HandleEvent(uint32 eventId, GameObject* go, Player* pInvoker, uint32 spellId)
 {
     // If we are not using the lighthouse return
     if (go->GetEntry() != GO_VENTURE_BAY_LIGHTHOUSE)

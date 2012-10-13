@@ -32,8 +32,6 @@ namespace Movement
         static void WriteCommonMonsterMovePart(const MoveSpline& mov, WorldPacket& data);
     public:
 
-        static void WriteMonsterMove(const MoveSpline& mov, WorldPacket& data);
-
         static void WriteLinearPath(const MoveSpline& move_spline, ByteBuffer& data);
         static void WriteCatmullRomPath(const MoveSpline& move_spline, ByteBuffer& data);
         static void WriteCatmullRomCyclicPath(const MoveSpline& move_spline, ByteBuffer& data);

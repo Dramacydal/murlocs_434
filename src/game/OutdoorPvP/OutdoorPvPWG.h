@@ -20,7 +20,10 @@
 #ifndef WORLD_PVP_WG
 #define WORLD_PVP_WG
 
-#include "World.h"
+#include "Common.h"
+#include "OutdoorPvP.h"
+#include "../Language.h"
+#include "../World.h"
 
 #define WG_COOLDOWN_DURATION (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_COOLDOWN_DURATION) * MINUTE * IN_MILLISECONDS)
 #define WG_BATTLE_TIME (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_BATTLE_DURATION) * MINUTE * IN_MILLISECONDS)
@@ -33,11 +36,6 @@
 class OutdoorPvPWG;
 class WGWorkShop;
 class WGGraveYard;
-
-enum Battlefields
-{
-    BATTLEFIELD_WG          = 1,
-};
 
 enum WGState
 {
@@ -146,7 +144,6 @@ enum
 enum
 {
     MAP_ID_NORTHREND                    = 571,
-    ZONE_ID_WINTERGRASP                 = 4197,
 
     AREA_ID_THE_SUNKEN_RING             = 4538,
     AREA_ID_THE_BROKEN_TEMPLE           = 4539,
@@ -811,31 +808,31 @@ struct WGPlayerScore
 class OutdoorPvPWG : public OutdoorPvP
 {
     public:
-        OutdoorPvPWG(uint8 _id);
+        OutdoorPvPWG(uint32 id);
         ~OutdoorPvPWG();
 
         typedef std::map<ObjectGuid, WGPlayerScore*> WGPlayerScoreMap;
 
         bool InitOutdoorPvPArea();
 
-        void OnCreatureCreate(Creature* pCreature);
+        void HandleCreatureCreate(Creature* pCreature) override;
         void _OnCreatureCreate(Creature* pCreature);
-        void OnCreatureDeath(Creature * pCreature);
-        void OnGameObjectCreate(GameObject* pGo);
-        void ProcessEvent(uint32 uiEventId, GameObject* pGo, Player* pInvoker = NULL, uint32 spellId = 0);
+        void HandleCreatureDeath(Creature * pCreature) override;
+        void HandleGameObjectCreate(GameObject* pGo) override;
+        bool HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvoker = NULL, uint32 spellId = 0) override;
 
-        void HandlePlayerEnterZone(Player* pPlayer);
-        void HandlePlayerLeaveZone(Player* pPlayer);
-        void HandlePlayerEnterArea(Player* pPlayer, uint32 uiAreaId);
-        void HandlePlayerLeaveArea(Player* pPlayer, uint32 uiAreaId);
-        void HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim);
+        void HandlePlayerEnterZone(Player* pPlayer, bool isMainZone) override;
+        void HandlePlayerLeaveZone(Player* pPlayer, bool isMainZone) override;
+        void HandlePlayerEnterArea(Player* pPlayer, uint32 uiAreaId, bool isMainZone) override;
+        void HandlePlayerLeaveArea(Player* pPlayer, uint32 uiAreaId, bool isMainZone) override;
+        void HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim) override;
 
         void FillInitialWorldStates(WorldPacket& data, uint32& count, Player* player);
         void SendUpdateWorldStatesToAll();
         void SendUpdateWorldStatesTo(Player* player);
-        void SendRemoveWorldStates(Player* pPlayer);
+        void SendRemoveWorldStates(Player* pPlayer) override;
 
-        bool HandleObjectUse(Player* pPlayer, GameObject* pGo);
+        bool HandleGameObjectUse(Player* pPlayer, GameObject* pGo) override;
 
         void Update(uint32 diff);
 
@@ -900,8 +897,7 @@ class OutdoorPvPWG : public OutdoorPvP
         std::list<std::string> GetTowerDebugInfo();
         std::list<std::string> GetWallDebugInfo();
 
-    private: 
-        
+    private:
         uint32 GetWorldStateFor(uint32 entry) const
         {
             for (int i = 0; i < countof(WGWorldstateByGOEntry); ++i)
@@ -931,7 +927,7 @@ class OutdoorPvPWG : public OutdoorPvP
 
         uint8 GetRemainingTowers() { return 3 - m_destroyedTowers[m_defender]; }
 
-        bool CanDamageGO(GameObject* pGo, Player* invoker);
+        bool CanDamageGO(GameObject* pGo, Player* invoker) override;
 
         void SetupPlayerPositions();
         void SetupPlayerPosition(Player* player);

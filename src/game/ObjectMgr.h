@@ -628,11 +628,6 @@ class ObjectMgr
 
         AntiCheatConfig const* GetAntiCheatConfig(uint32 checkType) const;
 
-        PlayerClassInfo const* GetPlayerClassInfo(uint32 class_) const
-        {
-            if(class_ >= MAX_CLASSES) return NULL;
-            return &playerClassInfo[class_];
-        }
         void GetPlayerClassLevelInfo(uint32 class_, uint32 level, uint32& baseHP, uint32& baseMana) const;
 
         PlayerInfo const* GetPlayerInfo(uint32 race, uint32 class_) const

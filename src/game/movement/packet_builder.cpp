@@ -47,7 +47,7 @@ namespace Movement
     {
         MoveSplineFlag splineflags = move_spline.splineflags;
 
-        if (splineflags.onTransport)
+        if (move_spline.transportGuid)
         {
             //DEBUG_LOG("Setting transport opcode for %s", move_spline.transport->GetGuidStr().c_str());
             data.SetOpcode(SMSG_MONSTER_MOVE_TRANSPORT);
@@ -249,7 +249,7 @@ namespace Movement
 
     Vector3 PacketBuilder::CalcTransportOffset(const MoveSpline& move_spline, Vector3 oldVec)
     {
-        if (move_spline.splineflags.onTransport)
+        if (move_spline.transportGuid)
             return oldVec;
 
         Vector3 result;

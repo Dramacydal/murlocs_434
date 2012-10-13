@@ -556,13 +556,18 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandlePlayerLoginOpcode(WorldPacket & recv_data )
 {
-    if(PlayerLoading() || GetPlayer() != NULL)
+    ObjectGuid playerGuid;
+
+    recv_data.ReadGuidMask<2, 3, 0, 6, 4, 5, 1, 7>(playerGuid);
+    recv_data.ReadGuidBytes<2, 7, 0, 3, 5, 6, 1, 4>(playerGuid);
+
+    if (PlayerLoading() || GetPlayer() != NULL)
     {
         ERROR_LOG("Player tryes to login again, AccountId = %d", GetAccountId());
         return;
     }
 
-    QueryResult *banresult = CharacterDatabase.PQuery("SELECT * FROM character_banned WHERE "
+    QueryResult* banresult = CharacterDatabase.PQuery("SELECT * FROM character_banned WHERE "
         "guid = %u AND active = 1", playerGuid.GetCounter());
     if (banresult)
     {
@@ -573,11 +578,6 @@ void WorldSession::HandlePlayerLoginOpcode(WorldPacket & recv_data )
     }
 
     m_playerLoading = true;
-
-    ObjectGuid playerGuid;
-
-    recv_data.ReadGuidMask<2, 3, 0, 6, 4, 5, 1, 7>(playerGuid);
-    recv_data.ReadGuidBytes<2, 7, 0, 3, 5, 6, 1, 4>(playerGuid);
 
     DEBUG_LOG("WORLD: Recvd Player Logon Message from %s", playerGuid.GetString().c_str());
 

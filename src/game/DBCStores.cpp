@@ -1178,7 +1178,7 @@ void LoadDBCStores(const std::string& dataPath)
                 case SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT:
                 case SPELL_AURA_PERIODIC_MANA_LEECH:
                 case SPELL_AURA_PERIODIC_ENERGIZE:
-                case SPELL_AURA_POWER_BURN_MANA:
+                case SPELL_AURA_POWER_BURN_ENERGY:
                     MANGOS_ASSERT(spellEffect->EffectMiscValue >= 0 && spellEffect->EffectMiscValue < MAX_POWERS);
                     break;
             }

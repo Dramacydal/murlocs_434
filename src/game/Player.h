@@ -1921,7 +1921,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target) const override;
         void SetPhaseAndMap(Player* target) const;
         void DestroyForPlayer(Player* target, bool anim = false) const override;
-        void SendLogXPGain(uint32 GivenXP, Unit* victim, uint32 RestXP);
+        void SendLogXPGain(uint32 GivenXP, Unit* victim, uint32 RestXP, bool ReferAFriend);
 
         uint8 LastSwingErrorMsg() const { return m_swingErrorMsg; }
         void SwingErrorMsg(uint8 val) { m_swingErrorMsg = val; }

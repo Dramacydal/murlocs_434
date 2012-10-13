@@ -25,7 +25,7 @@
 #include "../GameObject.h"
 #include "../Player.h"
 
-OutdoorPvPEP::OutdoorPvPEP() : OutdoorPvP(),
+OutdoorPvPEP::OutdoorPvPEP(uint32 id) : OutdoorPvP(id),
     m_towersAlliance(0),
     m_towersHorde(0)
 {
@@ -180,7 +180,7 @@ void OutdoorPvPEP::HandleObjectiveComplete(uint32 eventId, std::list<Player*> pl
 }
 
 // process the capture events
-bool OutdoorPvPEP::HandleEvent(uint32 eventId, GameObject* go)
+bool OutdoorPvPEP::HandleEvent(uint32 eventId, GameObject* go, Player* pInvoker, uint32 spellId)
 {
     for (uint8 i = 0; i < MAX_EP_TOWERS; ++i)
     {

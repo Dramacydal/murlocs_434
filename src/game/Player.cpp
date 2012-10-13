@@ -1890,8 +1890,8 @@ void Player::ToggleAFK()
             LeaveBattleground();
         else
         {
-            OutdoorPvP* opvp = GetOutdoorPvP();
-            if (opvp && opvp->GetId() == OUTDOOR_PVP_WG)
+            OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(GetCachedZoneId());
+            if (opvp && opvp->GetId() == OPVP_ID_WG)
                 ((OutdoorPvPWG*)opvp)->HandlePlayerAFK(this);
         }
 }
@@ -2154,7 +2154,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
             float final_z = z;
             float final_o = orientation;
 
-            if (m_movementInfo.HasMovementFlag(MOVEFLAG_ONTRANSPORT))
+            if (!m_movementInfo.GetTransportGuid().IsEmpty())
             {
                 final_x += m_movementInfo.GetTransportPos()->x;
                 final_y += m_movementInfo.GetTransportPos()->y;
@@ -5031,7 +5031,7 @@ Corpse* Player::CreateCorpse()
         flags |= CORPSE_FLAG_HIDE_HELM;
     if (HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_CLOAK))
         flags |= CORPSE_FLAG_HIDE_CLOAK;
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPById(OUTDOOR_PVP_WG);
+    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
     if (InBattleGround() && !InArena() || opvp && opvp->GetState() == WG_STATE_IN_PROGRESS && opvp->IsMember(GetObjectGuid()))
         flags |= CORPSE_FLAG_LOOTABLE;                      // to be able to remove insignia
     corpse->SetUInt32Value( CORPSE_FIELD_FLAGS, flags );
@@ -6221,7 +6221,7 @@ void Player::SetSkill(uint16 id, uint16 currVal, uint16 maxVal, uint16 step /*=0
                         removeSpell(sSpellMgr.GetFirstSpellInChain(pAbility->spellId));
         }
         if (IsProfessionSkill(id))
-            UpdateAllItemEnchantsAtSkill(id, oldSkillVal, currVal);
+            UpdateAllItemEnchantsAtSkill(id, oldVal, currVal);
     }
     else if(currVal)                                        // add
     {
@@ -6272,7 +6272,7 @@ void Player::SetSkill(uint16 id, uint16 currVal, uint16 maxVal, uint16 step /*=0
                         (*j)->ApplyModifier(true);
 
                 if (IsProfessionSkill(id))
-                    UpdateAllItemEnchantsAtSkill(id, oldSkillVal, GetSkillValue(id));
+                    UpdateAllItemEnchantsAtSkill(id, 0, GetSkillValue(id));
 
                 // Learn all spells for skill
                 learnSkillRewardedSpells(id, currVal);
@@ -7336,11 +7336,6 @@ void Player::UpdateArea(uint32 newArea)
     m_areaUpdateId = newArea;
 
     UpdateAreaDependentAuras();
-}
-
-OutdoorPvP* Player::GetOutdoorPvP() const
-{
-    return sOutdoorPvPMgr.GetOutdoorPvPToZoneId(GetZoneId());
 }
 
 bool Player::CanUseOutdoorCapturePoint()
@@ -8595,7 +8590,7 @@ bool Player::CheckAmmoCompatibility(const ItemPrototype *ammo_proto) const
     Called by remove insignia spell effect    */
 void Player::RemovedInsignia(Player* looterPlr)
 {
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPById(OUTDOOR_PVP_WG);
+    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
     if (!GetBattleGroundId() && (!opvp || opvp->GetState() != WG_STATE_IN_PROGRESS || !opvp->IsMember(GetObjectGuid())))
         return;
 
@@ -9355,51 +9350,13 @@ static WorldStatePair NA_world_states[] =
     { 2673, WORLD_STATE_REMOVE }                            // WORLD_STATE_NA_HALAA_ALLIANCE
 };
 
-static WorldStatePair NA_world_states[] =
-{
-    { 2503, 0x0 },  // 10
-    { 2502, 0x0 },  // 11
-    { 2493, 0x0 },  // 12
-    { 2491, 0x0 },  // 13
-
-    { 2495, 0x0 },  // 14
-    { 2494, 0x0 },  // 15
-    { 2497, 0x0 },  // 16
-
-    { 2762, 0x0 },  // 17
-    { 2662, 0x0 },  // 18
-    { 2663, 0x0 },  // 19
-    { 2664, 0x0 },  // 20
-
-    { 2760, 0x0 },  // 21
-    { 2670, 0x0 },  // 22
-    { 2668, 0x0 },  // 23
-    { 2669, 0x0 },  // 24
-
-    { 2761, 0x0 },  // 25
-    { 2667, 0x0 },  // 26
-    { 2665, 0x0 },  // 27
-    { 2666, 0x0 },  // 28
-
-    { 2763, 0x0 },  // 29
-    { 2659, 0x0 },  // 30
-    { 2660, 0x0 },  // 31
-    { 2661, 0x0 },  // 32
-
-    { 2671, 0x0 },  // 33
-    { 2676, 0x0 },  // 34
-    { 2677, 0x0 },  // 35
-    { 2672, 0x0 },  // 36
-    { 2673, 0x0 }  // 37
-};
-
 void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
 {
     // data depends on zoneid/mapid...
     BattleGround* bg = GetBattleGround();
     uint32 mapid = GetMapId();
-    OutdoorPvP* outdoorBg = sOutdoorPvPMgr.GetOutdoorPvPToZoneId(zoneid);
-    OutdoorPvPWG* outdoorPvPWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPById(OUTDOOR_PVP_WG);
+    OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(zoneid);
+    OutdoorPvPWG* outdoorPvPWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
 
     DEBUG_LOG("Sending SMSG_INIT_WORLD_STATES to Map:%u, Zone: %u", mapid, zoneid);
 
@@ -9449,13 +9406,13 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
         case 3703:                                          // Shattrath City
             break;
         case 139:                                           // Eastern Plaguelands
-            if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(zoneid))
+            if (outdoorPvP)
                 outdoorPvP->FillInitialWorldStates(data, count);
             else
                 FillInitialWorldState(data, count, EP_world_states);
             break;
         case 1377:                                          // Silithus
-            if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(zoneid))
+            if (outdoorPvP)
                 outdoorPvP->FillInitialWorldStates(data, count);
             else
                 FillInitialWorldState(data, count, SI_world_states);
@@ -9485,25 +9442,25 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 FillInitialWorldState(data,count, EY_world_states);
             break;
         case 3483:                                          // Hellfire Peninsula
-            if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(zoneid))
+            if (outdoorPvP)
                 outdoorPvP->FillInitialWorldStates(data, count);
             else
                 FillInitialWorldState(data, count, HP_world_states);
             break;
         case 3518:                                          // Nagrand
-            if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(zoneid))
+            if (outdoorPvP)
                 outdoorPvP->FillInitialWorldStates(data, count);
             else
                 FillInitialWorldState(data, count, NA_world_states);
             break;
         case 3519:                                          // Terokkar Forest
-            if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(zoneid))
+            if (outdoorPvP)
                 outdoorPvP->FillInitialWorldStates(data, count);
             else
                 FillInitialWorldState(data, count, TF_world_states);
             break;
         case 3521:                                          // Zangarmarsh
-            if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(zoneid))
+            if (outdoorPvP)
                 outdoorPvP->FillInitialWorldStates(data, count);
             else
                 FillInitialWorldState(data, count, ZM_world_states);
@@ -9557,8 +9514,6 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 FillInitialWorldState(data,count,0xe10,0x0);// 8 green
                 FillInitialWorldState(data,count,0xe1a,0x0);// 9 show
             }
-            break;
-        case 3703:                                          // Shattrath City
             break;
         case 4384:                                          // SA
             if (bg && bg->GetTypeID(true) == BATTLEGROUND_SA)
@@ -16876,7 +16831,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
     // Wintergrasp
     if (fields[34].GetUInt32() == 4197)
     {
-        if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPById(OUTDOOR_PVP_WG))
+        if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP))
             opvp->PlayerLoggedIn(this);
     }
 
@@ -23478,7 +23433,7 @@ bool Player::CanStartFlyInArea(uint32 mapid, uint32 zone, uint32 area) const
 
     // Disallow mounting in wintergrasp when battle is in progress
     if (zone == 4197)
-        if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPById(OUTDOOR_PVP_WG))
+        if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(OPVP_ID_WG))
             return opvp->GetState() != WG_STATE_IN_PROGRESS;
 
     // don't allow flying in Dalaran restricted areas
@@ -25590,7 +25545,7 @@ AreaLockStatus Player::GetAreaTriggerLockStatus(AreaTrigger const* at, Difficult
     // Vault of Archavon
     if (at->target_mapId == 624)
     {
-        OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPById(OUTDOOR_PVP_WG);
+        OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
         if (opvp && (opvp->GetState() == WG_STATE_IN_PROGRESS || opvp->GetDefender() != GetTeamIndex(GetTeam())))
             return AREA_LOCKSTATUS_NOT_ALLOWED;
     }
@@ -25637,7 +25592,7 @@ uint8 Player::GetTalentsCount(uint8 tab)
 // Refer-A-Friend
 void Player::SendReferFriendError(ReferAFriendError err, Player * target)
 {
-    WorldPacket data(SMSG_REFER_A_FRIEND_ERROR, 24);
+    WorldPacket data(SMSG_REFER_A_FRIEND_FAILURE, 24);
     data << uint32(err);
     if (target && (err == ERR_REFER_A_FRIEND_NOT_IN_GROUP || err == ERR_REFER_A_FRIEND_SUMMON_OFFLINE_S))
         data << target->GetName();

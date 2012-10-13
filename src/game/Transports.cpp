@@ -810,7 +810,6 @@ bool Transport::EnterThisTransport(Unit* pPas, float xOffset, float yOffset, flo
     Map* map = GetMap();
 
     pPas->SetTransport(this);
-    pPas->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
     pPas->m_movementInfo.SetTransportData(GetObjectGuid(), xOffset, yOffset, zOffset, oOffset, 0, -1);
 
     if (pPas->GetTypeId() != TYPEID_PLAYER)
@@ -836,7 +835,6 @@ bool Transport::LeaveThisTransport(Unit* pPas)
 
     pPas->SetTransport(NULL);
     pPas->m_movementInfo.ClearTransportData();
-    pPas->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
     //pPas->MonsterMoveWithSpeed(pPas->GetPositionX(), pPas->GetPositionY(), pPas->GetPositionZ() + 0.5f, 28);
 
     return true;

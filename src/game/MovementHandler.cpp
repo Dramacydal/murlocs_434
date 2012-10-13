@@ -285,18 +285,18 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     MovementInfo movementInfo;
     recv_data >> movementInfo;
 
-    DEBUG_LOG("Guid: %s MoveFlags: %X, MoveFlags2: %X", guid.GetString().c_str(), movementInfo.GetMovementFlags(), movementInfo.GetMovementFlags2());
+    DEBUG_LOG("Guid: %s MoveFlags: %X, MoveFlags2: %X", movementInfo.GetGuid().GetString().c_str(), movementInfo.GetMovementFlags(), movementInfo.GetMovementFlags2());
 
     if (!VerifyMovementInfo(movementInfo, movementInfo.GetGuid()))
         return;
 
     if (mover && _player->GetObjectGuid() != mover->GetObjectGuid())
     {
-        if (opcode == MSG_MOVE_SET_WALK_MODE)
+        if (opcode == CMSG_MOVE_SET_WALK_MODE)
             movementInfo.RemoveMovementFlag(MOVEFLAG_WALK_MODE);
     }
 
-    if (movementInfo.HasMovementFlag(MOVEFLAG_ONTRANSPORT))
+    if (!movementInfo.GetTransportGuid().IsEmpty())
     {
         if (movementInfo.GetPos()->x != movementInfo.GetTransportPos()->x)
             if (GetPlayer()->GetTransport())
@@ -326,7 +326,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     mover->SendMessageToSetExcept(&data, _player);
 
     if (mover && _player->GetObjectGuid() != mover->GetObjectGuid())
-        if (opcode == MSG_MOVE_SET_WALK_MODE)
+        if (opcode == CMSG_MOVE_SET_WALK_MODE)
             _player->SendDirectMessage(&data);
 }
 

@@ -27,9 +27,9 @@
 #include "Player.h"
 #include "Group.h"
 #include "SocialMgr.h"
-#include "OutdoorPvP.h"
-#include "OutdoorPvPWG.h"
-#include "OutdoorPvPMgr.h"
+#include "OutdoorPvP/OutdoorPvP.h"
+#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "OutdoorPvP/OutdoorPvPMgr.h"
 #include "Util.h"
 #include "Chat.h"
 #include "DB2Structure.h"
@@ -430,7 +430,7 @@ void WorldSession::HandleGroupDisbandOpcode( WorldPacket & /*recv_data*/ )
     // everything is fine, do it
     SendPartyResult(PARTY_OP_LEAVE, GetPlayer()->GetName(), ERR_PARTY_RESULT_OK);
 
-    if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPById(OUTDOOR_PVP_WG))
+    if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP))
         if (opvp->IsMember(_player->GetObjectGuid()))
             opvp->OnPlayerGroupDisband(_player);
 

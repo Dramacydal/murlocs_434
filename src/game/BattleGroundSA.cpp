@@ -912,7 +912,6 @@ void BattleGroundSA::TeleportPlayerToCorrectLoc(Player* plr)
             float zOffset = BG_SA_Trans_Offset[m_defender == ALLIANCE ? 1 : 0][idx].z;
             float oOffset = BG_SA_Trans_Offset[m_defender == ALLIANCE ? 1 : 0][idx].o;
 
-            plr->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
             plr->m_movementInfo.SetTransportData(obj->GetObjectGuid(), xOffset, yOffset, zOffset, oOffset, 0, -1);
             plr->TeleportTo(607, obj->GetPositionX() + xOffset, obj->GetPositionY() + yOffset, obj->GetPositionZ() + zOffset,
                 obj->GetOrientation() + oOffset, TELE_TO_NOT_LEAVE_TRANSPORT);
@@ -954,7 +953,7 @@ void BattleGroundSA::SendTransports(bool remove)
 
 void BattleGroundSA::SendTransportsInit(Player* player)
 {
-    UpdateData transData;
+    UpdateData transData(player->GetMapId());
     for (uint8 i = 0; i < 2; ++i)
     {
         if (GameObject* obj = GetBGObject(i))
@@ -973,7 +972,7 @@ void BattleGroundSA::SendTransportsInit(Player* player)
 
 void BattleGroundSA::SendTransportsRemove(Player* player)
 {
-    UpdateData transData;
+    UpdateData transData(player->GetMapId());
     for (uint8 i = 0; i < 2; ++i)
     {
         if (GameObject* obj = GetBGObject(i))
@@ -992,7 +991,7 @@ void BattleGroundSA::SendTransportsRemove(Player* player)
 
 void BattleGroundSA::SendTransportsUpdate(Player* player)
 {
-    UpdateData transData;
+    UpdateData transData(player->GetMapId());
     for (uint8 i = 0; i < 2; ++i)
     {
         if (GameObject* obj = GetBGObject(i))

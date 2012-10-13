@@ -41,7 +41,7 @@
 #include "GridNotifiersImpl.h"
 #include "ObjectPosSelector.h"
 #include "TemporarySummon.h"
-#include "OutdoorPvPMgr.h"
+#include "OutdoorPvP/OutdoorPvPMgr.h"
 #include "BattleGround.h"
 #include "movement/packet_builder.h"
 
@@ -483,7 +483,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
     if (updateFlags & UPDATEFLAG_VEHICLE)
     {
         *data << float(NormalizeOrientation(((WorldObject*)this)->GetOrientation()));
-        *data << uint32(((Unit*)this)->GetVehicleInfo()->GetEntry()->m_ID); // vehicle id
+        *data << uint32(((Unit*)this)->GetVehicle()->GetVehicleId()); // vehicle id
     }
 
     // used only with GO's, placeholder
@@ -510,7 +510,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
     }
 
     if (updateFlags & UPDATEFLAG_ROTATION)
-        *data << int64(((GameObject*)this)->GetPackedWorldRotation());
+        *data << int64(((GameObject*)this)->GetRotation());
 
     if (updateFlags & UPDATEFLAG_TRANSPORT_ARR)
     {
@@ -1784,15 +1784,6 @@ TerrainInfo const* WorldObject::GetTerrain() const
 void WorldObject::AddObjectToRemoveList()
 {
     GetMap()->AddObjectToRemoveList(this);
-}
-
-void WorldObject::SetZoneScript()
-{
-    if (Map* map = GetMap())
-    {
-        if (!map->IsBattleGroundOrArena() && !map->IsDungeon())
-            m_zoneScript = sOutdoorPvPMgr.GetZoneScript(GetZoneId());
-    }
 }
 
 Creature* WorldObject::SummonCreature(uint32 id, float x, float y, float z, float ang,TempSummonType spwtype,uint32 despwtime, bool asActiveObject)

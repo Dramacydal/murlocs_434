@@ -843,11 +843,7 @@ bool Creature::UpdateAllStats()
     UpdateMaxHealth();
     UpdateAttackPowerAndDamage();
 
-<<<<<<< HEAD
-    for(int i = POWER_MANA; i < MAX_POWERS; ++i)
-=======
     for (uint32 i = POWER_MANA; i < MAX_POWERS; ++i)
->>>>>>> 55ae76f... Proper power uses.
         UpdateMaxPower(Powers(i));
 
     for(int i = SPELL_SCHOOL_NORMAL; i < MAX_SPELL_SCHOOL; ++i)
@@ -980,11 +976,7 @@ bool Pet::UpdateAllStats()
     for (int i = STAT_STRENGTH; i < MAX_STATS; ++i)
         UpdateStats(Stats(i));
 
-<<<<<<< HEAD
-    for(int i = POWER_MANA; i < MAX_POWERS; ++i)
-=======
     for (uint32 i = POWER_MANA; i < MAX_POWERS; ++i)
->>>>>>> 55ae76f... Proper power uses.
         UpdateMaxPower(Powers(i));
 
     for (int i = SPELL_SCHOOL_NORMAL; i < MAX_SPELL_SCHOOL; ++i)
@@ -1103,7 +1095,7 @@ void Pet::UpdateDamagePhysical(WeaponAttackType attType)
     float base_value  = GetModifierValue(unitMod, BASE_VALUE) + GetTotalAttackPowerValue(attType)/ 14.0f * att_speed;
     float base_pct    = GetModifierValue(unitMod, BASE_PCT);
     float total_value = GetModifierValue(unitMod, TOTAL_VALUE);
-    float total_pct   = GetModifierValue(unitMod, TOTAL_PCT) * GetHappinessDamageMod();
+    float total_pct   = GetModifierValue(unitMod, TOTAL_PCT);
 
     float weapon_mindamage = GetWeaponDamageRange(BASE_ATTACK, MINDAMAGE);
     float weapon_maxdamage = GetWeaponDamageRange(BASE_ATTACK, MAXDAMAGE);

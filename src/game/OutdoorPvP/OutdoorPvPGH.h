@@ -58,9 +58,9 @@ enum
 class OutdoorPvPGH : public OutdoorPvP
 {
     public:
-        OutdoorPvPGH();
+        OutdoorPvPGH(uint32 id);
 
-        bool HandleEvent(uint32 eventId, GameObject* go) override;
+        bool HandleEvent(uint32 eventId, GameObject* go, Player* pInvoker, uint32 spellId) override;
 
         void HandleCreatureCreate(Creature* creature) override;
         void HandleCreatureDeath(Creature* creature) override;
