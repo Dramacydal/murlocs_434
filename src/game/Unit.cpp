@@ -4189,7 +4189,6 @@ void Unit::InterruptSpell(CurrentSpellTypes spellType, bool withDelayed, bool se
 
         if (m_currentSpells[spellType]->getState() != SPELL_STATE_FINISHED)
         {
-            sLog.outError(">>>>>> Unit::InterruptSpell, spell %u type %u unit %u", m_currentSpells[spellType]->m_spellInfo->Id, spellType, GetEntry());
             m_currentSpells[spellType]->cancel();
         }
 
@@ -7864,7 +7863,6 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
 
     crit_chance = crit_chance > 0.0f ? crit_chance : 0.0f;
     bool result = roll_chance_f(crit_chance);
-    sLog.outDebug(">>>>>>>>>>>>IsSpellCrit Spell: %u critChance: %f crit: %s", spellProto->Id, crit_chance, result ? "TRUE" : "FALSE");
 
     return result;
 }

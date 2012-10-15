@@ -977,11 +977,6 @@ void WorldSession::HandleRequestPartyMemberStatsOpcode( WorldPacket &recv_data )
     data << uint8(0);                                       // only for SMSG_PARTY_MEMBER_STATS_FULL, probably arena/bg related
     data << player->GetPackGUID();
 
-<<<<<<< HEAD
-    uint32 mask1 = 0x00040BFF;                              // common mask, real flags used 0x000040BFF
-    if(pet)
-        mask1 = 0x7FFFFFFF;                                 // for hunters and other classes with pets
-=======
     uint32 mask1 = GROUP_UPDATE_FLAG_STATUS | GROUP_UPDATE_FLAG_CUR_HP | GROUP_UPDATE_FLAG_MAX_HP |
         GROUP_UPDATE_FLAG_POWER_TYPE | GROUP_UPDATE_FLAG_CUR_POWER | GROUP_UPDATE_FLAG_MAX_POWER |
         GROUP_UPDATE_FLAG_LEVEL | GROUP_UPDATE_FLAG_ZONE | GROUP_UPDATE_FLAG_POSITION |
@@ -990,7 +985,6 @@ void WorldSession::HandleRequestPartyMemberStatsOpcode( WorldPacket &recv_data )
 
     if (pet)
         mask1 = 0x7FEFFEFF; // full mask & ~(GROUP_UPDATE_FLAG_VEHICLE_SEAT | GROUP_UPDATE_FLAG_UNK)
->>>>>>> e3a0ffa... [0186] Update group opcodes
 
     uint16 online_status = MEMBER_STATUS_ONLINE;
     if (GetPlayer()->IsReferAFriendLinked(player))
@@ -1040,15 +1034,10 @@ void WorldSession::HandleRequestPartyMemberStatsOpcode( WorldPacket &recv_data )
     data << uint8(1);                                     // if true, client clears all auras that are not in auramask and whose index is lower amount sent below
     uint64 auramask = 0;
     size_t maskPos = data.wpos();
-<<<<<<< HEAD
-    data << uint64(auramask);                               // placeholder
-    for(uint8 i = 0; i < MAX_AURAS; ++i)
-=======
     data << uint64(auramask);                             // placeholder, server sends 0xFFFFFFFFFFFFFFFF here, but with 1 above it seems no difference
     data << uint32(MAX_AURAS);                            // server sends here number of visible auras, but client checks
                                                           // if aura is in auramask, so it seems no difference if there will be MAX_AURAS
     for (uint8 i = 0; i < MAX_AURAS; ++i)
->>>>>>> e3a0ffa... [0186] Update group opcodes
     {
         if (SpellAuraHolder* holder = player->GetVisibleAura(i))
         {
@@ -1080,15 +1069,10 @@ void WorldSession::HandleRequestPartyMemberStatsOpcode( WorldPacket &recv_data )
         data << uint8(1);                                   // if true, client clears all auras that are not in auramask and whose index is lower amount sent below
         uint64 petauramask = 0;
         size_t petMaskPos = data.wpos();
-<<<<<<< HEAD
-        data << uint64(petauramask);                        // placeholder
-        for(uint8 i = 0; i < MAX_AURAS; ++i)
-=======
         data << uint64(petauramask);                        // placeholder, server sends 0xFFFFFFFFFFFFFFFF here, but with 1 above it seems no difference
         data << uint32(MAX_AURAS);                          // server sends here number of visible auras, but client checks
                                                             // if aura is in auramask, so it seems no difference if there will be MAX_AURAS
         for (uint8 i = 0; i < MAX_AURAS; ++i)
->>>>>>> e3a0ffa... [0186] Update group opcodes
         {
             if (SpellAuraHolder* holder = pet->GetVisibleAura(i))
             {

@@ -3638,8 +3638,6 @@ void Spell::prepare(SpellCastTargets const* targets, Aura* triggeredByAura)
     // create and add update event for this spell
     SpellEvent* Event = new SpellEvent(this);
     m_caster->m_Events.AddEvent(Event, m_caster->m_Events.CalculateTime(1));
-    if (m_caster->GetZoneId() == 876)
-        sLog.outError(">>>>> AddEvent: SpellEvent::prepare 1 spell: %u", m_spellInfo->Id);
 
     //Prevent casting at cast another spell (ServerSide check)
     if(m_caster->IsNonMeleeSpellCasted(false, true, true) && m_cast_count)
@@ -3655,12 +3653,8 @@ void Spell::prepare(SpellCastTargets const* targets, Aura* triggeredByAura)
     SpellCastResult result = CheckCast(true);
     if(result != SPELL_CAST_OK && !IsAutoRepeat())          //always cast autorepeat dummy for triggering
     {
-        if (m_caster->GetZoneId() == 876)
-            sLog.outError(">>>>> AddEvent: Spell::prepare 2 spell: %u, reason %u", m_spellInfo->Id, result);
         if(triggeredByAura && triggeredByAura->GetId() != 53563 && triggeredByAura->IsPeriodic() && !triggeredByAura->GetHolder()->IsPassive())
         {
-            if (m_caster->GetZoneId() == 876)
-            sLog.outError(">>>>> AddEvent: Spell::prepare 3 spell: %u, reason %u", m_spellInfo->Id, result);
             SendChannelUpdate(0);
             triggeredByAura->GetHolder()->SetAuraDuration(0);
         }
@@ -4193,7 +4187,6 @@ void Spell::handle_immediate()
     // start channeling if applicable (after _handle_immediate_phase for get persistent effect dynamic object for channel target
     if (IsChanneledSpell(m_spellInfo) && m_duration)
     {
-        sLog.outError(">>>>>> Spell::handle_immediate, spell %u duration %i", m_spellInfo->Id, m_duration);
         m_spellState = SPELL_STATE_CASTING;
         SendChannelStart(m_duration);
     }
@@ -4479,9 +4472,6 @@ void Spell::finish(bool ok)
         return;
 
     m_spellState = SPELL_STATE_FINISHED;
-
-    if (m_caster->GetZoneId() == 876)
-        sLog.outError(">>>>>> Spell::finish, spell %u ok %u", m_spellInfo->Id, ok);
 
     // other code related only to successfully finished spells
     if (!ok)
@@ -8570,16 +8560,12 @@ bool SpellEvent::Execute(uint64 e_time, uint32 p_time)
                 return true;                                // spell is deletable, finish event
             }
             // event will be re-added automatically at the end of routine)
-            if (m_Spell->GetCaster()->GetZoneId() == 876)
-                    sLog.outError(">>>>> SpellEvent::Execute 9 spell: %u", m_Spell->m_spellInfo->Id);
         } break;
 
         case SPELL_STATE_CASTING:
         {
             // this spell is in channeled state, process it on the next update
             // event will be re-added automatically at the end of routine)
-            if (m_Spell->GetCaster()->GetZoneId() == 876)
-                    sLog.outError(">>>>> SpellEvent::Execute 8 spell: %u", m_Spell->m_spellInfo->Id);
 
             // Ranger: channeled spell with negative duration (-1)
             //         temp!
@@ -8604,14 +8590,10 @@ bool SpellEvent::Execute(uint64 e_time, uint32 p_time)
                     if (m_Spell->GetCaster()->IsNonMeleeSpellCasted(false, true, true))
                     {
                         // another non-melee non-delayed spell is casted now, abort
-                        if (m_Spell->GetCaster()->GetZoneId() == 876)
-                            sLog.outError(">>>>> SpellEvent::Execute 1 spell: %u", m_Spell->m_spellInfo->Id);
                         m_Spell->cancel();
                     }
                     else
                     {
-                        if (m_Spell->GetCaster()->GetZoneId() == 876)
-                            sLog.outError(">>>>> SpellEvent::Execute 6 spell: %u", m_Spell->m_spellInfo->Id);
                         // do the action (pass spell to channeling state)
                         m_Spell->handle_immediate();
                     }
@@ -8625,13 +8607,9 @@ bool SpellEvent::Execute(uint64 e_time, uint32 p_time)
                     if (n_offset)
                     {
                         // re-add us to the queue
-                        if (m_Spell->GetCaster()->GetZoneId() == 876)
-                            sLog.outError(">>>>> SpellEvent::Execute 2 spell: %u", m_Spell->m_spellInfo->Id);
                         m_Spell->GetCaster()->m_Events.AddEvent(this, m_Spell->GetDelayStart() + n_offset, false);
                         return false;                       // event not complete
                     }
-                    if (m_Spell->GetCaster()->GetZoneId() == 876)
-                        sLog.outError(">>>>> SpellEvent::Execute 7 spell: %u", m_Spell->m_spellInfo->Id);
                     // event complete
                     // finish update event will be re-added automatically at the end of routine)
                 }
@@ -8641,8 +8619,6 @@ bool SpellEvent::Execute(uint64 e_time, uint32 p_time)
                 // delaying had just started, record the moment
                 m_Spell->SetDelayStart(e_time);
                 // re-plan the event for the delay moment
-                if (m_Spell->GetCaster()->GetZoneId() == 876)
-                    sLog.outError(">>>>> SpellEvent::Execute 3 spell: %u", m_Spell->m_spellInfo->Id);
                 m_Spell->GetCaster()->m_Events.AddEvent(this, e_time + m_Spell->GetDelayMoment(), false);
                 return false;                               // event not complete
             }
@@ -8652,15 +8628,10 @@ bool SpellEvent::Execute(uint64 e_time, uint32 p_time)
         {
             // all other states
             // event will be re-added automatically at the end of routine)
-            if (m_Spell->GetCaster()->GetZoneId() == 876)
-                sLog.outError(">>>>> SpellEvent::Execute 5 spell: %u", m_Spell->m_spellInfo->Id);
-
         } break;
     }
 
     // spell processing not complete, plan event on the next update interval
-    if (m_Spell->GetCaster()->GetZoneId() == 876)
-        sLog.outError(">>>>> SpellEvent::Execute 4 spell: %u", m_Spell->m_spellInfo->Id);
     m_Spell->GetCaster()->m_Events.AddEvent(this, e_time + 1, false);
     return false;                                           // event not complete
 }

@@ -958,9 +958,6 @@ void PlayerMenu::SendQuestGiverRequestItems(Quest const *pQuest, ObjectGuid npcG
             data << uint32(0);
     }
 
-<<<<<<< HEAD
-    if ( !Completable )                                     // Completable = flags1 && flags2 && flags3 && flags4
-=======
     data << uint32(pQuest->GetReqCurrencyCount());
     for (int i = 0; i < QUEST_REQUIRED_CURRENCY_COUNT; ++i)
     {
@@ -972,7 +969,6 @@ void PlayerMenu::SendQuestGiverRequestItems(Quest const *pQuest, ObjectGuid npcG
     }
 
     if (!Completable)                                       // Completable = flags1 && flags2 && flags3 && flags4
->>>>>>> 48ae4af... [0159] Update quest system.
         data << uint32(0x00);                               // flags1
     else
         data << uint32(0x03);

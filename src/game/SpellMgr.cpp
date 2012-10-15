@@ -741,7 +741,6 @@ bool IsExplicitNegativeTarget(uint32 targetA)
 
 bool IsPositiveAura(uint32 spellId)
 {
-<<<<<<< HEAD
     SpellEntry const *spellproto = sSpellStore.LookupEntry(spellId);
     if (!spellproto)
         return false;
