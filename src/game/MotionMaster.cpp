@@ -226,6 +226,13 @@ void MotionMaster::MoveIdle()
         push(&si_idleMovement);
 }
 
+void MotionMaster::MoveRandom(float dist)
+{
+    float x, y, z;
+    m_owner->GetPosition(x, y, z);
+    MoveRandomAroundPoint(x, y, z, dist);
+}
+
 void MotionMaster::MoveRandomAroundPoint(float x, float y, float z, float radius, float verticalZ)
 {
     if (m_owner->GetTypeId() == TYPEID_PLAYER)

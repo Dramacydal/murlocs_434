@@ -1,0 +1,112 @@
+@package RSA scripts for ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+@version 0.4a
+@revision (current)
+@copyright (c) 2009-2011 /dev/rsa
+@license GNU Public License
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Attention please! My project now will only support cmake compile
+No special VC configs provided.
+
+In this repository you will find these scripts and more:
+
+- many scripts from Insider42
+-- Alots and Alots of Quests Fixes
+- Ulduar (from Xfurry, partially rewrite by rsa)
+- Trial of the Champion (by Syntec, big rewrite by rsa)
+- Violet hold (by Przemratajczak Repo, big rewrite by rsa)
+- Ahn'kahet (renewed, by Tassadar with my corrects)
+- Draktaron (by Tassadar)
+- Culling of Stratholme (by MaxXx2021 && FallenAngelX)
+- Obsidian Sanctum (by michalpolko)
+- Azjol-Nerub (by MaxXx2021)
+- Forge of souls (by Maxxx2021 and rsa)
+- Halls of reflection (by Maxxx2021 and rsa)
+- Vault of Archavon (by Insider42)
+- Trial of the Crusader (by rsa)
+- Icecrown Citadel (by rsa)
+- Ruby Sanctum (by rsa, partially from notagain)
+- npc_arena_honor (by tempura)
+- NPC special (partially by rsa, thanks for all)
+- Nexus (rewrite by Janu , instance rewite by fallenangelX)
+- Oculus (originally from TC with MaxXx2021, rsa, FallenangelX and traponinet Rewrites)
+- Eye of Eternity(originally from Tassadar with PSZ and rsa modifications)
+- All DK Starting Area Quest (by fallenangelX,ancient,rsa,cklegg, traponinet and klimbo)
+- Sunwell_Plateau (by FallenangelX , Xfurry and Official SD2)  -- Currently in progress
+- simple scripts from Xfurry
+
+Thanks to:
+- Vladimir Mangos - MaNGOS project;
+- Insider42 - for your work;
+- MaxXx2021 aka Mioka - for your scripts;
+- Tassadar;
+- notagain - base placeholders and spell research for Ruby sanctum;
+- griffonheart (original texts/sounds for TOC);
+- Cristy (re-translation to english);
+- Selector - Faction champions base script, testing, bugreports;
+- Boxa - changes for Windows compilers and bugreports;
+- Wowka321 - core support;
+- Dron01, Lordronn, Vinolentus - bugreports and valuable advice;
+- gladden, ghostart - bugreports;
+- Schmoozerd - instances, script codes
+- all - testing.
+
+Ladies and gentlemen, and friends! If you want to compile my scripts with a compiler different from the GNU C, then the config files, projects or whatever else you need to create your own! I do only cmake compile.
+And please do not send me a compilation error. So what lies in my repository, absolute accuracy compiles fine and works on live servers.
+
+Уважаемые дамы и господа, а также товарищи! Если Вы хотите скомпилировать мои скрипты с помощью компилятора, отличного от GNU C, то конфиг-файлы, проекты или что там еще Вам придется создавать самостоятельно! Я делаю только cmake compile.
+И пожалуйста, не присылайте мне ошибки компиляции. То что лежит в моем репозитории, абсолютно точно компилируется нормально и работает на живых серверах.
+
+== ScriptDev2 README ==
+
+  Copyright (C) 2006 - 2011 ScriptDev2 <https://github.com/scriptdev2>
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+== Welcome to ScriptDev2 ==
+
+ScriptDev2 is a script library, an extention of the scripting capabilities
+that comes with MaNGOS ( http://www.getmangos.com ), written in C++ and is
+compatible with Windows and Linux. SQL needed for database support both
+MySQL and PostgreSQL.
+
+This script library provides unique scripts for NPCs, gameobjects, events
+and other that need unique implementation.
+
+Once ScriptDev2 is compiled it is automatically run by MaNGOS on server
+startup.
+
+For further information on ScriptDev2, please visit our project web site
+at http://www.scriptdev2.com/
+
+Documentation on various development related topics can be found in the
+../doc/ sub directory as well as on the web site.
+
+The required SQL files for creating the database backend are included in
+the ../sql/ sub directory. If you are updating from an older ScriptDev2
+version, make sure to take a look at the SQL files provided in the
+../sql/updates/ sub directory.

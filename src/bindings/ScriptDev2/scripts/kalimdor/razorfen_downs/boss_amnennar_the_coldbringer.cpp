@@ -1,0 +1,133 @@
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/* ScriptData
+SDName: Boss_Amnennar_the_coldbringer
+SD%Complete: 100
+SDComment:
+SDCategory: Razorfen Downs
+EndScriptData */
+
+#include "precompiled.h"
+
+enum
+{
+    SAY_AGGRO              = -1129000,
+    SAY_SUMMON60           = -1129001,
+    SAY_SUMMON30           = -1129002,
+    SAY_HP                 = -1129003,
+    SAY_KILL               = -1129004,
+
+    SPELL_AMNENNARSWRATH   = 13009,
+    SPELL_FROSTBOLT        = 15530,
+    SPELL_FROST_NOVA       = 15531,
+    SPELL_FROST_SPECTRES   = 12642,
+};
+
+struct MANGOS_DLL_DECL boss_amnennar_the_coldbringerAI : public ScriptedAI
+{
+    boss_amnennar_the_coldbringerAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+
+    uint32 m_uiAmnenarsWrath_Timer;
+    uint32 m_uiFrostBolt_Timer;
+    uint32 m_uiFrostNova_Timer;
+    bool Spectrals60;
+    bool Spectrals30;
+    bool Hp;
+
+    void Reset()
+    {
+        m_uiAmnenarsWrath_Timer = 8000;
+        m_uiFrostBolt_Timer = 1000;
+        m_uiFrostNova_Timer = urand(10000, 15000);
+        Spectrals30 = false;
+        Spectrals60 = false;
+        Hp = false;
+    }
+
+    void Aggro(Unit *pWho)
+    {
+        DoScriptText(SAY_AGGRO, m_creature);
+    }
+
+    void KilledUnit(Unit* pVictim)
+    {
+        DoScriptText(SAY_KILL, m_creature);
+    }
+
+    void UpdateAI(const uint32 uiDiff)
+    {
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+            return;
+
+        //m_uiAmnenarsWrath_Timer
+        if (m_uiAmnenarsWrath_Timer < uiDiff)
+        {
+            DoCastSpellIfCan(m_creature->getVictim(),SPELL_AMNENNARSWRATH);
+            m_uiAmnenarsWrath_Timer = 12000;
+        } else m_uiAmnenarsWrath_Timer -= uiDiff;
+
+        //m_uiFrostBolt_Timer
+        if (m_uiFrostBolt_Timer < uiDiff)
+        {
+            DoCastSpellIfCan(m_creature->getVictim(),SPELL_FROSTBOLT);
+            m_uiFrostBolt_Timer = 8000;
+        } else m_uiFrostBolt_Timer -= uiDiff;
+
+        if (m_uiFrostNova_Timer < uiDiff)
+        {
+            DoCastSpellIfCan(m_creature,SPELL_FROST_NOVA);
+            m_uiFrostNova_Timer = 15000;
+        } else m_uiFrostNova_Timer -= uiDiff;
+
+        if (!Spectrals60 && m_creature->GetHealthPercent() < 60.0f)
+        {
+            DoScriptText(SAY_SUMMON60, m_creature);
+            DoCastSpellIfCan(m_creature->getVictim(),SPELL_FROST_SPECTRES);
+            Spectrals60 = true;
+        }
+
+        if (!Hp && m_creature->GetHealthPercent() < 50.0f)
+        {
+            DoScriptText(SAY_HP, m_creature);
+            Hp = true;
+        }
+
+        if (!Spectrals30 && m_creature->GetHealthPercent() < 30.0f)
+        {
+            DoScriptText(SAY_SUMMON30, m_creature);
+            DoCastSpellIfCan(m_creature->getVictim(),SPELL_FROST_SPECTRES);
+            Spectrals30 = true;
+        }
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_boss_amnennar_the_coldbringer(Creature* pCreature)
+{
+    return new boss_amnennar_the_coldbringerAI(pCreature);
+}
+
+void AddSC_boss_amnennar_the_coldbringer()
+{
+    Script* pNewScript;
+
+    pNewScript = new Script;
+    pNewScript->Name = "boss_amnennar_the_coldbringer";
+    pNewScript->GetAI = &GetAI_boss_amnennar_the_coldbringer;
+    pNewScript->RegisterSelf();
+}
