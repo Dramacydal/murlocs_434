@@ -429,7 +429,7 @@ bool Guild::LoadMembersFromDB(QueryResult *guildMembersResult)
         newmember.Pnote                 = fields[3].GetCppString();
         newmember.OFFnote               = fields[4].GetCppString();
         newmember.BankResetTimeMoney    = fields[5].GetUInt32();
-        newmember.BankRemMoney          = fields[6].GetUInt32();
+        newmember.BankRemMoney          = fields[6].GetUInt64();
         for (int i = 0; i < GUILD_BANK_MAX_TABS; ++i)
         {
             newmember.BankResetTimeTab[i] = fields[7+(2*i)].GetUInt32();
@@ -1494,13 +1494,13 @@ uint64 Guild::GetMemberMoneyWithdrawRem(uint32 LowGuid)
     {
         itr->second.BankResetTimeMoney = curTime;
         itr->second.BankRemMoney = GetBankMoneyPerDay(itr->second.RankId);
-        CharacterDatabase.PExecute("UPDATE guild_member SET BankResetTimeMoney='%u', BankRemMoney='%u' WHERE guildid='%u' AND guid='%u'",
+        CharacterDatabase.PExecute("UPDATE guild_member SET BankResetTimeMoney='%u', BankRemMoney='" UI64FMTD "' WHERE guildid='%u' AND guid='%u'",
             itr->second.BankResetTimeMoney, itr->second.BankRemMoney, m_Id, LowGuid);
     }
     return itr->second.BankRemMoney;
 }
 
-void Guild::SetBankMoneyPerDay(uint32 rankId, uint32 money)
+void Guild::SetBankMoneyPerDay(uint32 rankId, uint64 money)
 {
     if (rankId >= m_Ranks.size())
         return;
@@ -1514,7 +1514,7 @@ void Guild::SetBankMoneyPerDay(uint32 rankId, uint32 money)
         if (itr->second.RankId == rankId)
             itr->second.BankResetTimeMoney = 0;
 
-    CharacterDatabase.PExecute("UPDATE guild_rank SET BankMoneyPerDay='%u' WHERE rid='%u' AND guildid='%u'", money, rankId, m_Id);
+    CharacterDatabase.PExecute("UPDATE guild_rank SET BankMoneyPerDay='" UI64FMTD "' WHERE rid='%u' AND guildid='%u'", money, rankId, m_Id);
     CharacterDatabase.PExecute("UPDATE guild_member SET BankResetTimeMoney='0' WHERE guildid='%u' AND rank='%u'", m_Id, rankId);
 }
 
@@ -1550,7 +1550,7 @@ void Guild::SetBankRightsAndSlots(uint32 rankId, uint8 TabId, uint32 right, uint
     }
 }
 
-uint32 Guild::GetBankMoneyPerDay(uint32 rankId)
+uint64 Guild::GetBankMoneyPerDay(uint32 rankId)
 {
     if (rankId >= m_Ranks.size())
         return 0;

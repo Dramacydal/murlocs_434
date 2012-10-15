@@ -2686,7 +2686,9 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
                         // Cast healing spell, completely avoid damage
                         RemainingDamage = 0;
 
-                        uint32 defenseSkillValue = GetDefenseSkillValue();
+                        // FIXME: update to cata
+                        //uint32 defenseSkillValue = GetDefenseSkillValue();
+                        uint32 defenseSkillValue = 400;
                         // Max heal when defense skill denies critical hits from raid bosses
                         // Formula: max defense at level + 140 (raiting from gear)
                         uint32 reqDefForMaxHeal  = getLevel() * 5 + 140;
@@ -12823,7 +12825,6 @@ uint32 Unit::GetModelForForm(ShapeshiftForm form)
                 return 892;
             else
                 return 8571;
-        case FORM_DIREBEAR:
         case FORM_BEAR:
             // Based on Hair color
             if (getRace() == RACE_NIGHTELF)
@@ -13321,30 +13322,6 @@ float Unit::GetPathLength(float destX, float destY, float destZ, bool forceDest,
     }
 
     return dist;
-}
-
-void Unit::SetLastManaUse()
-{
-    if (GetTypeId() == TYPEID_PLAYER && !IsUnderLastManaUseEffect())
-        RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_REGENERATE_POWER);
-
-    uint32 lastRegenInterval = IsUnderLastManaUseEffect() ? REGEN_TIME_PRECISE : REGEN_TIME_FULL;
-
-    m_lastManaUseTimer = 5000;
-
-    // Do first interrupted powers regen (not only PRECIZE interval), also set player mana regenerate interval to PRECIZE
-    if (GetTypeId() == TYPEID_PLAYER)
-    {
-        int32 diff = lastRegenInterval - ((Player*)this)->GetRegenTimer();
-        if (diff > 0)
-            ((Player*)this)->RegenerateAll(diff);
-    }
-}
-
-bool ManaUseEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
-{
-    m_caster.SetLastManaUse();
-    return true;
 }
 
 void Unit::_AddAura(uint32 spellID, uint32 duration)

@@ -224,7 +224,7 @@ class BattleGroundAB : public BattleGround
 
         int32 _GetNodeNameId(uint8 node);
 
-        void CheckBuggers();
+        void CheckBuggers() override;
 
         /* Nodes info:
             0: neutral

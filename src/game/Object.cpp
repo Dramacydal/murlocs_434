@@ -42,7 +42,7 @@
 #include "ObjectPosSelector.h"
 #include "TemporarySummon.h"
 #include "OutdoorPvP/OutdoorPvPMgr.h"
-#include "BattleGround.h"
+#include "BattleGround/BattleGround.h"
 #include "movement/packet_builder.h"
 #include "CreatureLinkingMgr.h"
 
@@ -1117,7 +1117,7 @@ void Object::MarkForClientUpdate()
 }
 
 WorldObject::WorldObject() :
-    m_transportInfo(NULL), m_currMap(NULL),
+    m_currMap(NULL),
     m_groupLootTimer(0), m_groupLootId(0), m_lootGroupRecipientId(0),
     m_mapId(0), m_InstanceId(0), m_phaseMask(PHASEMASK_NORMAL),
     m_isActiveObject(false)

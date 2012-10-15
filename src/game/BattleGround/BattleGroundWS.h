@@ -161,6 +161,8 @@ class BattleGroundWS : public BattleGround
         uint32 GetPlayerScore(Player *Source, uint32 type);
 
     private:
+        void CheckBuggers() override;
+
         ObjectGuid m_flagCarrierAlliance;
         ObjectGuid m_flagCarrierHorde;
 

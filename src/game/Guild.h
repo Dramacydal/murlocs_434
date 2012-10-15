@@ -319,7 +319,7 @@ struct RankInfo
 
     std::string Name;
     uint32 Rights;
-    uint32 BankMoneyPerDay;
+    uint64 BankMoneyPerDay;
     uint32 TabRight[GUILD_BANK_MAX_TABS];
     uint32 TabSlotPerDay[GUILD_BANK_MAX_TABS];
 };
@@ -477,9 +477,9 @@ class Guild
         bool   MemberItemWithdraw(uint8 TabId, uint32 LowGuid);
         uint32 GetMemberSlotWithdrawRem(uint32 LowGuid, uint8 TabId);
         uint64 GetMemberMoneyWithdrawRem(uint32 LowGuid);
-        void   SetBankMoneyPerDay(uint32 rankId, uint32 money);
+        void   SetBankMoneyPerDay(uint32 rankId, uint64 money);
         void   SetBankRightsAndSlots(uint32 rankId, uint8 TabId, uint32 right, uint32 SlotPerDay, bool db);
-        uint32 GetBankMoneyPerDay(uint32 rankId);
+        uint64 GetBankMoneyPerDay(uint32 rankId);
         uint32 GetBankSlotPerDay(uint32 rankId, uint8 TabId);
         // rights per day
         bool   LoadBankRightsFromDB(QueryResult *guildBankTabRightsResult);

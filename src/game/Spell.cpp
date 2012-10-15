@@ -1496,7 +1496,7 @@ void Spell::DoSpellHitOnUnit(Unit *unit, uint32 effectMask)
         for (int effIdx = 0; effIdx < MAX_EFFECT_INDEX; ++effIdx)
         {
             if (effectMask & (1 << effIdx))
-                if (unit->IsImmuneToSpellEffect(m_spellInfo, SpellEffectIndex(effIdx)))
+                if (unit->IsImmuneToSpellEffect(m_spellInfo, SpellEffectIndex(effIdx), unit == realCaster))
                     effectMask &= ~(1 << effIdx);
         }
     }
@@ -3987,7 +3987,7 @@ void Spell::cast(bool skipCheck)
             if (m_spellInfo->Id == 16857 && m_caster->GetShapeshiftForm() != FORM_CAT)
                 AddTriggeredSpell(60089);
             // Berserk (Bear Mangle part)
-            else if (m_spellInfo->Id == 50334 && (m_caster->GetShapeshiftForm() == FORM_BEAR || m_caster->GetShapeshiftForm() == FORM_DIREBEAR))
+            else if (m_spellInfo->Id == 50334 && m_caster->GetShapeshiftForm() == FORM_BEAR)
                 AddTriggeredSpell(58923);
             // Clearcasting
             else if (m_spellInfo->Id == 16870)
@@ -7618,8 +7618,7 @@ SpellCastResult Spell::CheckPower()
     if (m_powerCost > 0 && m_caster->GetTypeId() == TYPEID_PLAYER)
     {
         Player* playerCaster = (Player*)m_caster;
-        uint32 lastRegenInterval = playerCaster->IsUnderLastManaUseEffect() ? REGEN_TIME_PRECISE : REGEN_TIME_FULL;
-        int32 diff = lastRegenInterval - m_caster->GetRegenTimer();
+        int32 diff = REGEN_TIME_FULL - m_caster->GetRegenTimer();
         if (diff >= REGEN_TIME_PRECISE)
             playerCaster->RegenerateAll(diff);
     }

@@ -374,7 +374,7 @@ class BattleGroundAV : public BattleGround
         void SendMineWorldStates(uint32 mine);
         void UpdateNodeWorldState(BG_AV_Nodes node);
 
-        void CheckBuggers();
+        void CheckBuggers() override;
 
         /*variables */
         uint32 m_Team_QuestStatus[PVP_TEAM_COUNT][9];       // [x][y] x=team y=questcounter

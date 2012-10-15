@@ -1394,7 +1394,7 @@ void Player::Update(uint32 update_diff, uint32 p_time)
             SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_REGENERATE_POWER);
 
         if (!m_regenTimer)
-            RegenerateAll(IsUnderLastManaUseEffect() ? REGEN_TIME_PRECISE : REGEN_TIME_FULL);
+            RegenerateAll();
     }
 
     if (!isAlive() && !HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST) && getDeathState() != GHOULED)
@@ -4535,7 +4535,6 @@ TrainerSpellState Player::GetTrainerSpellState(TrainerSpell const* trainer_spell
     if (!trainer_spell)
         return TRAINER_SPELL_RED;
 
-
     bool hasSpell = true;
     bool prof = false;
     for (uint8 i = 0; i < MAX_EFFECT_INDEX ; ++i)
@@ -5503,17 +5502,8 @@ void Player::HandleBaseModValue(BaseModGroup modGroup, BaseModType modType, floa
             if(amount <= -100.0f)
                 amount = -200.0f;
 
-            if (modGroup == SHIELD_BLOCK_VALUE)
-            {
-                val = amount / 100.0f;
-                m_auraBaseMod[modGroup][modType] += apply ? val : -val;
-            }
-            else
-            {
-                val = (100.0f + amount) / 100.0f;
-                m_auraBaseMod[modGroup][modType] *= apply ? val : (1.0f/val);
-            }
-
+            val = (100.0f + amount) / 100.0f;
+            m_auraBaseMod[modGroup][modType] *= apply ? val : (1.0f / val);
             break;
     }
 
@@ -9664,8 +9654,9 @@ bool Player::GetSlotsForInventoryType(uint8 invType, uint8* slots, uint32 subCla
             slots[0] = EQUIPMENT_SLOT_MAINHAND;
             if (CanDualWield() && CanTitanGrip())
             {
-                Item *mainItem = GetItemByPos( INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND );
-                if ((mainItem ? !mainItem->GetProto()->IsRestrictedByTitanGrip() : true) && !proto->IsRestrictedByTitanGrip())
+                Item* mainItem = GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND);
+                if ((!mainItem || !ItemPrototype::IsRestrictedByTitanGrip(mainItem->GetProto()->InventoryType, mainItem->GetProto()->SubClass)) &&
+                    !ItemPrototype::IsRestrictedByTitanGrip(invType, subClass))
                     slots[1] = EQUIPMENT_SLOT_OFFHAND;
             }
             break;
@@ -11116,7 +11107,8 @@ InventoryResult Player::CanEquipItem( uint8 slot, uint16 &dest, Item *pItem, boo
                 else
                 {
                     Item *mainItem = GetItemByPos( INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND );
-                    if (mainItem && mainItem->GetProto()->IsRestrictedByTitanGrip() || pProto->IsRestrictedByTitanGrip())
+                    if (mainItem && mainItem->GetProto()->IsRestrictedByTitanGrip() ||
+                        pProto->IsRestrictedByTitanGrip())
                         return EQUIP_ERR_ITEM_CANT_BE_EQUIPPED;
                 }
 
@@ -22199,7 +22191,7 @@ void Player::AutoUnequipOffhandIfNeed()
     if(!offItem)
         return;
 
-    bool areRestrictionsByTitanGrip = offItem->GetProto()->IsRestrictedByTitanGrip() || mainItem ? mainItem->GetProto()->IsRestrictedByTitanGrip() : false;
+    bool areRestrictionsByTitanGrip = offItem->GetProto()->IsRestrictedByTitanGrip() || mainItem && mainItem->GetProto()->IsRestrictedByTitanGrip();
 
     // need unequip offhand if there are restrictions by TitanGrip (in any from hands)
     if ((CanDualWield() || offItem->GetProto()->InventoryType == INVTYPE_SHIELD || offItem->GetProto()->InventoryType == INVTYPE_HOLDABLE) && 

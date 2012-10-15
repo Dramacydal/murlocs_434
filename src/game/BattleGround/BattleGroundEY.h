@@ -312,7 +312,7 @@ class BattleGroundEY : public BattleGround
         void EventPlayerCapturedFlag(Player* source, EYNodes node);     // NOTE: virtual BattleGround::EventPlayerCapturedFlag has different parameters list
         void UpdateResources();
 
-        void CheckBuggers();
+        void CheckBuggers() override;
 
         /* Scorekeeping */
         void AddPoints(Team team, uint32 points);

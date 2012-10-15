@@ -88,7 +88,7 @@ class BattleGroundDS : public BattleGround
         bool IsWithinLOSInBG(float x1, float y1, float z1, float x2, float y2, float z2);
     private:
         bool IsWaterfallSprout(Creature* creature);
-        void CheckBuggers();
+        void CheckBuggers() override;
         uint32 m_uiPipeKnockback;
         uint32 m_uiWaterfallKnockback;
         uint32 m_waterTimer;

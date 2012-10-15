@@ -677,7 +677,7 @@ void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
             if (m_state == WG_STATE_COOLDOWN)
             {
                 pGo->SetLootState(GO_JUST_DEACTIVATED);
-                pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_BROKEN_TEMPLE]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE_LOCKED : CAPTURE_SLIDER_HORDE_LOCKED);
+                pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_BROKEN_TEMPLE]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
             }
             else
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_BROKEN_TEMPLE]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -690,7 +690,7 @@ void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
             if (m_state == WG_STATE_COOLDOWN)
             {
                 pGo->SetLootState(GO_JUST_DEACTIVATED);
-                pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_WESTPARK]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE_LOCKED : CAPTURE_SLIDER_HORDE_LOCKED);
+                pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_WESTPARK]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
             }
             else
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_WESTPARK]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -703,7 +703,7 @@ void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
             if (m_state == WG_STATE_COOLDOWN)
             {
                 pGo->SetLootState(GO_JUST_DEACTIVATED);
-                pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_EASTPARK]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE_LOCKED : CAPTURE_SLIDER_HORDE_LOCKED);
+                pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_EASTPARK]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
             }
             else
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_EASTPARK]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -716,7 +716,7 @@ void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
             if (m_state == WG_STATE_COOLDOWN)
             {
                 pGo->SetLootState(GO_JUST_DEACTIVATED);
-                pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_SUNKEN_RING]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE_LOCKED : CAPTURE_SLIDER_HORDE_LOCKED);
+                pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_SUNKEN_RING]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
             }
             else
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_SUNKEN_RING]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -1978,7 +1978,7 @@ void WGWorkShop::InitFor(TeamIndex teamIdx, bool reset)
         if (opvp->GetState() == WG_STATE_COOLDOWN)
         {
             obj->SetLootState(GO_JUST_DEACTIVATED);
-            obj->SetCapturePointSlider(owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE_LOCKED : CAPTURE_SLIDER_HORDE_LOCKED);
+            obj->SetCapturePointSlider(owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
         }
         else
             obj->SetCapturePointSlider(owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);

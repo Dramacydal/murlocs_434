@@ -497,7 +497,7 @@ void BattleGround::Update(uint32 diff)
                         WorldPacket status;
                         BattleGroundQueueTypeId bgQueueTypeId = sBattleGroundMgr.BGQueueTypeId(m_TypeID, GetArenaType());
                         uint32 queueSlot = plr->GetBattleGroundQueueIndex(bgQueueTypeId);
-                        sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType());
+                        sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, plr, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType());
                         plr->GetSession()->SendPacket(&status);
 
                         Unit::SpellAuraHolderMap& auraMap = plr->GetSpellAuraHolderMap();
@@ -971,7 +971,7 @@ void BattleGround::EndBattleGround(Team winner)
             if (IsRandom() || BattleGroundMgr::IsBGWeekend(GetTypeID()))
             {
                 UpdatePlayerScore(plr, SCORE_BONUS_HONOR, win_kills);
-                plr->ModifyArenaPoints(win_arena);
+                plr->ModifyCurrencyCount(CURRENCY_CONQUEST_BG_META, win_arena);
                 if(!plr->GetRandomWinner())
                     plr->SetRandomWinner(true);
             }
@@ -1009,7 +1009,7 @@ void BattleGround::EndBattleGround(Team winner)
                     pPlayer->GetSession()->SendPacket(&data);
 
                     BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
-                    sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, 0, STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType());
+                    sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, pPlayer, 0, STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType());
                     pPlayer->GetSession()->SendPacket(&data);
                 }
 
@@ -1411,7 +1411,9 @@ void BattleGround::AddPlayer(Player *plr)
     WorldPacket status;
     BattleGroundQueueTypeId bgQueueTypeId = sBattleGroundMgr.BGQueueTypeId(m_TypeID, GetArenaType());
     uint32 queueSlot = plr->GetBattleGroundQueueIndex(bgQueueTypeId);
-    sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType(), isArena() ? 0 : 1);
+    //sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType(), isArena() ? 0 : 1);
+    // FIXME: does arenaframe still exists?
+    sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, plr, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType());
     plr->GetSession()->SendPacket(&status);
 
     plr->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);

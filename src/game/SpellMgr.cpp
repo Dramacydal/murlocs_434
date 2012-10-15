@@ -5369,6 +5369,7 @@ uint32 _GetFirstSpellInChain(uint32 spell_id)
 SpellLearnSkillNode const* _GetSpellLearnSkill(uint32 spell_id)
 {
     return sSpellMgr.GetSpellLearnSkill(spell_id);
+}
 
 int32 GetMasteryCoefficient(SpellEntry const * spellProto)
 {

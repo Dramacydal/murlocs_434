@@ -12477,30 +12477,7 @@ void Spell::EffectSummonAllTotems(SpellEffectEntry const* effect)
             if (actionButton->GetType()==ACTION_BUTTON_SPELL)
                 if (uint32 spell_id = actionButton->GetAction())
                     if (((Player*)m_caster)->HasSpell(spell_id) && !((Player*)m_caster)->HasSpellCooldown(spell_id))
-                    {
-                        if (SpellTotemsEntry const * te = m_spellInfo->GetSpellTotems())
-                        {
-                            uint32 TotemCategory = MAX_SPELL_TOTEM_CATEGORIES;
-                            for (int i= 0; i < MAX_SPELL_TOTEM_CATEGORIES; ++i)
-                            {
-                                if (te->TotemCategory[i] != 0)
-                                {
-                                    if (((Player*)m_caster)->HasItemTotemCategory(te->TotemCategory[i]))
-                                    {
-                                        TotemCategory -= 1;
-                                        continue;
-                                    }
-                                }
-                                else
-                                    TotemCategory -= 1;
-                            }
-
-                            if (TotemCategory != 0)
-                                continue;
-
-                            m_caster->CastSpell(unitTarget,spell_id,true);
-                        }
-                    }
+                        m_caster->CastSpell(unitTarget,spell_id,true);
 }
 
 void Spell::EffectDestroyAllTotems(SpellEffectEntry const* /*effect*/)
@@ -12617,7 +12594,6 @@ void Spell::EffectTransmitted(SpellEffectEntry const* effect)
     }
     else if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
         m_targets.getDestination(fx, fy, fz);
-    }
     // FIXME: this can be better check for most objects but still hack
     else if (effect->EffectRadiusIndex && m_spellInfo->speed == 0)
     {

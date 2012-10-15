@@ -91,6 +91,7 @@ void OutdoorPvP::SendUpdateWorldStateForMap(uint32 uiField, uint32 uiValue, Map*
 
         itr->getSource()->SendUpdateWorldState(uiField, uiValue);
     }
+}
 
 void OutdoorPvP::HandleGameObjectCreate(GameObject* go)
 {

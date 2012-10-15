@@ -6998,7 +6998,6 @@ void Aura::HandleModTotalPercentStat(bool apply, bool /*Real*/)
         switch (target->GetShapeshiftForm())
         {
             case FORM_BEAR:
-            case FORM_DIREBEAR:
             {
                 Player* player = (Player*)target;
                 SpellEntry const* spellInfo = player->GetKnownTalentRankById(808);
@@ -8994,7 +8993,7 @@ void Aura::PeriodicTick()
         case SPELL_AURA_PERIODIC_ENERGIZE:
         {
             // don't energize target if not alive, possible death persistent effects
-            if (!target->isAlive() || target->IsImmuneToSpell(GetSpellProto()))
+            if (!target->isAlive() || target->IsImmuneToSpell(GetSpellProto(), target->GetObjectGuid() == GetCasterGuid()))
                 return;
 
             // ignore non positive values (can be result apply spellmods to aura damage
@@ -9026,7 +9025,7 @@ void Aura::PeriodicTick()
                 break;
 
             // don't energize target if not alive, possible death persistent effects
-            if (!target->isAlive() || target->IsImmuneToSpell(GetSpellProto()))
+            if (!target->isAlive() || target->IsImmuneToSpell(GetSpellProto(), target->GetObjectGuid() == GetCasterGuid()))
                 return;
 
             // ignore non positive values (can be result apply spellmods to aura damage
@@ -11906,11 +11905,11 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                         // convert player to ghoul
                         m_player->SetDeathState(GHOULED);
                         m_player->SetHealth(1);
-                        m_player->SetMovement(MOVE_ROOT);
+                        m_player->SetRoot(true);
                     }
                     else
                     {
-                        m_player->SetMovement(MOVE_UNROOT);
+                        m_player->SetRoot(false);
                         m_player->SetHealth(0);
                         m_player->SetDeathState(JUST_DIED);
                     }

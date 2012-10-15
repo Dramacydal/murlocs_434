@@ -1187,7 +1187,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         typedef std::list<SpellAuraHolder *> SpellAuraHolderList;
         typedef std::list<Aura *> AuraList;
         typedef std::list<DiminishingReturn> Diminishing;
-        typedef std::set<uint32> ComboPointHolderSet;
+        typedef std::set<ObjectGuid> ComboPointHolderSet;
         typedef std::map<uint8, SpellAuraHolder*> VisibleAuraMap;
         typedef std::map<SpellEntry const*, ObjectGuid> SingleCastSpellTargetMap;
         typedef std::set<uint32> SpellIdSet;
@@ -2262,17 +2262,5 @@ bool Unit::CheckAllControlledUnits(Func const& func, uint32 controlledMask) cons
 
     return false;
 }
-
-class ManaUseEvent : public BasicEvent
-{
-    public:
-        ManaUseEvent(Unit& caster) : BasicEvent(), m_caster(caster) {}
-        bool Execute(uint64 e_time, uint32 p_time);
-
-        char const * GetName() const override { return "ManaUseEvent"; }
-
-    private:
-        Unit& m_caster;
-};
 
 #endif

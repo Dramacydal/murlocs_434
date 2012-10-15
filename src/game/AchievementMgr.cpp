@@ -1252,6 +1252,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
                 }
 
                 change = 1;
+                break;
+            }
             case ACHIEVEMENT_CRITERIA_TYPE_CURRENCY_EARNED:
             {
                 if (!miscvalue1 || !miscvalue2 || miscvalue1 != achievementCriteria->currencyEarned.currencyId)

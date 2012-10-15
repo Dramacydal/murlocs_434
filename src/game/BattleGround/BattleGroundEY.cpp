@@ -97,9 +97,9 @@ void BattleGroundEY::StartingEventOpenDoors()
     StartTimedAchievement(ACHIEVEMENT_CRITERIA_TYPE_WIN_BG, EY_EVENT_START_BATTLE);
 }
 
-void BattleGroundEY::AddPoints(Team team, uint32 Points)
+void BattleGroundEY::AddPoints(Team team, uint32 points)
 {
-    BattleGroundTeamIndex team_index = GetTeamIndexByTeamId(team);
+    TeamIndex team_index = GetTeamIndex(team);
     m_TeamScores[team_index] += points;
     m_honorScoreTicks[team_index] += points;
     m_ExperienceTics[team_index] += points;
@@ -108,7 +108,7 @@ void BattleGroundEY::AddPoints(Team team, uint32 Points)
         RewardHonorToTeam(GetBonusHonorFromKill(1), team);
         m_honorScoreTicks[team_index] -= m_honorTicks;
     }
-    if (m_ExperienceTics[team_index] >= BG_EY_ExperienceTicks )
+    if (m_ExperienceTics[team_index] >= BG_EY_ExperienceTicks)
     {
         RewardXpToTeam(0, 0.8f, team);
         m_ExperienceTics[team_index] -= BG_EY_ExperienceTicks;
@@ -131,7 +131,7 @@ void BattleGroundEY::UpdateResources()
 
 void BattleGroundEY::UpdateTeamScore(Team team)
 {
-    uint32 score = m_TeamScores[GetTeamIndexByTeamId(team)];
+    uint32 score = m_TeamScores[GetTeamIndex(team)];
 
     if (score >= EY_MAX_TEAM_SCORE)
     {
@@ -259,7 +259,7 @@ void BattleGroundEY::ProcessCaptureEvent(GameObject* go, uint32 towerId, Team te
         SendMessageToAll(message, CHAT_MSG_BG_SYSTEM_ALLIANCE);
 
         // spawn gameobjects
-        SpawnEvent(towerId, BG_TEAM_ALLIANCE, true);
+        SpawnEvent(towerId, TEAM_INDEX_ALLIANCE, true);
     }
     else if (team == HORDE)
     {
@@ -270,7 +270,7 @@ void BattleGroundEY::ProcessCaptureEvent(GameObject* go, uint32 towerId, Team te
         SendMessageToAll(message, CHAT_MSG_BG_SYSTEM_HORDE);
 
         // spawn gameobjects
-        SpawnEvent(towerId, BG_TEAM_HORDE, true);
+        SpawnEvent(towerId, TEAM_INDEX_HORDE, true);
     }
     else
     {
@@ -304,15 +304,15 @@ void BattleGroundEY::ProcessCaptureEvent(GameObject* go, uint32 towerId, Team te
     m_towerOwner[towerId] = team;
 }
 
-void BattleGroundEY::HandleAreaTrigger(Player *Source, uint32 Trigger)
+void BattleGroundEY::HandleAreaTrigger(Player* source, uint32 Trigger)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
         return;
 
-    if(!Source->isAlive())                                  //hack code, must be removed later
+    if (!source->isAlive())                                  //hack code, must be removed later
         return;
 
-    switch(Trigger)
+    switch (Trigger)
     {
         case AREATRIGGER_BLOOD_ELF_TOWER_POINT:
             if (m_towerOwner[NODE_BLOOD_ELF_TOWER] == source->GetTeam())
@@ -358,15 +358,15 @@ void BattleGroundEY::Reset()
     //call parent's class reset
     BattleGround::Reset();
 
-    m_TeamScores[BG_TEAM_ALLIANCE] = 0;
-    m_TeamScores[BG_TEAM_HORDE] = 0;
+    m_TeamScores[TEAM_INDEX_ALLIANCE] = 0;
+    m_TeamScores[TEAM_INDEX_HORDE] = 0;
 
     m_towersAlliance = 0;
     m_towersHorde = 0;
 
     m_honorTicks = BattleGroundMgr::IsBGWeekend(GetTypeID()) ? EY_WEEKEND_HONOR_INTERVAL : EY_NORMAL_HONOR_INTERVAL;
-    m_honorScoreTicks[BG_TEAM_ALLIANCE] = 0;
-    m_honorScoreTicks[BG_TEAM_HORDE] = 0;
+    m_honorScoreTicks[TEAM_INDEX_ALLIANCE] = 0;
+    m_honorScoreTicks[TEAM_INDEX_HORDE] = 0;
     m_ExperienceTics[TEAM_INDEX_ALLIANCE] = 0;
     m_ExperienceTics[TEAM_INDEX_HORDE] = 0;
 
@@ -426,7 +426,7 @@ void BattleGroundEY::HandleKillPlayer(Player *player, Player *killer)
     EventPlayerDroppedFlag(player);
 }
 
-void BattleGroundEY::EventPlayerDroppedFlag(Player *Source)
+void BattleGroundEY::EventPlayerDroppedFlag(Player* source)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
     {
@@ -465,7 +465,7 @@ void BattleGroundEY::EventPlayerDroppedFlag(Player *Source)
     }
 }
 
-void BattleGroundEY::EventPlayerClickedOnFlag(Player *Source, GameObject* target_obj)
+void BattleGroundEY::EventPlayerClickedOnFlag(Player* source, GameObject* target_obj)
 {
     if (GetStatus() != STATUS_IN_PROGRESS || IsFlagPickedUp() || !source->IsWithinDistInMap(target_obj, 10))
         return;
@@ -536,9 +536,9 @@ void BattleGroundEY::EventPlayerCapturedFlag(Player* source, EYNodes node)
 
     SpawnEvent(EY_EVENT_CAPTURE_FLAG, node, true);
 
-    RewardXpToTeam(0, 0.6f, Source->GetTeam());
+    RewardXpToTeam(0, 0.6f, source->GetTeam());
 
-    UpdatePlayerScore(Source, SCORE_FLAG_CAPTURES, 1);
+    UpdatePlayerScore(source, SCORE_FLAG_CAPTURES, 1);
 }
 
 void BattleGroundEY::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
@@ -565,8 +565,8 @@ void BattleGroundEY::FillInitialWorldStates(WorldPacket& data, uint32& count)
     FillInitialWorldState(data, count, WORLD_STATE_EY_TOWER_COUNT_ALLIANCE, m_towersAlliance);
     FillInitialWorldState(data, count, WORLD_STATE_EY_TOWER_COUNT_HORDE, m_towersHorde);
 
-    FillInitialWorldState(data, count, WORLD_STATE_EY_RESOURCES_ALLIANCE, m_TeamScores[BG_TEAM_ALLIANCE]);
-    FillInitialWorldState(data, count, WORLD_STATE_EY_RESOURCES_HORDE, m_TeamScores[BG_TEAM_HORDE]);
+    FillInitialWorldState(data, count, WORLD_STATE_EY_RESOURCES_ALLIANCE, m_TeamScores[TEAM_INDEX_ALLIANCE]);
+    FillInitialWorldState(data, count, WORLD_STATE_EY_RESOURCES_HORDE, m_TeamScores[TEAM_INDEX_HORDE]);
 
     // tower world states
     FillInitialWorldState(data, count, WORLD_STATE_EY_BLOOD_ELF_TOWER_ALLIANCE, m_towerOwner[NODE_BLOOD_ELF_TOWER] == ALLIANCE);
