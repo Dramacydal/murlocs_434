@@ -33,6 +33,7 @@
 #define WG_START_INVITE_TIME (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_START_INVITE_TIME))
 #define WG_STOP_TELEPORTING_TIME (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_STOP_TELEPORTING_TIME))
 
+class Group;
 class OutdoorPvPWG;
 class WGWorkShop;
 class WGGraveYard;
