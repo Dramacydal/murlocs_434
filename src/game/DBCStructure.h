@@ -817,24 +817,24 @@ struct CreatureFamilyEntry
 
 struct CreatureModelDataEntry
 {
-    uint32 Id;                                              // 1
-    //uint32 Flags;                                         // 2
-    //char* ModelPath[16]                                   // 3
-    //uint32 Unk1;                                          // 4
-    float Scale;                                            // 5 Used in calculation of unit collision data
-    //int32 Unk2                                            // 6
-    //int32 Unk3                                            // 7
-    //uint32 Unk4                                           // 8
-    //uint32 Unk5                                           // 9
-    //float Unk6                                            // 10
-    //uint32 Unk7                                           // 11
-    //float Unk8                                            // 12
-    //uint32 Unk9                                           // 13
-    //uint32 Unk10                                          // 14
-    //float CollisionWidth;                                 // 15
-    float CollisionHeight;                                  // 16
-    float MountHeight;                                      // 17 Used in calculation of unit collision data when mounted
-    //float Unks[11]                                        // 18-28
+    uint32 Id;                                              // 0
+    //uint32 Flags;                                         // 1
+    //char* ModelPath                                       // 2
+    //uint32 Unk1;                                          // 3
+    float Scale;                                            // 4 Used in calculation of unit collision data
+    //int32 Unk2                                            // 5
+    //int32 Unk3                                            // 6
+    //uint32 Unk4                                           // 7
+    //uint32 Unk5                                           // 8
+    //float Unk6                                            // 9
+    //uint32 Unk7                                           // 10
+    //float Unk8                                            // 11
+    //uint32 Unk9                                           // 12
+    //uint32 Unk10                                          // 13
+    //float CollisionWidth;                                 // 14
+    float CollisionHeight;                                  // 15
+    float MountHeight;                                      // 16 Used in calculation of unit collision data when mounted
+    //float Unks[14]                                        // 17-30
 };
 
 #define MAX_CREATURE_SPELL_DATA_SLOT 4
@@ -881,25 +881,30 @@ struct CurrencyTypesEntry
 
 struct DestructibleModelDataEntry
 {
-    uint32 Id;                                              // 0
-    //uint32 DamagedUnk1;                                   // 1
-    //uint32 DamagedUnk2;                                   // 2
-    uint32 DamagedDisplayId;                                // 3
-    //uint32 DamagedUnk3;                                   // 4
-    //uint32 DestroyedUnk1;                                 // 5
-    //uint32 DestroyedUnk2;                                 // 6
-    uint32 DestroyedDisplayId;                              // 7
-    //uint32 DestroyedUnk3;                                 // 8
-    //uint32 RebuildingUnk1;                                // 9
-    //uint32 RebuildingUnk2;                                // 10
-    uint32 RebuildingDisplayId;                             // 11
-    //uint32 RebuildingUnk3;                                // 12
-    //uint32 SmokeUnk1;                                     // 13
-    //uint32 SmokeUnk2;                                     // 14
-    uint32 SmokeDisplayId;                                  // 15
-    //uint32 SmokeUnk3;                                     // 16
-    //uint32 Unk4;                                          // 17
-    //uint32 Unk5;                                          // 18
+    uint32  Id;                                             // 0
+    uint32  DamagedDisplayId;                               // 1
+    //uint32  DamagedUnk1;                                  // 2
+    //uint32  DamagedUnk2;                                  // 3
+    //uint32  DamagedUnk3;                                  // 4
+    uint32  RebuildingDisplayId;                            // 5
+    //uint32  DestroyedUnk1;                                // 6
+    //uint32  DestroyedUnk2;                                // 7
+    //uint32  DestroyedUnk3;                                // 8
+    //uint32  DestroyedUnk4;                                // 9
+    uint32  DestroyedDisplayId;                             // 10
+    //uint32  RebuildingUnk1;                               // 11
+    //uint32  RebuildingUnk2;                               // 12
+    //uint32  RebuildingUnk3;                               // 13
+    //uint32  RebuildingUnk4;                               // 14
+    uint32  SmokeDisplayId;                                 // 15
+    //uint32  SmokeUnk1;                                    // 16
+    //uint32  SmokeUnk2;                                    // 17
+    //uint32  SmokeUnk3;                                    // 18
+    //uint32  SmokeUnk4;                                    // 19
+    //uint32  UnkDisplayid;                                 // 20
+    //uint32  Unk6;                                         // 21
+    //uint32  Unk7;                                         // 22
+    //uint32  Unk8;                                         // 23
 };
 
 struct DungeonEncounterEntry
@@ -1277,24 +1282,28 @@ struct ItemSetEntry
 
 struct LFGDungeonEntry
 {
-    uint32  ID;                                             // 0     m_ID
-    //char*   name[16];                                     // 1-17  m_name_lang
-    uint32  minlevel;                                       // 18    m_minLevel
-    uint32  maxlevel;                                       // 19    m_maxLevel
-    uint32  reclevel;                                       // 20    m_target_level
-    uint32  recminlevel;                                    // 21    m_target_level_min
-    uint32  recmaxlevel;                                    // 22    m_target_level_max
-    uint32  map;                                            // 23    m_mapID
-    uint32  difficulty;                                     // 24    m_difficulty
-    uint32  flags;                                          // 25    m_flags
-    uint32  type;                                           // 26    m_typeID
-    uint32  faction;                                        // 27    m_faction
-    //char*   unk3;                                         // 28    m_textureFilename
-    uint32  expansion;                                      // 29    m_expansionLevel
-    uint32  index;                                          // 30    m_order_index
-    uint32  grouptype;                                      // 31    m_group_id
-    //char*   desc[16];                                     // 32-47 m_description_lang
-    //uint32 unk5                                           // 48 language flags?
+    uint32 ID;                                              // 0     m_ID
+    //DBCString name;                                       // 1     m_name_lang
+    uint32 minlevel;                                        // 2     m_minLevel
+    uint32 maxlevel;                                        // 3     m_maxLevel
+    uint32 reclevel;                                        // 4     m_target_level
+    uint32 recminlevel;                                     // 5     m_target_level_min
+    uint32 recmaxlevel;                                     // 6     m_target_level_max
+    uint32 map;                                             // 7     m_mapID
+    uint32 difficulty;                                      // 8     m_difficulty
+    uint32 flags;                                           // 9     m_flags
+    uint32 type;                                            // 10    m_typeID
+    uint32 faction;                                         // 11    m_faction
+    //char* texture;                                        // 12    m_textureFilename
+    uint32 expansion;                                       // 13    m_expansionLevel
+    uint32 index;                                           // 14    m_order_index
+    uint32 grouptype;                                       // 15    m_group_id
+    //DBCString desc;                                       // 16    m_description_lang
+    //uint32 unk17                                          // 17
+    //uint32 unk18                                          // 18
+    //uint32 unk19                                          // 19
+    //uint32 unk20                                          // 20
+
     // Helpers
     uint32 Entry() const { return ID + (type << 24); }
 };
@@ -1318,6 +1327,7 @@ struct LFGDungeonExpansionEntry
     uint32  maxlevelHard;                                   // 5    m_hard_level_max
     uint32  minlevel;                                       // 6    m_target_level_min
     uint32  maxlevel;                                       // 7    m_target_level_max
+
     // Helpers
     bool IsRandom() const { return randomEntry == 0; }
 };
@@ -2099,7 +2109,7 @@ struct SpellRangeEntry
 {
     uint32    ID;                                           // 0        m_ID
     float     minRange;                                     // 1        m_rangeMin[2]
-    float     minRangeFriendly;                             // 2 
+    float     minRangeFriendly;                             // 2
     float     maxRange;                                     // 3        m_rangeMax[2]
     float     maxRangeFriendly;                             // 4
     //uint32  Flags;                                        // 5        m_flags
