@@ -4660,24 +4660,24 @@ bool GossipSelect_npc_fun_services(Player* player, Creature* pCreature, uint32 s
                 case COST_FREE:
                     break;
                 case COST_HONOR:
-                    if (player->GetHonorPoints() < cost)
+                    if (player->GetCurrencyCount(CURRENCY_HONOR_POINTS) < cost)
                     {
                         player->PlayerTalkClass->ClearMenus();
                         player->SEND_GOSSIP_MENU(GOSSIP_REROLL_ERROR_H, pCreature->GetObjectGuid());
                         return true;
                     }
                     else
-                        player->ModifyHonorPoints(-int32(cost));
+                        player->ModifyCurrencyCount(CURRENCY_HONOR_POINTS, -int32(cost));
                     break;
                 case COST_AP:
-                    if (player->GetArenaPoints() < cost)
+                    if (player->GetCurrencyCount(CURRENCY_CONQUEST_POINTS) < cost)
                     {
                         player->PlayerTalkClass->ClearMenus();
                         player->SEND_GOSSIP_MENU(GOSSIP_REROLL_ERROR_A, pCreature->GetObjectGuid());
                         return true;
                     }
                     else
-                        player->ModifyArenaPoints(-int32(cost));
+                        player->ModifyCurrencyCount(CURRENCY_CONQUEST_POINTS, -int32(cost));
                     break;
                 default:
                     return true;
