@@ -1083,9 +1083,9 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         // in creature kill case group/player tap stored for creature
         if (pVictim->GetTypeId() == TYPEID_UNIT)
         {
-            group_tap = ((Creature*)pVictim)->GetGroupLootRecipient();
+            group_tap = pVictim->GetGroupLootRecipient();
 
-            if (Player* recipient = ((Creature*)pVictim)->GetOriginalLootRecipient())
+            if (Player* recipient = pVictim->GetOriginalLootRecipient())
                 player_tap = recipient;
         }
         // in player kill case group tap selected by player_tap (killer-player itself, or charmer, or owner, etc)
@@ -1131,6 +1131,15 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             player_tap->SendDirectMessage(&data);
         }
 
+        // Reward player, his pets, and group/raid members
+        if (player_tap != pVictim)
+        {
+            if (group_tap)
+                group_tap->RewardGroupAtKill(pVictim, player_tap);
+            else if (player_tap)
+                player_tap->RewardSinglePlayerAtKill(pVictim);
+        }
+
         pVictim->ProcDamageAndSpell(pVictim, PROC_FLAG_NONE, PROC_FLAG_ON_DEATH, PROC_EX_NONE, 0);
 
         // stop combat
@@ -1158,11 +1167,9 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 
             // FORM_SPIRITOFREDEMPTION and related auras
             pVictim->CastSpell(pVictim,27827,true,NULL,spiritOfRedemtionTalentReady);
-
-            return damage;
         }
-
-        pVictim->SetHealth(0);
+        else
+            pVictim->SetHealth(0);
 
         // Call KilledUnit for creatures
         if (GetTypeId() == TYPEID_UNIT && ((Creature*)this)->AI())

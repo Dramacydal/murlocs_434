@@ -6364,15 +6364,11 @@ void Player::SendActionButtons(uint8 state) const
         ActionButtonList const& currentActionButtonList = m_actionButtons[m_activeSpec];
         for (uint8 button = 0; button < MAX_ACTION_BUTTONS; ++button)
         {
-            ActionButtonList const& currentActionButtonList = m_actionButtons[m_activeSpec];
-            for(uint8 button = 0; button < MAX_ACTION_BUTTONS; ++button)
-            {
-                ActionButtonList::const_iterator itr = currentActionButtonList.find(button);
-                if(itr != currentActionButtonList.end() && itr->second.uState != ACTIONBUTTON_DELETED)
-                    data << uint32(itr->second.packedData);
-                else
-                    data << uint32(0);
-            }
+            ActionButtonList::const_iterator itr = currentActionButtonList.find(button);
+            if (itr != currentActionButtonList.end() && itr->second.uState != ACTIONBUTTON_DELETED)
+                data << uint32(itr->second.packedData);
+            else
+                data << uint32(0);
         }
     }
     data << uint8(state);                                   // talent spec amount (in packet)
