@@ -484,7 +484,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
     if (updateFlags & UPDATEFLAG_VEHICLE)
     {
         *data << float(NormalizeOrientation(((WorldObject*)this)->GetOrientation()));
-        *data << uint32(((Unit*)this)->GetVehicle()->GetVehicleId()); // vehicle id
+        *data << uint32(((Unit*)this)->GetVehicleKit()->GetVehicleId()); // vehicle id
     }
 
     // used only with GO's, placeholder
