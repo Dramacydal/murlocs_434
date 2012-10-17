@@ -1242,12 +1242,15 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             pVictim->SetDeathState(JUST_DIED);              // if !spiritOfRedemtionTalentReady always true for unit
 
             if (player_tap)                                 // killedby Player
+            {
                 if (BattleGround* bg = player_tap->GetBattleGround())
                     bg->HandleKillUnit((Creature*)pVictim, player_tap);
 
                 // selfkills are not handled in outdoor pvp scripts
-                if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(player_tap->GetCachedZoneId()))
-                    outdoorPvP->HandlePlayerKill(player_tap, pVictim);
+                if (pVictim->GetObjectGuid() != GetObjectGuid())
+                    if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(player_tap->GetCachedZoneId()))
+                        outdoorPvP->HandlePlayerKill(player_tap, pVictim);
+            }
         }
     }
     else                                                    // if (health <= damage)
