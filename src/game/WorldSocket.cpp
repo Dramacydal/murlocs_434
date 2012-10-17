@@ -835,7 +835,8 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
                              "s, "                       //5
                              "expansion, "               //6
                              "mutetime, "                //7
-                             "locale "                   //8
+                             "locale, "                  //8
+                             "os "                       //9
                              "FROM account "
                              "WHERE username = '%s'",
                              safe_account.c_str());
@@ -897,18 +898,6 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     if(security > SEC_ADMINISTRATOR)                        // prevent invalid security settings in DB
         security = SEC_ADMINISTRATOR;
 
-    QueryResult *result2 = CharacterDatabase.PQuery("SELECT security FROM account_forcepermission WHERE id = '%u'", id);
-
-    if(result2)
-    {
-        security = (*result2)[0].GetUInt32();
-        delete result2;
-    }
-    else if(fields[1].GetUInt16 () > 0)
-        security = fields[1].GetUInt16 ();
-    else
-        security = SEC_PLAYER;
-
     K.SetHexStr (fields[1].GetString ());
 
     time_t mutetime = time_t (fields[7].GetUInt64 ());
@@ -917,7 +906,7 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     if (locale >= MAX_LOCALE)
         locale = LOCALE_enUS;
 
-    std::string os = fields[10].GetString();
+    std::string os = fields[9].GetString();
 
     delete result;
 
@@ -939,6 +928,17 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
         security = fields[1].GetInt32();
         delete result;
     }
+
+    QueryResult *result2 = CharacterDatabase.PQuery("SELECT security FROM account_forcepermission WHERE id = '%u'", id);
+    if(result2)
+    {
+        security = (*result2)[0].GetUInt32();
+        delete result2;
+    }
+    else if(fields[1].GetUInt16 () > 0)
+        security = fields[1].GetUInt16 ();
+    else
+        security = SEC_PLAYER;
 
     // Re-check account ban (same check as in realmd)
     QueryResult *banresult =
