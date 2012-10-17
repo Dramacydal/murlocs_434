@@ -464,8 +464,6 @@ bool AntiCheat::CheckNeeded(AntiCheatCheck checktype)
     AntiCheatCheck checkMainType =  (checktype >= 100) ? AntiCheatCheck(checktype / 100) : checktype;
 
     uint32 mapid = GetPlayer()->GetMapId();
-    uint32 zone_id, area_id;
-    GetPlayer()->GetZoneAndAreaId(zone_id,area_id);
 
     switch( checkMainType)
     {
@@ -474,7 +472,7 @@ bool AntiCheat::CheckNeeded(AntiCheatCheck checktype)
             break;
         case CHECK_MOVEMENT:
             if (   GetPlayer()->GetTransport()
-                || !GetPlayer()->GetTransportGuid().IsEmpty()
+                || GetPlayer()->HasMovementFlag(MOVEFLAG_ONTRANSPORT)
                 || GetPlayer()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CONFUSED)
                 || GetPlayer()->IsTaxiFlying()
                 || GetPlayer()->hasUnitState(UNIT_STAT_CONTROLLED)
@@ -482,8 +480,14 @@ bool AntiCheat::CheckNeeded(AntiCheatCheck checktype)
                 || mapid == 607 // Strand of the Ancients ships bug
                 || mapid == 13  // Test map (for Event team)
                 || mapid == 369 // Metro
-                || zone_id == 4395) // Dalaran
+                || GetPlayer()->GetZoneId() == 4395) // Dalaran
                 return false;
+
+            // Ranger: dont check if player is passenger
+            if (VehicleKit* pVehicle = GetPlayer()->GetVehicle())
+                if (pVehicle->GetBase() && pVehicle->GetBase()->GetTypeId() == TYPEID_PLAYER)
+                    if (pVehicle->GetBase()->GetCharmerOrOwnerGuid() != GetPlayer()->GetObjectGuid())
+                        return false;
             break;
         case CHECK_SPELL:
             break;
