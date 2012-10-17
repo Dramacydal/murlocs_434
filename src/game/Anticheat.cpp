@@ -472,7 +472,7 @@ bool AntiCheat::CheckNeeded(AntiCheatCheck checktype)
             break;
         case CHECK_MOVEMENT:
             if (   GetPlayer()->GetTransport()
-                || GetPlayer()->HasMovementFlag(MOVEFLAG_ONTRANSPORT)
+                || !GetPlayer()->GetTransportGuid().IsEmpty()
                 || GetPlayer()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CONFUSED)
                 || GetPlayer()->IsTaxiFlying()
                 || GetPlayer()->hasUnitState(UNIT_STAT_CONTROLLED)
