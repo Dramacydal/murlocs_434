@@ -2263,13 +2263,13 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
                 }
 
 
-                uint32 absorb, resist;
-                CalculateDamageAbsorbAndResist(pVictim, GetSpellSchoolMask(i_spellProto), SPELL_DIRECT_DAMAGE, damage, &absorb, &resist);
+                //uint32 absorb, resist;
+                //CalculateDamageAbsorbAndResist(pVictim, GetSpellSchoolMask(i_spellProto), SPELL_DIRECT_DAMAGE, damage, &absorb, &resist);
 
-                if (damage >= absorb + resist)
-                    damage -= absorb + resist;
-                else
-                    damage = 0;
+                //if (damage >= absorb + resist)
+                //    damage -= absorb + resist;
+                //else
+                //    damage = 0;
 
                 pVictim->DealDamageMods(this, damage, NULL);
 
@@ -2283,7 +2283,7 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
                 data << uint32(damage);                  // Damage
                 data << uint32(overkill);                // Overkill
                 data << uint32(i_spellProto->SchoolMask);
-                data << uint32(resist);                  // Resist
+                data << uint32(0);                       // FIXME: Resist
                 pVictim->SendMessageToSet(&data, true);
 
                 pVictim->DealDamage(this, damage, 0, SPELL_DIRECT_DAMAGE, GetSpellSchoolMask(i_spellProto), i_spellProto, true);
