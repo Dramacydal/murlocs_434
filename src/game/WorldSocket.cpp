@@ -930,15 +930,11 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     }
 
     QueryResult *result2 = CharacterDatabase.PQuery("SELECT security FROM account_forcepermission WHERE id = '%u'", id);
-    if(result2)
+    if (result2)
     {
         security = (*result2)[0].GetUInt32();
         delete result2;
     }
-    else if(fields[1].GetUInt16 () > 0)
-        security = fields[1].GetUInt16 ();
-    else
-        security = SEC_PLAYER;
 
     // Re-check account ban (same check as in realmd)
     QueryResult *banresult =
