@@ -49,6 +49,7 @@
 #include "InstanceData.h"
 #include "Language.h"
 #include "MapManager.h"
+#include "SpellAuras.h"
 
 #define NULL_AURA_SLOT 0xFF
 
