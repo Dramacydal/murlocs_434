@@ -443,10 +443,7 @@ void WorldSession::HandleDismissControlledVehicle(WorldPacket &recv_data)
     DEBUG_LOG("WORLD: Received CMSG_DISMISS_CONTROLLED_VEHICLE");
     recv_data.hexlike();
 
-    ObjectGuid guid;
     MovementInfo mi;
-
-    recv_data >> guid.ReadAsPacked();
     recv_data >> mi;
 
     if (!_player->GetVehicle())
@@ -454,7 +451,7 @@ void WorldSession::HandleDismissControlledVehicle(WorldPacket &recv_data)
 
     bool dismiss = true;
 
-    Creature* vehicle = _player->GetMap()->GetAnyTypeCreature(guid);
+    Creature* vehicle = _player->GetMap()->GetAnyTypeCreature(mi.GetGuid());
     if (!vehicle || !vehicle->GetVehicleKit() || !vehicle->GetVehicleKit()->GetVehicleInfo())
         return;
 
