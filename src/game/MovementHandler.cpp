@@ -408,9 +408,10 @@ void WorldSession::HandleSetActiveMoverOpcode(WorldPacket &recv_data)
     recv_data.hexlike();
 
     ObjectGuid guid;
-    recv_data >> guid;
+    recv_data.ReadGuidMask<7, 2, 1, 0, 4, 5, 6, 3>(guid);
+    recv_data.ReadGuidBytes<3, 2, 4, 0, 5, 1, 6, 7>(guid);
 
-    if(!_player->IsInWorld())
+    if (!_player->IsInWorld())
         return;
 
     if (Unit *mover = ObjectAccessor::GetUnit(*GetPlayer(), guid))
@@ -588,15 +589,15 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
     recv_data.hexlike();
 
     ObjectGuid guid, guid2;
-    recv_data >> guid.ReadAsPacked();
-
     MovementInfo mi;
-    recv_data >> mi;
-
-    recv_data >> guid2.ReadAsPacked(); //guid of vehicle or of vehicle in target seat
-
     int8 seatId;
-    recv_data >> seatId;
+
+    recv_data >> mi;
+    guid = mi.GetGuid();
+    guid2 = mi.GetGuid2();
+    seatId = mi.GetByteParam();
+
+    sLog.outDebug("WORLD: Guid: %s Guid2: %s seatId: %i", guid.GetString().c_str(), guid2.GetString().c_str(), seatId);
 
     VehicleKit* pVehicle = _player->GetVehicle();
 
@@ -608,7 +609,7 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 
     _player->m_movementInfo = mi;
 
-    if(guid.GetRawValue() == guid2.GetRawValue())
+    if (guid.GetRawValue() == guid2.GetRawValue())
         _player->ChangeSeat(seatId, false);
     else if (guid2.IsVehicle())
     {
