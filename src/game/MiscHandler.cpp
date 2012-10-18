@@ -826,7 +826,7 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
         case AREA_LOCKSTATUS_QUEST_NOT_COMPLETED:
             if(at->target_mapId == 269)
             {
-                SendAreaTriggerMessage("%s", at->requiredFailedText.c_str());
+                SendAreaTriggerMessage(GetMangosString(LANG_TELEREQ_QUEST_BLACK_MORASS));
                 return;
             }
             // No break here!
