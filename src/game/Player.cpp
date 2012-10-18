@@ -21599,9 +21599,9 @@ void Player::SendInitialPacketsAfterAddToMap()
         SendMessageToSet(&data2, true);
     }
 
-    if(GetVehicle())
+    if (GetVehicle())
     {
-        WorldPacket data3(SMSG_FORCE_MOVE_ROOT, 10);
+        WorldPacket data3;
         BuildForceMoveRootPacket(&data3, true, (m_movementInfo.GetVehicleSeatFlags() & SEAT_FLAG_CAN_CAST) ? 2 : 0);
         SendMessageToSet(&data3, true);
     }

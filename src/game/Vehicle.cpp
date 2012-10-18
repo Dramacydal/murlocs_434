@@ -224,9 +224,8 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
         ((Player*)passenger)->UnsummonPetTemporaryIfAny();
         ((Player*)passenger)->GetCamera().SetView(m_pBase);
 
-        WorldPacket data(SMSG_FORCE_MOVE_ROOT, 8+4);
-        data << passenger->GetPackGUID();
-        data << uint32((passenger->m_movementInfo.GetVehicleSeatFlags() & SEAT_FLAG_CAN_CAST) ? 2 : 0);
+        WorldPacket data;
+        passenger->BuildForceMoveRootPacket(&data, true, (passenger->m_movementInfo.GetVehicleSeatFlags() & SEAT_FLAG_CAN_CAST) ? 2 : 0);
         passenger->SendMessageToSet(&data, true);
     }
 
@@ -306,9 +305,8 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
 
         if (m_pBase->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE))
         {
-            WorldPacket data2(SMSG_FORCE_MOVE_ROOT, 8+4);
-            data2 << m_pBase->GetPackGUID();
-            data2 << (uint32)(2);
+            WorldPacket data2;
+            m_pBase->BuildForceMoveRootPacket(&data2, true, 2);
             m_pBase->SendMessageToSet(&data2,false);
         }
         else if (passenger->m_movementInfo.GetMovementFlags() & MOVEFLAG_WALK_MODE)
@@ -410,9 +408,8 @@ void VehicleKit::RemovePassenger(Unit *passenger)
     {
         ((Player*)passenger)->GetCamera().ResetView();
 
-        WorldPacket data(SMSG_FORCE_MOVE_UNROOT, 8+4);
-        data << passenger->GetPackGUID();
-        data << uint32(2);
+        WorldPacket data;
+        passenger->BuildForceMoveRootPacket(&data, false, 2);
         passenger->SendMessageToSet(&data, true);
 
         ((Player*)passenger)->ResummonPetTemporaryUnSummonedIfAny();
