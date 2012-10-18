@@ -84,42 +84,42 @@ bool OutdoorPvPWG::InitOutdoorPvPArea()
                 ws->worldState = WG_WS_WORKSHOP_BROKEN_TEMPLE;
                 ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_ALLIANCE_INTACT : WG_OBJECTSTATE_HORDE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_BROKEN_TEMPLE;
-                sObjectMgr.AddGraveYardLink(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner), false);
+                sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
             case WG_WORKSHOP_SUNKEN_RING:
                 ws->owner = m_defender;
                 ws->worldState = WG_WS_WORKSHOP_SUNKEN_RING;
                 ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_ALLIANCE_INTACT : WG_OBJECTSTATE_HORDE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_SUNKEN_RING;
-                sObjectMgr.AddGraveYardLink(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner), false);
+                sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
             case WG_WORKSHOP_KEEP_WEST:
                 ws->owner = m_defender;
                 ws->worldState = WG_WS_WORKSHOP_KEEP_WEST;
                 ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_ALLIANCE_INTACT : WG_OBJECTSTATE_HORDE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_KEEP_1;
-                sObjectMgr.AddGraveYardLink(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner), false);
+                sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
             case WG_WORKSHOP_KEEP_EAST:
                 ws->owner = m_defender;
                 ws->worldState = WG_WS_WORKSHOP_KEEP_EAST;
                 ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_ALLIANCE_INTACT : WG_OBJECTSTATE_HORDE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_KEEP_2;
-                sObjectMgr.AddGraveYardLink(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner), false);
+                sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
             case WG_WORKSHOP_WESTPARK:
                 ws->owner = GetAttacker();
                 ws->worldState = WG_WS_WORKSHOP_WESTPARK;
                 ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_HORDE_INTACT : WG_OBJECTSTATE_ALLIANCE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_WESTPARK;
-                sObjectMgr.AddGraveYardLink(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner), false);
+                sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
             case WG_WORKSHOP_EASTPARK:
                 ws->owner = GetAttacker();
                 ws->worldState = WG_WS_WORKSHOP_EASTPARK;
                 ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_HORDE_INTACT : WG_OBJECTSTATE_ALLIANCE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_EASTPARK;
-                sObjectMgr.AddGraveYardLink(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner), false);
+                sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
         }
     }
@@ -1968,8 +1968,7 @@ void WGWorkShop::InitFor(TeamIndex teamIdx, bool reset)
 
     WGObject::InitFor(teamIdx, reset);
 
-    //sObjectMgr.RemoveGraveYardLink(gy, ZONE_ID_WINTERGRASP, TEAM_NONE, false);
-    //sObjectMgr.AddGraveYardLink(gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(owner), false);
+    sObjectMgr.SetGraveYardLinkTeam(gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(owner));
 
     if (gyChanged)
         opvp->GraveYardChanged(id, owner);
