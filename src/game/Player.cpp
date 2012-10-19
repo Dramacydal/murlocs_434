@@ -13320,7 +13320,7 @@ void Player::ApplyEnchantment(Item *item, EnchantmentSlot slot, bool apply, bool
                                 if (item_rand)
                                 {
                                     // Search enchant_amount
-                                    for (int k = 0; k < 3; ++k)
+                                    for (int k = 0; k < 5; ++k)
                                     {
                                         if(item_rand->enchant_id[k] == enchant_id)
                                         {
@@ -13367,7 +13367,7 @@ void Player::ApplyEnchantment(Item *item, EnchantmentSlot slot, bool apply, bool
                         ItemRandomSuffixEntry const *item_rand_suffix = sItemRandomSuffixStore.LookupEntry(abs(item->GetItemRandomPropertyId()));
                         if(item_rand_suffix)
                         {
-                            for (int k = 0; k < 3; ++k)
+                            for (int k = 0; k < 5; ++k)
                             {
                                 if(item_rand_suffix->enchant_id[k] == enchant_id)
                                 {
