@@ -21520,7 +21520,6 @@ void Player::SendInitialPacketsBeforeAddToMap()
 
     data.Initialize(SMSG_INSTANCE_DIFFICULTY, 4+4);
     data << uint32(GetMap()->GetDifficulty());
-    data << uint32(0);
     GetSession()->SendPacket(&data);
 
     SendInitialSpells();
@@ -25421,8 +25420,8 @@ void Player::SendReferFriendError(ReferAFriendError err, Player * target)
 {
     WorldPacket data(SMSG_REFER_A_FRIEND_FAILURE, 24);
     data << uint32(err);
-    if (target && (err == ERR_REFER_A_FRIEND_NOT_IN_GROUP || err == ERR_REFER_A_FRIEND_SUMMON_OFFLINE_S))
-        data << target->GetName();
+    if (err == ERR_REFER_A_FRIEND_NOT_IN_GROUP)
+        data << (target ? target->GetName() : uint8(0));
 
     GetSession()->SendPacket(&data);
 }
@@ -25664,156 +25663,183 @@ void Player::DeleteRefundReference(ObjectGuid guid)
 
 void Player::SendRefundInfo(Item* item)
 {
-    // FIXME
-    //if (!item->HasFlag(ITEM_FIELD_FLAGS, ITEM_DYNFLAG_REFUNDABLE))
-    //{
-    //    DEBUG_LOG("Item refund: item %s is not refundable!", item->GetGuidStr().c_str());
-    //    return;
-    //}
+    if (!item->HasFlag(ITEM_FIELD_FLAGS, ITEM_DYNFLAG_REFUNDABLE))
+    {
+        DEBUG_LOG("Item refund: item %s is not refundable!", item->GetGuidStr().c_str());
+        return;
+    }
 
-    //if (GetObjectGuid() != item->GetRefundRecipient())  // Formerly refundable item got traded
-    //{
-    //    DEBUG_LOG("Item refund: item %s was traded!", item->GetGuidStr().c_str());
-    //    item->SetRefundable(false);
-    //    DeleteRefundReference(item->GetObjectGuid());
-    //    return;
-    //}
+    if (GetObjectGuid() != item->GetRefundRecipient())  // Formerly refundable item got traded
+    {
+        DEBUG_LOG("Item refund: item %s was traded!", item->GetGuidStr().c_str());
+        item->SetRefundable(false);
+        DeleteRefundReference(item->GetObjectGuid());
+        return;
+    }
 
-    //ItemExtendedCostEntry const* iece = sItemExtendedCostStore.LookupEntry(item->GetPaidExtendedCost());
-    //if (!iece)
-    //{
-    //    DEBUG_LOG("Item refund: cannot find extendedcost data for %s.", item->GetGuidStr().c_str());
-    //    return;
-    //}
+    ItemExtendedCostEntry const* iece = sItemExtendedCostStore.LookupEntry(item->GetPaidExtendedCost());
+    if (!iece)
+    {
+        DEBUG_LOG("Item refund: cannot find extendedcost data for %s.", item->GetGuidStr().c_str());
+        return;
+    }
 
-    //WorldPacket data(SMSG_ITEM_REFUND_INFO_RESPONSE, 8+4+4+4+4*4+4*4+4+4);
-    //data << item->GetObjectGuid();                      // item guid
-    //data << uint32(item->GetPaidMoney());               // money cost
-    //data << uint32(iece->reqhonorpoints);               // honor point cost
-    //data << uint32(iece->reqarenapoints);               // arena point cost
-    //for (uint8 i = 0; i < MAX_EXTENDED_COST_ITEMS; ++i) // item cost data
-    //{
-    //    data << uint32(iece->reqitem[i]);
-    //    data << uint32(iece->reqitemcount[i]);
-    //}
-    //data << uint32(0);
-    //data << uint32(item->GetPlayedTimeField());
-    //GetSession()->SendPacket(&data);
+    WorldPacket data(SMSG_SET_ITEM_PURCHASE_DATA, 8+4+4+4+4*4+4*4+4+4);
+    data.WriteGuidMask<3, 5, 7, 6, 2, 4, 0, 1>(item->GetObjectGuid());  // item guid
+    data.WriteGuidBytes<7>(item->GetObjectGuid());
+    data << uint32(item->GetPlayedTimeField());
+    for (uint8 i = 0; i < MAX_EXTENDED_COST_ITEMS; ++i)         // item cost data
+    {
+        data << uint32(iece->reqitemcount[i]);
+        data << uint32(iece->reqitem[i]);
+    }
+    data.WriteGuidBytes<6, 4, 3, 2>(item->GetObjectGuid());
+    for (uint8 i = 0; i < MAX_EXTENDED_COST_CURRENCIES; ++i)    // currency cost data
+    {
+        data << uint32(iece->reqcurrcount[i]);
+        data << uint32(iece->reqcur[i]);
+    }
+    data.WriteGuidBytes<1, 5>(item->GetObjectGuid());
+    data << uint32(0);
+    data.WriteGuidBytes<0>(item->GetObjectGuid());
+    data << uint32(item->GetPaidMoney());                       // money cost
+    GetSession()->SendPacket(&data);
 }
 
 void Player::RefundItem(Item* item)
 {
     // FIXME
-    //if (!item->HasFlag(ITEM_FIELD_FLAGS, ITEM_DYNFLAG_REFUNDABLE))
-    //{
-    //    DEBUG_LOG("Item refund: item %s not refundable!", item->GetGuidStr().c_str());
-    //    return;
-    //}
+    if (!item->HasFlag(ITEM_FIELD_FLAGS, ITEM_DYNFLAG_REFUNDABLE))
+    {
+        DEBUG_LOG("Item refund: item %s not refundable!", item->GetGuidStr().c_str());
+        return;
+    }
 
-    //if (item->IsExpired())                          // item refund has expired
-    //{
-    //    DEBUG_LOG("Tried to refund item %s but it is already expired!", item->GetGuidStr().c_str());
-    //    item->SetRefundable(false);
-    //    DeleteRefundReference(item->GetObjectGuid());
-    //    WorldPacket data(SMSG_ITEM_REFUND_RESULT, 8+4);
-    //    data << item->GetObjectGuid();              // Guid
-    //    data << uint32(10);                         // Error!
-    //    GetSession()->SendPacket(&data);
-    //    return;
-    //}
+    if (item->IsExpired())                          // item refund has expired
+    {
+        DEBUG_LOG("Tried to refund item %s but it is already expired!", item->GetGuidStr().c_str());
+        item->SetRefundable(false);
+        DeleteRefundReference(item->GetObjectGuid());
+        SendItemRefundResult(item, 10);             // Error!
+        return;
+    }
 
-    //if (GetObjectGuid() != item->GetRefundRecipient()) // Formerly refundable item got traded
-    //{
-    //    DEBUG_LOG("Item refund: item %s was traded!", item->GetGuidStr().c_str());
-    //    item->SetRefundable(false);
-    //    DeleteRefundReference(item->GetObjectGuid());
-    //    return;
-    //}
+    if (GetObjectGuid() != item->GetRefundRecipient()) // Formerly refundable item got traded
+    {
+        DEBUG_LOG("Item refund: item %s was traded!", item->GetGuidStr().c_str());
+        item->SetRefundable(false);
+        DeleteRefundReference(item->GetObjectGuid());
+        return;
+    }
 
-    //ItemExtendedCostEntry const* iece = sItemExtendedCostStore.LookupEntry(item->GetPaidExtendedCost());
-    //if (!iece)
-    //{
-    //    DEBUG_LOG("Item refund: cannot find extendedcost data for %s.", item->GetGuidStr().c_str());
-    //    return;
-    //}
+    ItemExtendedCostEntry const* iece = sItemExtendedCostStore.LookupEntry(item->GetPaidExtendedCost());
+    if (!iece)
+    {
+        DEBUG_LOG("Item refund: cannot find extendedcost data for %s.", item->GetGuidStr().c_str());
+        return;
+    }
 
-    //bool store_error = false;
-    //for (uint8 i = 0; i < MAX_EXTENDED_COST_ITEMS; ++i)
-    //{
-    //    uint32 count = iece->reqitemcount[i];
-    //    uint32 itemid = iece->reqitem[i];
+    bool store_error = false;
+    for (uint8 i = 0; i < MAX_EXTENDED_COST_ITEMS; ++i)
+    {
+        uint32 count = iece->reqitemcount[i];
+        uint32 itemid = iece->reqitem[i];
 
-    //    if (count && itemid)
-    //    {
-    //        ItemPosCountVec dest;
-    //        InventoryResult msg = CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemid, count);
-    //        if (msg != EQUIP_ERR_OK)
-    //        {
-    //            store_error = true;
-    //            break;
-    //        }
-    //     }
-    //}
+        if (count && itemid)
+        {
+            ItemPosCountVec dest;
+            InventoryResult msg = CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemid, count);
+            if (msg != EQUIP_ERR_OK)
+            {
+                store_error = true;
+                break;
+            }
+         }
+    }
 
-    //if (store_error)
-    //{
-    //    WorldPacket data(SMSG_ITEM_REFUND_RESULT, 8+4);
-    //    data << item->GetObjectGuid();                   // Guid
-    //    data << uint32(10);                              // Error!
-    //    GetSession()->SendPacket(&data);
-    //    return;
-    //}
+    if (store_error)
+    {
+        SendItemRefundResult(item, 10);                 // Error!
+        return;
+    }
 
-    //WorldPacket data(SMSG_ITEM_REFUND_RESULT, 8+4+4+4+4+4*4+4*4);
-    //data << item->GetObjectGuid();                      // item guid
-    //data << uint32(0);                                  // 0, or error code
-    //data << uint32(item->GetPaidMoney());               // money cost
-    //data << uint32(iece->reqhonorpoints);               // honor point cost
-    //data << uint32(iece->reqarenapoints);               // arena point cost
-    //for (uint8 i = 0; i < MAX_EXTENDED_COST_ITEMS; ++i) // item cost data
-    //{
-    //    data << uint32(iece->reqitem[i]);
-    //    data << uint32(iece->reqitemcount[i]);
-    //}
-    //GetSession()->SendPacket(&data);
+    SendItemRefundResult(item, 0);
 
-    //uint32 moneyRefund = item->GetPaidMoney();          // item-> will be invalidated in DestroyItem
+    uint64 moneyRefund = item->GetPaidMoney();          // item-> will be invalidated in DestroyItem
 
-    //// Delete any references to the refund data
-    //item->SetRefundable(false);
-    //DeleteRefundReference(item->GetObjectGuid());
+    // Delete any references to the refund data
+    item->SetRefundable(false);
+    DeleteRefundReference(item->GetObjectGuid());
 
-    //// Destroy item
-    //DestroyItem(item->GetBagSlot(), item->GetSlot(), true);
+    // Destroy item
+    DestroyItem(item->GetBagSlot(), item->GetSlot(), true);
 
-    //// Grant back extendedcost items
-    //for (uint8 i = 0; i < MAX_EXTENDED_COST_ITEMS; ++i)
-    //{
-    //    uint32 count = iece->reqitemcount[i];
-    //    uint32 itemid = iece->reqitem[i];
-    //    if (count && itemid)
-    //    {
-    //        ItemPosCountVec dest;
-    //        InventoryResult msg = CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemid, count);
-    //        MANGOS_ASSERT(msg == EQUIP_ERR_OK)          // Already checked before
-    //        Item* it = StoreNewItem(dest, itemid, true);
-    //        SendNewItem(it, count, true, false, true);
-    //    }
-    //}
+    // Grant back extendedcost items
+    for (uint8 i = 0; i < MAX_EXTENDED_COST_ITEMS; ++i)
+    {
+        uint32 count = iece->reqitemcount[i];
+        uint32 itemid = iece->reqitem[i];
+        if (count && itemid)
+        {
+            ItemPosCountVec dest;
+            InventoryResult msg = CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemid, count);
+            MANGOS_ASSERT(msg == EQUIP_ERR_OK)          // Already checked before
+            Item* it = StoreNewItem(dest, itemid, true);
+            SendNewItem(it, count, true, false, true);
+        }
+    }
 
-    //// Grant back money
-    //if (moneyRefund)
-    //    ModifyMoney(moneyRefund);                       // Saved in SaveInventoryAndGoldToDB
+    // Grant back extendedcost currencies
+    for (uint8 i = 0; i < MAX_EXTENDED_COST_CURRENCIES; ++i)
+    {
+        uint32 curr = iece->reqcur[i];
+        if (!curr)
+            continue;
 
-    //// Grant back Honor points
-    //if (uint32 honorRefund = iece->reqhonorpoints)
-    //    ModifyHonorPoints(honorRefund);
+        if (iece->IsSeasonCurrencyRequirement(i))
+            continue;
 
-    //// Grant back Arena points
-    //if (uint32 arenaRefund = iece->reqarenapoints)
-    //    ModifyArenaPoints(arenaRefund);
+        CurrencyTypesEntry const * entry = sCurrencyTypesStore.LookupEntry(curr);
+        if (!entry)
+            continue;
 
-    //SaveInventoryAndGoldToDB();
+        ModifyCurrencyCount(curr, int32(iece->reqcurrcount[i]));
+    }
+
+    // Grant back money
+    if (moneyRefund)
+        ModifyMoney(moneyRefund);                       // Saved in SaveInventoryAndGoldToDB
+
+    SaveInventoryAndGoldToDB();
+}
+
+void Player::SendItemRefundResult(Item* item, uint32 result)
+{
+    ItemExtendedCostEntry const * iece = sItemExtendedCostStore.LookupEntry(item->GetPaidExtendedCost());
+    if (!iece)
+        return;
+
+    WorldPacket data(SMSG_ITEM_PURCHASE_REFUND_RESULT, 20);
+    data.WriteGuidMask<4, 5, 1, 6, 7, 0, 3, 2>(item->GetObjectGuid());
+    data.WriteBit(!result);
+    data.WriteBit(item->GetPaidMoney());
+    if (!result)
+    {
+        for (uint8 i = 0; i < MAX_EXTENDED_COST_CURRENCIES; ++i)
+        {
+            data << uint32(iece->reqcurrcount[i]);
+            data << uint32(iece->reqcur[i]);
+        }
+        data << uint32(item->GetPaidMoney());
+        for (uint8 i = 0; i < MAX_EXTENDED_COST_ITEMS; ++i)
+        {
+            data << uint32(iece->reqitemcount[i]);
+            data << uint32(iece->reqitem[i]);
+        }
+    }
+    data.WriteGuidMask<0, 3, 1, 6, 4, 2, 7, 5>(item->GetObjectGuid());
+    data << uint8(result);
+    GetSession()->SendPacket(&data);
 }
 
 void Player::SetKickDelay(uint32 delay)

@@ -13000,6 +13000,7 @@ void Spell::EffectPlayMusic(SpellEffectEntry const* effect)
 
     WorldPacket data(SMSG_PLAY_MUSIC, 4);
     data << uint32(soundId);
+    data << ObjectGuid();
     ((Player*)unitTarget)->GetSession()->SendPacket(&data);
 }
 

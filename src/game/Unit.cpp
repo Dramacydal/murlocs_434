@@ -8851,8 +8851,10 @@ void Unit::Mount(uint32 mount, uint32 spellId, uint32 vehicleId, uint32 creature
         }
 
         WorldPacket data(SMSG_MOVE_SET_COLLISION_HGT, GetPackGUID().size() + 4 + 4);
-        data << GetPackGUID();
+        data.WriteGuidMask<6, 1, 4, 7, 5, 2, 0, 3>(GetObjectGuid());
+        data.WriteGuidBytes<6, 0, 4, 3, 5>(GetObjectGuid());
         data << uint32(sWorld.GetGameTime());   // Packet counter
+        data.WriteGuidBytes<1, 2, 7>(GetObjectGuid());
         data << ((Player*)this)->GetCollisionHeight(true);
         ((Player*)this)->GetSession()->SendPacket(&data);
     }
@@ -8871,8 +8873,10 @@ void Unit::Unmount(bool from_aura)
     if (GetTypeId() == TYPEID_PLAYER)
     {
         WorldPacket data(SMSG_MOVE_SET_COLLISION_HGT, GetPackGUID().size() + 4 + 4);
-        data << GetPackGUID();
+        data.WriteGuidMask<6, 1, 4, 7, 5, 2, 0, 3>(GetObjectGuid());
+        data.WriteGuidBytes<6, 0, 4, 3, 5>(GetObjectGuid());
         data << uint32(sWorld.GetGameTime());   // Packet counter
+        data.WriteGuidBytes<1, 2, 7>(GetObjectGuid());
         data << ((Player*)this)->GetCollisionHeight(false);
         ((Player*)this)->GetSession()->SendPacket(&data);
     }
@@ -12625,12 +12629,23 @@ void Unit::KnockBackWithAngle(float angle, float horizontalSpeed, float vertical
         ((Player*)this)->GetAntiCheat()->SetImmune(2000); // 2 sec
 
         WorldPacket data(SMSG_MOVE_KNOCK_BACK, 9+4+4+4+4+4);
-        data << GetPackGUID();
-        data << uint32(0);                                  // Sequence
-        data << float(vcos);                                // x direction
+        data.WriteGuidMask<0, 3, 6, 7, 2, 5, 1, 4>(GetObjectGuid());
+        data.WriteGuidBytes<1>(GetObjectGuid());
+
         data << float(vsin);                                // y direction
+        data << uint32(0);
+
+        data.WriteGuidBytes<6, 7>(GetObjectGuid());
+
         data << float(horizontalSpeed);                     // Horizontal speed
-        data << float(-verticalSpeed);                      // Z Movement speed (vertical)
+
+        data.WriteGuidBytes<4, 5, 3>(GetObjectGuid());
+
+        data << float(verticalSpeed);                       // Z Movement speed (vertical)
+        data << float(vcos);                                // x direction
+
+        data.WriteGuidBytes<2, 0>(GetObjectGuid());
+
         ((Player*)this)->GetSession()->SendPacket(&data);
     }
     else
@@ -13591,6 +13606,27 @@ void Unit::BuildMoveWaterWalkPacket(WorldPacket* data, bool apply, uint32 value)
         data->WriteGuidMask<5, 1, 6, 2, 3, 4, 0, 7>(GetObjectGuid());
         data->WriteGuidBytes<6, 1, 7, 5, 4, 0, 3, 2>(GetObjectGuid());
         *data << uint32(value);
+    }
+}
+
+void Unit::BuildMoveFeatherFallPacket(WorldPacket* data, bool apply, uint32 value)
+{
+    ObjectGuid guid = GetGUID();
+
+    if (apply)
+    {
+        data->Initialize(SMSG_MOVE_FEATHER_FALL, 1 + 4 + 8);
+        data->WriteGuidMask<3, 1, 7, 0, 4, 2, 5, 6>(guid);
+        data->WriteGuidBytes<5, 7, 2>(guid);
+        *data << uint32(value);
+        data->WriteGuidBytes<0, 3, 4, 1, 6>(guid);
+    }
+    else
+    {
+        data->Initialize(SMSG_MOVE_NORMAL_FALL, 1 + 4 + 8);
+        *data << uint32(value);
+        data->WriteGuidMask<3, 0, 1, 5, 7, 4, 6, 2>(guid);
+        data->WriteGuidBytes<2, 7, 1, 4, 5, 0, 3, 6>(guid);
     }
 }
 

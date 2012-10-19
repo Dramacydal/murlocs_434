@@ -38,11 +38,13 @@
 enum StableResultCode
 {
     STABLE_ERR_MONEY        = 0x01,                         // "you don't have enough money"
+    STABLE_INVALID_SLOT     = 0x03,
     STABLE_ERR_STABLE       = 0x06,                         // currently used in most fail cases
     STABLE_SUCCESS_STABLE   = 0x08,                         // stable success
     STABLE_SUCCESS_UNSTABLE = 0x09,                         // unstable/swap success
     STABLE_SUCCESS_BUY_SLOT = 0x0A,                         // buy slot success
-    STABLE_ERR_EXOTIC       = 0x0C,                         // "you are unable to control exotic creatures"
+    STABLE_ERR_EXOTIC       = 0x0B,                         // "you are unable to control exotic creatures"
+    STABLE_ERR_INTERNAL     = 0x0C,
 };
 
 void WorldSession::HandleTabardVendorActivateOpcode( WorldPacket & recv_data )
@@ -585,6 +587,7 @@ void WorldSession::SendStablePet( ObjectGuid guid )
     // not let move dead pet in slot
     if(pet && pet->isAlive() && pet->getPetType()==HUNTER_PET)
     {
+        data << uint32(0);
         data << uint32(pet->GetCharmInfo()->GetPetNumber());
         data << uint32(pet->GetEntry());
         data << uint32(pet->getLevel());
@@ -593,8 +596,8 @@ void WorldSession::SendStablePet( ObjectGuid guid )
         ++num;
     }
 
-    //                                                     0      1   2      3      4
-    QueryResult* result = CharacterDatabase.PQuery("SELECT owner, id, entry, level, name FROM character_pet WHERE owner = '%u' AND slot >= '%u' AND slot <= '%u' ORDER BY slot",
+    //                                                     0      1   2      3      4     5
+    QueryResult* result = CharacterDatabase.PQuery("SELECT owner, id, entry, level, name, slot FROM character_pet WHERE owner = '%u' AND slot >= '%u' AND slot <= '%u' ORDER BY slot",
         _player->GetGUIDLow(),PET_SAVE_FIRST_STABLE_SLOT,PET_SAVE_LAST_STABLE_SLOT);
 
     if(result)
@@ -603,6 +606,7 @@ void WorldSession::SendStablePet( ObjectGuid guid )
         {
             Field *fields = result->Fetch();
 
+            data << uint32(fields[5].GetUInt32());          // pet slot
             data << uint32(fields[1].GetUInt32());          // petnumber
             data << uint32(fields[2].GetUInt32());          // creature entry
             data << uint32(fields[3].GetUInt32());          // level

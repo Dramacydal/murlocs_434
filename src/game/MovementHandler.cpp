@@ -430,10 +430,7 @@ void WorldSession::HandleMoveNotActiveMoverOpcode(WorldPacket &recv_data)
     DEBUG_LOG("WORLD: Recvd CMSG_MOVE_NOT_ACTIVE_MOVER");
     recv_data.hexlike();
 
-    ObjectGuid old_mover_guid;
     MovementInfo mi;
-
-    recv_data >> old_mover_guid.ReadAsPacked();
     recv_data >> mi;
 
     _player->m_movementInfo = mi;
@@ -649,25 +646,16 @@ void WorldSession::HandleMoveKnockBackAck( WorldPacket & recv_data )
         return;
     }
 
-    ObjectGuid guid;
     MovementInfo movementInfo;
-
-    recv_data >> guid.ReadAsPacked();
-    recv_data >> Unused<uint32>();                          // knockback packets counter
     recv_data >> movementInfo;
 
-    if (!VerifyMovementInfo(movementInfo, guid))
+    if (!VerifyMovementInfo(movementInfo, movementInfo.GetGuid()))
         return;
 
     HandleMoverRelocation(movementInfo);
 
-    WorldPacket data(MSG_MOVE_KNOCK_BACK, recv_data.size() + 15);
-    data << mover->GetPackGUID();
+    WorldPacket data(SMSG_MOVE_UPDATE_KNOCK_BACK, recv_data.size() + 15);
     data << movementInfo;
-    data << movementInfo.GetJumpInfo().sinAngle;
-    data << movementInfo.GetJumpInfo().cosAngle;
-    data << movementInfo.GetJumpInfo().xyspeed;
-    data << movementInfo.GetJumpInfo().velocity;
     mover->SendMessageToSetExcept(&data, _player);
 }
 

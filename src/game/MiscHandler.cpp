@@ -1015,13 +1015,14 @@ void WorldSession::HandleNextCinematicCamera( WorldPacket & /*recv_data*/ )
 void WorldSession::HandleMoveTimeSkippedOpcode( WorldPacket & recv_data )
 {
      /*  WorldSession::Update( getMSTime() );*/
- 
+
      ObjectGuid guid;
      uint32 time_skipped;
- 
-     recv_data >> guid.ReadAsPacked();
+
      recv_data >> time_skipped;
- 
+     recv_data.ReadGuidMask<5, 1, 3, 7, 6, 0, 4, 2>(guid);
+     recv_data.ReadGuidBytes<7, 1, 2, 4, 3, 6, 0, 5>(guid);
+
      DEBUG_LOG( "WORLD: Time Lag/Synchronization Resent/Update, data = %d", time_skipped);
 
      if (GetPlayer()->GetObjectGuid() == guid)

@@ -784,7 +784,8 @@ enum ReferAFriendError
     ERR_REFER_A_FRIEND_SUMMON_LEVEL_MAX_I            = 0x0A,
     ERR_REFER_A_FRIEND_SUMMON_COOLDOWN               = 0x0B,
     ERR_REFER_A_FRIEND_INSUF_EXPAN_LVL               = 0x0C,
-    ERR_REFER_A_FRIEND_SUMMON_OFFLINE_S              = 0x0D
+    ERR_REFER_A_FRIEND_SUMMON_OFFLINE_S              = 0x0D,
+    ERR_REFER_A_FRIEND_NO_XREALM                     = 0x0E,
 };
 
 enum AccountLinkedState
@@ -2962,6 +2963,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint32 m_uiSoulboundUpdateTimer;
         void SendRefundInfo(Item* item);
         void RefundItem(Item* item);
+        void SendItemRefundResult(Item* item, uint32 result);
 };
 
 void AddItemsSetItem(Player*player,Item *item);
