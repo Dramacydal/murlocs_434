@@ -3846,10 +3846,18 @@ void Aura::HandleAuraMounted(bool apply, bool Real)
             display_id = minfo->modelid;
 
         target->Mount(display_id, GetId(), ci->vehicleId, GetMiscValue());
+
+        // cast speed aura
+        if (MountCapabilityEntry const* mountCapability = target->GetMountCapability(uint32(GetSpellEffect()->EffectMiscValueB)))
+            target->CastSpell(target, mountCapability->SpeedModSpell, true);
     }
     else
     {
         target->Unmount(true);
+
+        // remove speed aura
+        if (MountCapabilityEntry const* mountCapability = target->GetMountCapability(uint32(GetSpellEffect()->EffectMiscValueB)))
+            target->RemoveAurasByCasterSpell(mountCapability->SpeedModSpell, target->GetObjectGuid());
     }
 }
 

@@ -23191,6 +23191,10 @@ bool Player::CanStartFlyInArea(uint32 mapid, uint32 zone, uint32 area) const
     if (v_map == 571 && !HasSpell(54197))   // Cold Weather Flying
         return false;
 
+    // Eastern Kingdoms, Kalimdor and Deepholm require Flight Master's License
+    if ((v_map == 0 || v_map == 1 || v_map == 646) && !HasSpell(90267))
+        return false;
+
     // Disallow mounting in wintergrasp when battle is in progress
     if (zone == 4197)
         if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(OPVP_ID_WG))

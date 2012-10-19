@@ -1391,7 +1391,11 @@ struct MapEntry
             MapID==509 || MapID==534 || MapID==560 ||       // AhnQiraj, HyjalPast, HillsbradPast
             MapID==568 || MapID==580 || MapID==595 ||       // ZulAman, Sunwell Plateau, Culling of Stratholme
             MapID==603 || MapID==615 || MapID==616 ||       // Ulduar, The Obsidian Sanctum, The Eye Of Eternity
-            MapID==631 || MapID==658;                       // Icecrown Citadel, Pit of Saron
+            MapID==631 || MapID==658 || MapID==724 ||       // Icecrown Citadel, Pit of Saron, Ruby Sanctum
+            MapID==644 || MapID==720 || MapID==721 ||       // Halls of Origination, Firelands
+            MapID==734 || MapID==755 || MapID==859 ||       // Ahn'Qiraj Terrace, Lost City of Tol'Vir, Zul'Gurub
+            MapID==938 || MapID==939 || MapID==940 ||       // End Time, Well of Eternity, Hour of Twilight
+            MapID==967;                                     // Dragon Soul
     }
 
     bool IsContinent() const
@@ -1409,6 +1413,26 @@ struct MapDifficultyEntry
     uint32      resetTime;                                  // 4,       m_raidDuration in secs, 0 if no fixed reset time
     uint32      maxPlayers;                                 // 5,       m_maxPlayers some heroic versions have 0 when expected same amount as in normal version
     DBCString   difficultyString;                           // 6        m_difficultystring
+};
+
+struct MountCapabilityEntry
+{
+    uint32 Id;
+    uint32 Flags;
+    uint32 RequiredRidingSkill;
+    uint32 RequiredArea;
+    uint32 RequiredAura;
+    uint32 RequiredSpell;
+    uint32 SpeedModSpell;
+    int32  RequiredMap;
+};
+
+#define MAX_MOUNT_CAPABILITIES 24
+
+struct MountTypeEntry
+{
+    uint32 Id;
+    uint32 MountCapability[MAX_MOUNT_CAPABILITIES];
 };
 
 struct MovieEntry

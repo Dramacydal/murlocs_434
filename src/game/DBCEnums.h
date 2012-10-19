@@ -426,6 +426,12 @@ enum ItemLimitCategory
     ITEM_LIMIT_CATEGORY_MANA_GEM   = 4,
 };
 
+enum MountFlags
+{
+    MOUNT_FLAG_CAN_PITCH            = 0x4,                  // client checks MOVEMENTFLAG2_FULL_SPEED_PITCHING
+    MOUNT_FLAG_CAN_SWIM             = 0x8,                  // client checks MOVEMENTFLAG_SWIMMING
+};
+
 enum TalentTreeRole
 {
     TALENT_ROLE_TANK    = 0x2,
