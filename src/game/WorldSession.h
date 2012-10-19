@@ -901,6 +901,10 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleGrantLevel(WorldPacket& recv_data);
         void HandleAcceptGrantLevel(WorldPacket& recv_data);
 
+        // Reforge
+        void HandleReforgeItemOpcode(WorldPacket& recvData);
+        void SendReforgeResult(bool success);
+
         // Battlefield system
         void SendBfInvitePlayerToWar(uint32 uiBattlefieldId, uint32 uiZoneId, uint32 uiTimeToAccept);
         void SendBfInvitePlayerToQueue(uint32 uiBattlefieldId);
