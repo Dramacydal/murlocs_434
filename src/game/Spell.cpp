@@ -8494,7 +8494,8 @@ bool Spell::CheckTarget( Unit* target, SpellEffectIndex eff )
 bool Spell::IsNeedSendToClient() const
 {
     return m_spellInfo->SpellVisual[0] || m_spellInfo->SpellVisual[1] || IsChanneledSpell(m_spellInfo) ||
-        m_spellInfo->speed > 0.0f || !m_triggeredByAuraSpell && !m_IsTriggeredSpell;
+        m_spellInfo->speed > 0.0f || !m_triggeredByAuraSpell && !m_IsTriggeredSpell ||
+        (m_spellInfo->AttributesEx8 & SPELL_ATTR_EX8_AURA_SENDS_AMOUNT);
 }
 
 bool Spell::IsTriggeredSpellWithRedundentData() const
