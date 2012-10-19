@@ -11955,7 +11955,7 @@ void Player::SetVisibleItemSlot(uint8 slot, Item *pItem)
     {
         if(pItem)
         {
-            SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), pItem->GetEntry());
+            SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), pItem->GetVisibleEntry());
             SetUInt16Value(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + (slot * 2), 0, pItem->GetEnchantmentId(PERM_ENCHANTMENT_SLOT));
             SetUInt16Value(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + (slot * 2), 1, pItem->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT));
         }
@@ -13257,6 +13257,9 @@ void Player::ApplyEnchantment(Item *item, EnchantmentSlot slot, bool apply, bool
         return;
 
     if (slot >= MAX_ENCHANTMENT_SLOT)
+        return;
+
+    if (slot == TRANSMOGRIFY_ENCHANTMENT_SLOT)
         return;
 
     if (slot == REFORGE_ENCHANTMENT_SLOT)
@@ -25411,7 +25414,7 @@ bool Player::CheckEnchantmentActiveBySkills(Item* pItem, EnchantmentSlot slot)
     // Cogwheel gems dont have requirement data set in SpellItemEnchantment.dbc, but they do have it in Item-sparse.db2
     if (ItemPrototype const* gem = sObjectMgr.GetItemPrototype(pEnchant->GemID))
         if (gem->RequiredSkill && GetSkillValue(gem->RequiredSkill) < gem->RequiredSkillRank)
-            return;
+            return false;
 
     if (slot >= SOCK_ENCHANTMENT_SLOT && slot < SOCK_ENCHANTMENT_SLOT + MAX_GEM_SOCKETS)
     {

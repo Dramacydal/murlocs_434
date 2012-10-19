@@ -623,6 +623,7 @@ enum NPCFlags
     UNIT_NPC_FLAG_PLAYER_VEHICLE        = 0x02000000,       // players with mounts that have vehicle data should have it set
     UNIT_NPC_FLAG_MAILBOX               = 0x04000000,       //
     UNIT_NPC_FLAG_REFORGER              = 0x08000000,       // reforging
+    UNIT_NPC_FLAG_TRANSMOGRIFIER        = 0x10000000,       // transmogrification
 };
 
 // used in most movement packets (send and received), 30 bits in client

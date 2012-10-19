@@ -383,6 +383,7 @@ class MANGOS_DLL_SPEC Item : public Object
         bool HasInvolvedQuest(uint32 /*quest_id*/) const override { return false; }
         bool IsPotion() const { return GetProto()->IsPotion(); }
         bool IsConjuredConsumable() const { return GetProto()->IsConjuredConsumable(); }
+        bool IsRangedWeapon() const { return GetProto()->IsRangedWeapon(); }
 
         void AddToClientUpdateList() override;
         void RemoveFromClientUpdateList() override;
@@ -407,6 +408,18 @@ class MANGOS_DLL_SPEC Item : public Object
         static uint32 GetSpecialPrice(ItemPrototype const* proto, uint32 minimumPrice = 10000);
         uint32 GetSpecialPrice(uint32 minimumPrice = 10000) const { return Item::GetSpecialPrice(GetProto(), minimumPrice); }
         int32 GetReforgableStat(ItemModType statType) const;
+
+        bool CanBeTransmogrified() const;
+        bool CanTransmogrify() const;
+        static bool CanTransmogrifyItemWithItem(Item const* transmogrified, Item const* transmogrifier);
+        bool HasStats() const;
+
+        uint32 GetVisibleEntry() const
+        {
+            if (uint32 transmogrification = GetEnchantmentId(TRANSMOGRIFY_ENCHANTMENT_SLOT))
+                return transmogrification;
+            return GetEntry();
+        }
 
     private:
         std::string m_text;

@@ -1424,6 +1424,7 @@ enum Opcodes
     SMSG_PVP_OPTIONS_ENABLED                              = 0x50A1, // 4.3.4 15595
     CMSG_REFORGE_ITEM                                     = 0x331A, // 4.3.4 15595
     SMSG_REFORGE_RESULT                                   = 0x58A4, // 4.3.4 15595
+    CMSG_TRANSMOGRIFY_ITEMS                               = 0x3B0E, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF
