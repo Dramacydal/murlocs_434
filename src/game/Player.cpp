@@ -25408,6 +25408,11 @@ bool Player::CheckEnchantmentActiveBySkills(Item* pItem, EnchantmentSlot slot)
     if (pEnchant->requiredSkill && GetSkillValue(pEnchant->requiredSkill) < pEnchant->requiredSkillValue)
         return false;
 
+    // Cogwheel gems dont have requirement data set in SpellItemEnchantment.dbc, but they do have it in Item-sparse.db2
+    if (ItemPrototype const* gem = sObjectMgr.GetItemPrototype(pEnchant->GemID))
+        if (gem->RequiredSkill && GetSkillValue(gem->RequiredSkill) < gem->RequiredSkillRank)
+            return;
+
     if (slot >= SOCK_ENCHANTMENT_SLOT && slot < SOCK_ENCHANTMENT_SLOT + MAX_GEM_SOCKETS)
     {
         int slotidx = slot - SOCK_ENCHANTMENT_SLOT;
