@@ -13540,22 +13540,7 @@ uint32 Unit::CalculateAuraPeriodicTimeWithHaste(SpellEntry const* spellProto, ui
     if (!spellProto || oldPeriodicTime == 0)
         return 0;
 
-    bool applyHaste = spellProto->AttributesEx5 & SPELL_ATTR_EX5_AFFECTED_BY_HASTE;
-
-    if (!applyHaste)
-    {
-        Unit::AuraList const& mModByHaste = GetAurasByType(SPELL_AURA_MOD_PERIODIC_HASTE);
-        for (Unit::AuraList::const_iterator itr = mModByHaste.begin(); itr != mModByHaste.end(); ++itr)
-        {
-            if ((*itr)->isAffectedOnSpell(spellProto))
-            {
-                applyHaste = true;
-                break;
-            }
-        }
-    }
-
-    if (!applyHaste)
+    if (!spellProto->HasAttribute(SPELL_ATTR_EX5_AFFECTED_BY_HASTE))
         return oldPeriodicTime;
 
     uint32 _periodicTime = ceil(oldPeriodicTime * GetFloatValue(UNIT_MOD_CAST_SPEED));
@@ -13568,22 +13553,7 @@ uint32 Unit::CalculateSpellDurationWithHaste(SpellEntry const* spellProto, uint3
     if (!spellProto || oldduration == 0)
         return 0;
 
-    bool applyHaste = spellProto->AttributesEx5 & SPELL_ATTR_EX5_AFFECTED_BY_HASTE;
-
-    if (!applyHaste)
-    {
-        Unit::AuraList const& mModByHaste = GetAurasByType(SPELL_AURA_MOD_PERIODIC_HASTE);
-        for (Unit::AuraList::const_iterator itr = mModByHaste.begin(); itr != mModByHaste.end(); ++itr)
-        {
-            if ((*itr)->isAffectedOnSpell(spellProto))
-            {
-                applyHaste = true;
-                break;
-            }
-        }
-    }
-
-    if (!applyHaste)
+    if (!spellProto->HasAttribute(SPELL_ATTR_EX5_AFFECTED_BY_HASTE))
         return oldduration;
 
     // Apply haste to duration
