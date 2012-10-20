@@ -185,7 +185,7 @@ pAuraProcHandler AuraProcHandler[TOTAL_AURAS]=
     &Unit::HandleNULLProc,                                  //150 SPELL_AURA_MOD_SHIELD_BLOCKDAMAGE
     &Unit::HandleNULLProc,                                  //151 SPELL_AURA_TRACK_STEALTHED
     &Unit::HandleNULLProc,                                  //152 SPELL_AURA_MOD_DETECTED_RANGE
-    &Unit::HandleNULLProc,                                  //153 SPELL_AURA_SPLIT_DAMAGE_FLAT
+    &Unit::HandleNULLProc,                                  //153 old SPELL_AURA_SPLIT_DAMAGE_FLAT
     &Unit::HandleNULLProc,                                  //154 SPELL_AURA_MOD_STEALTH_LEVEL
     &Unit::HandleNULLProc,                                  //155 SPELL_AURA_MOD_WATER_BREATHING
     &Unit::HandleNULLProc,                                  //156 SPELL_AURA_MOD_REPUTATION_GAIN
