@@ -2385,18 +2385,6 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                             scale *= float(spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) + 101) / 100.0f;
                             break;
                          }
-
-                    // search for "Hunter vs. Wild"
-                    AuraList const& mAttackPowerMod = owner->GetAurasByType(SPELL_AURA_MOD_ATTACK_POWER_OF_STAT_PERCENT);
-                    for(AuraList::const_iterator itr = mAttackPowerMod.begin(); itr != mAttackPowerMod.end(); ++itr)
-                    {
-                        SpellClassOptionsEntry const * opt = (*itr)->GetSpellProto()->GetSpellClassOptions();
-                        if (opt && opt->SpellFamilyName == SPELLFAMILY_HUNTER && (*itr)->GetSpellProto()->SpellIconID == 3647)
-                        {
-                            bonusValue += (*itr)->GetModifier()->m_amount * owner->GetTotalStatValue(Stats((*itr)->GetModifier()->m_miscvalue)) / 100;
-                            break;
-                        }
-                    }
                     break;
                 }
                 // warlock pet scaling aura
