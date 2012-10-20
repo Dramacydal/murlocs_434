@@ -1044,9 +1044,6 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                     rap += unitTarget->GetTotalAuraModifier(SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS);
                     rap += m_caster->GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_RANGED_ATTACK_POWER_VERSUS, unitTarget->GetCreatureTypeMask());
 
-                    if (m_caster->GetTypeId()==TYPEID_PLAYER)
-                        base += ((Player*)m_caster)->GetAmmoDPS();
-
                     damage += int32(float(base)/m_caster->GetAttackTime(RANGED_ATTACK)*2800 + rap*0.1f);
                 }
                 break;

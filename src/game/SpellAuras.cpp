@@ -2482,9 +2482,6 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         return;
                     }
                     case 46699:                             // Requires No Ammo
-                        if (target->GetTypeId() == TYPEID_PLAYER)
-                            // not use ammo and not allow use
-                            ((Player*)target)->RemoveAmmo();
                         return;
                     case 47190:                             // Toalu'u's Spiritual Incense
                         target->CastSpell(target, 47189, true, NULL, this);
