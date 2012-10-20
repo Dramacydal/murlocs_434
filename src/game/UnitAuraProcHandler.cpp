@@ -192,7 +192,7 @@ pAuraProcHandler AuraProcHandler[TOTAL_AURAS]=
     &Unit::HandleNULLProc,                                  //157 SPELL_AURA_PET_DAMAGE_MULTI (single test like spell 20782, also single for 214 aura)
     &Unit::HandleNULLProc,                                  //158 SPELL_AURA_MOD_SHIELD_BLOCKVALUE
     &Unit::HandleNULLProc,                                  //159 SPELL_AURA_NO_PVP_CREDIT
-    &Unit::HandleNULLProc,                                  //160 SPELL_AURA_MOD_AOE_AVOIDANCE
+    &Unit::HandleNULLProc,                                  //160 old SPELL_AURA_MOD_AOE_AVOIDANCE
     &Unit::HandleNULLProc,                                  //161 SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT
     &Unit::HandleNULLProc,                                  //162 SPELL_AURA_POWER_BURN_ENERGY
     &Unit::HandleNULLProc,                                  //163 SPELL_AURA_MOD_CRIT_DAMAGE_BONUS
