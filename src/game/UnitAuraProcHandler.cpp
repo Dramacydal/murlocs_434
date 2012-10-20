@@ -4008,13 +4008,6 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 basepoints[0] = (damage+absorb) * triggerAmount / 100 / 3;
                 target = this;
             }
-            //megai2: Surge of light hax
-            else if (auraSpellInfo->Id == 33154 || auraSpellInfo->Id == 33150)
-            {
-                if (target && target->HasAura(33151))
-                    return SPELL_AURA_PROC_FAILED;
-                trigger_spell_id = 33151;
-            }
             // Glyph of Shadow Word: Pain
             else if (auraSpellInfo->Id == 55681)
                 basepoints[0] = triggerAmount * GetCreateMana() / 100;
