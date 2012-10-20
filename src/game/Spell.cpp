@@ -5060,12 +5060,20 @@ void Spell::SendLogExecute()
                     data << uint32(0);                      // spellid
                     break;
                 case SPELL_EFFECT_DURABILITY_DAMAGE:
-                    if(Unit *unit = m_targets.getUnitTarget())
+                    if (Unit *unit = m_targets.getUnitTarget())
                         data << unit->GetPackGUID();
                     else
                         data << uint8(0);
-                    data << uint32(0);
-                    data << uint32(0);
+                    if (Item* item = m_targets.getItemTarget())
+                    {
+                        data << uint32(item->GetEntry());
+                        data << uint32(item->GetSlot());
+                    }
+                    else
+                    {
+                        data << uint32(0);
+                        data << uint32(0);
+                    }
                     break;
                 case SPELL_EFFECT_OPEN_LOCK:
                     if(Item *item = m_targets.getItemTarget())
