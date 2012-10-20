@@ -7632,7 +7632,7 @@ void Aura::HandleModDamagePercentDone(bool apply, bool Real)
     // Elemental Oath - Damage increase on Clearcasting
     if (apply && GetId() == 16246)
     {
-        Unit::AuraList const& auras = GetTarget()->GetAurasByType(SPELL_AURA_MOD_SPELL_CRIT_CHANCE);
+        Unit::AuraList const& auras = GetTarget()->GetAurasByType(SPELL_AURA_MOD_ALL_CRIT_CHANCE);
         for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
             if ((*i)->GetId() == 51466 ||   //Elemental Oath rank 1
                 (*i)->GetId() == 51470)     //Elemental Oath rank 2
