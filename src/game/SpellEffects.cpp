@@ -375,6 +375,12 @@ void Spell::EffectResurrectNew(SpellEffectEntry const* effect)
     uint32 health = damage;
     uint32 mana = effect->EffectMiscValue;
 
+    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+    {
+        if (((Player*)m_caster)->GetGuildId() == pTarget->GetGuildId())
+            health = uint32(health * (100.0f + m_caster->GetTotalAuraMultiplier(SPELL_AURA_MOD_RESURRECTED_HEALTH_BY_GUILD_MEMBER)) / 100.0f);
+    }
+
     // Glyph of Rebirth
     if (m_spellInfo->IsFitToFamily(SPELLFAMILY_DRUID, UI64LIT(0x11000000)) &&
         m_caster->HasAura(54733, EFFECT_INDEX_0))
@@ -11953,8 +11959,13 @@ void Spell::EffectResurrect(SpellEffectEntry const* /*effect*/)
 
     if(pTarget->isRessurectRequested())       // already have one active request
         return;
-
-    uint32 health = pTarget->GetMaxHealth() * damage / 100;
+    float healthPct = damage / 100.0f;
+    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+    {
+        if (((Player*)m_caster)->GetGuildId() == pTarget->GetGuildId())
+            healthPct *= (100.0f + m_caster->GetTotalAuraMultiplier(SPELL_AURA_MOD_RESURRECTED_HEALTH_BY_GUILD_MEMBER)) / 100.0f;
+    }
+    uint32 health = uint32(pTarget->GetMaxHealth() * std::min(healthPct, 1.0f));
     uint32 mana   = pTarget->GetMaxPower(POWER_MANA) * damage / 100;
 
     pTarget->setResurrectRequestData(m_caster->GetObjectGuid(), m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), health, mana);
