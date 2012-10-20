@@ -5032,6 +5032,7 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
     {
         Unit* caster = NULL;
         uint32 triggeredSpell = 0;
+        int32 bp = 0;
 
         if (Aura* dotAura = GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_SHAMAN, UI64LIT(0x10000000), 0x00000000, casterGuid))
             caster = dotAura->GetCaster();
@@ -5043,10 +5044,15 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
             {
                 switch((*i)->GetId())
                 {
-                    case 51480: triggeredSpell=64694; break;// Lava Flows, Rank 1
-                    case 51481: triggeredSpell=65263; break;// Lava Flows, Rank 2
-                    case 51482: triggeredSpell=65264; break;// Lava Flows, Rank 3
-                    default: continue;
+                    // Lava Flows
+                    case 51480:
+                    case 51481:
+                    case 51482:
+                        triggeredSpell = 65264;
+                        bp = (*i)->GetModifier()->m_amount;
+                        break;
+                    default:
+                        continue;
                 }
                 break;
             }
@@ -5057,7 +5063,7 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
 
         // Haste
         if (triggeredSpell)
-            caster->CastSpell(caster, triggeredSpell, true);
+            caster->CastCustomSpell(caster, triggeredSpell, &bp, NULL, NULL, true);
         return;
     }
     // Vampiric touch (first dummy aura)
