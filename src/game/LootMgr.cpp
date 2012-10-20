@@ -529,7 +529,7 @@ bool LootItem::AllowedForPlayer(Player const * player) const
 
         if (!player->isGameMaster())
         {
-            if (currency->ID == CURRENCY_CONQUEST_ARENA_META || currency->ID == CURRENCY_CONQUEST_BG_META)
+            if (currency->Category == CURRENCY_CATEGORY_META)
                 return false;
 
             if (currency->Category == CURRENCY_CATEGORY_ARCHAEOLOGY && !player->HasSkill(SKILL_ARCHAEOLOGY))
