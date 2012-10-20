@@ -9820,9 +9820,12 @@ void Aura::PeriodicDummyTick()
                 Cell::VisitAllObjects(GetTarget(), searcher, 80);
                 for (std::list<Player*>::const_iterator itr = nearPlayers.begin(); itr != nearPlayers.end(); ++itr)
                 {
-                    WorldPacket data(SMSG_CLEAR_TARGET, 8);
-                    data << GetTarget()->GetObjectGuid();
-                    (*itr)->SendMessageToSet(&data, false);
+                    if ((*itr)->GetTargetGuid() == GetTarget()->GetObjectGuid())
+                    {
+                        WorldPacket data(SMSG_CLEAR_TARGET, 8);
+                        data << GetTarget()->GetObjectGuid();
+                        (*itr)->GetSession()->SendPacket(&data);
+                    }
                 }
 
                 //GetTarget()->CastSpell((Unit *)NULL, GetSpellProto()->EffectTriggerSpell[m_effIndex], true); //clones are transforming into a mirrors
