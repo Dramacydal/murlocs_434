@@ -3558,7 +3558,6 @@ bool ChatHandler::HandleLookupSpellCommand(char* args)
         if(spellInfo)
         {
             int loc = GetSessionDbcLocale();
-            DEBUG_LOG("Spellid %u locale %u", id, loc);
             std::string name = spellInfo->SpellName[loc];
             if(name.empty())
                 continue;
