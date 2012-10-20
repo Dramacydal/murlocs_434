@@ -3035,6 +3035,34 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     }
                     return SPELL_AURA_PROC_FAILED;
                 }
+                // Fulmination marker
+                case 95774:
+                {
+                    // Fulmination dmg spell
+                    SpellEntry const * triggeredInfo = sSpellStore.LookupEntry(88767);
+                    if (!triggeredInfo)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    int32 minCharges = triggeredInfo->CalculateSimpleValue(EFFECT_INDEX_0);
+
+                    // Lightning Shield
+                    SpellAuraHolder* ls = GetSpellAuraHolder(324);
+                    int32 charges = ls ? ls->GetAuraCharges() : 0;
+                    if (!ls || charges <= minCharges)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    SpellEffectEntry const * shieldDmgEff = ls->GetSpellProto()->GetSpellEffect(EFFECT_INDEX_0);
+                    if (!shieldDmgEff)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    SpellEntry const * shieldDmgEntry = sSpellStore.LookupEntry(shieldDmgEff->EffectTriggerSpell);
+                    if (!shieldDmgEntry)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    int32 bp = shieldDmgEntry->CalculateSimpleValue(EFFECT_INDEX_0) * (charges - minCharges);
+                    CastCustomSpell(pVictim, triggeredInfo, &bp, NULL, NULL, true);
+                    return SPELL_AURA_PROC_OK;
+                }
             }
             // Storm, Earth and Fire
             if (dummySpell->SpellIconID == 3063)
@@ -3219,7 +3247,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     // Chain Lightning
                     case   421: spellId = 45297; break;
                     default:
-                        ERROR_LOG("Unit::HandleDummyAuraProc: non handled spell id: %u (LO)", procSpell->Id);
                         return SPELL_AURA_PROC_FAILED;
                 }
 

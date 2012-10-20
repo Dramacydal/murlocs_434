@@ -5989,10 +5989,19 @@ void Spell::EffectEnergisePct(SpellEffectEntry const* effect)
     // Rolling Thunder
     if (m_spellInfo->Id == 88765 && m_triggeredByAuraSpell)
     {
+        int32 charges = 0;
         // Lightning Shield
         if (SpellAuraHolder* holder = m_caster->GetSpellAuraHolder(324))
-            if (holder->GetStackAmount() < m_triggeredByAuraSpell->CalculateSimpleValue(EFFECT_INDEX_0))
-                holder->ModStackAmount(1);
+        {
+            int32 charges = holder->GetAuraCharges();
+            if (charges < m_triggeredByAuraSpell->CalculateSimpleValue(EFFECT_INDEX_0))
+                holder->SetAuraCharges(charges + 1);
+        }
+
+        // Fulmination
+        if (Aura* fulmination = m_caster->GetAura(88766, EFFECT_INDEX_0))
+            if (charges && charges + 1 > fulmination->GetModifier()->m_amount)
+                m_caster->CastSpell(m_caster, 95774, true);     // Fulmination marker
     }
 }
 
