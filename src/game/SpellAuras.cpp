@@ -1163,9 +1163,9 @@ void Aura::HandleAuraInitializeImages( bool Apply, bool Real) //same. All copyri
     if (caster->GetTypeId()== TYPEID_PLAYER && target->GetOwner() == caster)
     {
         if (Item const * item = ((Player*)caster)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND))
-            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, item->GetProto()->ItemId);
+            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, item->GetVisibleEntry());
         if (Item const * item = ((Player*)caster)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND))
-            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1, item->GetProto()->ItemId);
+            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1, item->GetVisibleEntry());
     }
     else
     {
