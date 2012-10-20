@@ -422,7 +422,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNULL,                                      //363 1 spells in 4.3.4 Throw Totem
     &Aura::HandleUnused,                                    //364 0 spells in 4.3.4
     &Aura::HandleNULL,                                      //365 1 spells in 4.3.4 Max Far Clip Plane
-    &Aura::HandleNULL,                                      //366 SPELL_AURA_MOD_SPELL_POWER_OF_ATTACK_POWER 1 spells in 4.3.4
+    &Aura::HandleNoImmediateEffect,                         //366 SPELL_AURA_OVERRIDE_SPELL_POWER_BY_AP_PCT 1 spells in 4.3.4, implemented in Unit::SpellBaseDamageBonusDone and Unit::SpellBaseHealingBonusDone
     &Aura::HandleNULL,                                      //367 2 spells in 4.3.4 test spells
     &Aura::HandleUnused,                                    //368 0 spells in 4.3.4
     &Aura::HandleNULL,                                      //369 5 spells in 4.3.4 darkmoon faire related
