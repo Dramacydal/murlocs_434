@@ -30,10 +30,11 @@ OutdoorPvPWG::OutdoorPvPWG(uint32 id) : OutdoorPvP(id)
     m_state = WG_STATE_COOLDOWN;
     m_timer = 15 * MINUTE * IN_MILLISECONDS;
 
-    m_damagedTowers[0] = 0;
-    m_damagedTowers[1] = 0;
-    m_destroyedTowers[0] = 0;
-    m_destroyedTowers[1] = 0;
+    for (uint8 i = 0; i < PVP_TEAM_COUNT; ++i)
+    {
+        m_damagedTowers[i] = 0;
+        m_destroyedTowers[i] = 0;
+    }
 
     m_startTime = 0;
     bInvited = false;
@@ -42,42 +43,13 @@ OutdoorPvPWG::OutdoorPvPWG(uint32 id) : OutdoorPvP(id)
     m_scoresUpdateTimer = 5000;
 
     bAboutSend = false;
-
     b10MinAchiev = false;
-}
 
-OutdoorPvPWG::~OutdoorPvPWG()
-{
-    for (uint8 i = 0; i < WG_WORKSHOP_COUNT; ++i)
-        delete m_workshops[i];
-
-    for (uint8 i = 0; i < WG_KEEPTOWER_COUNT; ++i)
-        delete m_keepTowers[i];
-
-    for (uint8 i = 0; i < WG_TOWER_COUNT; ++i)
-        delete m_towers[i];
-
-    for (std::list<WGObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
-        delete *itr;
-
-    for (WGPlayerScoreMap::iterator itr = m_playerScores.begin(); itr != m_playerScores.end(); ++itr)
-        delete itr->second;
-
-    for (uint32 i = 0; i < PVP_TEAM_COUNT; ++i)
-        for (std::set<Group*>::iterator itr = m_Raids[i].begin(); itr != m_Raids[i].end();)
-        {
-            delete *itr;
-            itr = m_Raids[i].begin();
-        }
-}
-
-bool OutdoorPvPWG::InitOutdoorPvPArea()
-{
     for (uint8 i = 0; i < WG_WORKSHOP_COUNT; ++i)
     {
         WGWorkShop* ws = new WGWorkShop(i, this);
         m_workshops[i] = ws;
-        switch(i)
+        switch (i)
         {
             case WG_WORKSHOP_BROKEN_TEMPLE:
                 ws->owner = m_defender;
@@ -184,8 +156,31 @@ bool OutdoorPvPWG::InitOutdoorPvPArea()
         for (float y = minY; y <= maxY; y += yStep)
             map->LoadGrid(Cell(MaNGOS::ComputeCellPair(x, y)), true);
     DEBUG_LOG("Finished loading cells for Wintergrasp");
+}
 
-    return true;
+OutdoorPvPWG::~OutdoorPvPWG()
+{
+    for (uint8 i = 0; i < WG_WORKSHOP_COUNT; ++i)
+        delete m_workshops[i];
+
+    for (uint8 i = 0; i < WG_KEEPTOWER_COUNT; ++i)
+        delete m_keepTowers[i];
+
+    for (uint8 i = 0; i < WG_TOWER_COUNT; ++i)
+        delete m_towers[i];
+
+    for (std::list<WGObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
+        delete *itr;
+
+    for (WGPlayerScoreMap::iterator itr = m_playerScores.begin(); itr != m_playerScores.end(); ++itr)
+        delete itr->second;
+
+    for (uint32 i = 0; i < PVP_TEAM_COUNT; ++i)
+        for (std::set<Group*>::iterator itr = m_Raids[i].begin(); itr != m_Raids[i].end();)
+        {
+            delete *itr;
+            itr = m_Raids[i].begin();
+        }
 }
 
 void OutdoorPvPWG::FillInitialWorldStates(WorldPacket& data, uint32& count, Player* player)

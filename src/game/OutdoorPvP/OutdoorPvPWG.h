@@ -814,8 +814,6 @@ class OutdoorPvPWG : public OutdoorPvP
 
         typedef std::map<ObjectGuid, WGPlayerScore*> WGPlayerScoreMap;
 
-        bool InitOutdoorPvPArea();
-
         void HandleCreatureCreate(Creature* pCreature) override;
         void _OnCreatureCreate(Creature* pCreature);
         void HandleCreatureDeath(Creature * pCreature) override;
