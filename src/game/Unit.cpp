@@ -7241,7 +7241,7 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
     {
         if (int32 auraMod = GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_DAMAGE_DONE_FROM_PCT_POWER, GetSpellSchoolMask(spellProto)))
         {
-            float powerPct = float(GetPower(POWER_MANA)) / GetMaxPower(POWER_MANA);
+            float powerPct = std::min(float(GetPower(POWER_MANA)) / GetMaxPower(POWER_MANA), 1.0f);
             DoneTotalMod *= (100.0f + auraMod * powerPct) / 100.0f;
         }
     }
@@ -8024,6 +8024,14 @@ uint32 Unit::SpellHealingBonusDone(Unit *pVictim, SpellEntry const *spellProto, 
     AuraList const& mHealingDonePct = GetAurasByType(SPELL_AURA_MOD_HEALING_DONE_PERCENT);
     for(AuraList::const_iterator i = mHealingDonePct.begin();i != mHealingDonePct.end(); ++i)
         DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount) / 100.0f;
+
+    AuraList const& mHealingFromHealthPct = GetAurasByType(SPELL_AURA_MOD_HEALING_DONE_FROM_PCT_HEALTH);
+    for (AuraList::const_iterator i = mHealingFromHealthPct.begin();i != mHealingDonePct.end(); ++i)
+        if ((*i)->isAffectedOnSpell(spellProto))
+        {
+            float healthPct = std::max(0.0f, 1.0f - float(pVictim->GetHealth()) / pVictim->GetMaxHealth());
+            DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount * healthPct) / 100.0f;
+        }
 
     // done scripted mod (take it from owner)
     Unit *owner = GetOwner();
