@@ -25208,7 +25208,7 @@ void Player::HandleAltVisSwitch()
         {
             Item const* realItem =  GetItemByPos(255, i);
             if (realItem)
-                SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (i * 2), realItem->GetEntry());
+                SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (i * 2), realItem->GetVisibleEntry());
             else
                 SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (i * 2), 0);
         }
