@@ -8498,6 +8498,9 @@ uint32 Unit::MeleeDamageBonusDone(Unit *pVictim, uint32 pdamage,WeaponAttackType
             if (!((Creature*)this)->IsPet())
                 DonePercent *= ((Creature*)this)->GetSpellDamageMod(((Creature*)this)->GetCreatureInfo()->rank);
         }
+
+        // SPELL_AURA_MOD_AUTOATTACK_DAMAGE for autoattacks
+        DonePercent *= (GetTotalAuraModifier(SPELL_AURA_MOD_AUTOATTACK_DAMAGE) + 100.0f) / 100.0f;
     }
 
     // ..done pct (by creature type mask)
