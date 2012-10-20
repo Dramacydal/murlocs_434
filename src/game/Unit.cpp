@@ -1819,7 +1819,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         if (damageSchoolMask & SPELL_SCHOOL_MASK_NORMAL)
         {
             uint32 armor_affected_damage = CalcNotIgnoreDamageReduction(damage, damageSchoolMask);
-            damage = damage - armor_affected_damage + CalcArmorReducedDamage(pVictim, armor_affected_damage);
+            damage = damage - armor_affected_damage + CalcArmorReducedDamage(pVictim, armor_affected_damage, spellInfo);
         }
     }
     else
@@ -1922,7 +1922,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
 
     // Calculate armor reduction
     uint32 armor_affected_damage = CalcNotIgnoreDamageReduction(damage, damageInfo->damageSchoolMask);
-    damageInfo->damage = damage - armor_affected_damage + CalcArmorReducedDamage(damageInfo->target, armor_affected_damage);
+    damageInfo->damage = damage - armor_affected_damage + CalcArmorReducedDamage(damageInfo->target, armor_affected_damage, NULL);
     damageInfo->cleanDamage += damage - damageInfo->damage;
 
     damageInfo->hitOutCome = RollMeleeOutcomeAgainst(damageInfo->target, damageInfo->attackType);
@@ -2377,13 +2377,29 @@ uint32 Unit::CalcNotIgnoreDamageReduction( uint32 damage, SpellSchoolMask damage
     return absorb_affected_rate <= 0.0f ? 0 : (absorb_affected_rate < 1.0f  ? uint32(damage * absorb_affected_rate) : damage);
 }
 
-uint32 Unit::CalcArmorReducedDamage(Unit* pVictim, const uint32 damage)
+uint32 Unit::CalcArmorReducedDamage(Unit* pVictim, const uint32 damage, SpellEntry const * spellInfo)
 {
     uint32 newdamage = 0;
     float armor = (float)pVictim->GetArmor();
 
     // Ignore enemy armor by SPELL_AURA_MOD_TARGET_RESISTANCE aura
     armor += GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_TARGET_RESISTANCE, SPELL_SCHOOL_MASK_NORMAL);
+
+    if (spellInfo)
+        if (Player* modOwner = GetSpellModOwner())
+            modOwner->ApplySpellMod(spellInfo->Id, SPELLMOD_IGNORE_ARMOR, armor);
+
+    // bypass enemy armor by SPELL_AURA_BYPASS_ARMOR_FOR_CASTER
+    int32 armorBypassPct = 0;
+    Unit::AuraList const & reductionAuras = pVictim->GetAurasByType(SPELL_AURA_MOD_IGNORE_ARMOR_PCT);
+    for (Unit::AuraList::const_iterator i = reductionAuras.begin(); i != reductionAuras.end(); ++i)
+        if ((*i)->GetCasterGuid() == GetObjectGuid())
+            armorBypassPct += (*i)->GetModifier()->m_amount;
+
+    if (armorBypassPct > 100)
+        armorBypassPct = 100;
+
+    armor = armor * armorBypassPct / 100.0f;
 
     // Apply Player CR_ARMOR_PENETRATION rating and percent talents
     if (GetTypeId()==TYPEID_PLAYER)

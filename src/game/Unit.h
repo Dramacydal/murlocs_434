@@ -108,7 +108,7 @@ enum SpellModOp
     SPELLMOD_CASTING_TIME           = 10,
     SPELLMOD_COOLDOWN               = 11,
     SPELLMOD_EFFECT2                = 12,
-    // spellmod 13 unused
+    SPELLMOD_IGNORE_ARMOR           = 13,
     SPELLMOD_COST                   = 14,
     SPELLMOD_CRIT_DAMAGE_BONUS      = 15,
     SPELLMOD_RESIST_MISS_CHANCE     = 16,
@@ -1958,7 +1958,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool IsImmunedToDamage(SpellSchoolMask meleeSchoolMask);
         virtual bool IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex index, bool castOnSelf) const;
 
-        uint32 CalcArmorReducedDamage(Unit* pVictim, const uint32 damage);
+        uint32 CalcArmorReducedDamage(Unit* pVictim, const uint32 damage, SpellEntry const * spellInfo);
         uint8 CalculateResistanceBinom(Unit* pCaster, SpellSchoolMask schoolMask);
         void CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolMask, DamageEffectType damagetype, const uint32 damage, uint32 *absorb, uint32 *resist, SpellEntry const * spellProto = NULL, bool canReflect = false);
         void CalculateAbsorbResistBlock(Unit *pCaster, SpellNonMeleeDamage *damageInfo, SpellEntry const* spellProto, WeaponAttackType attType = BASE_ATTACK);
