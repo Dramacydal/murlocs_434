@@ -7194,12 +7194,12 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
     if (getPowerType() == POWER_MANA)
     {
         Unit::AuraList const& doneFromManaPctAuras = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE_FROM_PCT_POWER);
-        if (!doneFromManaPctAuras.empty)
+        if (!doneFromManaPctAuras.empty())
         {
             float powerPct = std::min(float(GetPower(POWER_MANA)) / GetMaxPower(POWER_MANA), 1.0f);
             for (Unit::AuraList::const_iterator itr = doneFromManaPctAuras.begin(); itr != doneFromManaPctAuras.end(); ++itr)
             {
-                if (GetSpellSchoolMask(spellProto) & (*itr)->GetMiscValue)
+                if (GetSpellSchoolMask(spellProto) & (*itr)->GetModifier()->m_miscvalue)
                     DoneTotalMod *= (100.0f + (*itr)->GetModifier()->m_amount * powerPct) / 100.0f;
             }
         }
