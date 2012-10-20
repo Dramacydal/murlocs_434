@@ -2000,7 +2000,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void BuildPlayerRepop();
         void RepopAtGraveyard();
 
-        void DurabilityLossAll(double percent, bool inventory);
+        void DurabilityLossAll(double percent, bool inventory, bool withMods);
         void DurabilityLoss(Item* item, double percent);
         void DurabilityPointsLossAll(int32 points, bool inventory);
         void DurabilityPointsLoss(Item* item, int32 points);

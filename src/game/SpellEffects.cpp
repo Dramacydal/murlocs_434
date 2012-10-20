@@ -12548,7 +12548,7 @@ void Spell::EffectDurabilityDamagePCT(SpellEffectEntry const* effect)
     // Possibly its mean -1 all player equipped items and -2 all items
     if(slot < 0)
     {
-        ((Player*)unitTarget)->DurabilityLossAll(double(damage)/100.0f, (slot < -1));
+        ((Player*)unitTarget)->DurabilityLossAll(double(damage)/100.0f, (slot < -1), false);
         return;
     }
 

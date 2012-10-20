@@ -586,6 +586,8 @@ void WorldSession::SendListInventory(ObjectGuid vendorguid)
     std::vector<bool> bitFlags;
 
     float discountMod = _player->GetReputationPriceDiscount(pCreature);
+    if (int32 auraMod = _player->GetTotalAuraModifier(SPELL_AURA_MOD_VENDOR_PRICE))
+        discountMod *=  auraMod / 100.0f;
 
     uint8 count = 0;
     ByteBuffer buffer;

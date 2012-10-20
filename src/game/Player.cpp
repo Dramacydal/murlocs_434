@@ -1025,7 +1025,7 @@ uint32 Player::EnvironmentalDamage(EnviromentalDamage type, uint32 damage)
         if(type==DAMAGE_FALL)                               // DealDamage not apply item durability loss at self damage
         {
             DEBUG_LOG("We are fall to death, loosing 10 percents durability");
-            DurabilityLossAll(0.10f,false);
+            DurabilityLossAll(0.10f, false, true);
             // durability lost message
             WorldPacket data2(SMSG_DURABILITY_DAMAGE_DEATH, 0);
             GetSession()->SendPacket(&data2);
@@ -5134,8 +5134,14 @@ Corpse* Player::GetCorpse() const
     return sObjectAccessor.GetCorpseForPlayerGUID(GetObjectGuid());
 }
 
-void Player::DurabilityLossAll(double percent, bool inventory)
+void Player::DurabilityLossAll(double percent, bool inventory, bool withMods)
 {
+    if (withMods)
+    {
+        int32 mod = std::min(100, GetTotalAuraModifier(SPELL_AURA_MOD_DURABILITY_LOSS));
+        percent = percent - (percent * mod / 100.0f);
+    }
+
     for(int i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i)
         if(Item *pItem = GetItemByPos( INVENTORY_SLOT_BAG_0, i ))
             DurabilityLoss(pItem,percent);
@@ -20802,7 +20808,12 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
 
     // reputation discount
     if (price)
-        price = uint64(floor(price * GetReputationPriceDiscount(pCreature)));
+    {
+        float discountMod = GetReputationPriceDiscount(pCreature);
+        if (int32 auraMod = GetTotalAuraModifier(SPELL_AURA_MOD_VENDOR_PRICE))
+            discountMod *=  auraMod / 100.0f;
+        price = uint64(floor(price * discountMod));
+    }
 
     if (GetMoney() < price)
     {
