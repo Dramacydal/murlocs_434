@@ -4296,40 +4296,8 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
         }
         case SPELLFAMILY_SHAMAN:
         {
-            // Lightning Shield (overwrite non existing triggered spell call in spell.dbc
-            if (auraClassOptions && auraClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000000400))
-            {
-                switch(auraSpellInfo->Id)
-                {
-                    case 324:                           // Rank 1
-                        trigger_spell_id = 26364; break;
-                    case 325:                           // Rank 2
-                        trigger_spell_id = 26365; break;
-                    case 905:                           // Rank 3
-                        trigger_spell_id = 26366; break;
-                    case 945:                           // Rank 4
-                        trigger_spell_id = 26367; break;
-                    case 8134:                          // Rank 5
-                        trigger_spell_id = 26369; break;
-                    case 10431:                         // Rank 6
-                        trigger_spell_id = 26370; break;
-                    case 10432:                         // Rank 7
-                        trigger_spell_id = 26363; break;
-                    case 25469:                         // Rank 8
-                        trigger_spell_id = 26371; break;
-                    case 25472:                         // Rank 9
-                        trigger_spell_id = 26372; break;
-                    case 49280:                         // Rank 10
-                        trigger_spell_id = 49278; break;
-                    case 49281:                         // Rank 11
-                        trigger_spell_id = 49279; break;
-                    default:
-                        ERROR_LOG("Unit::HandleProcTriggerSpellAuraProc: Spell %u not handled in LShield", auraSpellInfo->Id);
-                        return SPELL_AURA_PROC_FAILED;
-                }
-            }
             // Lightning Shield (The Ten Storms set)
-            else if (auraSpellInfo->Id == 23551)
+            if (auraSpellInfo->Id == 23551)
             {
                 trigger_spell_id = 23552;
                 target = pVictim;
@@ -4360,6 +4328,13 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 basepoints[0] = triggerAmount * GetMaxHealth() / 100;
                 trigger_spell_id = 31616;
                 target = this;
+            }
+            // Rolling Thunder
+            else if (auraSpellInfo->Id == 88756 || auraSpellInfo->Id == 88764)
+            {
+                // Lightning Shield
+                if (!HasAura(324))
+                    return SPELL_AURA_PROC_FAILED;
             }
             break;
         }

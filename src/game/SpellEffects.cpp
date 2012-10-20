@@ -5985,6 +5985,15 @@ void Spell::EffectEnergisePct(SpellEffectEntry const* effect)
 
     uint32 gain = damage * maxPower / 100;
     m_caster->EnergizeBySpell(unitTarget, m_spellInfo->Id, gain, power);
+
+    // Rolling Thunder
+    if (m_spellInfo->Id == 88765 && m_triggeredByAuraSpell)
+    {
+        // Lightning Shield
+        if (SpellAuraHolder* holder = m_caster->GetSpellAuraHolder(324))
+            if (holder->GetStackAmount() < m_triggeredByAuraSpell->CalculateSimpleValue(EFFECT_INDEX_0))
+                holder->ModStackAmount(1);
+    }
 }
 
 void Spell::SendLoot(ObjectGuid guid, LootType loottype, LockType lockType)
