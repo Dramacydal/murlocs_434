@@ -5993,9 +5993,12 @@ void Spell::EffectEnergisePct(SpellEffectEntry const* effect)
         // Lightning Shield
         if (SpellAuraHolder* holder = m_caster->GetSpellAuraHolder(324))
         {
-            int32 charges = holder->GetAuraCharges();
+            charges = holder->GetAuraCharges();
             if (charges < m_triggeredByAuraSpell->CalculateSimpleValue(EFFECT_INDEX_0))
+            {
                 holder->SetAuraCharges(charges + 1);
+                holder->RefreshHolder();
+            }
         }
 
         // Fulmination
