@@ -3203,7 +3203,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 return SPELL_AURA_PROC_FAILED;
             }
             // Lightning Overload
-            if (dummySpell->SpellIconID == 2018)            // only this spell have SpellFamily Shaman SpellIconID == 2018 and dummy aura
+            if (dummySpell->SpellIconID == 2018 && effIndex == EFFECT_INDEX_0)  // only this spell have SpellFamily Shaman SpellIconID == 2018 and dummy aura
             {
                 DEBUG_LOG("Lightning overload: amount %i", triggerAmount);
                 if(!procSpell || GetTypeId() != TYPEID_PLAYER || !pVictim || !roll_chance_i(triggerAmount))
