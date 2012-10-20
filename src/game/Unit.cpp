@@ -7239,10 +7239,15 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
 
     if (getPowerType() == POWER_MANA)
     {
-        if (int32 auraMod = GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_DAMAGE_DONE_FROM_PCT_POWER, GetSpellSchoolMask(spellProto)))
+        Unit::AuraList const& doneFromManaPctAuras = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE_FROM_PCT_POWER);
+        if (!doneFromManaPctAuras.empty)
         {
             float powerPct = std::min(float(GetPower(POWER_MANA)) / GetMaxPower(POWER_MANA), 1.0f);
-            DoneTotalMod *= (100.0f + auraMod * powerPct) / 100.0f;
+            for (Unit::AuraList::const_iterator itr = doneFromManaPctAuras.begin(); itr != doneFromManaPctAuras.end(); ++itr)
+            {
+                if (GetSpellSchoolMask(spellProto) & (*itr)->GetMiscValue)
+                    DoneTotalMod *= (100.0f + (*itr)->GetModifier()->m_amount * powerPct) / 100.0f;
+            }
         }
     }
 
@@ -8036,12 +8041,13 @@ uint32 Unit::SpellHealingBonusDone(Unit *pVictim, SpellEntry const *spellProto, 
         DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount) / 100.0f;
 
     AuraList const& mHealingFromHealthPct = GetAurasByType(SPELL_AURA_MOD_HEALING_DONE_FROM_PCT_HEALTH);
-    for (AuraList::const_iterator i = mHealingFromHealthPct.begin();i != mHealingDonePct.end(); ++i)
-        if ((*i)->isAffectedOnSpell(spellProto))
-        {
-            float healthPct = std::max(0.0f, 1.0f - float(pVictim->GetHealth()) / pVictim->GetMaxHealth());
-            DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount * healthPct) / 100.0f;
-        }
+    if (!mHealingFromHealthPct.empty())
+    {
+        float healthPct = std::max(0.0f, 1.0f - float(pVictim->GetHealth()) / pVictim->GetMaxHealth());
+        for (AuraList::const_iterator i = mHealingFromHealthPct.begin();i != mHealingDonePct.end(); ++i)
+            if ((*i)->isAffectedOnSpell(spellProto))
+                DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount * healthPct) / 100.0f;
+    }
 
     // done scripted mod (take it from owner)
     Unit *owner = GetOwner();
