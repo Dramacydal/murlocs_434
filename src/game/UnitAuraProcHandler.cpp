@@ -393,7 +393,7 @@ pAuraProcHandler AuraProcHandler[TOTAL_AURAS]=
     &Unit::HandleNULLProc,                                  //358 SPELL_AURA_WORGEN_TRANSFORM 5 spells in 4.3.4 forces client-side transformation to worgen form
     &Unit::HandleNULLProc,                                  //359 1 spells in 4.3.4 healing done vs aurastate?
     &Unit::HandleNULLProc,                                  //360 SPELL_AURA_PROC_DUPLICATE_SPELLS 2 spells in 4.3.4
-    &Unit::HandleNULLProc,                                  //361 4 spells in 4.3.4 some damage spells
+    &Unit::HandleProcTriggerSpellAuraProc,                  //361 SPELL_AURA_PROC_TRIGGER_SPELL_2 4 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //362 0 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //363 1 spells in 4.3.4 Throw Totem
     &Unit::HandleNULLProc,                                  //364 0 spells in 4.3.4

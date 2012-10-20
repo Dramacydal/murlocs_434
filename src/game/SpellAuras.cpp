@@ -417,7 +417,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNoImmediateEffect,                         //358 SPELL_AURA_WORGEN_TRANSFORM 5 spells in 4.3.4 forces client-side transformation to worgen form
     &Aura::HandleNULL,                                      //359 1 spells in 4.3.4 healing done vs aurastate?
     &Aura::HandleNULL,                                      //360 SPELL_AURA_PROC_DUPLICATE_SPELLS 2 spells in 4.3.4
-    &Aura::HandleNULL,                                      //361 4 spells in 4.3.4 some damage spells
+    &Aura::HandleNULL,                                      //361 SPELL_AURA_PROC_TRIGGER_SPELL_2 4 spells
     &Aura::HandleUnused,                                    //362 0 spells in 4.3.4
     &Aura::HandleNULL,                                      //363 1 spells in 4.3.4 Throw Totem
     &Aura::HandleUnused,                                    //364 0 spells in 4.3.4
