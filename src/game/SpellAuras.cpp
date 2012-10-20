@@ -315,7 +315,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNoReagentUseAura,                          //256 SPELL_AURA_NO_REAGENT_USE Use SpellClassMask for spell select
     &Aura::HandleNULL,                                      //257 SPELL_AURA_MOD_TARGET_RESIST_BY_SPELL_CLASS Use SpellClassMask for spell select
     &Aura::HandleNULL,                                      //258 SPELL_AURA_MOD_SPELL_VISUAL
-    &Aura::HandleNoImmediateEffect,                         //259 SPELL_AURA_MOD_PERIODIC_HEAL                    implemented in Unit::SpellHealingBonus
+    &Aura::HandleUnused,                                    //259 old SPELL_AURA_MOD_PERIODIC_HEAL
     &Aura::HandleNoImmediateEffect,                         //260 SPELL_AURA_SCREEN_EFFECT (miscvalue = id in ScreenEffect.dbc) not required any code
     &Aura::HandlePhase,                                     //261 SPELL_AURA_PHASE undetectable invisibility?     implemented in Unit::isVisibleForOrDetect
     &Aura::HandleIgnoreUnitState,                           //262 SPELL_AURA_IGNORE_UNIT_STATE Alows some abilities whitch are aviable only in some cases.... implented in Unit::IsIgnoreUnitState & Spell::CheckCast    
