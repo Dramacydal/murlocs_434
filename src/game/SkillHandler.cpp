@@ -22,6 +22,7 @@
 #include "Opcodes.h"
 #include "Log.h"
 #include "Player.h"
+#include "SpellMgr.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "UpdateMask.h"
@@ -114,5 +115,9 @@ void WorldSession::HandleUnlearnSkillOpcode(WorldPacket & recv_data)
 {
     uint32 skill_id;
     recv_data >> skill_id;
+
+    if (!IsPrimaryProfessionSkill(skill_id))
+        return;
+
     GetPlayer()->SetSkill(skill_id, 0, 0);
 }

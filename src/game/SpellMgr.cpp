@@ -392,8 +392,28 @@ bool IsNoStackAuraDueToAura(uint32 spellId_1, uint32 spellId_2)
 {
     SpellEntry const *spellInfo_1 = sSpellStore.LookupEntry(spellId_1);
     SpellEntry const *spellInfo_2 = sSpellStore.LookupEntry(spellId_2);
-    if(!spellInfo_1 || !spellInfo_2) return false;
-    if(spellInfo_1->Id == spellId_2) return false;
+
+    if (!spellInfo_1 || !spellInfo_2)
+        return false;
+
+    if (spellInfo_1->Id == spellId_2)
+        return false;
+
+    // Specific spell family spells
+    switch(spellInfo_1->GetSpellFamilyName())
+    {
+        case SPELLFAMILY_POTION:
+            if( spellInfo_2->GetSpellFamilyName() == SPELLFAMILY_POTION )
+            {
+                // Potion of Wild Magic and Flask of the Frost Wyrm
+                if ((spellInfo_1->SpellIconID == 3730 && spellInfo_2->SpellIconID == 3623) ||
+                     (spellInfo_2->SpellIconID == 3730 && spellInfo_1->SpellIconID == 3623))
+                    return false;
+            }
+            break;
+        default:
+            break;
+    }
 
     for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
@@ -2217,6 +2237,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
     if ((spellInfo_1->Id == 26013) != (spellInfo_2->Id == 26013))
         return false;
 
+    // Ranger: Battle Shout and Greater Blessing of Might
+    if( (spellInfo_1->SpellIconID == 456 && spellInfo_2->SpellIconID == 1802) ||
+        (spellInfo_2->SpellIconID == 456 && spellInfo_1->SpellIconID == 1802) )
+        return true;
+
     // Allow stack passive and not passive spells
     if (spellInfo_1->HasAttribute(SPELL_ATTR_PASSIVE) != spellInfo_2->HasAttribute(SPELL_ATTR_PASSIVE))
         return false;
@@ -2631,6 +2656,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if( spellInfo_1->IsFitToFamilyMask(UI64LIT(0x00000002)) && spellInfo_2->IsFitToFamilyMask(UI64LIT(0x10000000000)) ||
                     spellInfo_2->IsFitToFamilyMask(UI64LIT(0x00000002)) && spellInfo_1->IsFitToFamilyMask(UI64LIT(0x10000000000)))
                     return false;
+
+                // Ranger: Mark/Gift of the Wild
+                if (spellInfo_1->IsFitToFamilyMask(UI64LIT(0x00040000)) &&
+                    spellInfo_2->IsFitToFamilyMask(UI64LIT(0x00040000)))
+                    return true;
             }
 
             // Leader of the Pack and Scroll of Stamina (multi-family check)
@@ -2639,6 +2669,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
 
             // Dragonmaw Illusion (multi-family check)
             if (spellId_1 == 42016 && spellId_2 == 40216 )
+                return false;
+
+            // Ranger: Rake Druid / Rake Pet (multi-family check)
+            if (classOptions1 && (classOptions1->SpellFamilyFlags & UI64LIT(0x00001000)) && (classOptions2 && (classOptions2->SpellFamilyFlags & UI64LIT(0x1000000000000000))))
                 return false;
 
             break;
@@ -2705,6 +2739,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
             // Concussive Shot and Imp. Concussive Shot (multi-family check)
             if( spellInfo_2->Id == 19410 && spellInfo_1->Id == 5116 )
                 return false;
+
+            // Ranger: Rake Druid / Rake Pet (multi-family check)
+            if (classOptions1 && (classOptions1->SpellFamilyFlags & UI64LIT(0x1000000000000000)) && (classOptions2 && (classOptions2->SpellFamilyFlags & UI64LIT(0x00001000))))
+                return false;
+
             break;
         case SPELLFAMILY_PALADIN:
             if (classOptions2 && classOptions2->SpellFamilyName == SPELLFAMILY_PALADIN )
