@@ -3839,13 +3839,14 @@ void Spell::cast(bool skipCheck)
             else if (m_spellInfo->Id == 68992)              // Darkflight
             {
                 AddPrecastSpell(96223);                     // Run Speed Marker
-                AddPrecastSpell(97709);                     // Altered Form
+                if (m_caster->HasWorgenForm())
+                    AddPrecastSpell(97709);                 // Altered Form
             }
             else if (m_spellInfo->Id == 68996)              // Two Forms
             {
                 if (m_caster->IsInWorgenForm())
                     m_caster->RemoveSpellsCausingAura(SPELL_AURA_WORGEN_TRANSFORM);
-                else
+                else if (m_caster->HasWorgenForm())
                     AddPrecastSpell(97709);                 // Altered Form
             }
             // Chaos Bane strength buff
@@ -7043,6 +7044,12 @@ SpellCastResult Spell::CheckCast(bool strict)
 
                 break;
             }*/
+            case SPELL_AURA_WORGEN_TRANSFORM:
+            {
+                if (!m_caster->HasWorgenForm())
+                    return m_IsTriggeredSpell ? SPELL_FAILED_DONT_REPORT : SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+                break;
+            }
             default:
                 break;
         }
