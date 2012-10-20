@@ -3908,7 +3908,19 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     return SPELL_AURA_PROC_FAILED;
             }
             else if (auraSpellInfo->Id == 50421)            // Scent of Blood
-                trigger_spell_id = 50422;
+            {
+                if (!(procFlags & PROC_FLAG_SUCCESSFUL_MELEE_HIT))
+                    return SPELL_AURA_PROC_FAILED;
+
+                CastSpell(this, 50422, true);
+
+                Unit* target = triggeredByAura->GetTarget();
+                // Remove only single aura from stack
+                if (triggeredByAura->GetHolder()->ModStackAmount(-1))
+                    target->RemoveSpellAuraHolder(triggeredByAura->GetHolder());
+
+                return SPELL_AURA_PROC_CANT_TRIGGER;
+            }
             break;
         case SPELLFAMILY_WARLOCK:
         {

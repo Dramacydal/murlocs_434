@@ -1421,8 +1421,6 @@ void BattleGround::AddPlayer(Player *plr)
     if (isArena())
     {
         plr->RemoveArenaSpellCooldowns();
-        if (Pet* pet = plr->GetPet())
-            pet->RemoveSpellCooldowns();
 
         plr->RemoveArenaAuras();
         plr->RemoveAllEnchantments(TEMP_ENCHANTMENT_SLOT, true);

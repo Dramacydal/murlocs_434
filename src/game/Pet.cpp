@@ -53,6 +53,8 @@ m_declinedname(NULL)
 
 Pet::~Pet()
 {
+    m_spells.clear();
+
     delete m_declinedname;
 }
 
@@ -339,6 +341,11 @@ bool Pet::LoadPetFromDB( Player* owner, uint32 petentry, uint32 petnumber, bool 
     // Ghoul emote
     if (GetEntry() == 24207 || GetEntry() == 26125 || GetEntry() == 28528 || GetEntry())
         HandleEmote(EMOTE_ONESHOT_EMERGE);
+
+    if (owner->GetTypeId() == TYPEID_PLAYER)
+        if (BattleGround* bg = owner->GetBattleGround())
+            if (bg->isArena() && bg->GetStatus() == STATUS_WAIT_JOIN)
+                RemoveSpellCooldowns();
 
     return true;
 }
