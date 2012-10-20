@@ -2179,6 +2179,9 @@ bool SpellMgr::IsSameEffectSpell(uint32 spellId_1, uint32 spellId_2) const
     {
         SpellEffectEntry const * effect1 = spellInfo_1->GetSpellEffect(SpellEffectIndex(i));
         SpellEffectEntry const * effect2 = spellInfo_2->GetSpellEffect(SpellEffectIndex(i));
+        if (!effect1 && !effect2)
+            continue;
+
         if (!effect1 && effect2 || effect1 && !effect2)
             return false;
 
