@@ -2059,20 +2059,21 @@ void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket* data, ObjectGuid 
     if (!plr)
         return;
 
-    uint32 win_kills = plr->GetRandomWinner() ? BG_REWARD_WINNER_HONOR_LAST : BG_REWARD_WINNER_HONOR_FIRST;
-    uint32 win_arena = plr->GetRandomWinner() ? BG_REWARD_WINNER_ARENA_LAST : BG_REWARD_WINNER_ARENA_FIRST;
-    uint32 loos_kills = plr->GetRandomWinner() ? BG_REWARD_LOOSER_HONOR_LAST : BG_REWARD_LOOSER_HONOR_FIRST;
+    float honorMod = plr->IsPremiumActive() ? plr->GetPremiumHonorModifier() : 1.0f;
+    uint32 win_kills = uint32(honorMod * (plr->GetRandomWinner() ? BG_REWARD_WINNER_HONOR_LAST : BG_REWARD_WINNER_HONOR_FIRST));
+    uint32 win_arena = plr->GetRandomWinner() ? BG_REWARD_WINNER_CONQUEST_LAST : BG_REWARD_WINNER_CONQUEST_FIRST;
+    uint32 loos_kills = uint32(honorMod * (plr->GetRandomWinner() ? BG_REWARD_LOOSER_HONOR_LAST : BG_REWARD_LOOSER_HONOR_FIRST));
 
     BattleGround* bgTemplate = sBattleGroundMgr.GetBattleGroundTemplate(bgTypeId);
 
     data->Initialize(SMSG_BATTLEFIELD_LIST);
-    *data << uint32(0);                     // 4.3.4 winConquest weekend
-    *data << uint32(0);                     // 4.3.4 winConquest random
-    *data << uint32(0);                     // 4.3.4 lossHonor weekend
+    *data << uint32(win_arena);             // 4.3.4 winConquest weekend
+    *data << uint32(win_arena);             // 4.3.4 winConquest random
+    *data << uint32(loos_kills);            // 4.3.4 lossHonor weekend
     *data << uint32(bgTypeId);              // battleground id
-    *data << uint32(0);                     // 4.3.4 lossHonor random
-    *data << uint32(0);                     // 4.3.4 winHonor random
-    *data << uint32(0);                     // 4.3.4 winHonor weekend
+    *data << uint32(loos_kills);            // 4.3.4 lossHonor random
+    *data << uint32(win_kills);             // 4.3.4 winHonor random
+    *data << uint32(win_kills);             // 4.3.4 winHonor weekend
     *data << uint8(0);                      // max level
     *data << uint8(0);                      // min level
     data->WriteGuidMask<0, 1, 7>(guid);

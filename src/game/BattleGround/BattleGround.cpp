@@ -957,11 +957,10 @@ void BattleGround::EndBattleGround(Team winner)
 
         uint32 win_kills = plr->GetRandomWinner() ? BG_REWARD_WINNER_HONOR_LAST : BG_REWARD_WINNER_HONOR_FIRST;
         uint32 loos_kills = plr->GetRandomWinner() ? BG_REWARD_LOOSER_HONOR_LAST : BG_REWARD_LOOSER_HONOR_FIRST;
-        uint32 win_arena = plr->GetRandomWinner() ? BG_REWARD_WINNER_ARENA_LAST : BG_REWARD_WINNER_ARENA_FIRST;
+        uint32 win_arena = plr->GetRandomWinner() ? BG_REWARD_WINNER_CONQUEST_LAST : BG_REWARD_WINNER_CONQUEST_FIRST;
 
-        float honorMod = plr->IsPremiumActive() ? plr->GetPremiumHonorModifier() : 1.0f;
-        win_kills = (uint32)(MaNGOS::Honor::hk_honor_at_level(plr->getLevel(), win_kills*4) * sWorld.getConfig(CONFIG_FLOAT_RATE_HONOR_RANDOMBG) * honorMod);
-        loos_kills = (uint32)(MaNGOS::Honor::hk_honor_at_level(plr->getLevel(), loos_kills*4) * sWorld.getConfig(CONFIG_FLOAT_RATE_HONOR_RANDOMBG) * honorMod);
+        win_kills = uint32(win_kills * sWorld.getConfig(CONFIG_FLOAT_RATE_HONOR_RANDOMBG));
+        loos_kills = uint32(loos_kills * sWorld.getConfig(CONFIG_FLOAT_RATE_HONOR_RANDOMBG));
 
         if (team == winner)
         {
@@ -971,7 +970,7 @@ void BattleGround::EndBattleGround(Team winner)
             if (IsRandom() || BattleGroundMgr::IsBGWeekend(GetTypeID()))
             {
                 UpdatePlayerScore(plr, SCORE_BONUS_HONOR, win_kills);
-                plr->ModifyCurrencyCount(CURRENCY_CONQUEST_BG_META, win_arena);
+                plr->ModifyCurrencyCount(CURRENCY_CONQUEST_BG_META, win_arena * GetCurrencyPrecision(CURRENCY_CONQUEST_BG_META));
                 if(!plr->GetRandomWinner())
                     plr->SetRandomWinner(true);
             }
@@ -1618,7 +1617,7 @@ void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
             if (isBattleGround())
             {
                 // reward honor instantly
-                if (Source->RewardHonor(NULL, 1, (float)value))
+                if (Source->RewardHonor(NULL, 1, (float)value * GetCurrencyPrecision(CURRENCY_HONOR_POINTS)))
                     itr->second->BonusHonor += value;
             }
             break;
