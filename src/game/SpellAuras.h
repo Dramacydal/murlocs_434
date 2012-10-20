@@ -383,6 +383,7 @@ class MANGOS_DLL_SPEC Aura
         void HandleAllowOnlyAbility(bool apply, bool Real);
         void HandleAuraMastery(bool apply, bool Real);
         void HandleAuraModBlockCritChance(bool apply, bool Real);
+        void HandleAuraForceWeather(bool apply, bool Real);
 
         virtual ~Aura();
 

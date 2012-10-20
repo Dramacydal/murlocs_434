@@ -50,6 +50,7 @@
 #include "Language.h"
 #include "MapManager.h"
 #include "SpellAuras.h"
+#include "Weather.h"
 
 #define NULL_AURA_SLOT 0xFF
 
@@ -386,7 +387,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNULL,                                      //328 3 spells in 4.3.4 Eclipse Mastery Driver Passive
     &Aura::HandleNULL,                                      //329 SPELL_AURA_MOD_RUNIC_POWER_REGEN 3 spells in 4.3.4
     &Aura::HandleNULL,                                      //330 SPELL_AURA_ALLOW_CAST_WHILE_MOVING 16 spells in 4.3.4
-    &Aura::HandleNULL,                                      //331 SPELL_AURA_MOD_WEATHER 10 spells in 4.3.4
+    &Aura::HandleAuraForceWeather,                          //331 SPELL_AURA_MOD_WEATHER 10 spells in 4.3.4
     &Aura::HandleNoImmediateEffect,                         //332 SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS 16 spells in 4.3.4, implemented in WorldSession::HandleCastSpellOpcode
     &Aura::HandleNoImmediateEffect,                         //333 SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS_2 10 spells in 4.3.4, implemented in WorldSession::HandleCastSpellOpcode
     &Aura::HandleNULL,                                      //334 SPELL_AURA_BLIND_SIGHT 2 spells in 4.3.4
@@ -12599,6 +12600,41 @@ void Aura::HandleAllowOnlyAbility(bool apply, bool Real)
         if (target->HasAuraType(SPELL_AURA_ALLOW_ONLY_ABILITY))
             return;
 
-        target->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_ALLOW_ONLY_ABILITY);        
+        target->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_ALLOW_ONLY_ABILITY);
+    }
+}
+
+void Aura::HandleAuraForceWeather(bool apply, bool Real)
+{
+    if (!Real)
+        return;
+
+    Unit* target = GetTarget();
+
+    if (target->GetTypeId() != TYPEID_PLAYER)
+        return;
+
+    Player* plrTarget = (Player*)target;
+
+    if (apply)
+    {
+        WorldPacket data(SMSG_WEATHER, (4 + 4 + 1));
+
+        data << uint32(GetMiscValue()) << 1.0f << uint8(0);
+        plrTarget->GetSession()->SendPacket(&data);
+    }
+    else
+    {
+        // send weather for current zone
+        if (Weather* weather = sWorld.FindWeather(plrTarget->GetZoneId()))
+            weather->SendWeatherUpdateToPlayer(plrTarget);
+        else
+        {
+            if (!sWorld.AddWeather(plrTarget->GetZoneId()))
+            {
+                // send fine weather packet to remove old weather
+                Weather::SendFineWeatherUpdateToPlayer(plrTarget);
+            }
+        }
     }
 }
