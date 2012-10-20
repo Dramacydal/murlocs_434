@@ -8500,7 +8500,7 @@ uint32 Unit::MeleeDamageBonusDone(Unit *pVictim, uint32 pdamage,WeaponAttackType
         }
 
         // SPELL_AURA_MOD_AUTOATTACK_DAMAGE for autoattacks
-        DonePercent *= (GetTotalAuraModifier(SPELL_AURA_MOD_AUTOATTACK_DAMAGE) + 100.0f) / 100.0f;
+        DonePercent *= GetTotalAuraMultiplier(SPELL_AURA_MOD_AUTOATTACK_DAMAGE);
     }
 
     // ..done pct (by creature type mask)
