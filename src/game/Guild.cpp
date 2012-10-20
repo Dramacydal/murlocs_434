@@ -2552,6 +2552,27 @@ void Guild::DeleteGuildBankItems( bool alsoInDB /*= false*/ )
     m_TabListMap.clear();
 }
 
+void Guild::HandleCashFlow(uint64 money, Player* player)
+{
+    CharacterDatabase.BeginTransaction();
+
+    SetBankMoney(GetGuildBankMoney() + money);
+    player->ModifyMoney(-int64(money));
+    player->SaveGoldToDB();
+
+    CharacterDatabase.CommitTransaction();
+
+    // logging money
+    if (player->GetSession()->GetSecurity() > SEC_CURATOR && sWorld.getConfig(CONFIG_BOOL_GM_LOG_TRADE))
+    {
+        sLog.outCommand(player->GetSession()->GetAccountId(),"GM %s (Account: %u) deposit money (Amount: %u) to guild bank (Guild ID %u)",
+            player->GetName(), player->GetSession()->GetAccountId(), money, player->GetGuildId());
+    }
+
+    // log
+    LogBankEvent(GUILD_BANK_LOG_CASH_FLOW_DEPOSIT, uint8(0), player->GetObjectGuid(), money);
+}
+
 bool GuildItemPosCount::isContainedIn(GuildItemPosCountVec const &vec) const
 {
     for(GuildItemPosCountVec::const_iterator itr = vec.begin(); itr != vec.end(); ++itr)
