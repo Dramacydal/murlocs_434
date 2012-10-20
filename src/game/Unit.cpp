@@ -7237,6 +7237,15 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
         }
     }
 
+    if (getPowerType() == POWER_MANA)
+    {
+        if (int32 auraMod = GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_DAMAGE_DONE_FROM_PCT_POWER, GetSpellSchoolMask(spellProto)))
+        {
+            float powerPct = float(GetPower(POWER_MANA)) / GetMaxPower(POWER_MANA);
+            DoneTotalMod *= (100.0f + auraMod * powerPct) / 100.0f;
+        }
+    }
+
     // done scripted mod (take it from owner)
     Unit *owner = GetOwner();
     if (!owner) owner = this;
