@@ -305,7 +305,7 @@ enum AuraType
     SPELL_AURA_MOD_IMMUNE_AURA_APPLY_SCHOOL = 267,
     SPELL_AURA_268 = 268,                                   // old SPELL_AURA_MOD_ATTACK_POWER_OF_STAT_PERCENT
     SPELL_AURA_MOD_IGNORE_DAMAGE_REDUCTION_SCHOOL = 269,
-    SPELL_AURA_MOD_IGNORE_TARGET_RESIST = 270,              // Possibly need swap vs 195 aura used only in 1 spell Chaos Bolt Passive
+    SPELL_AURA_270 = 270,                                   // old SPELL_AURA_MOD_IGNORE_TARGET_RESIST
     SPELL_AURA_MOD_DAMAGE_FROM_CASTER = 271,
     SPELL_AURA_MAELSTROM_WEAPON = 272,
     SPELL_AURA_X_RAY = 273,
