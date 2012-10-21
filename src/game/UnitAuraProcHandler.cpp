@@ -3073,7 +3073,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             if (dummySpell->SpellIconID == 20)
             {
                 // Earthbind Totem summon only
-                if(procSpell->Id != 2484)
+                if (!procSpell || procSpell->Id != 2484)
                     return SPELL_AURA_PROC_FAILED;
 
                 if (!roll_chance_i(triggerAmount))
