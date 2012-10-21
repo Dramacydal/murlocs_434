@@ -3093,9 +3093,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             // Lava Surge
             if (dummySpell->SpellIconID == 4777)
             {
-                if (!roll_chance_i(triggerAmount))
-                    return SPELL_AURA_PROC_FAILED;
-
                 triggered_spell_id = 77762;
                 target = this;
                 break;
