@@ -98,16 +98,19 @@ void Totem::Summon(Unit* owner)
         ((Creature*)owner)->AI()->JustSummoned((Creature*)this);
 
     // there are some totems, which exist just for their visual appeareance
-    if (!GetSpell())
-        return;
-
     switch(m_type)
     {
         case TOTEM_PASSIVE:
-            CastSpell(this, GetSpell(), true);
+            if (GetSpell())
+                CastSpell(this, GetSpell(), true);
+            if (GetBonusSpell())
+                CastSpell(this, GetBonusSpell(), true);
             break;
         case TOTEM_STATUE:
-            CastSpell(GetOwner(), GetSpell(), true);
+            if (GetSpell())
+                CastSpell(GetOwner(), GetSpell(), true);
+            if (GetBonusSpell())
+                CastSpell(GetOwner(), GetBonusSpell(), true);
             break;
         default: break;
     }
@@ -117,6 +120,7 @@ void Totem::UnSummon()
 {
     CombatStop();
     RemoveAurasDueToSpell(GetSpell());
+    RemoveAurasDueToSpell(GetBonusSpell());
 
     if (Unit *owner = GetOwner())
     {
@@ -135,7 +139,10 @@ void Totem::UnSummon()
                 {
                     Player* Target = itr->getSource();
                     if(Target && pGroup->SameSubGroup((Player*)owner, Target))
+                    {
                         Target->RemoveAurasDueToSpell(GetSpell());
+                        Target->RemoveAurasDueToSpell(GetBonusSpell());
+                    }
                 }
             }
         }
@@ -179,6 +186,16 @@ void Totem::SetTypeBySummonSpell(SpellEntry const * spellProto)
     }
     if(spellProto->SpellIconID == 2056)
         m_type = TOTEM_STATUE;                              //Jewelery statue
+
+    if (uint32 createdById = GetUInt32Value(UNIT_CREATED_BY_SPELL))
+    {
+        if (SpellEntry const * spellInfo = sSpellStore.LookupEntry(createdById))
+            if (SpellTotemsEntry const * totems = spellInfo->GetSpellTotems())
+                if (totems->TotemCategory[0] == TC_FIRE_TOTEM)
+                    // Totemic Wrath
+                    if (GetOwner() && GetOwner()->HasAura(77746))
+                        m_spells[1] = 77747;
+    }
 }
 
 bool Totem::IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex index, bool castOnSelf) const
