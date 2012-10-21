@@ -3090,6 +3090,16 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 target = this;
                 break;
             }
+            // Lava Surge
+            if (dummySpell->SpellIconID == 4777)
+            {
+                if (!roll_chance_i(triggerAmount))
+                    return SPELL_AURA_PROC_FAILED;
+
+                triggered_spell_id = 77762;
+                target = this;
+                break;
+            }
             // Flametongue Weapon (Passive), Ranks
             if (dummyClassOptions && dummyClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000200000))
             {
