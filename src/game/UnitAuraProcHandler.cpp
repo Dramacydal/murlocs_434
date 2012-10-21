@@ -3038,6 +3038,10 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // Fulmination marker
                 case 95774:
                 {
+                    // Earth Shock
+                    if (!procSpell || procSpell->Id != 8042)
+                        return SPELL_AURA_PROC_FAILED;
+
                     // Fulmination dmg spell
                     SpellEntry const * triggeredInfo = sSpellStore.LookupEntry(88767);
                     if (!triggeredInfo)
@@ -3061,6 +3065,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
 
                     int32 bp = shieldDmgEntry->CalculateSimpleValue(EFFECT_INDEX_0) * (charges - minCharges);
                     CastCustomSpell(pVictim, triggeredInfo, &bp, NULL, NULL, true);
+                    ls->SetAuraCharges(minCharges);
                     return SPELL_AURA_PROC_OK;
                 }
             }
