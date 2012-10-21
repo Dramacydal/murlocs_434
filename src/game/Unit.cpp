@@ -11633,6 +11633,8 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit * pTarget, uint32 procFlag,
                 case SPELL_AURA_PROC_OK:
                     break;
             }
+            DEBUG_LOG("ProcDamageAndSpell: aura %u effidx %u procced by %u, auratype: %u, damage %u, flags: %u, extra: %u, cooldown: %u RESULT: %u",
+                triggeredByAura->GetId(), triggeredByAura->GetEffIndex(), procSpell ? procSpell->Id : 0, triggeredByAura->GetModifier()->m_auraname, damage + absorb, procFlag, procExtra, cooldown, procResult);
 
             anyAuraProc = true;
         }

@@ -3045,25 +3045,25 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     // Fulmination dmg spell
                     SpellEntry const * triggeredInfo = sSpellStore.LookupEntry(88767);
                     if (!triggeredInfo)
-                        return SPELL_AURA_PROC_FAILED;
+                        return SPELL_AURA_PROC_OK;
 
                     int32 minCharges = triggeredInfo->CalculateSimpleValue(EFFECT_INDEX_0);
 
                     // Lightning Shield
                     SpellAuraHolder* ls = GetSpellAuraHolder(324);
-                    int32 charges = ls ? ls->GetAuraCharges() : 0;
+                    int32 charges = ls ? int32(ls->GetAuraCharges()) : 0;
                     if (!ls || charges <= minCharges)
-                        return SPELL_AURA_PROC_FAILED;
+                        return SPELL_AURA_PROC_OK;
 
                     SpellEffectEntry const * shieldDmgEff = ls->GetSpellProto()->GetSpellEffect(EFFECT_INDEX_0);
                     if (!shieldDmgEff)
-                        return SPELL_AURA_PROC_FAILED;
+                        return SPELL_AURA_PROC_OK;
 
                     SpellEntry const * shieldDmgEntry = sSpellStore.LookupEntry(shieldDmgEff->EffectTriggerSpell);
                     if (!shieldDmgEntry)
-                        return SPELL_AURA_PROC_FAILED;
+                        return SPELL_AURA_PROC_OK;
 
-                    int32 bp = shieldDmgEntry->CalculateSimpleValue(EFFECT_INDEX_0) * (charges - minCharges);
+                    int32 bp = CalculateSpellDamage(pVictim, shieldDmgEntry, EFFECT_INDEX_0) * (charges - minCharges);
                     CastCustomSpell(pVictim, triggeredInfo, &bp, NULL, NULL, true);
                     ls->SetAuraCharges(minCharges);
                     return SPELL_AURA_PROC_OK;
