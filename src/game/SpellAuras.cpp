@@ -7164,6 +7164,7 @@ void Aura::HandleAuraModIncreaseHealth(bool apply, bool Real)
         case 54443:                                         // Demonic Empowerment (Voidwalker)
         case 55233:                                         // Vampiric Blood
         case 59465:                                         // Brood Rage (Ahn'Kahet)
+        case 105284:                                        // Ancestral Vigor
         {
             if(Real)
             {
@@ -7173,6 +7174,24 @@ void Aura::HandleAuraModIncreaseHealth(bool apply, bool Real)
                     // recalculate to full amount at apply for proper remove
                     if (GetId() == 54443 || GetId() == 55233)
                         m_modifier.m_amount = target->GetMaxHealth() * m_modifier.m_amount / 100;
+
+                    // Ancestral Vigor, increase max health not more than 5/10%
+                    if (GetId() == 105284)
+                    {
+                        if (Unit* caster = GetCaster())
+                        {
+                            Aura* talent = caster->GetAura(16176, EFFECT_INDEX_2);
+                            if (!talent)
+                                talent = caster->GetAura(16235, EFFECT_INDEX_2);
+
+                            if (talent)
+                            {
+                                float hpMax = float(talent->GetModifier()->m_amount) * target->GetMaxHealth() / 100.0f;
+                                if (m_modifier.m_amount > int32(hpMax))
+                                    m_modifier.m_amount = int32(hpMax);
+                            }
+                        }
+                    }
 
                     target->HandleStatModifier(UNIT_MOD_HEALTH, TOTAL_VALUE, float(m_modifier.m_amount), apply);
                     target->ModifyHealth(m_modifier.m_amount);

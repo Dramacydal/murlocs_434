@@ -4400,6 +4400,13 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 if (!HasAura(324))
                     return SPELL_AURA_PROC_FAILED;
             }
+            // Ancestral Healing
+            else if (auraSpellInfo->SpellIconID == 200)
+            {
+                int32 bp = damage;
+                // Cast Ancestral Vigor (max hp part of talent)
+                CastCustomSpell(pVictim, 105284, &bp, NULL, NULL, true);
+            }
             break;
         }
         case SPELLFAMILY_DEATHKNIGHT:
