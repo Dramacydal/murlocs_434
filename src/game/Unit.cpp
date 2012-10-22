@@ -7991,7 +7991,7 @@ uint32 Unit::SpellHealingBonusDone(Unit *pVictim, SpellEntry const *spellProto, 
     if (!mHealingFromHealthPct.empty())
     {
         float healthPct = std::max(0.0f, 1.0f - float(pVictim->GetHealth()) / pVictim->GetMaxHealth());
-        for (AuraList::const_iterator i = mHealingFromHealthPct.begin();i != mHealingDonePct.end(); ++i)
+        for (AuraList::const_iterator i = mHealingFromHealthPct.begin();i != mHealingFromHealthPct.end(); ++i)
             if ((*i)->isAffectedOnSpell(spellProto))
                 DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount * healthPct) / 100.0f;
     }
