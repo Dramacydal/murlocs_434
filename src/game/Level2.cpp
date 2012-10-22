@@ -996,7 +996,7 @@ bool ChatHandler::HandleGameObjectDeleteCommand(char* args)
         return false;
     }
 
-    if (obj->GetMap()->GetInstanceId() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING))
+    if (m_session->GetSecurity() < SEC_ADMINISTRATOR && obj->GetMap()->GetInstanceId() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING))
     {
         SendSysMessage("Can't delete in instances!");
         return false;
@@ -1182,7 +1182,7 @@ bool ChatHandler::HandleGameObjectAddCommand(char* args)
     float o = float(plr->GetOrientation());
     Map* map = plr->GetMap();
 
-    if (map->GetInstanceId() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING))
+    if (m_session->GetSecurity() < SEC_ADMINISTRATOR && map->GetInstanceId() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING))
     {
         SendSysMessage("Can't spawn in instances!");
         return false;
@@ -1671,7 +1671,7 @@ bool ChatHandler::HandleNpcAddCommand(char* args)
     Player *chr = m_session->GetPlayer();
     Map *map = chr->GetMap();
 
-    if (map->GetInstanceId() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING))
+    if (m_session->GetSecurity() < SEC_ADMINISTRATOR && map->GetInstanceId() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING))
     {
         SendSysMessage("Can't spawn in instances!");
         return false;
@@ -1711,7 +1711,7 @@ bool ChatHandler::HandleNpcAddCommand(char* args)
     }
 
     // Pashtet: prevent some scripted NPCs spawning.
-    if (pCreature->IsWorldBoss() || (pCreature->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_INSTANCE_BIND))
+    if (m_session->GetSecurity() < SEC_ADMINISTRATOR && (pCreature->IsWorldBoss() || (pCreature->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_INSTANCE_BIND)))
     {
         SendSysMessage("Can't spawn boss!");
         delete pCreature;
@@ -2068,7 +2068,7 @@ bool ChatHandler::HandleNpcDeleteCommand(char* args)
         return false;
     }
     
-    if (unit->GetMap()->GetInstanceId() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING))
+    if (m_session->GetSecurity() < SEC_ADMINISTRATOR && unit->GetMap()->GetInstanceId() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING))
     {
         SendSysMessage("Can't delete in instances!");
         return false;
@@ -2152,7 +2152,7 @@ bool ChatHandler::HandleNpcMoveCommand(char* args)
 
     Player* chr = m_session->GetPlayer();
 
-    if (chr->GetMap()->GetInstanceId() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING))
+    if (m_session->GetSecurity() < SEC_ADMINISTRATOR && chr->GetMap()->GetInstanceId() && !sWorld.getConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING))
     {
         SendSysMessage("Can't move in instances!");
         return false;
