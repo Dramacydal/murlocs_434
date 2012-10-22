@@ -3082,6 +3082,18 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 64695;
                 break;
             }
+            // Focused Insight
+            if (dummySpell->SpellIconID == 4674)
+            {
+                if (effIndex != EFFECT_INDEX_0)
+                    return SPELL_AURA_PROC_FAILED;
+
+                basepoints[0] = dummySpell->CalculateSimpleValue(EFFECT_INDEX_0);
+                basepoints[1] = dummySpell->CalculateSimpleValue(EFFECT_INDEX_1);
+                CastCustomSpell(this, 77800, &basepoints[0], &basepoints[1], &basepoints[1], true);
+                CastCustomSpell(this, 96300, &basepoints[1], NULL, NULL, true);
+                return SPELL_AURA_PROC_OK;
+            }
             // Ancestral Awakening
             if (dummySpell->SpellIconID == 3065)
             {
