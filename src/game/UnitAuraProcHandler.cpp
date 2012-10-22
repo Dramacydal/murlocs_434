@@ -3158,7 +3158,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             // Resurgence
             if (dummySpell->SpellIconID == 2287)
             {
-                if (!procSpell)
+                if (!procSpell || !HasAura(52127))  // do not proc if no Water Shield aura present
                     return SPELL_AURA_PROC_FAILED;
 
                 float mod = 1.0f;
