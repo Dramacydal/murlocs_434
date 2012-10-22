@@ -3035,6 +3035,18 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     }
                     return SPELL_AURA_PROC_FAILED;
                 }
+                // Cleansing Waters (Rank 1)
+                case 86959:
+                {
+                    CastSpell(pVictim, 86961, true);
+                    return SPELL_AURA_PROC_OK;
+                }
+                // Cleansing Waters (Rank 2)
+                case 86962:
+                {
+                    CastSpell(pVictim, 86958, true);
+                    return SPELL_AURA_PROC_OK;
+                }
                 // Fulmination marker
                 case 95774:
                 {
