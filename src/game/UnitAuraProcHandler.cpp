@@ -3156,7 +3156,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 break;
             }
             // Resurgence
-            if (dummySpell->SpellIconID == 3057)
+            if (dummySpell->SpellIconID == 2287)
             {
                 if (!procSpell)
                     return SPELL_AURA_PROC_FAILED;
@@ -3302,35 +3302,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
 
                 CastCustomSpell(pVictim,triggered_spell_id,&basepoints[EFFECT_INDEX_0],NULL,NULL,true,castItem,triggeredByAura);
                 return SPELL_AURA_PROC_OK;
-            }
-
-            // Improved Water Shield
-            if (dummySpell->SpellIconID == 2287)
-            {
-                if (!procSpell)
-                    return SPELL_AURA_PROC_FAILED;
-
-                // Lesser Healing Wave need aditional 60% roll
-                if (procClassOptions && (procClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000000080)) && !roll_chance_i(60))
-                    return SPELL_AURA_PROC_FAILED;
-                // Chain Heal needs additional 30% roll
-                if (procClassOptions && (procClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000000100)) && !roll_chance_i(30))
-                    return SPELL_AURA_PROC_FAILED;
-                // lookup water shield
-                AuraList const& vs = GetAurasByType(SPELL_AURA_PROC_TRIGGER_SPELL);
-                for(AuraList::const_iterator itr = vs.begin(); itr != vs.end(); ++itr)
-                {
-                    SpellClassOptionsEntry const* itrClassOptions = (*itr)->GetSpellProto()->GetSpellClassOptions();
-                    if (itrClassOptions && itrClassOptions->SpellFamilyName == SPELLFAMILY_SHAMAN &&
-                        (itrClassOptions->SpellFamilyFlags & UI64LIT(0x0000002000000000)))
-                    {
-                        SpellEffectEntry const* itrSpellEffect = (*itr)->GetSpellProto()->GetSpellEffect((*itr)->GetEffIndex());
-                        uint32 spell = itrSpellEffect ? itrSpellEffect->EffectTriggerSpell : 0;
-                        CastSpell(this, spell, true, castItem, triggeredByAura);
-                        return SPELL_AURA_PROC_OK;
-                    }
-                }
-                return SPELL_AURA_PROC_FAILED;
             }
             // Lightning Overload
             if (dummySpell->SpellIconID == 2018 && effIndex == EFFECT_INDEX_0)  // only this spell have SpellFamily Shaman SpellIconID == 2018 and dummy aura
