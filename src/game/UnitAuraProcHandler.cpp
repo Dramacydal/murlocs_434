@@ -3155,6 +3155,38 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 target = this;
                 break;
             }
+            // Resurgence
+            if (dummySpell->SpellIconID == 3057)
+            {
+                if (!procSpell)
+                    return SPELL_AURA_PROC_FAILED;
+
+                float mod = 1.0f;
+                switch (procSpell->Id)
+                {
+                    case 331:   // Healing Wave
+                    case 77472: // Greater Healing Wave
+                        mod = 1.0f;
+                    case 8004:  // Healing Surge
+                    case 61295: // Riptide
+                    case 73685: // Unleash Life
+                        mod = 0.6f;
+                    case 1064:  // Chain Heal
+                        mod = 0.333f;
+                        break;
+                    default:
+                        return SPELL_AURA_PROC_FAILED;
+                }
+
+                triggered_spell_id = 101033;
+                SpellEntry const * triggeredInfo = sSpellStore.LookupEntry(triggered_spell_id);
+                if (!triggeredInfo)
+                    return SPELL_AURA_PROC_FAILED;
+
+                target = this;
+                basepoints[0] = int32(CalculateSpellDamage(target, triggeredInfo, EFFECT_INDEX_0) * mod);
+                break;
+            }
             // Flametongue Weapon (Passive), Ranks
             if (dummyClassOptions && dummyClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000200000))
             {
