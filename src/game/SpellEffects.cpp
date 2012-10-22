@@ -4596,6 +4596,9 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     {
                         if (Unit* unit = m_caster->GetMap()->GetUnit(itr->targetGUID))
                         {
+                            if (unit->isDead())
+                                continue;
+
                             sumHealth += unit->GetHealth();
                             sumMaxHealth += unit->GetMaxHealth();
                         }
@@ -4604,7 +4607,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     m_currentBasePoints[1] = int32(float(sumHealth) / sumMaxHealth * 10000);
                 }
 
-                int32 diff = int32(unitTarget->GetHealth() - unitTarget->GetMaxHealth() / 100.0f / m_currentBasePoints[1] / 100.0f);
+                int32 diff = int32(unitTarget->GetHealth() - unitTarget->GetMaxHealth() / 100.0f * m_currentBasePoints[1] / 100.0f);
                 // need damage
                 if (diff > 0)
                     m_caster->CastCustomSpell(unitTarget, 98021, &diff, NULL, NULL, true);
