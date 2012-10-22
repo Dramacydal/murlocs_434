@@ -97,20 +97,20 @@ void Totem::Summon(Unit* owner)
     if (owner->GetTypeId() == TYPEID_UNIT && ((Creature*)owner)->AI())
         ((Creature*)owner)->AI()->JustSummoned((Creature*)this);
 
+    if (GetBonusSpell())
+        CastSpell(this, GetBonusSpell(), true);
+
     // there are some totems, which exist just for their visual appeareance
+    if (!GetSpell())
+        return;
+
     switch(m_type)
     {
         case TOTEM_PASSIVE:
-            if (GetSpell())
-                CastSpell(this, GetSpell(), true);
-            if (GetBonusSpell())
-                CastSpell(this, GetBonusSpell(), true);
+            CastSpell(this, GetSpell(), true);
             break;
         case TOTEM_STATUE:
-            if (GetSpell())
-                CastSpell(GetOwner(), GetSpell(), true);
-            if (GetBonusSpell())
-                CastSpell(GetOwner(), GetBonusSpell(), true);
+            CastSpell(GetOwner(), GetSpell(), true);
             break;
         default: break;
     }
