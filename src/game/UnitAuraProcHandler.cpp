@@ -3088,7 +3088,11 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 if (effIndex != EFFECT_INDEX_0)
                     return SPELL_AURA_PROC_FAILED;
 
-                basepoints[0] = dummySpell->CalculateSimpleValue(EFFECT_INDEX_0);
+                int32 powerCost = 0;
+                if (Spell* spell = GetCurrentSpell(CURRENT_GENERIC_SPELL))
+                    powerCost = spell->GetPowerCost();
+
+                basepoints[0] = -int32(dummySpell->CalculateSimpleValue(EFFECT_INDEX_0) * powerCost / 100.0f);
                 basepoints[1] = dummySpell->CalculateSimpleValue(EFFECT_INDEX_1);
                 CastCustomSpell(this, 77800, &basepoints[0], &basepoints[1], &basepoints[1], true);
                 CastCustomSpell(this, 96300, &basepoints[1], NULL, NULL, true);
