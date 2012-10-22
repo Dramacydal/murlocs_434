@@ -4588,10 +4588,10 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 if (m_UniqueTargetInfo.size() < 2)
                     return;
 
-                int32 sumHealth = 0;
-                int32 sumMaxHealth = 0;
                 if (m_currentBasePoints[1] == 0)
                 {
+                    int32 sumHealth = 0;
+                    int32 sumMaxHealth = 0;
                     for (TargetList::const_iterator itr = m_UniqueTargetInfo.begin(); itr != m_UniqueTargetInfo.end(); ++itr)
                     {
                         if (Unit* unit = m_caster->GetMap()->GetUnit(itr->targetGUID))
@@ -4613,7 +4613,10 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     m_caster->CastCustomSpell(unitTarget, 98021, &diff, NULL, NULL, true);
                 // need heal
                 else if (diff < 0)
+                {
+                    diff *= -1;
                     m_caster->CastCustomSpell(unitTarget, 98021, NULL, &diff, NULL, true);
+                }
                 return;
             }
             break;
