@@ -3125,6 +3125,14 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 target = this;
                 break;
             }
+            // Telluric Currents
+            if (dummySpell->SpellIconID == 4777)
+            {
+                triggered_spell_id = 82987;
+                basepoints[0] = int32(damage * triggerAmount / 100);
+                target = this;
+                break;
+            }
             // Flametongue Weapon (Passive), Ranks
             if (dummyClassOptions && dummyClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000200000))
             {
