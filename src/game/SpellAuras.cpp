@@ -7193,9 +7193,9 @@ void Aura::HandleAuraModIncreaseHealth(bool apply, bool Real)
                     {
                         if (Unit* caster = GetCaster())
                         {
-                            Aura* talent = caster->GetAura(16176, EFFECT_INDEX_2);
+                            Aura* talent = caster->GetAura(16176, EFFECT_INDEX_1);
                             if (!talent)
-                                talent = caster->GetAura(16235, EFFECT_INDEX_2);
+                                talent = caster->GetAura(16235, EFFECT_INDEX_1);
 
                             if (talent)
                             {
