@@ -3051,14 +3051,14 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // Cleansing Waters (Rank 1)
                 case 86959:
                 {
-                    CastSpell(pVictim, 86961, true);
-                    return SPELL_AURA_PROC_OK;
+                    triggered_spell_id = 86961;
+                    break;
                 }
                 // Cleansing Waters (Rank 2)
                 case 86962:
                 {
-                    CastSpell(pVictim, 86958, true);
-                    return SPELL_AURA_PROC_OK;
+                    triggered_spell_id = 86958;
+                    break;
                 }
                 // Fulmination marker
                 case 95774:
