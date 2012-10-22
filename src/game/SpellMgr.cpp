@@ -2815,6 +2815,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 // Totem of Wrath (positive/negative), ranks checked early
                 if (spellInfo_1->SpellIconID == 2019 && spellInfo_2->SpellIconID == 2019)
                     return false;
+
+                // Spirit Link multiple checks
+                if (spellInfo_1->SpellIconID == 3062 && spellInfo_2->SpellIconID == 3062)
+                    return false;
             }
             // Bloodlust and Bloodthirst (multi-family check)
             if( spellInfo_1->Id == 2825 && spellInfo_2->SpellIconID == 38 && spellInfo_2->SpellVisual[0] == 0 )
