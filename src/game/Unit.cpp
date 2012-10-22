@@ -13417,6 +13417,9 @@ bool Unit::CheckCanCastDispellOn(Unit* target, SpellEntry const * spellInfo)
     if (!spellInfo)
         return true;
 
+    if (GetTypeId() != TYPEID_PLAYER)
+        return true;
+
     uint32 dispelMask = 0;
     bool offensive = !target->IsFriendlyTo(this);
     for (uint8 i = 0; i < MAX_EFFECT_INDEX; ++i)
@@ -13438,7 +13441,13 @@ bool Unit::CheckCanCastDispellOn(Unit* target, SpellEntry const * spellInfo)
         if (!isDispelEffect && spellEffect->Effect != SPELL_EFFECT_NONE)
             return true;
         else if (isDispelEffect)
+        {
+            // skip dispel effects with null target amount
+            if (!CalculateSpellDamage(target, spellInfo, SpellEffectIndex(i)))
+                continue;
+
             dispelMask |= GetDispelMask(DispelType(spellEffect->EffectMiscValue));
+        }
     }
 
     // actually, no dispel spells with DISPEL_NONE
