@@ -6886,7 +6886,7 @@ void Aura::HandleAuraModStat(bool apply, bool /*Real*/)
                 if (Unit* caster = GetCaster())
                 {
                     if (Unit* owner = caster->GetOwner())
-                        m_modifier.m_amount = int32(owner->GetTotalStatValue(STAT_SPIRIT) * m_modifier.m_amount);
+                        m_modifier.m_amount = int32(owner->GetTotalStatValue(STAT_SPIRIT) * m_modifier.m_amount / 100.0f);
                 }
                 break;
             }
