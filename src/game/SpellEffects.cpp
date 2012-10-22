@@ -5610,11 +5610,14 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
             }
         }
 
+        DEBUG_LOG("STEP 1");
         addhealth = caster->SpellHealingBonusDone(unitTarget, m_spellInfo, addhealth, HEAL);
+        DEBUG_LOG("STEP 2");
         addhealth = unitTarget->SpellHealingBonusTaken(caster, m_spellInfo, addhealth, HEAL);
 
         m_healing += addhealth;
     }
+    DEBUG_LOG("STEP 3");
 }
 
 void Spell::EffectHealPct(SpellEffectEntry const* /*effect*/)
