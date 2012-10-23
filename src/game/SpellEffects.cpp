@@ -5959,8 +5959,8 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
         }
         case 101033:                                        // Resurgence
         {
+            // spell by wich Resurgence was procced is stored in unexistent effect
             uint32 proccedBySpell = m_currentBasePoints[1];
-            DEBUG_LOG(">>>>>>>> proccedBySpell : %u", proccedBySpell);
             if (!m_currentBasePoints[1])
                 break;
 
@@ -5982,7 +5982,6 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
                 default:
                     break;
             }
-            DEBUG_LOG(">>>>>>>> mod : %f", mod);
             damage = int32(damage * mod);
             break;
         }
