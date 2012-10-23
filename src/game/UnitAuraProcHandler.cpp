@@ -3167,10 +3167,12 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     case 331:   // Healing Wave
                     case 77472: // Greater Healing Wave
                         mod = 1.0f;
+                        break;
                     case 8004:  // Healing Surge
                     case 61295: // Riptide
                     case 73685: // Unleash Life
                         mod = 0.6f;
+                        break;
                     case 1064:  // Chain Heal
                         mod = 0.333f;
                         break;
@@ -3184,7 +3186,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     return SPELL_AURA_PROC_FAILED;
 
                 target = this;
-                basepoints[0] = int32(CalculateSpellDamage(target, triggeredInfo, EFFECT_INDEX_0) * mod);
+                basepoints[0] = int32(CalculateSpellDamage(target, triggeredInfo, EFFECT_INDEX_0) * mod * triggerAmount / 100.0f);
                 break;
             }
             // Flametongue Weapon (Passive), Ranks
