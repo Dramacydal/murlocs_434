@@ -4513,47 +4513,28 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                             switch (ench)
                             {
                                 case 2:         // Frostbrand Weapon
-                                {
-                                    SpellEntry const * triggeredInfo = sSpellStore.LookupEntry(73682);
-                                    if (!triggeredInfo)
-                                        return;
-                                    int32 bp = triggeredInfo->CalculateSimpleValue(EFFECT_INDEX_1);
-                                    m_caster->CastCustomSpell(unitTarget, 73682, NULL, &bp, NULL, true);
+                                    triggered_spell = 73682;
                                     break;
-                                }
                                 case 5:         // Flametongue Weapon
-                                {
-                                    SpellEntry const * triggeredInfo = sSpellStore.LookupEntry(73683);
-                                    if (!triggeredInfo)
-                                        return;
-                                    int32 bp = triggeredInfo->CalculateSimpleValue(EFFECT_INDEX_1);
-                                    m_caster->CastCustomSpell(unitTarget, 73683, NULL, &bp, &bp, true);
+                                    triggered_spell = 73683;
                                     break;
-                                }
                                 case 283:       // Windfury Weapon
-                                {
-                                    m_caster->CastSpell(unitTarget, 73681, true);
+                                    triggered_spell = 73681;
                                     break;
-                                }
                                 case 3021:      // Rockbiter Weapon
-                                {
-                                    m_caster->CastSpell(unitTarget, 73684, true);
+                                    triggered_spell =73684;
                                     break;
-                                }
                                 case 3345:      // Earthliving Weapon
-                                {
-                                    SpellEntry const * triggeredInfo = sSpellStore.LookupEntry(73685);
-                                    if (!triggeredInfo)
-                                        return;
-                                    int32 bp = triggeredInfo->CalculateSimpleValue(EFFECT_INDEX_1);
-                                    m_caster->CastCustomSpell(unitTarget, 73685, NULL, &bp, &bp, true);
+                                    triggered_spell =73685;
                                     break;
-                                }
                                 default:
                                     break;
                             }
+                            if (triggered_spell)
+                                m_caster->CastSpell(unitTarget, triggered_spell, true);
                         }
                 }
+                return;
             }
             // Lava Lash
             if (m_spellInfo->IsFitToFamilyMask(UI64LIT(0x0000000000000000), 0x00000004))
@@ -5972,6 +5953,32 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
                 if (player->HasSkill(SKILL_ENGINEERING))
                     damage += int32(damage * 0.25);
             }
+            break;
+        }
+        case 101033:                                        // Resurgence
+        {
+            if (!m_triggeredBySpellInfo)
+                break;
+
+            float mod = 1.0f;
+            switch (m_triggeredBySpellInfo->Id)
+            {
+                case 331:   // Healing Wave
+                case 77472: // Greater Healing Wave
+                    mod = 1.0f;
+                    break;
+                case 8004:  // Healing Surge
+                case 61295: // Riptide
+                case 73685: // Unleash Life
+                    mod = 0.6f;
+                    break;
+                case 1064:  // Chain Heal
+                    mod = 0.333f;
+                    break;
+                default:
+                    break;
+            }
+            damage = int32(damage * mod);
             break;
         }
         default:
