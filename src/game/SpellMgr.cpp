@@ -1126,6 +1126,9 @@ bool IsPositiveEffect(SpellEntry const *spellproto, SpellEffectIndex effIndex)
             return true;
 
         case SPELL_EFFECT_SCHOOL_DAMAGE:
+            if (spellproto->Id == 98021)                    // Spirit Link
+                return true;
+            return false;
         case SPELL_EFFECT_THREAT:
             return false;
 

@@ -3853,15 +3853,6 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     target->GetSession()->SendPacket(&data);
                     return;
                 }
-                case 77762:                                 // Lava Surge!
-                {
-                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
-                        return;
-
-                    // Remove Lava Burst cooldown
-                    ((Player*)unitTarget)->RemoveSpellCooldown(51505, true);
-                    return;
-                }
             }
             break;
         }

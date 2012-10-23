@@ -3136,6 +3136,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             {
                 triggered_spell_id = 77762;
                 target = this;
+                if (target->GetTypeId() == TYPEID_PLAYER)
+                    ((Player*)target)->RemoveSpellCooldown(51505, true);
                 break;
             }
             // Telluric Currents
