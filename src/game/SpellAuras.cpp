@@ -7201,7 +7201,7 @@ void Aura::HandleAuraModIncreaseHealth(bool apply, bool Real)
                             {
                                 float hpMax = float(talent->GetModifier()->m_amount) * target->GetMaxHealth() / 100.0f;
                                 if (m_modifier.m_amount > int32(hpMax))
-                                    m_modifier.m_amount = int32(hpMax);
+                                    ChangeAmount(int32(hpMax));
                             }
                         }
                     }
