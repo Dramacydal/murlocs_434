@@ -3163,25 +3163,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 if (!procSpell || !HasAura(52127))  // do not proc if no Water Shield aura present
                     return SPELL_AURA_PROC_FAILED;
 
-                float mod = 1.0f;
-                switch (procSpell->Id)
-                {
-                    case 331:   // Healing Wave
-                    case 77472: // Greater Healing Wave
-                        mod = 1.0f;
-                        break;
-                    case 8004:  // Healing Surge
-                    case 61295: // Riptide
-                    case 73685: // Unleash Life
-                        mod = 0.6f;
-                        break;
-                    case 1064:  // Chain Heal
-                        mod = 0.333f;
-                        break;
-                    default:
-                        return SPELL_AURA_PROC_FAILED;
-                }
-
                 triggered_spell_id = 101033;
                 break;
             }

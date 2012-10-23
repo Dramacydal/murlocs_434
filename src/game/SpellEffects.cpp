@@ -4526,6 +4526,8 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                                     break;
                                 case 3345:      // Earthliving Weapon
                                     triggered_spell =73685;
+                                    if (!unitTarget->IsFriendlyTo(m_caster))
+                                        unitTarget = m_caster;
                                     break;
                                 default:
                                     break;
@@ -5957,6 +5959,7 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
         }
         case 101033:                                        // Resurgence
         {
+            DEBUG_LOG(">>>>>>>> m_triggeredBySpellInfo : %u", m_triggeredBySpellInfo ? m_triggeredBySpellInfo->Id : 0);
             if (!m_triggeredBySpellInfo)
                 break;
 
@@ -5978,6 +5981,7 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
                 default:
                     break;
             }
+            DEBUG_LOG(">>>>>>>> mod : %f", mod);
             damage = int32(damage * mod);
             break;
         }
