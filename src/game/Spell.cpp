@@ -6375,7 +6375,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                                         break;
                                 }
                     }
-                    if (hasAnyEnch)
+                    if (!hasAnyEnch)
                         return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
                 }
                 break;
