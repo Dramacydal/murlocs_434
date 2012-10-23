@@ -21,6 +21,7 @@
 #include "Log.h"
 #include "../Player.h"
 #include "../Transports.h"
+#include "../Unit.h"
 
 namespace Movement{
 
@@ -201,12 +202,12 @@ MoveSpline::MoveSpline() : m_Id(0), time_passed(0),
 
 /// ============================================================================================
 
-bool MoveSplineInitArgs::Validate() const
+bool MoveSplineInitArgs::Validate(Unit* unit) const
 {
 #define CHECK(exp) \
     if (!(exp))\
     {\
-        ERROR_LOG("MoveSplineInitArgs::Validate: expression '%s' failed", #exp);\
+        ERROR_LOG("MoveSplineInitArgs::Validate: expression '%s' failed for $s", #exp, unit->GetGuidStr().c_str());\
         return false;\
     }
         CHECK(path.size() > 1);
