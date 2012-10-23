@@ -5959,12 +5959,13 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
         }
         case 101033:                                        // Resurgence
         {
-            DEBUG_LOG(">>>>>>>> m_triggeredBySpellInfo : %u", m_triggeredBySpellInfo ? m_triggeredBySpellInfo->Id : 0);
-            if (!m_triggeredBySpellInfo)
+            uint32 proccedBySpell = m_currentBasePoints[1];
+            DEBUG_LOG(">>>>>>>> proccedBySpell : %u", proccedBySpell);
+            if (!m_currentBasePoints[1])
                 break;
 
             float mod = 1.0f;
-            switch (m_triggeredBySpellInfo->Id)
+            switch (proccedBySpell)
             {
                 case 331:   // Healing Wave
                 case 77472: // Greater Healing Wave
