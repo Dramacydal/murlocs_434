@@ -3844,7 +3844,7 @@ void Aura::HandleAuraMounted(bool apply, bool Real)
         target->Unmount(true);
 
         // remove speed aura
-        if (MountCapabilityEntry const* mountCapability = target->GetMountCapability(uint32(GetSpellEffect()->EffectMiscValueB)))
+        if (MountCapabilityEntry const* mountCapability = sMountCapabilityStore.LookupEntry(m_modifier.m_amount))
             target->RemoveAurasByCasterSpell(mountCapability->SpeedModSpell, target->GetObjectGuid());
     }
 }
