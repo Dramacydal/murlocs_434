@@ -5966,7 +5966,7 @@ bool Player::UpdateSkillPro(uint16 SkillId, int32 Chance, uint32 step)
     if ( !SkillId )
         return false;
 
-    Chance = int32(Chance * GetTotalAuraMultiplier(SPELL_AURA_MOD_SKILLCHANCE));
+    Chance = int32(Chance * GetTotalAuraModifier(SPELL_AURA_MOD_SKILLCHANCE) / 100.0f);
 
     if(Chance <= 0)                                         // speedup in 0 chance case
     {
