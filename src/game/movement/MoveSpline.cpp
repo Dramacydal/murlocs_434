@@ -207,7 +207,7 @@ bool MoveSplineInitArgs::Validate(Unit* unit) const
 #define CHECK(exp) \
     if (!(exp))\
     {\
-        ERROR_LOG("MoveSplineInitArgs::Validate: expression '%s' failed for $s", #exp, unit->GetGuidStr().c_str());\
+        ERROR_LOG("MoveSplineInitArgs::Validate: expression '%s' failed for %s", #exp, unit->GetGuidStr().c_str());\
         return false;\
     }
         CHECK(path.size() > 1);
