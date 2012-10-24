@@ -12739,7 +12739,7 @@ void Unit::KnockBackWithAngle(float angle, float horizontalSpeed, float vertical
 
         data.WriteGuidBytes<4, 5, 3>(GetObjectGuid());
 
-        data << float(verticalSpeed);                       // Z Movement speed (vertical)
+        data << float(-verticalSpeed);                      // Z Movement speed (vertical)
         data << float(vcos);                                // x direction
 
         data.WriteGuidBytes<2, 0>(GetObjectGuid());
