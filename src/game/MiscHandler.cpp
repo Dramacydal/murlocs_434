@@ -1126,10 +1126,10 @@ void WorldSession::HandleInspectOpcode(WorldPacket& recv_data)
     plr->BuildEnchantmentsInfoData(&data);
     if (Guild* guild = sGuildMgr.GetGuildById(plr->GetGuildId()))
     {
-        data << uint64(0/*guild->GetGUID()*/);
-        data << uint32(0/*guild->GetLevel()*/);
+        data << guild->GetObjectGuid();
+        data << uint32(guild->GetLevel());
         data << uint64(0/*guild->GetXP()*/);
-        data << uint32(0/*guild->GetMembersCount()*/); // number of members
+        data << uint32(guild->GetMemberSize());             // number of members
     }
 
     SendPacket(&data);

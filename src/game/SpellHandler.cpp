@@ -734,7 +734,7 @@ void WorldSession::HandleGetMirrorimageData( WorldPacket & recv_data ) //Full co
     uint32 displayId;
     recv_data >> guid >> displayId;
         
-    Creature* pCreature = _player->GetMap()->GetAnyTypeCreature(guid); //ObjectAccessor::GetUnitInWorld((WorldObject*)NULL, guid);
+    Creature* pCreature = _player->GetMap()->GetAnyTypeCreature(guid);
 
     if (!pCreature)
         return;
@@ -768,7 +768,7 @@ void WorldSession::HandleGetMirrorimageData( WorldPacket & recv_data ) //Full co
         // facial hair
         data << (uint8)pPlayer->GetByteValue(PLAYER_BYTES_2, 0);
         
-        // guild id
+        // guild guid
         data << pPlayer->GetGuildGuid();
 
         if (pPlayer->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM))

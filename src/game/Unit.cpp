@@ -13708,7 +13708,7 @@ void Unit::BuildMoveWaterWalkPacket(WorldPacket* data, bool apply, uint32 value)
 
 void Unit::BuildMoveFeatherFallPacket(WorldPacket* data, bool apply, uint32 value)
 {
-    ObjectGuid guid = GetGUID();
+    ObjectGuid guid = GetObjectGuid();
 
     if (apply)
     {
