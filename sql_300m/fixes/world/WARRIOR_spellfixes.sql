@@ -33,11 +33,6 @@ DELETE FROM `spell_proc_event` WHERE `entry` = 52437;
 INSERT INTO `spell_proc_event` (`entry`, `SpellFamilyName`, `SpellFamilyMaskA0`, `procFlags`, `procEx`) VALUE
 (52437, 4, 536870912, 16, 0x10000);
 
--- Slam! proc
-DELETE FROM `spell_proc_event` WHERE `entry` = 46916;
-INSERT INTO `spell_proc_event` (`entry`, `SpellFamilyName`, `SpellFamilyMaskA0`) VALUE
-(46916, 4, 0x200000);
-
 -- Sudden Death
 DELETE FROM `spell_proc_event` WHERE `entry` = 29723;
 INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `SpellFamilyName`, `procFlags`) VALUE
