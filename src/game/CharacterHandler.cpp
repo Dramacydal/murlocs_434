@@ -106,6 +106,7 @@ bool LoginQueryHolder::Initialize()
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADMAILEDITEMS,     "SELECT data, text, mail_id, item_guid, item_template FROM mail_items JOIN item_instance ON item_guid = guid WHERE receiver = '%u'", m_guid.GetCounter());
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADRANDOMBG,        "SELECT guid FROM character_battleground_random WHERE guid = '%u'", m_guid.GetCounter());
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADCURRENCIES,      "SELECT id, totalCount, weekCount, seasonCount, flags FROM character_currencies WHERE guid = '%u'", m_guid.GetCounter());
+    res &= SetPQuery(PLAYER_LOGIN_QUERY_LOAD_CUF_PROFILES,   "SELECT id, name, frameHeight, frameWidth, sortBy, healthText, boolOptions, unk146, unk147, unk148, unk150, unk152, unk154 FROM character_cuf_profiles WHERE guid = '%u'", m_guid.GetCounter());
 
     return res;
 }

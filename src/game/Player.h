@@ -19,6 +19,7 @@
 #ifndef _PLAYER_H
 #define _PLAYER_H
 
+#include <bitset>
 #include "Common.h"
 #include "ItemPrototype.h"
 #include "Unit.h"
@@ -81,6 +82,96 @@ enum BuyBankSlotResult
     ERR_BANKSLOT_INSUFFICIENT_FUNDS = 1,
     ERR_BANKSLOT_NOTBANKER          = 2,
     ERR_BANKSLOT_OK                 = 3
+};
+
+/// Maximum number of CompactUnitFrames profiles
+#define MAX_CUF_PROFILES 5
+
+/// Bit index used in the many bool options of CompactUnitFrames
+enum CUFBoolOptions
+{
+    CUF_KEEP_GROUPS_TOGETHER,
+    CUF_DISPLAY_PETS,
+    CUF_DISPLAY_MAIN_TANK_AND_ASSIST,
+    CUF_DISPLAY_HEAL_PREDICTION,
+    CUF_DISPLAY_AGGRO_HIGHLIGHT,
+    CUF_DISPLAY_ONLY_DISPELLABLE_DEBUFFS,
+    CUF_DISPLAY_POWER_BAR,
+    CUF_DISPLAY_BORDER,
+    CUF_USE_CLASS_COLORS,
+    CUF_DISPLAY_NON_BOSS_DEBUFFS,
+    CUF_DISPLAY_HORIZONTAL_GROUPS,
+    CUF_LOCKED,
+    CUF_SHOWN,
+    CUF_AUTO_ACTIVATE_2_PLAYERS,
+    CUF_AUTO_ACTIVATE_3_PLAYERS,
+    CUF_AUTO_ACTIVATE_5_PLAYERS,
+    CUF_AUTO_ACTIVATE_10_PLAYERS,
+    CUF_AUTO_ACTIVATE_15_PLAYERS,
+    CUF_AUTO_ACTIVATE_25_PLAYERS,
+    CUF_AUTO_ACTIVATE_40_PLAYERS,
+    CUF_AUTO_ACTIVATE_SPEC_1,
+    CUF_AUTO_ACTIVATE_SPEC_2,
+    CUF_AUTO_ACTIVATE_PVP,
+    CUF_AUTO_ACTIVATE_PVE,
+    CUF_UNK_145,
+    CUF_UNK_156,
+    CUF_UNK_157,
+
+    // Two of the unks is _LOCKED and _SHOWN
+
+    CUF_BOOL_OPTIONS_COUNT,
+};
+
+/// Represents a CompactUnitFrame profile
+struct CUFProfile
+{
+    CUFProfile() : ProfileName(), BoolOptions() // might want to change default value for options
+    {
+        FrameHeight = 0;
+        FrameWidth  = 0;
+        SortBy      = 0;
+        HealthText  = 0;
+        Unk146      = 0;
+        Unk147      = 0;
+        Unk148      = 0;
+        Unk150      = 0;
+        Unk152      = 0;
+        Unk154      = 0;
+    }
+
+    CUFProfile(const std::string& name, uint16 frameHeight, uint16 frameWidth, uint8 sortBy, uint8 healthText, uint32 boolOptions,
+        uint8 unk146, uint8 unk147, uint8 unk148, uint16 unk150, uint16 unk152, uint16 unk154)
+        : ProfileName(name), BoolOptions((int)boolOptions)
+    {
+        FrameHeight = frameHeight;
+        FrameWidth  = frameWidth;
+        SortBy      = sortBy;
+        HealthText  = healthText;
+        Unk146      = unk146;
+        Unk147      = unk147;
+        Unk148      = unk148;
+        Unk150      = unk150;
+        Unk152      = unk152;
+        Unk154      = unk154;
+    }
+
+    std::string ProfileName;
+    uint16 FrameHeight;
+    uint16 FrameWidth;
+    uint8 SortBy;
+    uint8 HealthText;
+
+    uint8 Unk146;
+    uint8 Unk147;
+    uint8 Unk148;
+    uint16 Unk150;
+    uint16 Unk152;
+    uint16 Unk154;
+
+    std::bitset<CUF_BOOL_OPTIONS_COUNT> BoolOptions;
+
+    // More fields can be added to BoolOptions without changing DB schema (up to 32, currently 27)
 };
 
 enum PlayerCurrencyFlag
@@ -869,6 +960,7 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOADRANDOMBG,
     PLAYER_LOGIN_QUERY_LOADMONTHLYQUESTSTATUS,
     PLAYER_LOGIN_QUERY_LOADCURRENCIES,
+    PLAYER_LOGIN_QUERY_LOAD_CUF_PROFILES,
 
     MAX_PLAYER_LOGIN_QUERY
 };
@@ -2674,6 +2766,23 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint32 GetCurrencyTotalCap(CurrencyTypesEntry const * currency) const;
         void _LoadCurrencies(QueryResult* result);
         void _SaveCurrencies();
+
+        /*********************************************************/
+        /***                 CUF PROFILES                      ***/
+        /*********************************************************/
+        void _LoadCUFProfiles(QueryResult* result);
+        void _SaveCUFProfiles();
+        CUFProfile* _CUFProfiles[MAX_CUF_PROFILES];
+        void SaveCUFProfile(uint8 id, CUFProfile* profile) { delete _CUFProfiles[id]; _CUFProfiles[id] = profile; } ///> Replaces a CUF profile at position 0-4
+        CUFProfile* GetCUFProfile(uint8 id) const { return _CUFProfiles[id]; } ///> Retrieves a CUF profile at position 0-4
+        uint8 GetCUFProfilesCount() const
+        {
+            uint8 count = 0;
+            for (uint8 i = 0; i < MAX_CUF_PROFILES; ++i)
+                if (_CUFProfiles[i])
+                    ++count;
+            return count;
+        }
 
         void outDebugStatsValues() const;
         ObjectGuid m_lootGuid;

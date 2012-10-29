@@ -1425,6 +1425,8 @@ enum Opcodes
     CMSG_REFORGE_ITEM                                     = 0x331A, // 4.3.4 15595
     SMSG_REFORGE_RESULT                                   = 0x58A4, // 4.3.4 15595
     CMSG_TRANSMOGRIFY_ITEMS                               = 0x3B0E, // 4.3.4 15595
+    CMSG_SAVE_CUF_PROFILES                                = 0x730E, // 4.3.4 15595
+    SMSG_LOAD_CUF_PROFILES                                = 0x50B1, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF

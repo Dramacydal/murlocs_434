@@ -920,6 +920,10 @@ class MANGOS_DLL_SPEC WorldSession
 
         void HandleSetCurrencyFlagsOpcode(WorldPacket& recv_data);
 
+        // Compact Unit Frames
+        void HandleSaveCUFProfiles(WorldPacket& recv_data);
+        void SendLoadCUFProfiles();
+
     private:
         // private trade methods
         void moveItems(Item* myItems[], Item* hisItems[]);
