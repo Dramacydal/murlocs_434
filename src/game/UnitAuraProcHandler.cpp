@@ -1923,16 +1923,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
 
                     return SPELL_AURA_PROC_OK;
                 }
-                // Item - Warrior T10 Melee 4P Bonus
-                case 70847:
-                {
-                    if (!procSpell || procSpell->Id != 46916 && procSpell->Id != 52437)
-                        return SPELL_AURA_PROC_FAILED;
-
-                    triggered_spell_id = 70849;
-                    target = this;
-                    break;
-                }
             }
             break;
         }
@@ -5135,6 +5125,15 @@ SpellAuraProcResult Unit::HandleAddPctModifierAuraProc(Unit* /*pVictim*/, uint32
                     }
                 }
                 return SPELL_AURA_PROC_OK;
+            }
+            break;
+        }
+        case SPELLFAMILY_WARRIOR:
+        {
+            if (spellInfo->Id == 46916)           // Slam!
+            {
+                if (!(procSpell && procSpell->Id==50782))
+                    return SPELL_AURA_PROC_CANT_TRIGGER;
             }
             break;
         }
