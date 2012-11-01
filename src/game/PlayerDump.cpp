@@ -490,8 +490,8 @@ DumpReturn PlayerDumpReader::LoadDump(const std::string& file, uint32 account, s
         // add required_ check
         if (line.substr(nw_pos,41)=="UPDATE character_db_version SET required_")
         {
-            if (!CharacterDatabase.Execute(line.c_str()))
-                ROLLBACK(DUMP_FILE_BROKEN);
+            //if (!CharacterDatabase.Execute(line.c_str()))
+            //    ROLLBACK(DUMP_FILE_BROKEN);
 
             continue;
         }
