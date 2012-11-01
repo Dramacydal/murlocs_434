@@ -369,6 +369,7 @@ Item::Item()
     m_updateFlag = 0;
 
     m_valuesCount = ITEM_END;
+    m_valuesCount_335 = ITEM_END_335;
     m_slot = 0;
     uState = ITEM_NEW;
     uQueuePos = -1;
@@ -572,7 +573,8 @@ bool Item::LoadFromDB(uint32 guidLow, Field* fields, ObjectGuid ownerGuid)
     // and allow use "FSetState(ITEM_REMOVED); SaveToDB();" for deleting item from DB
     Object::_Create(guidLow, 0, HIGHGUID_ITEM);
 
-    if (!LoadValues(fields[0].GetString()))
+    bool converted;
+    if (!LoadValues(fields[0].GetString(), converted))
     {
         ERROR_LOG("Item #%d have broken data in `data` field. Can't be loaded.", guidLow);
         return false;
@@ -649,7 +651,7 @@ bool Item::LoadFromDB(uint32 guidLow, Field* fields, ObjectGuid ownerGuid)
         }
     }
 
-    if (need_save)                                          // normal item changed state set not work at loading
+    if (need_save || converted)                                 // normal item changed state set not work at loading
     {
         static SqlStatementID updItem ;
 

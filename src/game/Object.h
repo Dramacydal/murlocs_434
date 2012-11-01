@@ -354,7 +354,9 @@ class MANGOS_DLL_SPEC Object
 
         void ClearUpdateMask(bool remove);
 
-        bool LoadValues(const char* data);
+        bool LoadValues(const char* data, bool& bConverted);
+        bool LoadValues_335(Tokens& tokens);
+        int32 ConvertIndexFrom335(uint32 i) const;
 
         uint16 GetValuesCount() const { return m_valuesCount; }
 
@@ -389,6 +391,7 @@ class MANGOS_DLL_SPEC Object
         uint32 *m_uint32Values_mirror;
 
         uint16 m_valuesCount;
+        uint16 m_valuesCount_335;
 
         bool m_objectUpdated;
 

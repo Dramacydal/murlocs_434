@@ -36,6 +36,7 @@ DynamicObject::DynamicObject() : WorldObject()
     m_updateFlag = UPDATEFLAG_HAS_POSITION;
 
     m_valuesCount = DYNAMICOBJECT_END;
+    m_valuesCount_335 = DYNAMICOBJECT_END_335;
 }
 
 void DynamicObject::AddToWorld()

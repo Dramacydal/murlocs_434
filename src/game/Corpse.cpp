@@ -36,6 +36,7 @@ Corpse::Corpse(CorpseType type) : WorldObject()
     m_updateFlag = UPDATEFLAG_HAS_POSITION;
 
     m_valuesCount = CORPSE_END;
+    m_valuesCount_335 = CORPSE_END_335;
 
     m_type = type;
 

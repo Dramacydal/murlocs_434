@@ -29,6 +29,7 @@ Bag::Bag(): Item()
     m_objectTypeId = TYPEID_CONTAINER;
 
     m_valuesCount = CONTAINER_END;
+    m_valuesCount_335 = CONTAINER_END_335;
 
     memset(m_bagslot, 0, sizeof(Item*) * MAX_BAG_SIZE);
 }

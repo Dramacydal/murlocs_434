@@ -16310,8 +16310,8 @@ void Player::_LoadIntoDataField(const char* data, uint32 startOffset, uint32 cou
 
     Tokens tokens = StrSplit(data, " ");
 
-    if(tokens.size() != count)
-        return;
+    if (tokens.size() < count)
+        count = tokens.size();
 
     Tokens::iterator iter;
     uint32 index;

@@ -52,6 +52,7 @@ GameObject::GameObject() : WorldObject(),
     m_updateFlag = UPDATEFLAG_HAS_POSITION | UPDATEFLAG_ROTATION;
 
     m_valuesCount = GAMEOBJECT_END;
+    m_valuesCount_335 = GAMEOBJECT_END_335;
     m_respawnTime = 0;
     m_respawnDelayTime = 25;
     m_lootState = GO_NOT_READY;

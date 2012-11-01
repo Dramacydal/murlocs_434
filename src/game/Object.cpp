@@ -54,6 +54,7 @@ Object::Object( )
     m_uint32Values      = 0;
     m_uint32Values_mirror = 0;
     m_valuesCount       = 0;
+    m_valuesCount_335   = 0;
 
     m_inWorld           = false;
     m_objectUpdated     = false;
@@ -797,20 +798,64 @@ void Object::ClearUpdateMask(bool remove)
     }
 }
 
-bool Object::LoadValues(const char* data)
+bool Object::LoadValues(const char* data, bool& bConverted)
 {
+    bConverted = false;
     if(!m_uint32Values) _InitValues();
 
     Tokens tokens = StrSplit(data, " ");
 
-    if(tokens.size() != m_valuesCount)
-        return false;
+    if (tokens.size() != m_valuesCount)
+        if (tokens.size() == m_valuesCount_335)
+        {
+            bConverted = true;
+            return LoadValues_335(tokens);
+        }
+        else
+            return false;
 
     Tokens::iterator iter;
     int index;
     for (iter = tokens.begin(), index = 0; index < m_valuesCount; ++iter, ++index)
     {
         m_uint32Values[index] = atol((*iter).c_str());
+    }
+
+    return true;
+}
+
+int32 Object::ConvertIndexFrom335(uint32 i) const
+{
+    // Object fields
+    if (i >= OBJECT_FIELD_GUID_335 && i <= OBJECT_FIELD_GUID_335 + 1)
+        return OBJECT_FIELD_GUID + i - OBJECT_FIELD_GUID_335;
+    if (i >= OBJECT_FIELD_TYPE_335 && i <= OBJECT_FIELD_PADDING_335)
+        return OBJECT_FIELD_TYPE + i - OBJECT_FIELD_TYPE_335;
+
+    // Item fields
+    if (i >= ITEM_FIELD_OWNER_335 && i <= ITEM_FIELD_ENCHANTMENT_12_3_335)
+        return ITEM_FIELD_OWNER + i - ITEM_FIELD_OWNER_335;
+    if (i >= ITEM_FIELD_PROPERTY_SEED_335 && i <= ITEM_FIELD_CREATE_PLAYED_TIME_335)
+        return ITEM_FIELD_PROPERTY_SEED + i - ITEM_FIELD_PROPERTY_SEED_335;
+    // Bag Fields
+    if (i >= CONTAINER_FIELD_NUM_SLOTS_335 && i <= CONTAINER_FIELD_SLOT_1 + 0x47)
+        return CONTAINER_FIELD_NUM_SLOTS + i - CONTAINER_FIELD_NUM_SLOTS_335;
+
+    // Other fields are either not stored in db or partly stored and loaded elsewhere.
+
+    return -1;
+}
+bool Object::LoadValues_335(Tokens& tokens)
+{
+    Tokens::iterator iter;
+    int index;
+    for (iter = tokens.begin(), index = 0; index < m_valuesCount; ++iter, ++index)
+    {
+        int32 new_index = ConvertIndexFrom335(index);
+        if (new_index == -1)
+            continue;
+
+        m_uint32Values[new_index] = atol((*iter).c_str());
     }
 
     return true;
