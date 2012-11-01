@@ -219,7 +219,7 @@ BattleField* OutdoorPvPMgr::GetBattlefieldById(uint32 id)
 {
     for (uint8 i = 0; i < MAX_OPVP_ID; ++i)
         if (OutdoorPvP* opvp = m_scripts[i])
-            if (opvp->GetBattlefieldId() == id)
+            if (opvp->IsBattleField() && ((BattleField*)opvp)->GetBattlefieldId() == id)
                 return (BattleField*)opvp;
 
     return NULL;

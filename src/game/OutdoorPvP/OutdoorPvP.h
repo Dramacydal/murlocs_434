@@ -53,7 +53,7 @@ class OutdoorPvP
     friend class OutdoorPvPMgr;
 
     public:
-        OutdoorPvP(uint32 _id) : m_id(_id) {}
+        OutdoorPvP(uint32 _id) : m_id(_id), m_isBattleField(false) {}
         virtual ~OutdoorPvP() {}
 
         // called when the zone is initialized
@@ -107,8 +107,7 @@ class OutdoorPvP
         void SendUpdateWorldState(uint32 field, uint32 value);
 
         uint32 GetId() const { return m_id; }
-        uint32 GetBattlefieldId() const;
-        bool IsBattleField() const { return GetBattlefieldId() != 0; }
+        bool IsBattleField() const { return m_isBattleField; }
 
         virtual bool IsMember(ObjectGuid guid) { return true; }
 
@@ -137,6 +136,7 @@ class OutdoorPvP
 
         // outdoor pvp type id
         uint32 m_id;
+        bool m_isBattleField;
 };
 
 #endif

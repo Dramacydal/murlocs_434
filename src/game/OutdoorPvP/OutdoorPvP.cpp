@@ -207,16 +207,3 @@ void OutdoorPvP::RespawnGO(const WorldObject* objRef, ObjectGuid goGuid, bool re
     }
 }
 
-uint32 OutdoorPvP::GetBattlefieldId() const
-{
-    switch (m_id)
-    {
-        case OPVP_ID_WG:
-            return BATTLEFIELD_WG;
-        case OPVP_ID_TB:
-            return BATTLEFIELD_TB;
-        default:
-            return 0;
-    }
-}
-

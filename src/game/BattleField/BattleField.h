@@ -122,7 +122,11 @@ class BattleField : public OutdoorPvP
 
         virtual bool CriteriaMeets(uint32 criteriaId, Player* plr) { return false; }
 
+        uint32 GetBattleDuration() const { return m_battleDuration; }
         uint32 GetStartInviteDelay() const { return m_startInviteDelay; }
+        uint32 GetCooldownDuration() const { return m_cooldownDuration; }
+        uint32 GetMaxPlayersPerTeam() const { return m_maxPlayersPerTeam; }
+        uint32 GetStopTeleportingTime() const { return m_stopTeleportingTime; }
 
         void SendWarningToAll(int32 entry);
 
@@ -137,6 +141,11 @@ class BattleField : public OutdoorPvP
 
         bool AddPlayerToRaid(Player* player);
         bool RemovePlayerFromRaid(ObjectGuid guid);
+
+        void InvitePlayerToQueue(Player* player);
+
+        uint32 GetBattlefieldId() const { return m_battleFieldId; }
+
     protected:
         void KickPlayer(Player* plr);
         virtual bool GetKickPosition(Player* plr, float& x, float& y, float& z) { return false; }
@@ -148,7 +157,6 @@ class BattleField : public OutdoorPvP
         Group* GetGroupFor(ObjectGuid guid);
         uint32 GetPlayerCountByTeam(TeamIndex teamIdx);
         bool IsTeamFull(TeamIndex teamIdx);
-        void InvitePlayerToQueue(Player* player);
 
         virtual void RewardPlayersAtEnd(TeamIndex winner) { };
 
@@ -159,6 +167,7 @@ class BattleField : public OutdoorPvP
         virtual void SendUpdateWorldStatesTo(Player* player) { }
 
         // variables
+        uint32 m_battleFieldId;
         BFPlayerScoreMap m_playerScores;
         uint32 m_mapId;
         std::set<Group*> m_Raids[PVP_TEAM_COUNT];

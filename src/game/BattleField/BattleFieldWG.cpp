@@ -25,6 +25,7 @@
 
 BattleFieldWG::BattleFieldWG(uint32 id) : BattleField(id)
 {
+    m_battleFieldId = BATTLEFIELD_WG;
     m_mapId = MAP_ID_NORTHREND;
     m_zoneId = ZONE_ID_WINTERGRASP;
     m_defender = TeamIndex(urand(0, 1));

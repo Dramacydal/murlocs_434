@@ -24,7 +24,10 @@
 #include "GameObject.h"
 #include "Player.h"
 
-BattleField::BattleField(uint32 id) : OutdoorPvP(id) { }
+BattleField::BattleField(uint32 id) : OutdoorPvP(id), m_battleFieldId(0)
+{
+    m_isBattleField = true;
+}
 
 void BattleField::KickPlayer(Player* plr)
 {
@@ -210,7 +213,7 @@ void BattleField::InvitePlayerToQueue(Player* player)
         return;
 
     if (!IsTeamFull(teamIdx))
-        player->GetSession()->SendBfInvitePlayerToQueue(GetBattlefieldId());
+        player->GetSession()->SendBfInvitePlayerToQueue(m_battleFieldId);
     //else
     //    player->GetSession()->SendBfQueueInviteResponse(m_BattlefieldId, m_zoneId, true, true);
 }
@@ -228,7 +231,7 @@ void BattleField::OnPlayerInviteResponse(Player* plr, bool accept)
 
     if (IsTeamFull(teamIdx))
     {
-        plr->GetSession()->SendBfQueueInviteResponse(GetBattlefieldId(), m_zoneId, true, true);
+        plr->GetSession()->SendBfQueueInviteResponse(m_battleFieldId, m_zoneId, true, true);
         return;
     }
 
@@ -237,12 +240,12 @@ void BattleField::OnPlayerInviteResponse(Player* plr, bool accept)
         if (m_state == BF_STATE_IN_PROGRESS)
         {
             m_InvitedPlayers[teamIdx][plr->GetObjectGuid()] = time(NULL) + BF_TIME_TO_ACCEPT;
-            plr->GetSession()->SendBfInvitePlayerToWar(GetBattlefieldId(), m_zoneId, BF_TIME_TO_ACCEPT);
+            plr->GetSession()->SendBfInvitePlayerToWar(m_battleFieldId, m_zoneId, BF_TIME_TO_ACCEPT);
         }
         else
         {
             m_QueuedPlayers[teamIdx].insert(plr->GetObjectGuid());
-            plr->GetSession()->SendBfQueueInviteResponse(GetBattlefieldId(), m_zoneId, true, false);
+            plr->GetSession()->SendBfQueueInviteResponse(m_battleFieldId, m_zoneId, true, false);
         }
     }
 }
@@ -265,7 +268,7 @@ bool BattleField::OnPlayerPortResponse(Player* plr, bool accept)
         if (AddPlayerToRaid(plr))
         {
             DEBUG_LOG("Battlefield: AddPlayerToRaid for %s returned: TRUE", plr->GetGuidStr().c_str());
-            plr->GetSession()->SendBfEntered(GetBattlefieldId());
+            plr->GetSession()->SendBfEntered(m_battleFieldId);
         }
         else
             DEBUG_LOG("Battlefield: AddPlayerToRaid for %s returned: FALSE", plr->GetGuidStr().c_str());
@@ -425,7 +428,7 @@ void BattleField::StartBattle(TeamIndex defender)
         if (itr2 != m_QueuedPlayers[idx].end())
         {
             m_InvitedPlayers[idx][itr->first] = time(NULL) + BF_TIME_TO_ACCEPT;
-            plr->GetSession()->SendBfInvitePlayerToWar(GetBattlefieldId(), m_zoneId, BF_TIME_TO_ACCEPT);
+            plr->GetSession()->SendBfInvitePlayerToWar(m_battleFieldId, m_zoneId, BF_TIME_TO_ACCEPT);
             m_QueuedPlayers[idx].erase(itr2);
         }
         else
@@ -448,7 +451,7 @@ void BattleField::StartBattle(TeamIndex defender)
             if (Player* plr = sObjectMgr.GetPlayer(*itr, true))
             {
                 m_InvitedPlayers[i][plr->GetObjectGuid()] = time(NULL) + BF_TIME_TO_ACCEPT;
-                plr->GetSession()->SendBfInvitePlayerToWar(GetBattlefieldId(), m_zoneId, BF_TIME_TO_ACCEPT);
+                plr->GetSession()->SendBfInvitePlayerToWar(m_battleFieldId, m_zoneId, BF_TIME_TO_ACCEPT);
             }
 
             m_QueuedPlayers[i].erase(itr++);
@@ -515,7 +518,7 @@ void BattleField::Update(uint32 diff)
                 if (itr->second < time(NULL))
                 {
                     if (Player* plr = GetMap()->GetPlayer(itr->first))
-                        plr->GetSession()->SendBfLeaveMessage(GetBattlefieldId(), BATTLEFIELD_LEAVE_REASON_EXITED);
+                        plr->GetSession()->SendBfLeaveMessage(m_battleFieldId, BATTLEFIELD_LEAVE_REASON_EXITED);
                     m_InvitedPlayers[i].erase(itr++);
                 }
                 else
@@ -552,7 +555,7 @@ void BattleField::HandlePlayerEnterZone(Player* pPlayer, bool isMainZone)
         if (m_state == BF_STATE_IN_PROGRESS)
         {
             m_InvitedPlayers[GetTeamIndex(pPlayer->GetTeam())][pPlayer->GetObjectGuid()] = time(NULL) + BF_TIME_TO_ACCEPT;
-            pPlayer->GetSession()->SendBfInvitePlayerToWar(GetBattlefieldId(), m_zoneId, BF_TIME_TO_ACCEPT);
+            pPlayer->GetSession()->SendBfInvitePlayerToWar(m_battleFieldId, m_zoneId, BF_TIME_TO_ACCEPT);
         }
         else if (m_state == BF_STATE_COOLDOWN && m_timer < m_startInviteDelay)
             InvitePlayerToQueue(pPlayer);
@@ -579,7 +582,7 @@ void BattleField::HandlePlayerLeaveZone(Player* pPlayer, bool isMainZone)
     {
         if (IsMember(itr->first))
         {
-            pPlayer->GetSession()->SendBfLeaveMessage(GetBattlefieldId(), BATTLEFIELD_LEAVE_REASON_EXITED);
+            pPlayer->GetSession()->SendBfLeaveMessage(m_battleFieldId, BATTLEFIELD_LEAVE_REASON_EXITED);
             itr->second->removeTime = time(NULL);
             itr->second->removeDelay = BF_UNACCEPTED_REMOVE_DELAY;
         }

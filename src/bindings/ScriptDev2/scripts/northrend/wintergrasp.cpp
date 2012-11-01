@@ -16,7 +16,7 @@
 
 #include "precompiled.h"
 #include "OutdoorPvP/OutdoorPvPMgr.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 #include "Vehicle.h"
 
 enum
@@ -83,7 +83,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_spirit_guideAI : public ScriptedAI
         Reset();
     }
 
-    OutdoorPvPWG* opvp;
+    BattleFieldWG* opvp;
     bool bInit;
     void Reset() { }
 
@@ -92,7 +92,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_spirit_guideAI : public ScriptedAI
         if (!bInit)
         {
             bInit = true;
-            opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+            opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetBattlefieldById(BATTLEFIELD_WG);
         }
 
         // auto cast the whole time this spell
@@ -113,7 +113,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_spirit_guideAI : public ScriptedAI
 
 bool GossipHello_npc_wintergrasp_spirit_guide(Player* pPlayer, Creature* pCreature)
 {
-    OutdoorPvPWG* opvp = NULL;
+    BattleFieldWG* opvp = NULL;
     if (pCreature->AI() && (npc_wintergrasp_spirit_guideAI*)pCreature->AI())
         opvp = ((npc_wintergrasp_spirit_guideAI*)pCreature->AI())->opvp;
     if (!opvp)
@@ -146,7 +146,7 @@ bool GossipSelect_npc_wintergrasp_spirit_guide(Player* player, Creature* pCreatu
 {
     player->CLOSE_GOSSIP_MENU();
 
-    OutdoorPvPWG* opvp = NULL;
+    BattleFieldWG* opvp = NULL;
     if (pCreature->AI() && (npc_wintergrasp_spirit_guideAI*)pCreature->AI())
         opvp = ((npc_wintergrasp_spirit_guideAI*)pCreature->AI())->opvp;
     if (!opvp)
@@ -218,7 +218,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_vehicleAI : public ScriptedAI
     uint32 zoneCheckTimer;
     uint32 teleporterCheckTimer;
     bool isInWater;
-    OutdoorPvPWG* opvp;
+    BattleFieldWG* opvp;
     bool bInit;
     TeamIndex teamIdx;
 
@@ -236,7 +236,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_vehicleAI : public ScriptedAI
         if (!bInit)
         {
             bInit = true;
-            opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+            opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetBattlefieldById(BATTLEFIELD_WG);
             if (opvp)
                 opvp->_OnCreatureCreate(m_creature);
 
@@ -314,7 +314,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_vehicleAI : public ScriptedAI
         if (caster->GetTypeId() != TYPEID_PLAYER)
             return false;
 
-        if (!opvp || opvp->GetState() != WG_STATE_IN_PROGRESS || !opvp->IsMember(caster->GetObjectGuid()))
+        if (!opvp || opvp->GetState() != BF_STATE_IN_PROGRESS || !opvp->IsMember(caster->GetObjectGuid()))
             return true;
 
         switch(m_creature->GetEntry())
@@ -373,7 +373,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_mechanicAI : public ScriptedAI
             armsGuid = pArms->GetObjectGuid();
     }
 
-    OutdoorPvPWG* opvp;
+    BattleFieldWG* opvp;
     bool bInit;
     ObjectGuid armsGuid;
 
@@ -387,7 +387,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_mechanicAI : public ScriptedAI
         if (!bInit)
         {
             bInit = true;
-            opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+            opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetBattlefieldById(BATTLEFIELD_WG);
         }
 
         /*if (busyTimer)
@@ -410,7 +410,7 @@ CreatureAI* GetAI_npc_wintergrasp_mechanic(Creature* pCreature)
 
 bool GossipHello_npc_wintergrasp_mechanic(Player* pPlayer, Creature* pCreature)
 {
-    OutdoorPvPWG* opvp = NULL;
+    BattleFieldWG* opvp = NULL;
     //uint32 busyTimer = 0;
     if (pCreature->AI() && (npc_wintergrasp_mechanicAI*)pCreature->AI())
     {
@@ -432,7 +432,7 @@ bool GossipHello_npc_wintergrasp_mechanic(Player* pPlayer, Creature* pCreature)
         return true;
     }*/
 
-    if (opvp->GetState() != WG_STATE_IN_PROGRESS || !opvp->IsMember(pPlayer->GetObjectGuid()))
+    if (opvp->GetState() != BF_STATE_IN_PROGRESS || !opvp->IsMember(pPlayer->GetObjectGuid()))
     {
         if (pPlayer->GetTeam() == ALLIANCE)
             pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXT_ID_WG_HELLO_RANK_NOT_HIGH_A, pCreature->GetObjectGuid());
@@ -472,7 +472,7 @@ bool GossipHello_npc_wintergrasp_mechanic(Player* pPlayer, Creature* pCreature)
 
 bool GossipSelect_npc_wintergrasp_mechanic(Player* player, Creature* pCreature, uint32 sender, uint32 action)
 {
-    OutdoorPvPWG* opvp = NULL;
+    BattleFieldWG* opvp = NULL;
     ObjectGuid armsGuid;
     //uint32 busyTimer = 0;
     if (pCreature->AI() && (npc_wintergrasp_mechanicAI*)pCreature->AI())
@@ -486,7 +486,7 @@ bool GossipSelect_npc_wintergrasp_mechanic(Player* player, Creature* pCreature, 
 
     if (sender == SENDER_WG_MAIN)
     {
-        if (opvp->GetState() != WG_STATE_IN_PROGRESS || !opvp->IsMember(player->GetObjectGuid()))
+        if (opvp->GetState() != BF_STATE_IN_PROGRESS || !opvp->IsMember(player->GetObjectGuid()))
         {
             player->PlayerTalkClass->ClearMenus();
             if (player->GetTeam() == ALLIANCE)
@@ -557,7 +557,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_battlemasterAI : public ScriptedAI
         Reset();
     }
 
-    OutdoorPvPWG* opvp;
+    BattleFieldWG* opvp;
     bool bInit;
 
     void Reset() { }
@@ -567,14 +567,14 @@ struct MANGOS_DLL_DECL npc_wintergrasp_battlemasterAI : public ScriptedAI
         if (!bInit)
         {
             bInit = true;
-            opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+            opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetBattlefieldById(BATTLEFIELD_WG);
         }
     }
 };
 
 bool GossipHello_npc_wintergrasp_battlemaster(Player* pPlayer, Creature* pCreature)
 {
-    OutdoorPvPWG* opvp = NULL;
+    BattleFieldWG* opvp = NULL;
     if (pCreature->AI() && (npc_wintergrasp_battlemasterAI*)pCreature->AI())
         opvp = ((npc_wintergrasp_battlemasterAI*)pCreature->AI())->opvp;
     if (!opvp)
@@ -585,16 +585,16 @@ bool GossipHello_npc_wintergrasp_battlemaster(Player* pPlayer, Creature* pCreatu
 
     if (opvp->GetDefender() == teamIdx)
     {
-        if (opvp->GetState() == WG_STATE_IN_PROGRESS)
+        if (opvp->GetState() == BF_STATE_IN_PROGRESS)
         {
             textId = teamIdx == TEAM_INDEX_ALLIANCE ? GOSSIT_TEXT_A_C_A_STARTED : GOSSIT_TEXT_H_C_H_STARTED;
         }
-        else if (opvp->GetTimer() < WG_START_INVITE_TIME)
+        else if (opvp->GetTimer() < opvp->GetStartInviteDelay())
         {
             textId = teamIdx == TEAM_INDEX_ALLIANCE ? GOSSIT_TEXT_A_C_A_ABOUT : GOSSIT_TEXT_H_C_H_ABOUT;
             pPlayer->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, ACTION_ID_QUEUE_WG, SENDER_WG_MAIN, OPTION_WG_FIRST);
         }
-        else if (opvp->GetTimer() > WG_STOP_TELEPORTING_TIME)
+        else if (opvp->GetTimer() > opvp->GetStopTeleportingTime())
         {
             textId = teamIdx == TEAM_INDEX_ALLIANCE ? GOSSIP_TEXT_A_C_A_ENDED : GOSSIP_TEXT_H_C_H_ENDED;
         }
@@ -605,18 +605,18 @@ bool GossipHello_npc_wintergrasp_battlemaster(Player* pPlayer, Creature* pCreatu
     }
     else
     {
-        if (opvp->GetState() == WG_STATE_IN_PROGRESS)
+        if (opvp->GetState() == BF_STATE_IN_PROGRESS)
         {
             textId = teamIdx == TEAM_INDEX_ALLIANCE ? GOSSIT_TEXT_A_C_H_ENSUES : GOSSIT_TEXT_H_C_A_ENSUES;
         }
-        else if (opvp->GetTimer() < WG_START_INVITE_TIME)
+        else if (opvp->GetTimer() < opvp->GetStartInviteDelay())
         {
             textId = teamIdx == TEAM_INDEX_ALLIANCE ? GOSSIT_TEXT_A_C_H_ENSUES : GOSSIT_TEXT_H_C_A_ENSUES;
             pPlayer->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, ACTION_ID_QUEUE_WG, SENDER_WG_MAIN, OPTION_WG_FIRST);
         }
         else
         {
-            textId = teamIdx == TEAM_INDEX_ALLIANCE ? GOSSIT_TEXT_A_C_H_CD : GOSSIT_TEXT_H_C_A_CD;            
+            textId = teamIdx == TEAM_INDEX_ALLIANCE ? GOSSIT_TEXT_A_C_H_CD : GOSSIT_TEXT_H_C_A_CD;
         }
     }
 
@@ -628,7 +628,7 @@ bool GossipSelect_npc_wintergrasp_battlemaster(Player* player, Creature* pCreatu
 {
     player->CLOSE_GOSSIP_MENU();
 
-    OutdoorPvPWG* opvp = NULL;
+    BattleFieldWG* opvp = NULL;
     if (pCreature->AI() && (npc_wintergrasp_battlemasterAI*)pCreature->AI())
         opvp = ((npc_wintergrasp_battlemasterAI*)pCreature->AI())->opvp;
     if (!opvp)
@@ -638,7 +638,7 @@ bool GossipSelect_npc_wintergrasp_battlemaster(Player* player, Creature* pCreatu
     {
         if (action == OPTION_WG_FIRST)
         {
-            if (opvp->GetState() != WG_STATE_COOLDOWN || opvp->GetTimer() > WG_START_INVITE_TIME)
+            if (opvp->GetState() != BF_STATE_COOLDOWN || opvp->GetTimer() > opvp->GetStartInviteDelay())
                 return true;
 
             opvp->InvitePlayerToQueue(player);
@@ -657,14 +657,14 @@ CreatureAI* GetAI_npc_wintergrasp_battlemaster(Creature* pCreature)
 
 bool GOUse_go_wintergrasp_portal(Player* pPlayer, GameObject* pGo)
 {
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetBattlefieldById(BATTLEFIELD_WG);
     if (!opvp)
         return false;
 
     TeamIndex teamIdx = GetTeamIndex(pPlayer->GetTeam());
-    if (opvp->GetState() == WG_STATE_IN_PROGRESS ||
-        opvp->GetTimer() < WG_START_INVITE_TIME && opvp->GetDefender() == teamIdx ||
-        opvp->GetTimer() > WG_STOP_TELEPORTING_TIME && opvp->GetDefender() == teamIdx)
+    if (opvp->GetState() == BF_STATE_IN_PROGRESS ||
+        opvp->GetTimer() < opvp->GetStartInviteDelay() && opvp->GetDefender() == teamIdx ||
+        opvp->GetTimer() > opvp->GetStopTeleportingTime() && opvp->GetDefender() == teamIdx)
         return false;
 
     return true;
