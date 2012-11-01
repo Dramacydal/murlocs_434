@@ -30,7 +30,7 @@
 #include "BattleGround/BattleGround.h"
 #include "BattleGround/BattleGroundMgr.h"
 #include "OutdoorPvP/OutdoorPvP.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 #include "MapManager.h"
 #include "MapPersistentStateMgr.h"
 #include "Util.h"

@@ -29,7 +29,7 @@
 #include "Group.h"
 #include "SocialMgr.h"
 #include "OutdoorPvP/OutdoorPvP.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 #include "OutdoorPvP/OutdoorPvPMgr.h"
 #include "Util.h"
 #include "Chat.h"
@@ -458,7 +458,7 @@ void WorldSession::HandleGroupDisbandOpcode( WorldPacket & /*recv_data*/ )
     // everything is fine, do it
     SendPartyResult(PARTY_OP_LEAVE, GetPlayer()->GetName(), ERR_PARTY_RESULT_OK);
 
-    if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP))
+    if (BattleField* opvp = (BattleField*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP))
         if (opvp->IsMember(_player->GetObjectGuid()))
             opvp->OnPlayerGroupDisband(_player);
 

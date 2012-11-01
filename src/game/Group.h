@@ -40,7 +40,7 @@ class BattleGround;
 class DungeonPersistentState;
 class Field;
 class Unit;
-class OutdoorPvPWG;
+class BattleField;
 
 #define MAX_GROUP_SIZE 5
 #define MAX_RAID_SIZE 40
@@ -343,7 +343,7 @@ class MANGOS_DLL_SPEC Group
         void ConvertToRaid();
 
         void SetBattlegroundGroup(BattleGround* bg) { m_bgGroup = bg; }
-        void SetBattlefieldGroup(OutdoorPvPWG* bf) { m_bfGroup = bf; }
+        void SetBattlefieldGroup(BattleField* bf) { m_bfGroup = bf; }
         GroupJoinBattlegroundResult CanJoinBattleGroundQueue(BattleGround const* bgOrTemplate, BattleGroundQueueTypeId bgQueueTypeId, uint32 MinPlayerCount, uint32 MaxPlayerCount, bool isRated, uint32 arenaSlot);
 
         void ChangeMembersGroup(ObjectGuid guid, uint8 group);
@@ -476,7 +476,7 @@ class MANGOS_DLL_SPEC Group
         Difficulty          m_dungeonDifficulty;
         Difficulty          m_raidDifficulty;
         BattleGround*       m_bgGroup;
-        OutdoorPvPWG*       m_bfGroup;
+        BattleField*        m_bfGroup;
         ObjectGuid          m_targetIcons[TARGET_ICON_COUNT];
         LootMethod          m_lootMethod;
         ItemQualities       m_lootThreshold;

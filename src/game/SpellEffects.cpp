@@ -63,7 +63,7 @@
 #include "GridNotifiersImpl.h"
 #include "CellImpl.h"
 #include "OutdoorPvP/OutdoorPvP.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 #include <G3D/Vector3.h>
 
 pEffect SpellEffects[TOTAL_SPELL_EFFECTS]=
@@ -10042,14 +10042,14 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
                         return;
 
-                    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+                    BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
                     if (!opvp)
                         return;
 
                     TeamIndex teamIdx = GetTeamIndex(((Player*)unitTarget)->GetTeam());
-                    if (opvp->GetState() == WG_STATE_IN_PROGRESS || opvp->GetTimer() < WG_START_INVITE_TIME)
+                    if (opvp->GetState() == BF_STATE_IN_PROGRESS || opvp->GetTimer() < opvp->GetStartInviteDelay())
                         unitTarget->CastSpell(unitTarget, teamIdx == opvp->GetDefender() ? 60035 : 59096, true);
-                    else if (opvp->GetState() == WG_STATE_COOLDOWN)
+                    else if (opvp->GetState() == BF_STATE_COOLDOWN)
                         if (opvp->GetDefender() == teamIdx)
                             unitTarget->CastSpell(unitTarget, 60035, true);
                         else

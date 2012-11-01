@@ -108,6 +108,9 @@ class OutdoorPvP
 
         uint32 GetId() const { return m_id; }
         uint32 GetBattlefieldId() const;
+        bool IsBattleField() const { return GetBattlefieldId() != 0; }
+
+        virtual bool IsMember(ObjectGuid guid) { return true; }
 
     protected:
 
@@ -122,8 +125,6 @@ class OutdoorPvP
 
         // handle npc/player kill
         virtual void HandlePlayerKillInsideArea(Player* /*killer*/, Unit* /*victim*/) {}
-
-        virtual bool IsMember(ObjectGuid guid) { return true; }
 
         // get banner artkit based on controlling team
         uint32 GetBannerArtKit(Team team, uint32 artKitAlliance = CAPTURE_ARTKIT_ALLIANCE, uint32 artKitHorde = CAPTURE_ARTKIT_HORDE, uint32 artKitNeutral = CAPTURE_ARTKIT_NEUTRAL);

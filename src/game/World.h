@@ -44,7 +44,7 @@ class Weather;
 class SqlResultQueue;
 class QueryResult;
 class WorldSocket;
-class OutdoorPvPWG;
+class BattleFieldWG;
 
 // ServerMessages.dbc
 enum ServerMessageType
@@ -240,7 +240,6 @@ enum eConfigUInt32Values
     CONFIG_UINT32_WINTERGRASP_BATTLE_DURATION,
     CONFIG_UINT32_WINTERGRASP_TOWERS_BONUS,
     CONFIG_UINT32_WINTERGRASP_MAX_PLAYERS_PER_TEAM,
-    CONFIG_UINT32_WINTERGRASP_TIME_TO_ACCEPT,
     CONFIG_UINT32_WINTERGRASP_START_INVITE_TIME,
     CONFIG_UINT32_WINTERGRASP_STOP_TELEPORTING_TIME,
     CONFIG_UINT32_CONQUEST_POINTS_DEFAULT_WEEK_CAP,
@@ -402,7 +401,7 @@ enum eConfigBoolValues
     CONFIG_BOOL_OUTDOORPVP_TF_ENABLED,
     CONFIG_BOOL_OUTDOORPVP_NA_ENABLED,
     CONFIG_BOOL_OUTDOORPVP_GH_ENABLED,
-    CONFIG_BOOL_OUTDOORPVP_WG_ENABLED,
+    CONFIG_BOOL_BATTLEFIELD_WG_ENABLED,
     CONFIG_BOOL_KICK_PLAYER_ON_BAD_PACKET,
     CONFIG_BOOL_STATS_SAVE_ONLY_ON_LOGOUT,
     CONFIG_BOOL_CLEAN_CHARACTER_DB,
@@ -658,7 +657,7 @@ class World
         void SendZoneUnderAttackMessage(uint32 zoneId, Team team);
         void SendDefenseMessage(uint32 zoneId, int32 textId);
 
-        void SendUpdateWintergraspTimerWorldState(OutdoorPvPWG* opvp);
+        void SendUpdateWintergraspTimerWorldState(BattleFieldWG* opvp);
 
         void ApplyEvent102Morphs(bool apply);
         void ApplyEvent103Morphs(bool apply);

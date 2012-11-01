@@ -21,34 +21,16 @@
 #define WORLD_PVP_WG
 
 #include "Common.h"
-#include "OutdoorPvP.h"
+#include "BattleField.h"
 #include "Language.h"
 #include "World.h"
 
-#define WG_COOLDOWN_DURATION (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_COOLDOWN_DURATION) * MINUTE * IN_MILLISECONDS)
-#define WG_BATTLE_TIME (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_BATTLE_DURATION) * MINUTE * IN_MILLISECONDS)
 #define WG_TOWERS_BONUS (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_TOWERS_BONUS) * MINUTE * IN_MILLISECONDS)
-#define WG_MAX_PLAYERS_PER_TEAM (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_MAX_PLAYERS_PER_TEAM))
-#define WG_TIME_TO_ACCEPT (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_TIME_TO_ACCEPT))
-#define WG_START_INVITE_TIME (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_START_INVITE_TIME))
-#define WG_STOP_TELEPORTING_TIME (sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_STOP_TELEPORTING_TIME))
 
 class Group;
-class OutdoorPvPWG;
+class BattleFieldWG;
 class WGWorkShop;
 class WGGraveYard;
-
-enum WGState
-{
-    WG_STATE_COOLDOWN       = 0,
-    WG_STATE_IN_PROGRESS    = 1
-};
-
-enum
-{
-    WG_INACTIVE_REMOVE_DELAY    = 5 * MINUTE,
-    WG_UNACCEPTED_REMOVE_DELAY  = 10,
-};
 
 enum WintergraspSpells
 {
@@ -538,20 +520,6 @@ enum WGSounds
 const uint32 WGClockWorldState[2] = { 3781, 4354 };
 const uint32 WGFactions[3] = { 1, 2, 35 };
 
-enum WGObjectState
-{
-    WG_OBJECTSTATE_NONE                 = 0,
-    WG_OBJECTSTATE_NEUTRAL_INTACT       = 1,
-    WG_OBJECTSTATE_NEUTRAL_DAMAGED      = 2,
-    WG_OBJECTSTATE_NEUTRAL_DESTROYED    = 3,
-    WG_OBJECTSTATE_HORDE_INTACT         = 4,
-    WG_OBJECTSTATE_HORDE_DAMAGED        = 5,
-    WG_OBJECTSTATE_HORDE_DESTROYED      = 6,
-    WG_OBJECTSTATE_ALLIANCE_INTACT      = 7,
-    WG_OBJECTSTATE_ALLIANCE_DAMAGED     = 8,
-    WG_OBJECTSTATE_ALLIANCE_DESTROYED   = 9,
-};
-
 typedef struct
 {
     uint32 entry;
@@ -643,50 +611,24 @@ enum
 
 /***************************/
 
-class WGObject
+class WGWorkShop : public BFObject
 {
     public:
-        WGObject(uint32 _id, OutdoorPvPWG* _opvp) : id(_id), opvp(_opvp) { }
+        WGWorkShop(uint32 _id, BattleField* _opvp) : BFObject(_id, _opvp) { }
 
-        uint32 id;
-        OutdoorPvPWG* opvp;
-        TeamIndex owner;
-        uint32 worldState;
-        WGObjectState state;
-        ObjectGuid guid;
-
-        virtual void InitFor(TeamIndex teamIdx, bool reset = true);
-        bool IsIntact();
-        bool IsDamaged();
-        bool IsDestroyed();
-
-        void SetIntact();
-        void SetDamaged();
-        void SetDestroyed();
-
-        void UpdateStateForOwner();
-
-        virtual void SendUpdateWorldState();
-};
-
-class WGWorkShop : public WGObject
-{
-    public:
-        WGWorkShop(uint32 _id, OutdoorPvPWG* _opvp) : WGObject(_id, _opvp) { }
-
-        void InitFor(TeamIndex teamIdx, bool reset = true);
+        void InitFor(TeamIndex teamIdx, bool reset = true) override;
         void SendUpdateWorldState();
 
         ObjectGuid capturePoint;
         uint32 gy;
  };
 
-class WGTower : public WGObject
+class WGTower : public BFObject
 {
     public:
-        WGTower(uint32 _id, OutdoorPvPWG* _opvp) : WGObject(_id, _opvp) { }
-        
-        void InitFor(TeamIndex teamIdx, bool reset = true);
+        WGTower(uint32 _id, BattleField* _opvp) : BFObject(_id, _opvp) { }
+
+        void InitFor(TeamIndex teamIdx, bool reset = true) override;
         void SpawnCannons(bool despawn = false);
 
         std::list<ObjectGuid> cannons;
@@ -796,23 +738,20 @@ enum WGRank
     WG_RANK_LIEUTENANT  = 3,
 };
 
-struct WGPlayerScore
-{
-    WGPlayerScore() : rank(0), removeTime(0), removeDelay(0) { }
-
-    WGRank GetRank();
-    uint32 rank;
-    time_t removeTime;
-    uint32 removeDelay;
-};
-
-class OutdoorPvPWG : public OutdoorPvP
+class WGPlayerScore : public BFPlayerScore
 {
     public:
-        OutdoorPvPWG(uint32 id);
-        ~OutdoorPvPWG();
+        WGPlayerScore() : BFPlayerScore(), rank(0) { }
 
-        typedef std::map<ObjectGuid, WGPlayerScore*> WGPlayerScoreMap;
+        WGRank GetRank() const;
+        uint32 rank;
+};
+
+class BattleFieldWG : public BattleField
+{
+    public:
+        BattleFieldWG(uint32 id);
+        ~BattleFieldWG();
 
         void HandleCreatureCreate(Creature* pCreature) override;
         void _OnCreatureCreate(Creature* pCreature);
@@ -827,28 +766,17 @@ class OutdoorPvPWG : public OutdoorPvP
         void HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim) override;
 
         void FillInitialWorldStates(WorldPacket& data, uint32& count, Player* player);
-        void SendUpdateWorldStatesToAll();
-        void SendUpdateWorldStatesTo(Player* player);
+        void SendUpdateWorldStatesTo(Player* player) override;
         void SendRemoveWorldStates(Player* pPlayer) override;
 
         bool HandleGameObjectUse(Player* pPlayer, GameObject* pGo) override;
 
-        void Update(uint32 diff);
-
-        TeamIndex GetDefender() const { return m_defender; }
-        TeamIndex GetAttacker() const { return m_defender == TEAM_INDEX_ALLIANCE ? TEAM_INDEX_HORDE : TEAM_INDEX_ALLIANCE; }
-        WGState GetState() const { return m_state; }
-        uint32 GetTimer() const { return m_timer; }
-        void SetTimer(uint32 value) { m_timer = value; }
-
-        Map* GetMap();
-
-        void SpawnCreature(Creature* pCreature, uint32 respawnTime = 0, bool despawn = false);
-        Creature* SpawnCreature(ObjectGuid guid, uint32 respawnTime = 0, bool despawn = false);
-
-        void StartBattle(TeamIndex defender);
-        void EndBattle(TeamIndex winner, bool byTimer);
-        void RewardPlayersAtEnd(TeamIndex winner);
+        void StartBattle(TeamIndex defender) override;
+        void EndBattle(TeamIndex winner, bool byTimer) override;
+        void RewardPlayersAtEnd(TeamIndex winner) override;
+        bool OnPlayerPortResponse(Player* plr, bool accept) override;
+        bool OnPlayerQueueExitRequest(Player* plr) override;
+        void Update(uint32 diff) override;
 
         uint32 GetWorkshopsOwnedBy(TeamIndex teamIdx)
         {
@@ -860,7 +788,7 @@ class OutdoorPvPWG : public OutdoorPvP
             return count;
         }
 
-        void GraveYardChanged(uint8 id, TeamIndex newOwner);
+        void GraveYardChanged(uint8 id, TeamIndex newOwner) override;
 
         TeamIndex GetWorkshopOwner(uint8 idx);
 
@@ -868,28 +796,8 @@ class OutdoorPvPWG : public OutdoorPvP
 
         bool CanBuildMoreVehicles(TeamIndex teamIdx);
 
-        WGPlayerScoreMap& GetPlayerScoreMap() { return m_playerScores; }
-
-        void OnPlayerInviteResponse(Player* plr, bool accept);
-        void OnPlayerPortResponse(Player* plr, bool accept);
-        void OnPlayerQueueExitRequest(Player* plr);
-        bool OnGroupDeleted(Group* group);
-
-        uint32 GetPlayerCountByTeam(TeamIndex teamIdx);
-        bool IsTeamFull(TeamIndex teamIdx);
-        bool IsMember(ObjectGuid guid);
-        Group* GetGroupFor(ObjectGuid guid);
-        Group* GetFreeRaid(TeamIndex teamIdx);
-        bool AddPlayerToRaid(Player* player);
-        bool RemovePlayerFromRaid(ObjectGuid guid);
-        void InvitePlayerToQueue(Player* player);
-        void OnPlayerGroupDisband(Player* plr);
-        void HandlePlayerAFK(Player* plr);
-        bool CriteriaMeets(uint32 criteriaId, Player* plr);
-        void PlayerLoggedIn(Player* plr);
-        void QuestCreditTeam(uint32 credit, Team team, WorldObject* source = NULL, float radius = -1.0f);
-
-        uint32 GetZoneId() { return m_BattlefieldZoneId; }
+        void OnPlayerGroupDisband(Player* plr) override;
+        bool CriteriaMeets(uint32 criteriaId, Player* plr) override;
 
         std::list<std::string> GetPlayerDebugInfo(Player* plr);
         std::list<std::string> GetStatusDebugInfo();
@@ -928,8 +836,7 @@ class OutdoorPvPWG : public OutdoorPvP
 
         bool CanDamageGO(GameObject* pGo, Player* invoker) override;
 
-        void SetupPlayerPositions();
-        void SetupPlayerPosition(Player* player);
+        void SetupPlayerPosition(Player* player) override;
 
         /***** Buff Helpers *****/
 
@@ -942,20 +849,12 @@ class OutdoorPvPWG : public OutdoorPvP
         /************************/
 
     private:
-        void InitPlayerScores();
-        void UpdatePlayerScores();
-        void KickPlayer(Player* plr);
-
-        void SendWarningToAll(int32 entry);
+        void InitPlayerScore(Player* plr) override;
+        bool UpdatePlayerScores() override;
+        bool GetKickPosition(Player* plr, float& x, float& y, float& z) override;
 
         void SendCaptainYell();
 
-        TeamIndex m_defender;
-        WGState m_state;
-        uint32 m_timer;
-        time_t m_startTime;
-        bool bInvited;
-        bool bAboutSend;
         bool b10MinAchiev;
 
         // counters
@@ -974,19 +873,9 @@ class OutdoorPvPWG : public OutdoorPvP
         ObjectGuid m_dardoshGuid;
 
         std::map<uint8, WGTower*> m_keepTowers;
-        std::list<WGObject*> m_keepWalls;
+        std::list<BFObject*> m_keepWalls;
         std::map<uint8, WGTower*> m_towers;
         std::map<uint8, WGWorkShop*> m_workshops;
-
-        WGPlayerScoreMap m_playerScores;
-
-        uint32 m_BattlefieldZoneId;
-        std::set<Group*> m_Raids[PVP_TEAM_COUNT];
-        std::set<ObjectGuid> m_QueuedPlayers[PVP_TEAM_COUNT];           // players that are in queue
-        std::map<ObjectGuid, time_t> m_InvitedPlayers[PVP_TEAM_COUNT];  // player to whom teleport invitation is send and who are waited to accept
-
-        uint32 m_queueUpdateTimer;
-        uint32 m_scoresUpdateTimer;
 };
 
 #endif

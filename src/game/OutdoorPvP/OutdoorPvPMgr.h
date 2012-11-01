@@ -123,7 +123,7 @@ class OutdoorPvPMgr
         float GetCapturePointSliderValue(uint32 entry, float defaultValue);
         void SetCapturePointSlider(uint32 entry, float value) { m_capturePointSlider[entry] = value; }
 
-        OutdoorPvP* GetBattlefieldById(uint32 id);
+        BattleField* GetBattlefieldById(uint32 id);
 
     private:
         // return assigned outdoor pvp script

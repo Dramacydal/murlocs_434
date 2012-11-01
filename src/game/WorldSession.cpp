@@ -35,7 +35,7 @@
 #include "World.h"
 #include "BattleGround/BattleGroundMgr.h"
 #include "OutdoorPvP/OutdoorPvPMgr.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 #include "MapManager.h"
 #include "SocialMgr.h"
 #include "LFGMgr.h"
@@ -1147,7 +1147,7 @@ void WorldSession::HandleBfQueueInviteResponse(WorldPacket& recv_data)
     recv_data >> uiBattlefieldId >> bAccepted;
     DEBUG_LOG("HandleQueueInviteResponse: uiBattlefieldId:%u v:%u", uiBattlefieldId, bAccepted);
 
-    if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetBattlefieldById(uiBattlefieldId))
+    if (BattleField* opvp = sOutdoorPvPMgr.GetBattlefieldById(uiBattlefieldId))
         opvp->OnPlayerInviteResponse(GetPlayer(), bAccepted);
 }
 
@@ -1160,7 +1160,7 @@ void WorldSession::HandleBfEntryInviteResponse(WorldPacket& recv_data)
     recv_data >> uiBattlefieldId >> bAccepted;
     DEBUG_LOG("HandleBattlefieldInviteResponse: uiBattlefieldId:%u bAccepted:%u", uiBattlefieldId, bAccepted);
 
-    if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetBattlefieldById(uiBattlefieldId))
+    if (BattleField* opvp = sOutdoorPvPMgr.GetBattlefieldById(uiBattlefieldId))
         opvp->OnPlayerPortResponse(GetPlayer(), bAccepted);
 }
 
@@ -1172,6 +1172,6 @@ void WorldSession::HandleBfExitRequest(WorldPacket& recv_data)
     recv_data >> uiBattlefieldId;
     DEBUG_LOG("HandleBfExitRequest: uiBattlefieldId: %u", uiBattlefieldId);
 
-    if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetBattlefieldById(uiBattlefieldId))
+    if (BattleField* opvp = sOutdoorPvPMgr.GetBattlefieldById(uiBattlefieldId))
         opvp->OnPlayerQueueExitRequest(GetPlayer());
 }

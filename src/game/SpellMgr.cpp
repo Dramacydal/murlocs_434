@@ -30,7 +30,7 @@
 #include "Unit.h"
 #include "OutdoorPvP/OutdoorPvPMgr.h"
 #include "OutdoorPvP/OutdoorPvP.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 
 bool IsPrimaryProfessionSkill(uint32 skill)
 {
@@ -5312,7 +5312,7 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
 
     if (spellId == 57940)       // Essence of Wintergrasp
     {
-        OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+        BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
         return !opvp || !player || opvp->GetDefender() == GetTeamIndex(player->GetTeam());
     }
 

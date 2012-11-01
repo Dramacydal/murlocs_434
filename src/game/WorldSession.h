@@ -908,7 +908,7 @@ class MANGOS_DLL_SPEC WorldSession
         // Transmogrification
         void HandleTransmogrifyItems(WorldPacket& recvData);
 
-        // Battlefield system
+        // BattleField system
         void SendBfInvitePlayerToWar(uint32 uiBattlefieldId, uint32 uiZoneId, uint32 uiTimeToAccept);
         void SendBfInvitePlayerToQueue(uint32 uiBattlefieldId);
         void SendBfQueueInviteResponse(uint32 uiBattlefieldId, uint32 uiZoneId, bool bCanQueue, bool bFull);

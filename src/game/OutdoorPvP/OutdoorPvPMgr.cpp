@@ -27,7 +27,8 @@
 #include "OutdoorPvPNA.h"
 #include "OutdoorPvPSI.h"
 #include "OutdoorPvPTF.h"
-#include "OutdoorPvPWG.h"
+#include "BattleField/BattleField.h"
+#include "BattleField/BattleFieldWG.h"
 #include "OutdoorPvPZM.h"
 
 INSTANTIATE_SINGLETON_1(OutdoorPvPMgr);
@@ -50,6 +51,13 @@ OutdoorPvPMgr::~OutdoorPvPMgr()
         m_scripts[OPVP_ID_##a] = new OutdoorPvP##a(OPVP_ID_##a);    \
         ++counter;                                                  \
     }
+
+#define LOAD_BATTLEFIELD(a)                                         \
+    if (sWorld.getConfig(CONFIG_BOOL_BATTLEFIELD_##a##_ENABLED))    \
+    {                                                               \
+        m_scripts[OPVP_ID_##a] = new BattleField##a(OPVP_ID_##a);   \
+        ++counter;                                                  \
+    }
 /**
    Function which loads all outdoor pvp scripts
  */
@@ -64,7 +72,7 @@ void OutdoorPvPMgr::InitOutdoorPvP()
     LOAD_OPVP_ZONE(TF);
     LOAD_OPVP_ZONE(NA);
     LOAD_OPVP_ZONE(GH);
-    LOAD_OPVP_ZONE(WG);
+    LOAD_BATTLEFIELD(WG);
 
     sLog.outString();
     sLog.outString(">> Loaded %u Outdoor PvP zones", counter);
@@ -207,12 +215,12 @@ float OutdoorPvPMgr::GetCapturePointSliderValue(uint32 entry, float defaultValue
     return defaultValue;
 }
 
-OutdoorPvP* OutdoorPvPMgr::GetBattlefieldById(uint32 id)
+BattleField* OutdoorPvPMgr::GetBattlefieldById(uint32 id)
 {
     for (uint8 i = 0; i < MAX_OPVP_ID; ++i)
         if (OutdoorPvP* opvp = m_scripts[i])
             if (opvp->GetBattlefieldId() == id)
-                return opvp;
+                return (BattleField*)opvp;
 
     return NULL;
 }

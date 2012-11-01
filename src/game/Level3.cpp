@@ -58,7 +58,7 @@
 #include "AuctionHouseBot/AuctionHouseBot.h"
 #include "movement/MoveSpline.h"
 #include "OutdoorPvP/OutdoorPvPMgr.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 #include "Spell.h"
 #include "SQLStorages.h"
 
@@ -8027,22 +8027,23 @@ bool ChatHandler::HandleWGPromoteCommand(char* args)
     if (!target)
         target = m_session->GetPlayer();
 
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
-    if (!opvp || opvp->GetState() != WG_STATE_IN_PROGRESS)
+    BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    if (!opvp || opvp->GetState() != BF_STATE_IN_PROGRESS)
         return false;
 
-    OutdoorPvPWG::WGPlayerScoreMap& playerScores = opvp->GetPlayerScoreMap();
-    OutdoorPvPWG::WGPlayerScoreMap::iterator itr = playerScores.find(target->GetObjectGuid());
+    BFPlayerScoreMap& playerScores = opvp->GetPlayerScoreMap();
+    BFPlayerScoreMap::iterator itr = playerScores.find(target->GetObjectGuid());
     if (itr == playerScores.end())
         return true;
 
+    WGPlayerScore* score = (WGPlayerScore*)itr->second;
     if (mod >= 0)
-        itr->second->rank += mod;
+        score->rank += mod;
     else
-        if (abs(mod) >= int32(itr->second->rank))
-            itr->second->rank = 0;
+        if (abs(mod) >= int32(score->rank))
+            score->rank = 0;
         else
-            itr->second->rank += mod;
+            score->rank += mod;
 
     opvp->UpdateScoreBuff(target);
 
@@ -8059,7 +8060,7 @@ bool ChatHandler::HandleWGTimerCommand(char* args)
         return false;
     mod *= IN_MILLISECONDS;
 
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
     if (!opvp)
         return false;
 
@@ -8080,7 +8081,7 @@ bool ChatHandler::HandleWGTimerCommand(char* args)
 
 bool ChatHandler::HandleWGStatusCommand(char* args)
 {
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
     if (!opvp)
         return false;
 
@@ -8093,7 +8094,7 @@ bool ChatHandler::HandleWGStatusCommand(char* args)
 
 bool ChatHandler::HandleWGPlayerStatusCommand(char* args)
 {
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
     if (!opvp)
         return false;
 
@@ -8110,8 +8111,8 @@ bool ChatHandler::HandleWGPlayerStatusCommand(char* args)
 
 bool ChatHandler::HandleWGStartCommand(char* args)
 {
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
-    if (!opvp || opvp->GetState() != WG_STATE_COOLDOWN)
+    BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    if (!opvp || opvp->GetState() != BF_STATE_COOLDOWN)
         return false;
 
     uint32 teamIdx;
@@ -8125,8 +8126,8 @@ bool ChatHandler::HandleWGStartCommand(char* args)
 
 bool ChatHandler::HandleWGEndCommand(char* args)
 {
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
-    if (!opvp || opvp->GetState() != WG_STATE_IN_PROGRESS)
+    BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    if (!opvp || opvp->GetState() != BF_STATE_IN_PROGRESS)
         return false;
 
     uint32 teamIdx;
@@ -8140,7 +8141,7 @@ bool ChatHandler::HandleWGEndCommand(char* args)
 
 bool ChatHandler::HandleWGTowerCommand(char* args)
 {
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
     if (!opvp)
         return false;
 
@@ -8153,7 +8154,7 @@ bool ChatHandler::HandleWGTowerCommand(char* args)
 
 bool ChatHandler::HandleWGWallCommand(char* args)
 {
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
     if (!opvp)
         return false;
 

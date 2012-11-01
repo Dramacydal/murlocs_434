@@ -39,7 +39,7 @@
 #include "Object.h"
 #include "BattleGround/BattleGround.h"
 #include "OutdoorPvP/OutdoorPvP.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 #include "Guild.h"
 
 #include "Pet.h"
@@ -1622,7 +1622,7 @@ void WorldSession::HandleHearthandResurrect(WorldPacket & /*recv_data*/)
     DEBUG_LOG("WORLD: CMSG_HEARTH_AND_RESURRECT");
 
     bool ok = false;
-    if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP))
+    if (BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP))
     {
         if (ok = opvp->IsMember(_player->GetObjectGuid()))
         {

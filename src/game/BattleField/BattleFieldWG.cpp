@@ -16,19 +16,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#include "OutdoorPvPWG.h"
+#include "BattleFieldWG.h"
 #include "GameObject.h"
 #include "MapManager.h"
 #include "Unit.h"
 #include "SpellAuras.h"
 #include "ObjectMgr.h"
 
-OutdoorPvPWG::OutdoorPvPWG(uint32 id) : OutdoorPvP(id)
+BattleFieldWG::BattleFieldWG(uint32 id) : BattleField(id)
 {
+    m_mapId = MAP_ID_NORTHREND;
+    m_zoneId = ZONE_ID_WINTERGRASP;
     m_defender = TeamIndex(urand(0, 1));
 
-    m_state = WG_STATE_COOLDOWN;
+    m_state = BF_STATE_COOLDOWN;
     m_timer = 15 * MINUTE * IN_MILLISECONDS;
+
+    m_battleDuration = sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_BATTLE_DURATION) * MINUTE * IN_MILLISECONDS;
+    m_startInviteDelay = sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_START_INVITE_TIME);
+    m_cooldownDuration = sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_COOLDOWN_DURATION) * MINUTE * IN_MILLISECONDS;
+    m_maxPlayersPerTeam = sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_MAX_PLAYERS_PER_TEAM);
+    m_stopTeleportingTime = sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_STOP_TELEPORTING_TIME);
 
     for (uint8 i = 0; i < PVP_TEAM_COUNT; ++i)
     {
@@ -54,42 +62,42 @@ OutdoorPvPWG::OutdoorPvPWG(uint32 id) : OutdoorPvP(id)
             case WG_WORKSHOP_BROKEN_TEMPLE:
                 ws->owner = m_defender;
                 ws->worldState = WG_WS_WORKSHOP_BROKEN_TEMPLE;
-                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_ALLIANCE_INTACT : WG_OBJECTSTATE_HORDE_INTACT;
+                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? BF_OBJECTSTATE_ALLIANCE_INTACT : BF_OBJECTSTATE_HORDE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_BROKEN_TEMPLE;
                 sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
             case WG_WORKSHOP_SUNKEN_RING:
                 ws->owner = m_defender;
                 ws->worldState = WG_WS_WORKSHOP_SUNKEN_RING;
-                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_ALLIANCE_INTACT : WG_OBJECTSTATE_HORDE_INTACT;
+                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? BF_OBJECTSTATE_ALLIANCE_INTACT : BF_OBJECTSTATE_HORDE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_SUNKEN_RING;
                 sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
             case WG_WORKSHOP_KEEP_WEST:
                 ws->owner = m_defender;
                 ws->worldState = WG_WS_WORKSHOP_KEEP_WEST;
-                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_ALLIANCE_INTACT : WG_OBJECTSTATE_HORDE_INTACT;
+                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? BF_OBJECTSTATE_ALLIANCE_INTACT : BF_OBJECTSTATE_HORDE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_KEEP_1;
                 sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
             case WG_WORKSHOP_KEEP_EAST:
                 ws->owner = m_defender;
                 ws->worldState = WG_WS_WORKSHOP_KEEP_EAST;
-                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_ALLIANCE_INTACT : WG_OBJECTSTATE_HORDE_INTACT;
+                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? BF_OBJECTSTATE_ALLIANCE_INTACT : BF_OBJECTSTATE_HORDE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_KEEP_2;
                 sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
             case WG_WORKSHOP_WESTPARK:
                 ws->owner = GetAttacker();
                 ws->worldState = WG_WS_WORKSHOP_WESTPARK;
-                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_HORDE_INTACT : WG_OBJECTSTATE_ALLIANCE_INTACT;
+                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? BF_OBJECTSTATE_HORDE_INTACT : BF_OBJECTSTATE_ALLIANCE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_WESTPARK;
                 sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
             case WG_WORKSHOP_EASTPARK:
                 ws->owner = GetAttacker();
                 ws->worldState = WG_WS_WORKSHOP_EASTPARK;
-                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_HORDE_INTACT : WG_OBJECTSTATE_ALLIANCE_INTACT;
+                ws->state = m_defender == TEAM_INDEX_ALLIANCE ? BF_OBJECTSTATE_HORDE_INTACT : BF_OBJECTSTATE_ALLIANCE_INTACT;
                 ws->gy = WG_GRAVEYARD_ENTRY_EASTPARK;
                 sObjectMgr.SetGraveYardLinkTeam(ws->gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(ws->owner));
                 break;
@@ -101,7 +109,7 @@ OutdoorPvPWG::OutdoorPvPWG(uint32 id) : OutdoorPvP(id)
         WGTower* wkt = new WGTower(i, this);
         m_keepTowers[i] = wkt;
         wkt->owner = m_defender;
-        wkt->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_ALLIANCE_INTACT : WG_OBJECTSTATE_HORDE_INTACT;
+        wkt->state = m_defender == TEAM_INDEX_ALLIANCE ? BF_OBJECTSTATE_ALLIANCE_INTACT : BF_OBJECTSTATE_HORDE_INTACT;
 
         switch(i)
         {
@@ -125,7 +133,7 @@ OutdoorPvPWG::OutdoorPvPWG(uint32 id) : OutdoorPvP(id)
         WGTower* wt = new WGTower(i, this);
         m_towers[i] = wt;
         wt->owner = GetAttacker();
-        wt->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_HORDE_INTACT : WG_OBJECTSTATE_ALLIANCE_INTACT;
+        wt->state = m_defender == TEAM_INDEX_ALLIANCE ? BF_OBJECTSTATE_HORDE_INTACT : BF_OBJECTSTATE_ALLIANCE_INTACT;
 
         switch(i)
         {
@@ -158,7 +166,7 @@ OutdoorPvPWG::OutdoorPvPWG(uint32 id) : OutdoorPvP(id)
     DEBUG_LOG("Finished loading cells for Wintergrasp");
 }
 
-OutdoorPvPWG::~OutdoorPvPWG()
+BattleFieldWG::~BattleFieldWG()
 {
     for (uint8 i = 0; i < WG_WORKSHOP_COUNT; ++i)
         delete m_workshops[i];
@@ -169,10 +177,10 @@ OutdoorPvPWG::~OutdoorPvPWG()
     for (uint8 i = 0; i < WG_TOWER_COUNT; ++i)
         delete m_towers[i];
 
-    for (std::list<WGObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
+    for (std::list<BFObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
         delete *itr;
 
-    for (WGPlayerScoreMap::iterator itr = m_playerScores.begin(); itr != m_playerScores.end(); ++itr)
+    for (BFPlayerScoreMap::iterator itr = m_playerScores.begin(); itr != m_playerScores.end(); ++itr)
         delete itr->second;
 
     for (uint32 i = 0; i < PVP_TEAM_COUNT; ++i)
@@ -183,12 +191,12 @@ OutdoorPvPWG::~OutdoorPvPWG()
         }
 }
 
-void OutdoorPvPWG::FillInitialWorldStates(WorldPacket& data, uint32& count, Player* player)
+void BattleFieldWG::FillInitialWorldStates(WorldPacket& data, uint32& count, Player* player)
 {
     FillInitialWorldState(data, count, WGClockWorldState[1], uint32(time(NULL) + m_timer / 1000));
-    FillInitialWorldState(data, count, WG_WS_SHOW_COOLDOWN_WORLDSTATE, m_state == WG_STATE_IN_PROGRESS ? WORLD_STATE_REMOVE : WORLD_STATE_ADD);
+    FillInitialWorldState(data, count, WG_WS_SHOW_COOLDOWN_WORLDSTATE, m_state == BF_STATE_IN_PROGRESS ? WORLD_STATE_REMOVE : WORLD_STATE_ADD);
 
-    FillInitialWorldState(data, count, WG_WS_SHOW_BATTLE_WORLDSTATE, m_state == WG_STATE_IN_PROGRESS && player->GetZoneId() == ZONE_ID_WINTERGRASP && IsMember(player->GetObjectGuid()) ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
+    FillInitialWorldState(data, count, WG_WS_SHOW_BATTLE_WORLDSTATE, m_state == BF_STATE_IN_PROGRESS && player->GetZoneId() == ZONE_ID_WINTERGRASP && IsMember(player->GetObjectGuid()) ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
     FillInitialWorldState(data, count, WG_WS_ALLIANCE_DEFENDER, m_defender == TEAM_INDEX_ALLIANCE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
     FillInitialWorldState(data, count, WG_WS_HORDE_DEFENDER, m_defender == TEAM_INDEX_HORDE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
 
@@ -201,38 +209,24 @@ void OutdoorPvPWG::FillInitialWorldStates(WorldPacket& data, uint32& count, Play
     FillInitialWorldState(data, count, WG_WS_MAX_VEHICLE_H, GetWorkshopsOwnedBy(TEAM_INDEX_HORDE) * 4);
 
     for (std::map<uint8, WGTower*>::const_iterator itr = m_keepTowers.begin(); itr != m_keepTowers.end(); ++itr)
-        FillInitialWorldState(data, count, itr->second->worldState, player->GetMapId() == MAP_ID_NORTHREND ? itr->second->state : WG_OBJECTSTATE_NONE);
+        FillInitialWorldState(data, count, itr->second->worldState, player->GetMapId() == MAP_ID_NORTHREND ? itr->second->state : BF_OBJECTSTATE_NONE);
 
-    for (std::list<WGObject*>::const_iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
-        FillInitialWorldState(data, count, (*itr)->worldState, player->GetMapId() == MAP_ID_NORTHREND ? (*itr)->state : WG_OBJECTSTATE_NONE);
+    for (std::list<BFObject*>::const_iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
+        FillInitialWorldState(data, count, (*itr)->worldState, player->GetMapId() == MAP_ID_NORTHREND ? (*itr)->state : BF_OBJECTSTATE_NONE);
 
     for (std::map<uint8, WGTower*>::const_iterator itr = m_towers.begin(); itr != m_towers.end(); ++itr)
-        FillInitialWorldState(data, count, itr->second->worldState, player->GetMapId() == MAP_ID_NORTHREND ? itr->second->state : WG_OBJECTSTATE_NONE);
+        FillInitialWorldState(data, count, itr->second->worldState, player->GetMapId() == MAP_ID_NORTHREND ? itr->second->state : BF_OBJECTSTATE_NONE);
 
     for (std::map<uint8, WGWorkShop*>::const_iterator itr = m_workshops.begin(); itr != m_workshops.end(); ++itr)
-        FillInitialWorldState(data, count, itr->second->worldState, player->GetMapId() == MAP_ID_NORTHREND ? itr->second->state : WG_OBJECTSTATE_NONE);
+        FillInitialWorldState(data, count, itr->second->worldState, player->GetMapId() == MAP_ID_NORTHREND ? itr->second->state : BF_OBJECTSTATE_NONE);
 }
 
-void OutdoorPvPWG::SendUpdateWorldStatesToAll()
-{
-    Map::PlayerList const& pList = GetMap()->GetPlayers();
-    for (Map::PlayerList::const_iterator itr = pList.begin(); itr != pList.end(); ++itr)
-    {
-        Player* player = itr->getSource();
-        if (!player || !player->IsInWorld())
-            continue;
-
-        // timer sent before function
-        SendUpdateWorldStatesTo(player);
-    }
-}
-
-void OutdoorPvPWG::SendUpdateWorldStatesTo(Player* player)
+void BattleFieldWG::SendUpdateWorldStatesTo(Player* player)
 {
     player->SendUpdateWorldState(WGClockWorldState[1], time(NULL) + m_timer / 1000);
-    player->SendUpdateWorldState(WG_WS_SHOW_COOLDOWN_WORLDSTATE, m_state == WG_STATE_IN_PROGRESS ? WORLD_STATE_REMOVE : WORLD_STATE_ADD);
+    player->SendUpdateWorldState(WG_WS_SHOW_COOLDOWN_WORLDSTATE, m_state == BF_STATE_IN_PROGRESS ? WORLD_STATE_REMOVE : WORLD_STATE_ADD);
 
-    player->SendUpdateWorldState(WG_WS_SHOW_BATTLE_WORLDSTATE, m_state == WG_STATE_IN_PROGRESS && player->GetZoneId() == ZONE_ID_WINTERGRASP && IsMember(player->GetObjectGuid()) ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
+    player->SendUpdateWorldState(WG_WS_SHOW_BATTLE_WORLDSTATE, m_state == BF_STATE_IN_PROGRESS && player->GetZoneId() == ZONE_ID_WINTERGRASP && IsMember(player->GetObjectGuid()) ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
     player->SendUpdateWorldState(WG_WS_ALLIANCE_DEFENDER, m_defender == TEAM_INDEX_ALLIANCE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
     player->SendUpdateWorldState(WG_WS_HORDE_DEFENDER, m_defender == TEAM_INDEX_HORDE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
 
@@ -247,56 +241,34 @@ void OutdoorPvPWG::SendUpdateWorldStatesTo(Player* player)
     for (std::map<uint8, WGTower*>::const_iterator itr = m_keepTowers.begin(); itr != m_keepTowers.end(); ++itr)
         player->SendUpdateWorldState(itr->second->worldState, itr->second->state);
 
-    for (std::list<WGObject*>::const_iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
+    for (std::list<BFObject*>::const_iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
         player->SendUpdateWorldState((*itr)->worldState, (*itr)->state);
 
     for (std::map<uint8, WGTower*>::const_iterator itr = m_towers.begin(); itr != m_towers.end(); ++itr)
         player->SendUpdateWorldState(itr->second->worldState, itr->second->state);
 
     for (std::map<uint8, WGWorkShop*>::const_iterator itr = m_workshops.begin(); itr != m_workshops.end(); ++itr)
-        player->SendUpdateWorldState(itr->second->worldState, itr->second->state);   
+        player->SendUpdateWorldState(itr->second->worldState, itr->second->state);
 }
 
-void OutdoorPvPWG::SendRemoveWorldStates(Player* pPlayer)
+void BattleFieldWG::SendRemoveWorldStates(Player* pPlayer)
 {
     pPlayer->SendUpdateWorldState(WG_WS_SHOW_BATTLE_WORLDSTATE, WORLD_STATE_REMOVE);
 }
 
-void OutdoorPvPWG::HandlePlayerEnterZone(Player* pPlayer, bool isMainZone)
+void BattleFieldWG::HandlePlayerEnterZone(Player* pPlayer, bool isMainZone)
 {
-    OutdoorPvP::HandlePlayerEnterZone(pPlayer, isMainZone);
+    BattleField::HandlePlayerEnterZone(pPlayer, isMainZone);
 
     pPlayer->RemoveAurasDueToSpell(SPELL_ESSENCE_OF_WINTERGRASP_ZONE);
-    if (m_state == WG_STATE_COOLDOWN && m_defender == GetTeamIndex(pPlayer->GetTeam()))
+    if (m_state == BF_STATE_COOLDOWN && m_defender == GetTeamIndex(pPlayer->GetTeam()))
         pPlayer->CastSpell(pPlayer, SPELL_ESSENCE_OF_WINTERGRASP_ZONE, true);
 
     pPlayer->RemoveAurasDueToSpell(SPELL_ALLIANCE_CONTROL_PHASE_SHIFT);
     pPlayer->RemoveAurasDueToSpell(SPELL_HORDE_CONTROL_PHASE_SHIFT);
 
-    if (m_state == WG_STATE_IN_PROGRESS && pPlayer->IsFreeFlying() && !pPlayer->isGameMaster() && !pPlayer->HasAura(SPELL_WINTERGRASP_RESTRICTED_FLIGHT_AREA))
+    if (m_state == BF_STATE_IN_PROGRESS && pPlayer->IsFreeFlying() && !pPlayer->isGameMaster() && !pPlayer->HasAura(SPELL_WINTERGRASP_RESTRICTED_FLIGHT_AREA))
         pPlayer->CastSpell(pPlayer, SPELL_WINTERGRASP_RESTRICTED_FLIGHT_AREA, true);
-
-    if (!IsMember(pPlayer->GetObjectGuid()))
-    {
-        if (m_state == WG_STATE_IN_PROGRESS)
-        {
-            m_InvitedPlayers[GetTeamIndex(pPlayer->GetTeam())][pPlayer->GetObjectGuid()] = time(NULL) + WG_TIME_TO_ACCEPT;
-            pPlayer->GetSession()->SendBfInvitePlayerToWar(GetBattlefieldId(), m_BattlefieldZoneId, WG_TIME_TO_ACCEPT);
-        }
-        else if (m_state == WG_STATE_COOLDOWN && m_timer < WG_START_INVITE_TIME)
-            InvitePlayerToQueue(pPlayer);
-    }
-
-    WGPlayerScoreMap::iterator itr = m_playerScores.find(pPlayer->GetObjectGuid());
-    if (itr == m_playerScores.end())
-        m_playerScores[pPlayer->GetObjectGuid()] = new WGPlayerScore();
-    else
-    {
-        if (m_state == WG_STATE_IN_PROGRESS && itr->second->removeTime && m_startTime > itr->second->removeTime)
-            SetupPlayerPosition(pPlayer);
-
-        itr->second->removeTime = 0;
-    }
 
     UpdateTowerControllBuff(pPlayer);
     UpdateScoreBuff(pPlayer);
@@ -304,9 +276,9 @@ void OutdoorPvPWG::HandlePlayerEnterZone(Player* pPlayer, bool isMainZone)
     pPlayer->CastSpell(pPlayer, m_defender == TEAM_INDEX_ALLIANCE ? SPELL_ALLIANCE_CONTROL_PHASE_SHIFT : SPELL_HORDE_CONTROL_PHASE_SHIFT, true);
 }
 
-void OutdoorPvPWG::HandlePlayerLeaveZone(Player* pPlayer, bool isMainZone)
+void BattleFieldWG::HandlePlayerLeaveZone(Player* pPlayer, bool isMainZone)
 {
-    OutdoorPvP::HandlePlayerLeaveZone(pPlayer, isMainZone);
+    BattleField::HandlePlayerLeaveZone(pPlayer, isMainZone);
 
     pPlayer->RemoveAurasDueToSpell(SPELL_ALLIANCE_CONTROL_PHASE_SHIFT);
     pPlayer->RemoveAurasDueToSpell(SPELL_HORDE_CONTROL_PHASE_SHIFT);
@@ -319,22 +291,9 @@ void OutdoorPvPWG::HandlePlayerLeaveZone(Player* pPlayer, bool isMainZone)
     pPlayer->RemoveAurasDueToSpell(SPELL_TOWER_CONTROL);
 
     pPlayer->RemoveAurasDueToSpell(SPELL_WINTERGRASP_RESTRICTED_FLIGHT_AREA);
-
-    WGPlayerScoreMap::iterator itr = m_playerScores.find(pPlayer->GetObjectGuid());
-    if (itr != m_playerScores.end())
-    {
-        if (IsMember(itr->first))
-        {
-            pPlayer->GetSession()->SendBfLeaveMessage(BATTLEFIELD_WG, BATTLEFIELD_LEAVE_REASON_EXITED);
-            itr->second->removeTime = time(NULL);
-            itr->second->removeDelay = WG_UNACCEPTED_REMOVE_DELAY;
-        }
-        else
-            m_playerScores.erase(itr);
-    }
 }
 
-void OutdoorPvPWG::HandlePlayerEnterArea(Player* pPlayer, uint32 uiAreaId, bool isMainZone)
+void BattleFieldWG::HandlePlayerEnterArea(Player* pPlayer, uint32 uiAreaId, bool isMainZone)
 {
     pPlayer->RemoveAurasDueToSpell(SPELL_ALLIANCE_CONTROLS_FACTORY_PHASE_SHIFT);
     pPlayer->RemoveAurasDueToSpell(SPELL_HORDE_CONTROLS_FACTORY_PHASE_SHIFT);
@@ -360,13 +319,13 @@ void OutdoorPvPWG::HandlePlayerEnterArea(Player* pPlayer, uint32 uiAreaId, bool 
     }
 }
 
-void OutdoorPvPWG::HandlePlayerLeaveArea(Player* pPlayer, uint32 uiAreaId, bool isMainZone)
+void BattleFieldWG::HandlePlayerLeaveArea(Player* pPlayer, uint32 uiAreaId, bool isMainZone)
 {
     pPlayer->RemoveAurasDueToSpell(SPELL_ALLIANCE_CONTROLS_FACTORY_PHASE_SHIFT);
     pPlayer->RemoveAurasDueToSpell(SPELL_HORDE_CONTROLS_FACTORY_PHASE_SHIFT);
 }
 
-void OutdoorPvPWG::HandleCreatureCreate(Creature* pCreature)
+void BattleFieldWG::HandleCreatureCreate(Creature* pCreature)
 {
     switch(pCreature->GetEntry())
     {
@@ -384,7 +343,7 @@ void OutdoorPvPWG::HandleCreatureCreate(Creature* pCreature)
         case NPC_LIVING_LASHER:
         {
             m_zoneTrashGUIDs.push_back(pCreature->GetObjectGuid());
-            if (m_state != WG_STATE_IN_PROGRESS)
+            if (m_state != BF_STATE_IN_PROGRESS)
                 return;
             break;
         }
@@ -395,7 +354,7 @@ void OutdoorPvPWG::HandleCreatureCreate(Creature* pCreature)
             if (pCreature->GetPositionZ() > 515.0f || pCreature->GetPositionX() < 5394.0f)
                 return;
             m_zoneTrashGUIDs.push_back(pCreature->GetObjectGuid());
-            if (m_state != WG_STATE_IN_PROGRESS)
+            if (m_state != BF_STATE_IN_PROGRESS)
                 return;
             break;
         }
@@ -460,7 +419,7 @@ void OutdoorPvPWG::HandleCreatureCreate(Creature* pCreature)
     SpawnCreature(pCreature, 0, false);
 }
 
-void OutdoorPvPWG::_OnCreatureCreate(Creature* pCreature)
+void BattleFieldWG::_OnCreatureCreate(Creature* pCreature)
 {
     switch(pCreature->GetEntry())
     {
@@ -494,7 +453,7 @@ void OutdoorPvPWG::_OnCreatureCreate(Creature* pCreature)
     }
 }
 
-void OutdoorPvPWG::HandleCreatureDeath(Creature* pCreature)
+void BattleFieldWG::HandleCreatureDeath(Creature* pCreature)
 {
     switch(pCreature->GetEntry())
     {
@@ -526,7 +485,7 @@ void OutdoorPvPWG::HandleCreatureDeath(Creature* pCreature)
     }
 }
 
-void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
+void BattleFieldWG::HandleGameObjectCreate(GameObject* pGo)
 {
     OutdoorPvP::HandleGameObjectCreate(pGo);
 
@@ -558,11 +517,11 @@ void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
         case GO_WINTERGRASP_WALL_2:
         case GO_WINTERGRASP_WALL_3:
         {
-            WGObject* wall = new WGObject(pGo->GetEntry(), this);
+            BFObject* wall = new BFObject(pGo->GetEntry(), this);
             wall->owner = m_defender;
             wall->guid = pGo->GetObjectGuid();
             wall->worldState = GetWorldStateFor(pGo->GetEntry());
-            wall->state = m_defender == TEAM_INDEX_ALLIANCE ? WG_OBJECTSTATE_ALLIANCE_INTACT : WG_OBJECTSTATE_HORDE_INTACT;
+            wall->state = m_defender == TEAM_INDEX_ALLIANCE ? BF_OBJECTSTATE_ALLIANCE_INTACT : BF_OBJECTSTATE_HORDE_INTACT;
 
             m_keepWalls.push_back(wall);
 
@@ -670,7 +629,7 @@ void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
         }
         case GO_CAPTUREPOINT_BROKEN_TEMPLE_A:
         {
-            if (m_state == WG_STATE_COOLDOWN)
+            if (m_state == BF_STATE_COOLDOWN)
             {
                 pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_BROKEN_TEMPLE]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
@@ -683,7 +642,7 @@ void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
         }
         case GO_CAPTUREPOINT_WESTPARK_A:
         {
-            if (m_state == WG_STATE_COOLDOWN)
+            if (m_state == BF_STATE_COOLDOWN)
             {
                 pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_WESTPARK]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
@@ -696,7 +655,7 @@ void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
         }
         case GO_CAPTUREPOINT_EASTPARK_A:
         {
-            if (m_state == WG_STATE_COOLDOWN)
+            if (m_state == BF_STATE_COOLDOWN)
             {
                 pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_EASTPARK]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
@@ -709,7 +668,7 @@ void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
         }
         case GO_CAPTUREPOINT_SUNKEN_RING_A:
         {
-            if (m_state == WG_STATE_COOLDOWN)
+            if (m_state == BF_STATE_COOLDOWN)
             {
                 pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_SUNKEN_RING]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
@@ -738,21 +697,22 @@ void OutdoorPvPWG::HandleGameObjectCreate(GameObject* pGo)
 }
 
 // Cast player spell on opponent kill
-void OutdoorPvPWG::HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim)
+void BattleFieldWG::HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim)
 {
-    if (!pVictim || m_state != WG_STATE_IN_PROGRESS || !IsMember(pPlayer->GetObjectGuid()))
+    if (!pVictim || m_state != BF_STATE_IN_PROGRESS || !IsMember(pPlayer->GetObjectGuid()))
         return;
 
-    WGPlayerScoreMap::iterator itr = m_playerScores.find(pPlayer->GetObjectGuid());
+    BFPlayerScoreMap::iterator itr = m_playerScores.find(pPlayer->GetObjectGuid());
     if (itr == m_playerScores.end())
         return;
 
-    WGRank oldRank = itr->second->GetRank();
+    WGPlayerScore* score = (WGPlayerScore*)itr->second;
+    WGRank oldRank = score->GetRank();
     if (pVictim->GetTypeId() == TYPEID_PLAYER)
     {
-        if (itr->second->GetRank() != WG_RANK_LIEUTENANT)
+        if (oldRank != WG_RANK_LIEUTENANT)
         {
-            ++itr->second->rank;
+            ++score->rank;
             UpdateScoreBuff(pPlayer);
         }
 
@@ -761,22 +721,22 @@ void OutdoorPvPWG::HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim)
     }
     else
     {
-        switch(pVictim->GetEntry())
+        switch (pVictim->GetEntry())
         {
             case NPC_VALLIANCE_EXPEDITION_CHAMPION:
             case NPC_VALLIANCE_EXPEDITION_GUARD:
-                if (itr->second->GetRank() != WG_RANK_LIEUTENANT)
+                if (oldRank != WG_RANK_LIEUTENANT)
                 {
-                    ++itr->second->rank;
+                    ++score->rank;
                     UpdateScoreBuff(pPlayer);
                 }
                 pPlayer->KilledMonsterCredit(WG_QUEST_CREDIT_ALLIANCE_SLAIN);
                 break;
             case NPC_WARSONG_CHAMPION:
             case NPC_WARSONG_GUARD:
-                if (itr->second->GetRank() != WG_RANK_LIEUTENANT)
+                if (oldRank != WG_RANK_LIEUTENANT)
                 {
-                    ++itr->second->rank;
+                    ++score->rank;
                     UpdateScoreBuff(pPlayer);
                 }
                 pPlayer->KilledMonsterCredit(WG_QUEST_CREDIT_HORDE_SLAIN);
@@ -786,9 +746,9 @@ void OutdoorPvPWG::HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim)
             case NPC_WINTERGRASP_SIEGE_ENGINE_A:
             case NPC_WINTERGRASP_SIEGE_ENGINE_H:
             case NPC_WINTERGRASP_TOWER_CANNON:
-                if (itr->second->GetRank() != WG_RANK_LIEUTENANT)
+                if (oldRank != WG_RANK_LIEUTENANT)
                 {
-                    ++itr->second->rank;
+                    ++score->rank;
                     UpdateScoreBuff(pPlayer);
                 }
                  if (pVictim->GetEntry() != NPC_WINTERGRASP_TOWER_CANNON && GetTeamIndex(pPlayer->GetTeam()) == m_defender)
@@ -797,7 +757,7 @@ void OutdoorPvPWG::HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim)
         }
     }
 
-    WGRank newRank = itr->second->GetRank();
+    WGRank newRank = score->GetRank();
 
     if (oldRank != newRank)
     {
@@ -817,7 +777,7 @@ void OutdoorPvPWG::HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim)
 }
 
 // process the capture events
-bool OutdoorPvPWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvoker, uint32 spellId)
+bool BattleFieldWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvoker, uint32 spellId)
 {
     if (!uiEventId)
         return false;
@@ -858,7 +818,7 @@ bool OutdoorPvPWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvok
         {
             if (uiEventId == info->destructibleBuilding.damagedEvent)
             {
-                for (std::list<WGObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
+                for (std::list<BFObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
                 {
                     if ((*itr)->guid == pGo->GetObjectGuid() && !(*itr)->IsDamaged())
                     {
@@ -870,7 +830,7 @@ bool OutdoorPvPWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvok
             }
             else if (uiEventId == info->destructibleBuilding.destroyedEvent)
             {
-                for (std::list<WGObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
+                for (std::list<BFObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
                 {
                     if ((*itr)->guid == pGo->GetObjectGuid() && !(*itr)->IsDestroyed())
                     {
@@ -1034,7 +994,7 @@ bool OutdoorPvPWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvok
 
                 if (m_destroyedTowers[m_defender] == 3)
                 {
-                    if (m_state == WG_STATE_IN_PROGRESS)
+                    if (m_state == BF_STATE_IN_PROGRESS)
                         if (m_timer < WG_TOWERS_BONUS)
                             m_timer = 0;
                         else
@@ -1174,7 +1134,7 @@ bool OutdoorPvPWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvok
     return true;
 }
 
-bool OutdoorPvPWG::HandleGameObjectUse(Player* pPlayer, GameObject* pGo)
+bool BattleFieldWG::HandleGameObjectUse(Player* pPlayer, GameObject* pGo)
 {
     if (!IsMember(pPlayer->GetObjectGuid()))
         return false;
@@ -1183,14 +1143,14 @@ bool OutdoorPvPWG::HandleGameObjectUse(Player* pPlayer, GameObject* pGo)
     {
         case GO_TITAN_RELIC:
         {
-            if (m_state != WG_STATE_IN_PROGRESS)
+            if (m_state != BF_STATE_IN_PROGRESS)
                 return true;
 
             TeamIndex teamIdx = GetTeamIndex(pPlayer->GetTeam());
             if (teamIdx == m_defender)
                 return true;
 
-            for (std::list<WGObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
+            for (std::list<BFObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
                 if ((*itr)->id == GO_WINTERGRASP_FORTRESS_DOOR && !(*itr)->IsDestroyed())
                     return true;
 
@@ -1202,127 +1162,22 @@ bool OutdoorPvPWG::HandleGameObjectUse(Player* pPlayer, GameObject* pGo)
     return false;
 }
 
-void OutdoorPvPWG::Update(uint32 diff)
+void BattleFieldWG::Update(uint32 diff)
 {
-    if (m_timer < diff)
-    {
-        if (m_state == WG_STATE_COOLDOWN)
-            StartBattle(m_defender);
-        else if (m_state == WG_STATE_IN_PROGRESS)
-            EndBattle(m_defender, true);
+    BattleField::Update(diff);
 
-        return;
-    }
-    else
-        m_timer -= diff;
-
-    if (m_state == WG_STATE_IN_PROGRESS)
-        if (m_scoresUpdateTimer < diff)
-        {
-            m_scoresUpdateTimer = 5000;
-            UpdatePlayerScores();
-        }
-        else
-            m_scoresUpdateTimer -= diff;
-
-    if (m_state == WG_STATE_COOLDOWN && m_timer <= WG_START_INVITE_TIME && !bInvited)
-    {
-        bInvited = true;
-        for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
-        {
-            if (!itr->first)
-                continue;
-
-            Player* plr = sObjectMgr.GetPlayer(itr->first);
-            if (!plr)
-                continue;
-
-            InvitePlayerToQueue(plr);
-        }
-    }
-
-    if (m_state == WG_STATE_COOLDOWN && m_timer <= 3 * MINUTE * IN_MILLISECONDS && !bAboutSend)
+    if (m_state == BF_STATE_COOLDOWN && m_timer <= 3 * MINUTE * IN_MILLISECONDS && !bAboutSend)
     {
         bAboutSend = true;
         SendWarningToAll(LANG_WG_ABOUT_TO_BEGIN);
     }
-
-    if (m_state == WG_STATE_IN_PROGRESS)
-    {
-        for (uint32 i = 0; i < PVP_TEAM_COUNT; ++i)
-        {
-            for (std::map<ObjectGuid, time_t>::iterator itr = m_InvitedPlayers[i].begin(); itr != m_InvitedPlayers[i].end();)
-            {
-                if (itr->second < time(NULL))
-                {
-                    if (Player* plr = GetMap()->GetPlayer(itr->first))
-                        plr->GetSession()->SendBfLeaveMessage(GetBattlefieldId(), BATTLEFIELD_LEAVE_REASON_EXITED);
-                    m_InvitedPlayers[i].erase(itr++);
-                }
-                else
-                    ++itr;
-            }
-        }
-    }
-
-    if (m_queueUpdateTimer < diff)
-    {
-        m_queueUpdateTimer = 30000;
-
-        for (uint32 i = 0; i < PVP_TEAM_COUNT; ++i)
-        {
-            for (std::set<ObjectGuid>::iterator itr = m_QueuedPlayers[i].begin(); itr != m_QueuedPlayers[i].end();)
-            {
-                if (!sObjectMgr.GetPlayer(*itr, true))
-                    m_QueuedPlayers[i].erase(itr++);
-                else
-                    ++itr;
-            }
-        }
-    }
-    else
-        m_queueUpdateTimer -= diff;
 }
 
-Map* OutdoorPvPWG::GetMap()
+void BattleFieldWG::StartBattle(TeamIndex defender)
 {
-    return sMapMgr.CreateMap(MAP_ID_NORTHREND, NULL);
-}
+    BattleField::StartBattle(defender);
 
-void OutdoorPvPWG::SpawnCreature(Creature* pCreature, uint32 respawnTime, bool despawn)
-{
-    if (despawn)
-    {
-        pCreature->SetRespawnDelay(respawnTime ? respawnTime : 7 * DAY);
-        pCreature->ForcedDespawn();
-    }
-    else
-    {
-        pCreature->SetRespawnDelay(respawnTime ? respawnTime : 5 * MINUTE);
-        pCreature->Respawn();
-    }
-}
-
-Creature* OutdoorPvPWG::SpawnCreature(ObjectGuid guid, uint32 respawnTime, bool despawn)
-{
-
-    if (Creature* pCreature = GetMap()->GetCreature(guid))
-    {
-        SpawnCreature(pCreature, respawnTime, despawn);
-
-        return pCreature;
-    }
-
-    return NULL;
-}
-
-void OutdoorPvPWG::StartBattle(TeamIndex defender)
-{
-    m_startTime = time(NULL);
-    m_state = WG_STATE_IN_PROGRESS;
-    m_timer = WG_BATTLE_TIME;
     b10MinAchiev = false;
-    m_defender = defender;
 
     for (uint8 i = 0; i < WG_WORKSHOP_COUNT; ++i)
     {
@@ -1349,7 +1204,7 @@ void OutdoorPvPWG::StartBattle(TeamIndex defender)
     for (std::list<ObjectGuid>::iterator itr = m_zoneTrashGUIDs.begin(); itr != m_zoneTrashGUIDs.end(); ++itr)
         SpawnCreature(*itr, 0, true);
 
-    for (std::list<WGObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
+    for (std::list<BFObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
         (*itr)->InitFor(m_defender);
 
     for (std::list<ObjectGuid>::iterator itr = m_keepCannonGUIDs.begin(); itr != m_keepCannonGUIDs.end(); ++itr)
@@ -1363,8 +1218,6 @@ void OutdoorPvPWG::StartBattle(TeamIndex defender)
     if (GameObject* obj = GetMap()->GetGameObject(m_titanRelicGUID))
         obj->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[GetAttacker()]);
 
-    InitPlayerScores();
-
     UpdateTowerControllBuff();
 
     BuffTeam(GetTeamFromIndex(m_defender), SPELL_ESSENCE_OF_WINTERGRASP_ZONE, true, false);
@@ -1373,16 +1226,7 @@ void OutdoorPvPWG::StartBattle(TeamIndex defender)
 
     sWorld.SendUpdateWintergraspTimerWorldState(this);
 
-    DEBUG_LOG("Disbanding groups");
-    for (uint32 i = 0; i < PVP_TEAM_COUNT; ++i)
-    {
-        while (!m_Raids[i].empty())
-        {
-            Group* group = *m_Raids[i].begin();
-            group->Disband();
-            delete group;
-        }
-    }
+    SendWarningToAll(LANG_WG_BATTLE_BEGIN);
 
     for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
     {
@@ -1393,54 +1237,12 @@ void OutdoorPvPWG::StartBattle(TeamIndex defender)
         if (!plr)
             continue;
 
-        uint8 idx = 0;
-        std::set<ObjectGuid>::iterator itr2 = m_QueuedPlayers[idx].find(itr->first);
-        if (itr2 == m_QueuedPlayers[idx].end())
-        {
-            ++idx;
-            itr2 = m_QueuedPlayers[idx].find(itr->first);
-        }
-
         if (plr->IsFreeFlying() && plr->isGameMaster() && !plr->HasAura(SPELL_WINTERGRASP_RESTRICTED_FLIGHT_AREA))
             plr->CastSpell(plr, SPELL_WINTERGRASP_RESTRICTED_FLIGHT_AREA, true);
-
-        if (itr2 != m_QueuedPlayers[idx].end())
-        {
-            m_InvitedPlayers[idx][itr->first] = time(NULL) + WG_TIME_TO_ACCEPT;
-            plr->GetSession()->SendBfInvitePlayerToWar(GetBattlefieldId(), m_BattlefieldZoneId, WG_TIME_TO_ACCEPT);
-            m_QueuedPlayers[idx].erase(itr2);
-        }
-        else
-        {
-            plr->GetSession()->SendBfLeaveMessage(BATTLEFIELD_WG, BATTLEFIELD_LEAVE_REASON_EXITED);
-            SendRemoveWorldStates(plr);
-            if (m_playerScores.find(itr->first) != m_playerScores.end())
-            {
-                m_playerScores[itr->first]->removeTime = time(NULL);
-                m_playerScores[itr->first]->removeDelay = WG_UNACCEPTED_REMOVE_DELAY;
-            }
-        }
     }
-
-    // non-zone queued players
-    for (uint32 i = 0; i < PVP_TEAM_COUNT; ++i)
-    {
-        for (std::set<ObjectGuid>::iterator itr = m_QueuedPlayers[i].begin(); itr != m_QueuedPlayers[i].end();)
-        {
-            if (Player* plr = sObjectMgr.GetPlayer(*itr, true))
-            {
-                m_InvitedPlayers[i][plr->GetObjectGuid()] = time(NULL) + WG_TIME_TO_ACCEPT;
-                plr->GetSession()->SendBfInvitePlayerToWar(GetBattlefieldId(), m_BattlefieldZoneId, WG_TIME_TO_ACCEPT);
-            }
-
-            m_QueuedPlayers[i].erase(itr++);
-        }
-    }
-
-    SendWarningToAll(LANG_WG_BATTLE_BEGIN);
 }
 
-void OutdoorPvPWG::EndBattle(TeamIndex winner, bool byTimer)
+void BattleFieldWG::EndBattle(TeamIndex winner, bool byTimer)
 {
     if (m_defender == winner)
         SendWarningToAll(m_defender == TEAM_INDEX_ALLIANCE ? LANG_WG_ALLIANCE_DEFENDED : LANG_WG_HORDE_DEFENDED);
@@ -1449,14 +1251,10 @@ void OutdoorPvPWG::EndBattle(TeamIndex winner, bool byTimer)
 
     uint32 oldTimer = m_timer;
     if (!byTimer && winner != m_defender &&
-        oldTimer + (m_destroyedTowers[m_defender] == 3 ? WG_TOWERS_BONUS : 0) + 10 * MINUTE * IN_MILLISECONDS > WG_BATTLE_TIME)
+        oldTimer + (m_destroyedTowers[m_defender] == 3 ? WG_TOWERS_BONUS : 0) + 10 * MINUTE * IN_MILLISECONDS > m_battleDuration)
         b10MinAchiev = true;
 
-    m_defender = winner;
-    m_state = WG_STATE_COOLDOWN;
-    m_timer = WG_COOLDOWN_DURATION;
-    bInvited = false;
-    bAboutSend = false;
+    BattleField::EndBattle(winner, byTimer);
 
     RewardPlayersAtEnd(winner);
 
@@ -1472,7 +1270,7 @@ void OutdoorPvPWG::EndBattle(TeamIndex winner, bool byTimer)
     for (std::list<ObjectGuid>::iterator itr = m_zoneTrashGUIDs.begin(); itr != m_zoneTrashGUIDs.end(); ++itr)
         SpawnCreature(*itr);
 
-    for (std::list<WGObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
+    for (std::list<BFObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
         (*itr)->InitFor(m_defender, false);
 
     for (std::list<ObjectGuid>::iterator itr = m_keepCannonGUIDs.begin(); itr != m_keepCannonGUIDs.end(); ++itr)
@@ -1516,7 +1314,7 @@ void OutdoorPvPWG::EndBattle(TeamIndex winner, bool byTimer)
     sWorld.SendUpdateWintergraspTimerWorldState(this);
 }
 
-void OutdoorPvPWG::RewardPlayersAtEnd(TeamIndex winner)
+void BattleFieldWG::RewardPlayersAtEnd(TeamIndex winner)
 {
     for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
     {
@@ -1543,11 +1341,11 @@ void OutdoorPvPWG::RewardPlayersAtEnd(TeamIndex winner)
     }
 }
 
-void OutdoorPvPWG::UpdateScoreBuff(Player* plr)
+void BattleFieldWG::UpdateScoreBuff(Player* plr)
 {
     uint32 buffs[3] = { SPELL_RECRUIT, SPELL_CORPORAL, SPELL_LIEUTENANT };
 
-    if (m_state != WG_STATE_IN_PROGRESS || !IsMember(plr->GetObjectGuid()))
+    if (m_state != BF_STATE_IN_PROGRESS || !IsMember(plr->GetObjectGuid()))
     {
         for (uint32 i = 0; i < 3; ++i)
             plr->RemoveAurasDueToSpell(buffs[i]);
@@ -1555,21 +1353,22 @@ void OutdoorPvPWG::UpdateScoreBuff(Player* plr)
         return;
     }
 
-    WGPlayerScoreMap::iterator itr = m_playerScores.find(plr->GetObjectGuid());
+    BFPlayerScoreMap::iterator itr = m_playerScores.find(plr->GetObjectGuid());
     if (itr == m_playerScores.end())
         return;
 
     uint32 spellId;
     uint8 stack;
-    switch(itr->second->GetRank())
+    WGPlayerScore* score = (WGPlayerScore*)itr->second;
+    switch (score->GetRank())
     {
         case WG_RANK_RECRUIT:
             spellId = SPELL_RECRUIT;
-            stack = itr->second->rank + 1;
+            stack = score->rank + 1;
             break;
         case WG_RANK_CORPORAL:
             spellId = SPELL_CORPORAL;
-            stack = itr->second->rank - 4;
+            stack = score->rank + 4;
             break;
         case WG_RANK_LIEUTENANT:
             spellId = SPELL_LIEUTENANT;
@@ -1590,7 +1389,7 @@ void OutdoorPvPWG::UpdateScoreBuff(Player* plr)
             plr->CastSpell(plr, spellId, true);
 }
 
-void OutdoorPvPWG::UpdateTowerControllBuff(Player* plr)
+void BattleFieldWG::UpdateTowerControllBuff(Player* plr)
 {
     uint8 towersCount = GetRemainingTowers();
 
@@ -1598,7 +1397,7 @@ void OutdoorPvPWG::UpdateTowerControllBuff(Player* plr)
     {
         plr->RemoveAurasDueToSpell(SPELL_TOWER_CONTROL);
         
-        if (m_state == WG_STATE_COOLDOWN || !IsMember(plr->GetObjectGuid()))
+        if (m_state == BF_STATE_COOLDOWN || !IsMember(plr->GetObjectGuid()))
             return;
 
         if (GetTeamIndex(plr->GetTeam()) == m_defender)
@@ -1624,7 +1423,7 @@ void OutdoorPvPWG::UpdateTowerControllBuff(Player* plr)
 
             uint8 cnt = towersCount;
 
-            if (m_state == WG_STATE_COOLDOWN)
+            if (m_state == BF_STATE_COOLDOWN)
                 continue;
 
             if (GetTeamIndex(plr->GetTeam()) == m_defender)
@@ -1636,79 +1435,23 @@ void OutdoorPvPWG::UpdateTowerControllBuff(Player* plr)
     }
 }
 
-void OutdoorPvPWG::InitPlayerScores()
+void BattleFieldWG::InitPlayerScore(Player* plr)
 {
-    for (WGPlayerScoreMap::iterator itr = m_playerScores.begin(); itr != m_playerScores.end(); ++itr)
-        delete itr->second;
-
-    m_playerScores.clear();
-
-    for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
-    {
-        if (!itr->first)
-            continue;
-
-        Player* plr = sObjectMgr.GetPlayer(itr->first);
-        if (!plr)
-            continue;
-
-        m_playerScores[plr->GetObjectGuid()] = new WGPlayerScore();
-
-        UpdateScoreBuff(plr);
-    }
+    m_playerScores[plr->GetObjectGuid()] = new WGPlayerScore();
+    UpdateScoreBuff(plr);
 }
 
-void OutdoorPvPWG::UpdatePlayerScores()
+bool BattleFieldWG::UpdatePlayerScores()
 {
-    bool bRemoved = false;
-    for (WGPlayerScoreMap::iterator itr = m_playerScores.begin(); itr != m_playerScores.end();)
-    {
-        if (itr->second->removeTime && itr->second->removeTime + itr->second->removeDelay < time(NULL))
-        {
-            delete itr->second;
-            if (Player* plr = GetMap()->GetPlayer(itr->first))
-                KickPlayer(plr);
-
-            if (IsMember(itr->first))
-            {
-                RemovePlayerFromRaid(itr->first);
-                bRemoved = true;
-            }
-
-            m_playerScores.erase(itr++);
-
-        }
-        else
-            ++itr;
-    }
-
-    if (bRemoved)
+    if (BattleField::UpdatePlayerScores())
         UpdateTenacities();
+
+    return true;
 }
 
-void OutdoorPvPWG::KickPlayer(Player* plr)
+bool BattleFieldWG::CanDamageGO(GameObject* pGo, Player* invoker)
 {
-    if (m_zonePlayers.find(plr->GetObjectGuid()) == m_zonePlayers.end())
-        return;
-
-    uint8 idx = 0;
-    float dist = plr->GetDistance2d(WGKickPositions[0].x, WGKickPositions[0].y);
-    for (uint8 i = 1; i < KICK_POSITIONS_COUNT; ++i)
-    {
-        float newDist = plr->GetDistance2d(WGKickPositions[i].x, WGKickPositions[i].y);
-        if (newDist < dist)
-        {
-            dist = newDist;
-            idx = i;
-        }
-    }
-
-    plr->TeleportTo(plr->GetMapId(), WGKickPositions[idx].x, WGKickPositions[idx].y, WGKickPositions[idx].radius, plr->GetOrientation());
-}
-
-bool OutdoorPvPWG::CanDamageGO(GameObject* pGo, Player* invoker)
-{
-    if (m_state != WG_STATE_IN_PROGRESS)
+    if (m_state != BF_STATE_IN_PROGRESS)
         return false;
 
     if (invoker && !IsMember(invoker->GetObjectGuid()))
@@ -1762,28 +1505,13 @@ bool OutdoorPvPWG::CanDamageGO(GameObject* pGo, Player* invoker)
     return true;
 }
 
-void OutdoorPvPWG::SetupPlayerPositions()
-{
-    for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
-    {
-        if (!itr->first || !IsMember(itr->first))
-            continue;
-
-        Player* plr = sObjectMgr.GetPlayer(itr->first);
-        if (!plr)
-            continue;
-
-        SetupPlayerPosition(plr);
-    }
-}
-
-void OutdoorPvPWG::SetupPlayerPosition(Player* player)
+void BattleFieldWG::SetupPlayerPosition(Player* player)
 {
     if (GetTeamIndex(player->GetTeam()) != m_defender && player->GetPositionX() > 5395.0f && player->GetPositionY() > 2802.0f && player->GetPositionY() < 2879.0f && player->GetPositionZ() < 476.0f)
         player->CastSpell(player, SPELL_TELEPORT_BRIDGE, true);
 }
 
-void OutdoorPvPWG::GraveYardChanged(uint8 id, TeamIndex newOwner)
+void BattleFieldWG::GraveYardChanged(uint8 id, TeamIndex newOwner)
 {
     for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
     {
@@ -1836,84 +1564,64 @@ void OutdoorPvPWG::GraveYardChanged(uint8 id, TeamIndex newOwner)
     }
 }
 
-TeamIndex OutdoorPvPWG::GetWorkshopOwner(uint8 idx)
+TeamIndex BattleFieldWG::GetWorkshopOwner(uint8 idx)
 {
     return m_workshops[idx]->owner;
 }
 
-WGRank OutdoorPvPWG::GetPlayerRank(Player* player)
+WGRank BattleFieldWG::GetPlayerRank(Player* player)
 {
-    WGPlayerScoreMap::iterator itr = m_playerScores.find(player->GetObjectGuid());
+    BFPlayerScoreMap::iterator itr = m_playerScores.find(player->GetObjectGuid());
     if (itr == m_playerScores.end())
         return WG_RANK_NONE;
 
-    return itr->second->GetRank();
+    return ((WGPlayerScore*)itr->second)->GetRank();
 }
 
-bool OutdoorPvPWG::CanBuildMoreVehicles(TeamIndex teamIdx)
+bool BattleFieldWG::CanBuildMoreVehicles(TeamIndex teamIdx)
 {
     return m_vehicleGUIDs[teamIdx].size() < GetWorkshopsOwnedBy(teamIdx) * 4;
 }
 
-bool WGObject::IsIntact()
-{
-    return state == WG_OBJECTSTATE_NEUTRAL_INTACT || state == WG_OBJECTSTATE_HORDE_INTACT || state == WG_OBJECTSTATE_ALLIANCE_INTACT;
-}
-
-bool WGObject::IsDamaged()
-{
-    return state == WG_OBJECTSTATE_NEUTRAL_DAMAGED || state == WG_OBJECTSTATE_HORDE_DAMAGED || state == WG_OBJECTSTATE_ALLIANCE_DAMAGED;
-}
-
-bool WGObject::IsDestroyed()
-{
-    return state == WG_OBJECTSTATE_NEUTRAL_DESTROYED || state == WG_OBJECTSTATE_HORDE_DESTROYED || state == WG_OBJECTSTATE_ALLIANCE_DESTROYED;
-}
-
-void WGObject::SendUpdateWorldState()
-{
-    opvp->SendUpdateWorldStateForMap(worldState, state, opvp->GetMap());
-}
-
 void WGWorkShop::SendUpdateWorldState()
 {
-    WGObject::SendUpdateWorldState();
+    BFObject::SendUpdateWorldState();
 
-    opvp->SendUpdateWorldState(WG_WS_MAX_VEHICLE_A, opvp->GetWorkshopsOwnedBy(TEAM_INDEX_ALLIANCE) * 4);
-    opvp->SendUpdateWorldState(WG_WS_MAX_VEHICLE_H, opvp->GetWorkshopsOwnedBy(TEAM_INDEX_HORDE) * 4);
+    opvp->SendUpdateWorldState(WG_WS_MAX_VEHICLE_A, ((BattleFieldWG*)opvp)->GetWorkshopsOwnedBy(TEAM_INDEX_ALLIANCE) * 4);
+    opvp->SendUpdateWorldState(WG_WS_MAX_VEHICLE_H, ((BattleFieldWG*)opvp)->GetWorkshopsOwnedBy(TEAM_INDEX_HORDE) * 4);
 }
 
-void WGObject::SetIntact()
+void BFObject::SetIntact()
 {
     if (owner == TEAM_INDEX_ALLIANCE)
-        state = WG_OBJECTSTATE_ALLIANCE_INTACT;
+        state = BF_OBJECTSTATE_ALLIANCE_INTACT;
     else if (owner == TEAM_INDEX_HORDE)
-        state = WG_OBJECTSTATE_HORDE_INTACT;
+        state = BF_OBJECTSTATE_HORDE_INTACT;
     else
-        state = WG_OBJECTSTATE_NEUTRAL_INTACT;
+        state = BF_OBJECTSTATE_NEUTRAL_INTACT;
 }
 
-void WGObject::SetDamaged()
+void BFObject::SetDamaged()
 {
     if (owner == TEAM_INDEX_ALLIANCE)
-        state = WG_OBJECTSTATE_ALLIANCE_DAMAGED;
+        state = BF_OBJECTSTATE_ALLIANCE_DAMAGED;
     else if (owner == TEAM_INDEX_HORDE)
-        state = WG_OBJECTSTATE_HORDE_DAMAGED;
+        state = BF_OBJECTSTATE_HORDE_DAMAGED;
     else
-        state = WG_OBJECTSTATE_NEUTRAL_DAMAGED;
+        state = BF_OBJECTSTATE_NEUTRAL_DAMAGED;
 }
 
-void WGObject::SetDestroyed()
+void BFObject::SetDestroyed()
 {
     if (owner == TEAM_INDEX_ALLIANCE)
-        state = WG_OBJECTSTATE_ALLIANCE_DESTROYED;
+        state = BF_OBJECTSTATE_ALLIANCE_DESTROYED;
     else if (owner == TEAM_INDEX_HORDE)
-        state = WG_OBJECTSTATE_HORDE_DESTROYED;
+        state = BF_OBJECTSTATE_HORDE_DESTROYED;
     else
-        state = WG_OBJECTSTATE_NEUTRAL_DESTROYED;
+        state = BF_OBJECTSTATE_NEUTRAL_DESTROYED;
 }
 
-void WGObject::UpdateStateForOwner()
+void BFObject::UpdateStateForOwner()
 {
     if (IsIntact())
         SetIntact();
@@ -1940,7 +1648,7 @@ void WGTower::SpawnCannons(bool despawn)
     }
 }
 
-void WGObject::InitFor(TeamIndex teamIdx, bool reset)
+void BFObject::InitFor(TeamIndex teamIdx, bool reset)
 {
     owner = teamIdx;
     if (reset)
@@ -1961,7 +1669,7 @@ void WGWorkShop::InitFor(TeamIndex teamIdx, bool reset)
 {
     bool gyChanged = teamIdx != owner;
 
-    WGObject::InitFor(teamIdx, reset);
+    BFObject::InitFor(teamIdx, reset);
 
     sObjectMgr.SetGraveYardLinkTeam(gy, ZONE_ID_WINTERGRASP, GetTeamFromIndex(owner));
 
@@ -1970,7 +1678,7 @@ void WGWorkShop::InitFor(TeamIndex teamIdx, bool reset)
 
     if (GameObject* obj = opvp->GetMap()->GetGameObject(capturePoint))
     {
-        if (opvp->GetState() == WG_STATE_COOLDOWN)
+        if (opvp->GetState() == BF_STATE_COOLDOWN)
         {
             obj->SetLootState(GO_JUST_DEACTIVATED);
             obj->SetCapturePointSlider(owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
@@ -2017,7 +1725,7 @@ void WGWorkShop::InitFor(TeamIndex teamIdx, bool reset)
 
 void WGTower::InitFor(TeamIndex teamIdx, bool reset)
 {
-    WGObject::InitFor(teamIdx, reset);
+    BFObject::InitFor(teamIdx, reset);
 
     if (reset)
         SpawnCannons();
@@ -2033,7 +1741,7 @@ void WGTower::InitFor(TeamIndex teamIdx, bool reset)
     }
 }
 
-WGRank WGPlayerScore::GetRank()
+WGRank WGPlayerScore::GetRank() const
 {
     if (rank <= 4)
         return WG_RANK_RECRUIT;
@@ -2045,257 +1753,7 @@ WGRank WGPlayerScore::GetRank()
 
 /********** Grouping *************/
 
-uint32 OutdoorPvPWG::GetPlayerCountByTeam(TeamIndex teamIdx)
-{
-    uint32 count = 0;
-    for (std::set<Group*>::iterator itr = m_Raids[teamIdx].begin(); itr != m_Raids[teamIdx].end(); ++itr)
-        count += (*itr)->GetMembersCount();
-
-    return count;
-}
-
-bool OutdoorPvPWG::IsTeamFull(TeamIndex teamIdx)
-{
-    return m_QueuedPlayers[teamIdx].size() + m_InvitedPlayers[teamIdx].size() + GetPlayerCountByTeam(teamIdx) >= WG_MAX_PLAYERS_PER_TEAM;
-}
-
-Group* OutdoorPvPWG::GetFreeRaid(TeamIndex teamIdx)
-{
-    for (std::set<Group*>::iterator itr = m_Raids[teamIdx].begin(); itr != m_Raids[teamIdx].end(); ++itr)
-        if (!(*itr)->IsFull())
-            return *itr;
-
-    return NULL;
-}
-
-bool OutdoorPvPWG::IsMember(ObjectGuid guid)
-{
-    return GetGroupFor(guid) != NULL;
-}
-
-Group* OutdoorPvPWG::GetGroupFor(ObjectGuid guid)
-{
-    for (uint8 i = 0; i < PVP_TEAM_COUNT; ++i)
-        for (std::set<Group*>::iterator itr = m_Raids[i].begin(); itr != m_Raids[i].end(); ++itr)
-            if ((*itr)->IsMember(guid))
-                return *itr;
-
-    return NULL;
-}
-
-bool OutdoorPvPWG::AddPlayerToRaid(Player* player)
-{
-    if (!player->IsInWorld())
-        return false;
-
-    DEBUG_LOG("Wintergrasp: Adding player %s to raid", player->GetGuidStr().c_str());
-
-    if (Group* group = player->GetGroup())
-    {
-        DEBUG_LOG("Wintergrasp: Player %s already has group %s, uninviting", player->GetGuidStr().c_str(), group->GetObjectGuid().GetString().c_str());
-        group->RemoveMember(player->GetObjectGuid(), 0);
-    }
-
-    TeamIndex teamIdx = GetTeamIndex(player->GetTeam());
-    Group* group = GetFreeRaid(teamIdx);
-    if (!group)
-    {
-        DEBUG_LOG("Wintergrasp: No free raid for %s!", player->GetGuidStr().c_str());
-        if (IsTeamFull(teamIdx))
-        {
-            DEBUG_LOG("Wintergrasp: Battlefield is full! Can't add player %s!", player->GetGuidStr().c_str());
-            return false;
-        }
-
-        DEBUG_LOG("Wintergrasp: Trying to create new group for %s!", player->GetGuidStr().c_str());
-        group = new Group;
-        group->SetBattlefieldGroup(this);
-        if (group->Create(player->GetObjectGuid(), player->GetName()))
-            DEBUG_LOG("Wintergrasp: Successfully created new group %s", group->GetObjectGuid().GetString().c_str());
-        else
-            DEBUG_LOG("Failed to create group!");
-
-        m_Raids[teamIdx].insert(group);
-    }
-    else if (group->IsMember(player->GetObjectGuid()))
-    {
-        DEBUG_LOG("Wintergrasp: Raid already has players %s, making some shit", player->GetGuidStr().c_str());
-        uint8 subgroup = group->GetMemberGroup(player->GetObjectGuid());
-        player->SetBattleRaid(group, subgroup);
-    }
-    else
-    {
-        if (IsTeamFull(teamIdx))
-        {
-            DEBUG_LOG("Wintergrasp: Group %s found, but battlefield is full! Can't add player %s!", group->GetObjectGuid().GetString().c_str(), player->GetGuidStr().c_str());
-            return false;
-        }
-
-        return group->AddMember(player->GetObjectGuid(), player->GetName());
-    }
-
-    return true;
-}
-
-bool OutdoorPvPWG::RemovePlayerFromRaid(ObjectGuid guid)
-{
-    if (Group* group = GetGroupFor(guid))
-    {
-        if (group->RemoveMember(guid, 0) == 0)
-            delete group;
-
-        return true;
-    }
-
-    return false;
-}
-
-void OutdoorPvPWG::InvitePlayerToQueue(Player* player)
-{
-    if (IsMember(player->GetObjectGuid()))
-        return;
-
-    TeamIndex teamIdx = GetTeamIndex(player->GetTeam());
-    // he is in queue or waiting to accept teleport button
-    if (m_QueuedPlayers[teamIdx].find(player->GetObjectGuid()) != m_QueuedPlayers[teamIdx].end())
-        return;
-    if (m_InvitedPlayers[teamIdx].find(player->GetObjectGuid()) != m_InvitedPlayers[teamIdx].end())
-        return;
-
-    if (!IsTeamFull(teamIdx))
-        player->GetSession()->SendBfInvitePlayerToQueue(GetBattlefieldId());
-    //else
-    //    player->GetSession()->SendBfQueueInviteResponse(m_BattlefieldId, m_BattlefieldZoneId, true, true);
-}
-
-void OutdoorPvPWG::OnPlayerInviteResponse(Player* plr, bool accept)
-{
-    if (!accept || IsMember(plr->GetObjectGuid()))
-        return;
-
-    TeamIndex teamIdx = GetTeamIndex(plr->GetTeam());
-    // not needed
-    std::map<ObjectGuid, time_t>::iterator itr = m_InvitedPlayers[teamIdx].find(plr->GetObjectGuid());
-    if (itr != m_InvitedPlayers[teamIdx].end())
-        m_InvitedPlayers[teamIdx].erase(itr);
-
-    if (IsTeamFull(teamIdx))
-    {
-        plr->GetSession()->SendBfQueueInviteResponse(GetBattlefieldId(), m_BattlefieldZoneId, true, true);
-        return;
-    }
-
-    if (m_QueuedPlayers[teamIdx].find(plr->GetObjectGuid()) == m_QueuedPlayers[teamIdx].end())
-    {
-        if (m_state == WG_STATE_IN_PROGRESS)
-        {
-            m_InvitedPlayers[teamIdx][plr->GetObjectGuid()] = time(NULL) + WG_TIME_TO_ACCEPT;
-            plr->GetSession()->SendBfInvitePlayerToWar(GetBattlefieldId(), m_BattlefieldZoneId, WG_TIME_TO_ACCEPT);
-        }
-        else
-        {
-            m_QueuedPlayers[teamIdx].insert(plr->GetObjectGuid());
-            plr->GetSession()->SendBfQueueInviteResponse(GetBattlefieldId(), m_BattlefieldZoneId, true, false);
-        }
-    }
-}
-
-void OutdoorPvPWG::OnPlayerPortResponse(Player* plr, bool accept)
-{
-    if (IsMember(plr->GetObjectGuid()))
-        return;
-
-    if (accept)
-    {
-        TeamIndex teamIdx = GetTeamIndex(plr->GetTeam());
-        std::map<ObjectGuid, time_t>::iterator itr = m_InvitedPlayers[teamIdx].find(plr->GetObjectGuid());
-        // he was not invited by core
-        if (itr == m_InvitedPlayers[teamIdx].end())
-            return;
-
-        m_InvitedPlayers[teamIdx].erase(itr);
-
-        if (AddPlayerToRaid(plr))
-        {
-            DEBUG_LOG("Wintergrasp: AddPlayerToRaid for %s returned: TRUE", plr->GetGuidStr().c_str());
-            UpdateTenacities();
-            plr->GetSession()->SendBfEntered(GetBattlefieldId());
-        }
-        else
-            DEBUG_LOG("Wintergrasp: AddPlayerToRaid for %s returned: FALSE", plr->GetGuidStr().c_str());        
-
-        if (plr->GetZoneId() != ZONE_ID_WINTERGRASP)
-            plr->CastSpell(plr, SPELL_TELEPORT_WINTERGRASP, true);
-        else
-        {
-            if (m_playerScores.find(plr->GetObjectGuid()) == m_playerScores.end())  // must never happen
-                m_playerScores[plr->GetObjectGuid()] = new WGPlayerScore();
-
-            plr->RemoveAurasDueToSpell(SPELL_ALLIANCE_CONTROL_PHASE_SHIFT);
-            plr->RemoveAurasDueToSpell(SPELL_HORDE_CONTROL_PHASE_SHIFT);
-            plr->CastSpell(plr, m_defender == TEAM_INDEX_ALLIANCE ? SPELL_ALLIANCE_CONTROL_PHASE_SHIFT : SPELL_HORDE_CONTROL_PHASE_SHIFT, true);
-
-            UpdateTowerControllBuff(plr);
-            UpdateScoreBuff(plr);
-
-            SendUpdateWorldStatesTo(plr);
-        }
-    }
-    else if (m_state == WG_STATE_IN_PROGRESS && plr->GetZoneId() == ZONE_ID_WINTERGRASP)
-    {
-        plr->GetSession()->SendBfLeaveMessage(BATTLEFIELD_WG, BATTLEFIELD_LEAVE_REASON_EXITED);
-        if (m_playerScores.find(plr->GetObjectGuid()) != m_playerScores.end())
-        {
-            m_playerScores[plr->GetObjectGuid()]->removeTime = time(NULL);
-            m_playerScores[plr->GetObjectGuid()]->removeDelay = WG_UNACCEPTED_REMOVE_DELAY;
-        }
-    }
-}
-
-void OutdoorPvPWG::OnPlayerQueueExitRequest(Player* plr)
-{
-    if (IsMember(plr->GetObjectGuid()))
-    {
-        plr->GetSession()->SendBfLeaveMessage(BATTLEFIELD_WG, BATTLEFIELD_LEAVE_REASON_EXITED);
-        RemovePlayerFromRaid(plr->GetObjectGuid());
-        SendRemoveWorldStates(plr);
-        UpdateTenacities();
-        if (m_playerScores.find(plr->GetObjectGuid()) != m_playerScores.end())
-        {
-            m_playerScores[plr->GetObjectGuid()]->removeTime = time(NULL);
-            m_playerScores[plr->GetObjectGuid()]->removeDelay = WG_UNACCEPTED_REMOVE_DELAY;
-        }
-        return;
-    }
-
-    std::set<ObjectGuid>::iterator itr = m_QueuedPlayers[GetTeamIndex(plr->GetTeam())].find(plr->GetObjectGuid());
-    if (itr != m_QueuedPlayers[GetTeamIndex(plr->GetTeam())].end())
-    {
-        m_QueuedPlayers[GetTeamIndex(plr->GetTeam())].erase(itr);
-
-        plr->GetSession()->SendBfLeaveMessage(BATTLEFIELD_WG, BATTLEFIELD_LEAVE_REASON_EXITED);
-        if (m_playerScores.find(plr->GetObjectGuid()) != m_playerScores.end())
-        {
-            m_playerScores[plr->GetObjectGuid()]->removeTime = time(NULL);
-            m_playerScores[plr->GetObjectGuid()]->removeDelay = WG_UNACCEPTED_REMOVE_DELAY;
-        }
-    }
-}
-
-bool OutdoorPvPWG::OnGroupDeleted(Group* group)
-{
-    for (uint32 i = 0; i < 2; ++i)
-        for (std::set<Group*>::iterator itr = m_Raids[i].begin(); itr != m_Raids[i].end(); ++itr)
-            if (*itr == group)
-            {
-                m_Raids[i].erase(itr);
-                return true;
-            }
-
-    return false;
-}
-
-void OutdoorPvPWG::UpdateTenacities()
+void BattleFieldWG::UpdateTenacities()
 {
     int32 aCount = GetPlayerCountByTeam(TEAM_INDEX_ALLIANCE);
     int32 hCount = GetPlayerCountByTeam(TEAM_INDEX_HORDE);
@@ -2335,40 +1793,7 @@ void OutdoorPvPWG::UpdateTenacities()
         }
 }
 
-void OutdoorPvPWG::SendWarningToAll(int32 entry)
-{
-    for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
-    {
-        if (!itr->first)
-            continue;
-
-        Player* plr = sObjectMgr.GetPlayer(itr->first);
-        if (!plr)
-            continue;
-
-        if (plr->GetZoneId() != ZONE_ID_WINTERGRASP)
-            continue;
-
-        int32 loc_idx = plr->GetSession()->GetSessionDbLocaleIndex();
-
-        char const* text = sObjectMgr.GetMangosString(entry, loc_idx);
-
-        WorldPacket data(SMSG_MESSAGECHAT, 200);
-        data << uint8(CHAT_MSG_RAID_BOSS_EMOTE);
-        data << uint32(LANG_UNIVERSAL);
-        data << ObjectGuid();
-        data << uint32(0);
-        data << uint32(1);
-        data << uint8(0);
-        data << ObjectGuid();
-        data << uint32(strlen(text)+1);
-        data << text;
-        data << uint8(0);
-        plr->GetSession()->SendPacket(&data);
-    }
-}
-
-void OutdoorPvPWG::SendCaptainYell()
+void BattleFieldWG::SendCaptainYell()
 {
     int32 textId = 0;
     switch(m_destroyedTowers[m_defender])
@@ -2385,33 +1810,16 @@ void OutdoorPvPWG::SendCaptainYell()
     }
 
     if (textId)
-        GetMap()->MonsterYellToMap(m_defender == TEAM_INDEX_ALLIANCE ? m_zannethGuid : m_dardoshGuid, textId, m_defender == TEAM_INDEX_ALLIANCE ? LANG_COMMON : LANG_ORCISH, NULL, ZONE_ID_WINTERGRASP);
+        GetMap()->MonsterYellToMap(m_defender == TEAM_INDEX_ALLIANCE ? m_zannethGuid : m_dardoshGuid, textId, m_defender == TEAM_INDEX_ALLIANCE ? LANG_COMMON : LANG_ORCISH, NULL, m_zoneId);
 }
 
-void OutdoorPvPWG::OnPlayerGroupDisband(Player* plr)
+void BattleFieldWG::OnPlayerGroupDisband(Player* plr)
 {
-    plr->GetSession()->SendBfLeaveMessage(BATTLEFIELD_WG, BATTLEFIELD_LEAVE_REASON_EXITED);
-    SendRemoveWorldStates(plr);
+    BattleField::OnPlayerGroupDisband(plr);
     UpdateTenacities();
-
-    if (m_playerScores.find(plr->GetObjectGuid()) != m_playerScores.end())
-    {
-        m_playerScores[plr->GetObjectGuid()]->removeTime = time(NULL);
-        m_playerScores[plr->GetObjectGuid()]->removeDelay = WG_UNACCEPTED_REMOVE_DELAY;
-    }
 }
 
-void OutdoorPvPWG::HandlePlayerAFK(Player* plr)
-{
-    if (m_state != WG_STATE_IN_PROGRESS || !IsMember(plr->GetObjectGuid()))
-        return;
-
-    RemovePlayerFromRaid(plr->GetObjectGuid());
-    plr->GetSession()->SendBfLeaveMessage(BATTLEFIELD_WG, BATTLEFIELD_LEAVE_REASON_EXITED);
-    KickPlayer(plr);
-}
-
-bool OutdoorPvPWG::CriteriaMeets(uint32 criteriaId, Player* plr)
+bool BattleFieldWG::CriteriaMeets(uint32 criteriaId, Player* plr)
 {
     switch(criteriaId)
     {
@@ -2422,34 +1830,7 @@ bool OutdoorPvPWG::CriteriaMeets(uint32 criteriaId, Player* plr)
     return false;
 }
 
-void OutdoorPvPWG::PlayerLoggedIn(Player* plr)
-{
-    if (Group* group = GetGroupFor(plr->GetObjectGuid()))
-    {
-        uint8 subgroup = group->GetMemberGroup(plr->GetObjectGuid());
-        plr->SetBattleRaid(group, subgroup);
-    }
-}
-
-void OutdoorPvPWG::QuestCreditTeam(uint32 credit, Team team, WorldObject* source, float radius)
-{
-    for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
-    {
-        if (!itr->first || !IsMember(itr->first))
-            continue;
-
-        Player* plr = sObjectMgr.GetPlayer(itr->first);
-        if (!plr)
-            continue;
-
-        if (plr->GetTeam() != team || source && radius > 0.0f && source->GetDistance2d(plr->GetPositionX(), plr->GetPositionY()) > radius)
-            continue;
-
-        plr->KilledMonsterCredit(credit);
-    }
-}
-
-std::list<std::string> OutdoorPvPWG::GetPlayerDebugInfo(Player* plr)
+std::list<std::string> BattleFieldWG::GetPlayerDebugInfo(Player* plr)
 {
     std::list<std::string> out;
     std::stringstream ss;
@@ -2459,12 +1840,12 @@ std::list<std::string> OutdoorPvPWG::GetPlayerDebugInfo(Player* plr)
     out.push_back(ss.str()); ss.str("");
     ss << "IsInvited: " << (m_InvitedPlayers[GetTeamIndex(plr->GetTeam())].find(plr->GetObjectGuid()) != m_InvitedPlayers[GetTeamIndex(plr->GetTeam())].end());
     out.push_back(ss.str()); ss.str("");
-    WGPlayerScoreMap::iterator itr = m_playerScores.find(plr->GetObjectGuid());
+    BFPlayerScoreMap::iterator itr = m_playerScores.find(plr->GetObjectGuid());
     if (itr == m_playerScores.end())
         ss << "Score: no score";
     else
     {
-        ss << "Score: Rank = " << itr->second->rank << ", removeTime = ";
+        ss << "Score: Rank = " << ((WGPlayerScore*)itr->second)->rank << ", removeTime = ";
         if (itr->second->removeTime)
             ss << int32(time(NULL) - itr->second->removeTime) << " seconds ago";
         else
@@ -2476,11 +1857,11 @@ std::list<std::string> OutdoorPvPWG::GetPlayerDebugInfo(Player* plr)
     return out;
 }
 
-std::list<std::string> OutdoorPvPWG::GetStatusDebugInfo()
+std::list<std::string> BattleFieldWG::GetStatusDebugInfo()
 {
     std::list<std::string> out;
     std::stringstream ss;
-    ss << "State: " << (m_state == WG_STATE_COOLDOWN ? "Cooldown" : "In progress") << ", timer: " << uint32(m_timer/1000/60/60) << ":" <<
+    ss << "State: " << (m_state == BF_STATE_COOLDOWN ? "Cooldown" : "In progress") << ", timer: " << uint32(m_timer/1000/60/60) << ":" <<
         (uint32(m_timer/1000/60) % 60) << ":" << (uint32(m_timer/1000) % 60);
     out.push_back(ss.str()); ss.str("");
     ss << "Raids: alliance: " << m_Raids[TEAM_INDEX_ALLIANCE].size() << " horde: " << m_Raids[TEAM_INDEX_HORDE].size();
@@ -2493,7 +1874,7 @@ std::list<std::string> OutdoorPvPWG::GetStatusDebugInfo()
     return out;
 }
 
-std::list<std::string> OutdoorPvPWG::GetTowerDebugInfo()
+std::list<std::string> BattleFieldWG::GetTowerDebugInfo()
 {
     std::list<std::string> out;
     std::stringstream ss;
@@ -2514,12 +1895,12 @@ std::list<std::string> OutdoorPvPWG::GetTowerDebugInfo()
     return out;
 }
 
-std::list<std::string> OutdoorPvPWG::GetWallDebugInfo()
+std::list<std::string> BattleFieldWG::GetWallDebugInfo()
 {
     std::list<std::string> out;
     std::stringstream ss;
 
-    for (std::list<WGObject*>::const_iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
+    for (std::list<BFObject*>::const_iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
     {
         ss << (*itr)->id << ": " << (*itr)->guid.GetString() << " Owner: " << (*itr)->owner << " State: " << (*itr)->state;
         out.push_back(ss.str()); ss.str("");
@@ -2530,3 +1911,56 @@ std::list<std::string> OutdoorPvPWG::GetWallDebugInfo()
     return out;
 }
 
+bool BattleFieldWG::GetKickPosition(Player* plr, float& x, float& y, float& z)
+{
+    if (m_zonePlayers.find(plr->GetObjectGuid()) == m_zonePlayers.end())
+        return false;
+
+    uint8 idx = 0;
+    float dist = plr->GetDistance2d(WGKickPositions[0].x, WGKickPositions[0].y);
+    for (uint8 i = 1; i < KICK_POSITIONS_COUNT; ++i)
+    {
+        float newDist = plr->GetDistance2d(WGKickPositions[i].x, WGKickPositions[i].y);
+        if (newDist < dist)
+        {
+            dist = newDist;
+            idx = i;
+        }
+    }
+    x = WGKickPositions[idx].x;
+    y = WGKickPositions[idx].x;
+    z = WGKickPositions[idx].radius;
+    return true;
+}
+
+bool BattleFieldWG::OnPlayerPortResponse(Player* plr, bool accept)
+{
+    if (BattleField::OnPlayerPortResponse(plr, accept))
+    {
+        UpdateTenacities();
+        if (plr->GetZoneId() != m_zoneId)
+            plr->CastSpell(plr, SPELL_TELEPORT_WINTERGRASP, true);
+        else
+        {
+            plr->RemoveAurasDueToSpell(SPELL_ALLIANCE_CONTROL_PHASE_SHIFT);
+            plr->RemoveAurasDueToSpell(SPELL_HORDE_CONTROL_PHASE_SHIFT);
+            plr->CastSpell(plr, m_defender == TEAM_INDEX_ALLIANCE ? SPELL_ALLIANCE_CONTROL_PHASE_SHIFT : SPELL_HORDE_CONTROL_PHASE_SHIFT, true);
+
+            UpdateTowerControllBuff(plr);
+            UpdateScoreBuff(plr);
+        }
+        return true;
+    }
+
+    return false;
+}
+
+bool BattleFieldWG::OnPlayerQueueExitRequest(Player* plr)
+{
+    if (BattleField::OnPlayerQueueExitRequest(plr))
+    {
+        UpdateTenacities();
+        return true;
+    }
+    return false;
+}

@@ -75,7 +75,7 @@
 #include "CreatureLinkingMgr.h"
 #include "WardenDataStorage.h"
 #include "ProgressBar.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 
 INSTANTIATE_SINGLETON_1( World );
 
@@ -860,7 +860,7 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_BOOL_OUTDOORPVP_TF_ENABLED,                       "OutdoorPvp.TFEnabled", true);
     setConfig(CONFIG_BOOL_OUTDOORPVP_NA_ENABLED,                       "OutdoorPvp.NAEnabled", true);
     setConfig(CONFIG_BOOL_OUTDOORPVP_GH_ENABLED,                       "OutdoorPvp.GHEnabled", true);
-    setConfig(CONFIG_BOOL_OUTDOORPVP_WG_ENABLED,                       "OutdoorPvp.WGEnabled", true);
+    setConfig(CONFIG_BOOL_BATTLEFIELD_WG_ENABLED,                      "Battlefield.WGEnabled", true);
 
     setConfig(CONFIG_BOOL_OFFHAND_CHECK_AT_TALENTS_RESET, "OffhandCheckAtTalentsReset", false);
 
@@ -1094,7 +1094,6 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_UINT32_WINTERGRASP_BATTLE_DURATION, "Wintergrasp.BattleDuration", 30);
     setConfig(CONFIG_UINT32_WINTERGRASP_TOWERS_BONUS, "Wintergrasp.TowersBonus", 10);
     setConfig(CONFIG_UINT32_WINTERGRASP_MAX_PLAYERS_PER_TEAM, "Wintergrasp.MaxPlayersPerTeam", 80);
-    setConfig(CONFIG_UINT32_WINTERGRASP_TIME_TO_ACCEPT, "Wintergrasp.TimeToAccept", 20);
     setConfig(CONFIG_UINT32_WINTERGRASP_START_INVITE_TIME, "Wintergrasp.StartInviteTime", 15 * MINUTE * IN_MILLISECONDS);
     setConfig(CONFIG_UINT32_WINTERGRASP_STOP_TELEPORTING_TIME, "Wintergrasp.StopTeleportingTime", 60 * MINUTE * IN_MILLISECONDS);
 
@@ -1918,7 +1917,7 @@ void World::SendGMGlobalMessage(WorldPacket *packet, AccountTypes sec, WorldSess
     }
 }
 
-void World::SendUpdateWintergraspTimerWorldState(OutdoorPvPWG* opvp)
+void World::SendUpdateWintergraspTimerWorldState(BattleFieldWG* opvp)
 {
     WorldPacket data1(SMSG_UPDATE_WORLD_STATE, 8);
     data1 << uint32(WGClockWorldState[1]);
@@ -1926,7 +1925,7 @@ void World::SendUpdateWintergraspTimerWorldState(OutdoorPvPWG* opvp)
 
     WorldPacket data2(SMSG_UPDATE_WORLD_STATE, 8);
     data2 << uint32(WG_WS_SHOW_COOLDOWN_WORLDSTATE);
-    data2 << uint32(opvp->GetState() == WG_STATE_IN_PROGRESS ? 0 : 1);
+    data2 << uint32(opvp->GetState() == BF_STATE_IN_PROGRESS ? 0 : 1);
 
     SessionMap::const_iterator itr;
     for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)

@@ -55,7 +55,7 @@
 #include "BattleGround/BattleGroundMgr.h"
 #include "BattleGround/BattleGroundAV.h"
 #include "OutdoorPvP/OutdoorPvP.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 #include "ArenaTeam.h"
 #include "Chat.h"
 #include "Database/DatabaseImpl.h"
@@ -1869,8 +1869,8 @@ void Player::ToggleAFK()
         else
         {
             OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(GetCachedZoneId());
-            if (opvp && opvp->GetId() == OPVP_ID_WG)
-                ((OutdoorPvPWG*)opvp)->HandlePlayerAFK(this);
+            if (opvp && opvp->IsBattleField())
+                ((BattleField*)opvp)->HandlePlayerAFK(this);
         }
 }
 
@@ -5071,8 +5071,8 @@ Corpse* Player::CreateCorpse()
         flags |= CORPSE_FLAG_HIDE_HELM;
     if (HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_CLOAK))
         flags |= CORPSE_FLAG_HIDE_CLOAK;
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
-    if (InBattleGround() && !InArena() || opvp && opvp->GetState() == WG_STATE_IN_PROGRESS && opvp->IsMember(GetObjectGuid()))
+    OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(GetCachedZoneId());
+    if (InBattleGround() && !InArena() || opvp && opvp->IsBattleField() && ((BattleField*)opvp)->GetState() == BF_STATE_IN_PROGRESS && opvp->IsMember(GetObjectGuid()))
         flags |= CORPSE_FLAG_LOOTABLE;                      // to be able to remove insignia
     corpse->SetUInt32Value( CORPSE_FIELD_FLAGS, flags );
 
@@ -8392,8 +8392,8 @@ void Player::_ApplyAllLevelScaleItemMods(bool apply)
     Called by remove insignia spell effect    */
 void Player::RemovedInsignia(Player* looterPlr)
 {
-    OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
-    if (!GetBattleGroundId() && (!opvp || opvp->GetState() != WG_STATE_IN_PROGRESS || !opvp->IsMember(GetObjectGuid())))
+    OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(GetCachedZoneId());
+    if (!GetBattleGroundId() && (!opvp || !opvp->IsBattleField() || ((BattleField*)opvp)->GetState() != BF_STATE_IN_PROGRESS || !opvp->IsMember(GetObjectGuid())))
         return;
 
     // If not released spirit, do it !
@@ -9146,7 +9146,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
     BattleGround* bg = GetBattleGround();
     uint32 mapid = GetMapId();
     OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(zoneid);
-    OutdoorPvPWG* outdoorPvPWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    BattleFieldWG* outdoorPvPWG = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
 
     DEBUG_LOG("Sending SMSG_INIT_WORLD_STATES to Map:%u, Zone: %u", mapid, zoneid);
 
@@ -16547,12 +16547,10 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
         }
     }
 
-    // Wintergrasp
-    if (fields[34].GetUInt32() == 4197)
-    {
-        if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP))
-            opvp->PlayerLoggedIn(this);
-    }
+    // Wintergrasp and Tol Barad
+    if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(fields[35].GetUInt32()))
+        if (opvp->IsBattleField())
+            ((BattleField*)opvp)->PlayerLoggedIn(this);
 
     if (transGUID != 0)
     {
@@ -23379,9 +23377,9 @@ bool Player::CanStartFlyInArea(uint32 mapid, uint32 zone, uint32 area) const
         return false;
 
     // Disallow mounting in wintergrasp when battle is in progress
-    if (zone == 4197)
-        if (OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(OPVP_ID_WG))
-            return opvp->GetState() != WG_STATE_IN_PROGRESS;
+    if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(zone))
+        if (opvp->IsBattleField())
+            return ((BattleField*)opvp)->GetState() != BF_STATE_IN_PROGRESS;
 
     // don't allow flying in Dalaran restricted areas
     // (no other zones currently has areas with AREA_FLAG_CANNOT_FLY)
@@ -25563,8 +25561,8 @@ AreaLockStatus Player::GetAreaTriggerLockStatus(AreaTrigger const* at, Difficult
     // Vault of Archavon
     if (at->target_mapId == 624)
     {
-        OutdoorPvPWG* opvp = (OutdoorPvPWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
-        if (opvp && (opvp->GetState() == WG_STATE_IN_PROGRESS || opvp->GetDefender() != GetTeamIndex(GetTeam())))
+        BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+        if (opvp && (opvp->GetState() == BF_STATE_IN_PROGRESS || opvp->GetDefender() != GetTeamIndex(GetTeam())))
             return AREA_LOCKSTATUS_NOT_ALLOWED;
     }
 
