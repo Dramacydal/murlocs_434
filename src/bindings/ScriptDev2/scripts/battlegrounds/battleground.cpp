@@ -24,7 +24,7 @@ EndScriptData */
 #include "precompiled.h"
 #include "BattleGround/BattleGroundSA.h"
 #include "OutdoorPvP/OutdoorPvP.h"
-#include "OutdoorPvP/OutdoorPvPWG.h"
+#include "BattleField/BattleFieldWG.h"
 #include "Vehicle.h"
 
 // **** Script Info ****

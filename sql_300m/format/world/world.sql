@@ -7,12 +7,14 @@
   CHANGE COLUMN unk16 health_mod float,
   CHANGE COLUMN unk17 power_mod float;
   
+DROP TABLE IF EXISTS `autobroadcast`;
 CREATE TABLE `autobroadcast` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `text` longtext NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `creature_transport`;
 CREATE TABLE IF NOT EXISTS `creature_transport` (
  `guid` int(10) unsigned NOT NULL AUTO_INCREMENT,
  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -25,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `creature_transport` (
  PRIMARY KEY (`guid`,`map`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Creature on transports';
 
+DROP TABLE IF EXISTS `custom_areaflags`;
 CREATE TABLE `custom_areaflags` (
  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
  `flags` int(10) unsigned NOT NULL DEFAULT '0',
@@ -32,6 +35,7 @@ CREATE TABLE `custom_areaflags` (
  PRIMARY KEY (`entry`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Custom area flags table';
 
+DROP TABLE IF EXISTS `custom_worldsafelocs`;
 CREATE TABLE `custom_worldsafelocs` (
  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
  `map` int(10) unsigned,
@@ -71,6 +75,7 @@ WHERE `required_quest_done_heroic_A` > 0;
 
 -- LFG dungeon reward structure from TC
 
+DROP TABLE IF EXISTS `lfg_dungeon_rewards`;
 CREATE TABLE `lfg_dungeon_rewards` (
   `dungeonId` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Dungeon entry from dbc',
   `maxLevel` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Max level at which this reward is rewarded',
@@ -83,6 +88,7 @@ CREATE TABLE `lfg_dungeon_rewards` (
   PRIMARY KEY (`dungeonId`,`maxLevel`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `player_factionchange_spells`;
 CREATE TABLE `player_factionchange_spells` (
     `alliance_id` int(8) NOT NULL,
     `commentA` varchar(255) DEFAULT NULL,

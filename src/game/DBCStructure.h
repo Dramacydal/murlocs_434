@@ -1784,7 +1784,7 @@ struct SpellClassOptionsEntry
     //uint32    modalNextSpell;                             // 50       m_modalNextSpell not used
     ClassFamilyMask SpellFamilyFlags;                       // 149-151  m_spellClassMask NOTE: size is 12 bytes!!!
     uint32    SpellFamilyName;                              // 148      m_spellClassSet
-    //char*   Description;                                  // 6 4.0.0
+    //DBCString   OptionsDescription;                       // 6 4.0.0
 
     // helpers
 
@@ -1911,15 +1911,15 @@ struct SpellReagentsEntry
 struct SpellScalingEntry
 {
     //uint32    Id;                                         // 0        m_ID
-    uint32    castTimeMin;                                  // 1
-    uint32    castTimeMax;                                  // 2
-    uint32    castScalingMaxLevel;                          // 3
+    int32     castTimeMin;                                  // 1
+    int32     castTimeMax;                                  // 2
+    int32     castScalingMaxLevel;                          // 3
     int32     playerClass;                                  // 4        (index * 100) + charLevel => gtSpellScaling.dbc
     float     coeff1[3];                                    // 5-7
     float     coeff2[3];                                    // 8-10
     float     coeff3[3];                                    // 11-13
     float     coefBase;                                     // 14       some coefficient, mostly 1.0f
-    uint32    coefLevelBase;                                // 15       some level
+    int32     coefLevelBase;                                // 15       some level
 
     bool IsScalableEffect(SpellEffectIndex i) const { return coeff1[i] != 0.0f; };
 };
