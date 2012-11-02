@@ -207,3 +207,12 @@ INSERT INTO `achievement_criteria_requirement` VALUES
 (6447, 6, 4384, 0),
 -- Ancient Courtyard Protector
 (7631, 6, 4609, 0);
+
+-- fix some Mal'Ganis encounter (based on ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET)
+DELETE FROM `achievement_criteria_requirement` WHERE  criteria_id IN (6432, 6435, 6433, 6434, 5887);
+INSERT INTO `achievement_criteria_requirement` VALUES
+ (6432, 12, 0, 0),
+ (6435, 12, 0, 0),
+ (6433, 12, 0, 0),
+ (6434, 12, 1, 0),
+ (5887, 12, 1, 0);
