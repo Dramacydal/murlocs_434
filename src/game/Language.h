@@ -1183,8 +1183,6 @@ enum MangosStrings
     LANG_MMR_RESET_FOR_TYPE             = 11134,
     LANG_YOUR_NXN_MMR                   = 11135,
 
-    LANG_INVALID_REALMID                = 11136,
-
     // Strand of the Ancients
     LANG_BG_SA_START_TWO_MINUTE                     = 20000,
     LANG_BG_SA_START_ONE_MINUTE                     = 20001,
