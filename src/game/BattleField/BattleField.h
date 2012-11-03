@@ -24,6 +24,9 @@
 #include "SharedDefines.h"
 #include "OutdoorPvP/OutdoorPvP.h"
 
+class BattleField;
+class Group;
+
 enum BFState
 {
     BF_STATE_COOLDOWN       = 0,

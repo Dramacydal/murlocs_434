@@ -88,6 +88,7 @@ enum OutdoorPvPZones
     ZONE_ID_TOL_BARAD_PENINSULA     = 5389,
 };
 
+class BattleField;
 class Player;
 class GameObject;
 class Creature;

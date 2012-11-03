@@ -23,6 +23,9 @@
 #include "Object.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "MapManager.h"
+#include "SpellAuras.h"
+#include "Unit.h"
 
 BattleField::BattleField(uint32 id) : OutdoorPvP(id), m_battleFieldId(0)
 {
