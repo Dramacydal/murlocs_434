@@ -849,7 +849,7 @@ bool Object::LoadValues_335(Tokens& tokens)
 {
     Tokens::iterator iter;
     int index;
-    for (iter = tokens.begin(), index = 0; index < m_valuesCount; ++iter, ++index)
+    for (iter = tokens.begin(), index = 0; iter != tokens.end(); ++iter, ++index)
     {
         int32 new_index = ConvertIndexFrom335(index);
         if (new_index == -1)
