@@ -2253,12 +2253,12 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 float dest_x = m_targets.m_destX + cos(angle) * radius;
                 float dest_y = m_targets.m_destY + sin(angle) * radius;
                 float dest_z = m_caster->GetPositionZ();
-                if (!MapManager::IsValidMapCoord(m_caster->GetMapId(), dest_x, dest_y, dest_z, m_caster->GetOrientation()))
+                if (!MapManager::IsValidMapCoord(m_caster->GetMapId(), dest_x, dest_y, dest_z))
                 {
-                    sLog.outError("Spell::SetTargetMap: invalid map coordinates for spell %u eff_idx %u: mapid: %u x %f y %f z %f\n" 
+                    sLog.outError("Spell::SetTargetMap: invalid map coordinates for spell %u eff_idx %u target mode %u: mapid %u x %f y %f z %f\n" 
                         "spell radius: %f caster position: x %f y %f z %f\n"
                         "base dest position: x %f y %f z %f",
-                        m_spellInfo->Id, effIndex, m_caster->GetMapId(), dest_x, dest_y, dest_z,
+                        m_spellInfo->Id, effIndex, targetMode, m_caster->GetMapId(), dest_x, dest_y, dest_z,
                         radius, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(),
                         m_targets.m_destX, m_targets.m_destY, m_caster->GetPositionZ());
                     m_targets.setDestination(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ());
