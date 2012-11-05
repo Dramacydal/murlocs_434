@@ -1914,9 +1914,12 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
     SpellEffectEntry const* spellEffect = m_spellInfo->GetSpellEffect(effIndex);
     SpellClassOptionsEntry const* classOpt = m_spellInfo->GetSpellClassOptions();
 
+    if (!spellEffect)
+        return;
+
     float radius;
-    if (spellEffect && spellEffect->EffectRadiusIndex)
-        radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(spellEffect->EffectRadiusIndex));
+    if (uint32 radiusIndex = spellEffect->GetRadiusIndex())
+        radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(radiusIndex));
     else
         radius = GetSpellMaxRange(sSpellRangeStore.LookupEntry(m_spellInfo->rangeIndex));
 
@@ -2147,7 +2150,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 case 24811:                                 // Draw Spirit (Lethon)
                 {
                     if (effIndex == EFFECT_INDEX_0)         // Copy range from EFF_1 to 0
-                        radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(spellEffect->EffectRadiusIndex));
+                        radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(spellEffect->GetRadiusIndex()));
                     break;
                 }
                 case 28241:                                 // Grobbulus Slime pool
@@ -3317,7 +3320,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 // "at the base of", in difference to 0 which appear to be "directly in front of".
                 // TODO: some summoned will make caster be half inside summoned object. Need to fix
                 // that in the below code (nearpoint vs closepoint, etc).
-                if (!spellEffect || spellEffect->EffectRadiusIndex == 0)
+                if (!spellEffect || spellEffect->GetRadiusIndex() == 0)
                     radius = 0.0f;
 
                 if (m_spellInfo->Id == 50019)               // Hawk Hunting, problematic 50K radius
@@ -6323,7 +6326,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                     if (target->GetOwnerGuid() != m_caster->GetObjectGuid())
                         return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
 
-                    float dist = GetSpellRadius(sSpellRadiusStore.LookupEntry(spellEffect->EffectRadiusIndex));
+                    float dist = GetSpellRadius(sSpellRadiusStore.LookupEntry(spellEffect->GetRadiusIndex()));
                     if (!target->IsWithinDistInMap(m_caster,dist))
                         return SPELL_FAILED_OUT_OF_RANGE;
 
@@ -6358,13 +6361,6 @@ SpellCastResult Spell::CheckCast(bool strict)
                 {
                     if(m_caster->m_movementInfo.HasMovementFlag(MovementFlags(MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR)))
                         return SPELL_FAILED_MOVING;
-                }
-                // Fire Nova
-                else if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_SHAMAN && m_spellInfo->SpellIconID == 33)
-                {
-                    // fire totems slot
-                    if (!m_caster->GetTotemGuid(TOTEM_SLOT_FIRE))
-                        return SPELL_FAILED_TOTEMS;
                 }
                 // Unleash Elements
                 else if (m_spellInfo->Id == 73680)
@@ -6583,8 +6579,8 @@ SpellCastResult Spell::CheckCast(bool strict)
 
                     float range;
 
-                    if (spellEffect->EffectRadiusIndex)
-                        range = GetSpellRadius(sSpellRadiusStore.LookupEntry(spellEffect->EffectRadiusIndex));
+                    if (uint32 radiusIndex = spellEffect->GetRadiusIndex())
+                        range = GetSpellRadius(sSpellRadiusStore.LookupEntry(radiusIndex));
                     else
                         range = GetSpellMaxRange(sSpellRangeStore.LookupEntry(m_spellInfo->rangeIndex));
 
@@ -6834,7 +6830,7 @@ SpellCastResult Spell::CheckCast(bool strict)
             }
             case SPELL_EFFECT_TELEPORT_UNITS_FACE_CASTER:
             {
-                float dis = GetSpellRadius(sSpellRadiusStore.LookupEntry(spellEffect->EffectRadiusIndex));
+                float dis = GetSpellRadius(sSpellRadiusStore.LookupEntry(spellEffect->GetRadiusIndex()));
                 float fx = m_caster->GetPositionX() + dis * cos(m_caster->GetOrientation());
                 float fy = m_caster->GetPositionY() + dis * sin(m_caster->GetOrientation());
                 // teleport a bit above terrain level to avoid falling below it
@@ -9015,9 +9011,11 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
 {
     float radius;
     SpellEffectEntry const * spellEffect = m_spellInfo->GetSpellEffect(effIndex);
+    if (!spellEffect)
+        return false;
 
-    if (spellEffect->EffectRadiusIndex)
-        radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(spellEffect->EffectRadiusIndex));
+    if (uint32 radiusIndex = spellEffect->GetRadiusIndex())
+        radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(radiusIndex));
     else
         radius = GetSpellMaxRange(sSpellRangeStore.LookupEntry(m_spellInfo->rangeIndex));
 

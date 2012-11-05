@@ -545,7 +545,7 @@ Unit *caster, Item* castItem) : Aura(spellproto, eff, currentBasePoints, holder,
     // caster==NULL in constructor args if target==caster in fact
     Unit* caster_ptr = caster ? caster : target;
 
-    m_radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(m_spellEffect->EffectRadiusIndex));
+    m_radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(m_spellEffect->GetRadiusIndex()));
     if(Player* modOwner = caster_ptr->GetSpellModOwner())
         modOwner->ApplySpellMod(spellproto->Id, SPELLMOD_RADIUS, m_radius);
 
@@ -11316,17 +11316,17 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     {
                         if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
                         {
-                             cast_at_remove = true;
-                             spellId1 = 69291;
-                             // Cast unknown spell - spore explode (override)
-                             if (SpellEffectEntry const * effect = GetSpellProto()->GetSpellEffect(EFFECT_INDEX_0))
-                             {
-                                 float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->EffectRadiusIndex));
-                                 Map::PlayerList const& pList = m_target->GetMap()->GetPlayers();
-                                 for (Map::PlayerList::const_iterator itr = pList.begin(); itr != pList.end(); ++itr)
-                                     if (itr->getSource() && itr->getSource()->IsWithinDistInMap(m_target,radius))
-                                         itr->getSource()->CastSpell(itr->getSource(), spellId1, true);
-                             }
+                            cast_at_remove = true;
+                            spellId1 = 69291;
+                            // Cast unknown spell - spore explode (override)
+                            if (SpellEffectEntry const * effect = GetSpellProto()->GetSpellEffect(EFFECT_INDEX_0))
+                            {
+                                float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->GetRadiusIndex()));
+                                Map::PlayerList const& pList = m_target->GetMap()->GetPlayers();
+                                for (Map::PlayerList::const_iterator itr = pList.begin(); itr != pList.end(); ++itr)
+                                    if (itr->getSource() && itr->getSource()->IsWithinDistInMap(m_target,radius))
+                                        itr->getSource()->CastSpell(itr->getSource(), spellId1, true);
+                            }
                         }
                     }
                     break;

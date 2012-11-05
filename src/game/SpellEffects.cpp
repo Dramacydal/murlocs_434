@@ -589,7 +589,7 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                     case 61547:
                     {
                         float dist = unitTarget->GetDistance(m_caster);
-                        float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->EffectRadiusIndex));
+                        float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->GetRadiusIndex()));
 
                         damage = damage / radius * (radius - dist);
                         break;
@@ -4606,35 +4606,6 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
 
                 return;
             }
-            // Fire Nova
-            if (m_spellInfo->SpellIconID == 33)
-            {
-                // fire totems slot
-                Totem* totem = m_caster->GetTotem(TOTEM_SLOT_FIRE);
-                if (!totem)
-                    return;
-
-                uint32 triggered_spell_id;
-                switch(m_spellInfo->Id)
-                {
-                    case 1535:  triggered_spell_id = 8349;  break;
-                    case 8498:  triggered_spell_id = 8502;  break;
-                    case 8499:  triggered_spell_id = 8503;  break;
-                    case 11314: triggered_spell_id = 11306; break;
-                    case 11315: triggered_spell_id = 11307; break;
-                    case 25546: triggered_spell_id = 25535; break;
-                    case 25547: triggered_spell_id = 25537; break;
-                    case 61649: triggered_spell_id = 61650; break;
-                    case 61657: triggered_spell_id = 61654; break;
-                    default: return;
-                }
-
-                totem->CastSpell(totem, triggered_spell_id, true, NULL, NULL, m_caster->GetObjectGuid());
-
-                // Fire Nova Visual
-                totem->CastSpell(totem, 19823, true, NULL, NULL, totem->GetObjectGuid());
-                return;
-            }
             // Spirit Link
             if (m_spellInfo->Id == 98020)
             {
@@ -4674,6 +4645,12 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     m_caster->CastCustomSpell(unitTarget, 98021, NULL, &diff, NULL, true);
                 }
                 return;
+            }
+            // Fire Nova
+            if (m_spellInfo->Id == 1535)
+            {
+                if (unitTarget && unitTarget->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_SHAMAN, UI64LIT(0x10000000), 0, m_caster->GetObjectGuid()))
+                    m_caster->CastSpell(unitTarget, 8349, true);
             }
             break;
         }
@@ -5939,7 +5916,7 @@ void Spell::EffectPersistentAA(SpellEffectEntry const* effect)
     if (!pCaster)
         pCaster = m_caster;
 
-    float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->EffectRadiusIndex));
+    float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->GetRadiusIndex()));
 
     if (Player* modOwner = pCaster->GetSpellModOwner())
         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RADIUS, radius);
@@ -6952,7 +6929,7 @@ void Spell::DoSummonWild(SpellEffectEntry const * effect, uint32 forceFaction)
     float center_y = m_targets.m_destY;
     float center_z = m_targets.m_destZ;
 
-    float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->EffectRadiusIndex));
+    float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->GetRadiusIndex()));
     TempSummonType summonType = (m_duration == 0) ? TEMPSUMMON_DEAD_DESPAWN : TEMPSUMMON_TIMED_OR_DEAD_DESPAWN;
 
     int32 amount = damage > 0 ? damage : 1;
@@ -7082,7 +7059,7 @@ void Spell::DoSummonGuardian(SpellEffectEntry const * effect, uint32 forceFactio
     float center_y = m_targets.m_destY;
     float center_z = m_targets.m_destZ;
 
-    float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->EffectRadiusIndex));
+    float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->GetRadiusIndex()));
 
     int32 amount = damage > 0 ? damage : 1;
 
@@ -7292,7 +7269,7 @@ void Spell::EffectTeleUnitsFaceCaster(SpellEffectEntry const * effect)
         m_targets.getDestination(fx, fy, fz);
     else
     {
-        float dis = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->EffectRadiusIndex));
+        float dis = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->GetRadiusIndex()));
         m_caster->GetClosePoint(fx, fy, fz, unitTarget->GetObjectBoundingRadius(), dis);
     }
 
@@ -12213,7 +12190,7 @@ void Spell::EffectLeapForward(SpellEffectEntry const* effect)
     if (m_spellInfo->rangeIndex == 1)
     {
         TerrainInfo const* map = unitTarget->GetTerrain();
-        float distance = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->EffectRadiusIndex));
+        float distance = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->GetRadiusIndex()));
         // For glyph of blink
         if (Player* modOwner = unitTarget->GetSpellModOwner())
             modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RADIUS, distance, this);
@@ -12816,9 +12793,9 @@ void Spell::EffectTransmitted(SpellEffectEntry const* effect)
     else if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
         m_targets.getDestination(fx, fy, fz);
     // FIXME: this can be better check for most objects but still hack
-    else if (effect->EffectRadiusIndex && m_spellInfo->speed == 0)
+    else if (effect->GetRadiusIndex() && m_spellInfo->speed == 0)
     {
-        float dis = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->EffectRadiusIndex));
+        float dis = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->GetRadiusIndex()));
         m_caster->GetClosePoint(fx, fy, fz, DEFAULT_WORLD_OBJECT_SIZE, dis);
     }
     else
