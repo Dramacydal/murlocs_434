@@ -5454,3 +5454,12 @@ int32 GetMasteryCoefficient(SpellEntry const * spellProto)
     return coef;
 }
 
+uint32 GetResistancesAtLevel(uint32 level)
+{
+    if (level <= 70)
+        return level;
+    else if (level >= 71 && level <= 80)
+        return level + (level - 70) * 5;
+
+    return level + (level - 70) * 5 + (level - 80) * 7;
+}
