@@ -1134,6 +1134,31 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                 }
                 break;
             }
+            case SPELLFAMILY_SHAMAN:
+            {
+                // Attack (Searing Totem effect)
+                if (unitTarget && m_spellInfo->Id == 22048)
+                {
+                    if (Unit* owner = m_caster->GetOwner())
+                    {
+                        if (owner->GetTypeId() == TYPEID_PLAYER)
+                        {
+                            Player* plrOwner = (Player*)owner;
+                            // Improved Lava Lash
+                            if (SpellEntry const * spellInfo = plrOwner->GetKnownTalentRankById(2083))
+                            {
+                                if (roll_chance_i(spellInfo->CalculateSimpleValue(EFFECT_INDEX_0)))
+                                {
+                                    int32 bp = damage >= 0 ? m_damage + damage : damage;
+                                    // Cast Searing Flames
+                                    m_caster->CastCustomSpell(unitTarget, 77661, &bp, NULL, NULL, true, NULL, NULL, owner->GetObjectGuid());
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
         }
 
         if(damage >= 0)
@@ -4543,7 +4568,10 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
             {
                 if (m_caster->GetTypeId()!=TYPEID_PLAYER)
                     return;
-                Item *item = ((Player*)m_caster)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
+
+                Player* plrCaster = (Player*)m_caster;
+
+                Item *item = plrCaster->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
                 if (item)
                 {
                     // Damage is increased if your off-hand weapon is enchanted with Flametongue.
@@ -4558,6 +4586,24 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                         }
                     }
                 }
+                // Improved Lava Lash
+                if (unitTarget)
+                {
+                    if (SpellEntry const * spellInfo = plrCaster->GetKnownTalentRankById(5563))
+                    {
+                        // Searing Flames
+                        Unit::SpellAuraHolderBounds bounds = unitTarget->GetSpellAuraHolderBounds(77661);
+                        for (Unit::SpellAuraHolderMap::const_iterator i = bounds.first; i != bounds.second; ++i)
+                        {
+                            if (i->second->GetCasterGuid() == m_caster->GetObjectGuid())
+                            {
+                                m_damage = int32(m_damage * (i->second->GetStackAmount() * spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) + 100.0f) / 100.0f);
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 return;
             }
             // Fire Nova
@@ -7981,6 +8027,34 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
                     {
                         m_caster->CastSpell(m_caster, 38430, true, NULL, *citr);
                         break;
+                    }
+                }
+            }
+            // Lava Lash
+            if (m_spellInfo->Id == 60103)
+            {
+                if (unitTarget && m_caster->GetTypeId() == TYPEID_PLAYER)
+                {
+                    // Improved Lava Lash
+                    if (SpellEntry const * spellInfo = ((Player*)m_caster)->GetKnownTalentRankById(5563))
+                    {
+                        // Remove Searing flames
+                        unitTarget->RemoveAurasByCasterSpell(77661, m_caster->GetObjectGuid());
+
+                        UnitList nearUnits;
+                        MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck u_check(unitTarget, unitTarget, 12.0f);
+                        MaNGOS::UnitListSearcher<MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck > searcher(nearUnits, u_check);
+                        Cell::VisitAllObjects(unitTarget, searcher, 12.0f);
+                        int targets = 4;
+                        for (UnitList::iterator itr = nearUnits.begin(); itr != nearUnits.end() && targets >= 0; ++itr)
+                        {
+                            if ((*itr)->GetObjectGuid() != unitTarget->GetObjectGuid())
+                            {
+                                // cast flame shock
+                                m_caster->CastSpell(*itr, 8050, true);
+                                --targets;
+                            }
+                        }
                     }
                 }
             }
