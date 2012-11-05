@@ -1144,7 +1144,7 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                         if (owner->GetTypeId() == TYPEID_PLAYER)
                         {
                             Player* plrOwner = (Player*)owner;
-                            // Improved Lava Lash
+                            // Searing Flames
                             if (SpellEntry const * spellInfo = plrOwner->GetKnownTalentRankById(2083))
                             {
                                 if (roll_chance_i(spellInfo->CalculateSimpleValue(EFFECT_INDEX_0)))
@@ -8041,18 +8041,23 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
                         // Remove Searing flames
                         unitTarget->RemoveAurasByCasterSpell(77661, m_caster->GetObjectGuid());
 
-                        UnitList nearUnits;
-                        MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck u_check(unitTarget, unitTarget, 12.0f);
-                        MaNGOS::UnitListSearcher<MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck > searcher(nearUnits, u_check);
-                        Cell::VisitAllObjects(unitTarget, searcher, 12.0f);
-                        int targets = 4;
-                        for (UnitList::iterator itr = nearUnits.begin(); itr != nearUnits.end() && targets >= 0; ++itr)
+                        // Flame Shock
+                        if (unitTarget->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_SHAMAN, UI64LIT(0x10000000), 0, m_caster->GetObjectGuid()))
                         {
-                            if ((*itr)->GetObjectGuid() != unitTarget->GetObjectGuid())
+                            UnitList nearUnits;
+                            MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck u_check(unitTarget, unitTarget, 12.0f);
+                            MaNGOS::UnitListSearcher<MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck > searcher(nearUnits, u_check);
+                            Cell::VisitAllObjects(unitTarget, searcher, 12.0f);
+                            int targets = 4;
+                            for (UnitList::iterator itr = nearUnits.begin(); itr != nearUnits.end() && targets >= 0; ++itr)
                             {
-                                // cast flame shock
-                                m_caster->CastSpell(*itr, 8050, true);
-                                --targets;
+                                // does not already has Flame Shock from shaman
+                                if (!(*itr)->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_SHAMAN, UI64LIT(0x10000000), 0, m_caster->GetObjectGuid()))
+                                {
+                                    // cast Flame Shock
+                                    m_caster->CastSpell(*itr, 8050, true);
+                                    --targets;
+                                }
                             }
                         }
                     }
