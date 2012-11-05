@@ -198,7 +198,17 @@ ALTER TABLE `group_member`
 ALTER TABLE `groups` DROP `mainTank`,
 	DROP `mainAssistant`;
 
-ALTER TABLE `characters` ADD COLUMN `grantableLevels`  tinyint(3) unsigned NOT NULL default '0' AFTER `actionBars`;
+ALTER TABLE `characters` ADD COLUMN `grantableLevels` tinyint(3) unsigned NOT NULL default '0' AFTER `actionBars`;
+-- for conversion from 335
+ALTER TABLE `characters` ADD COLUMN `arenaPoints` int(11) unsigned NOT NULL default '0' AFTER `deleteDate`;
+ALTER TABLE `characters` ADD COLUMN `totalHonorPoints` int(11) unsigned NOT NULL default '0' AFTER `arenaPoints`;
+-- just 335 compatibility
+ALTER TABLE `characters` ADD COLUMN `todayHonorPoints` int(11) unsigned NOT NULL default '0' AFTER `totalHonorPoints`;
+ALTER TABLE `characters` ADD COLUMN `yesterdayHonorPoints` int(11) unsigned NOT NULL default '0' AFTER `todayHonorPoints`;
+ALTER TABLE `characters` ADD COLUMN `knownCurrencies` int(11) unsigned NOT NULL default '0' AFTER `yesterdayHonorPoints`;
+ALTER TABLE `characters` ADD COLUMN `power6` int(11) unsigned NOT NULL default '0' AFTER `knownCurrencies`;
+ALTER TABLE `characters` ADD COLUMN `power7` int(11) unsigned NOT NULL default '0' AFTER `power6`;
+ALTER TABLE `characters` ADD COLUMN `ammoId` int(11) unsigned NOT NULL default '0' AFTER `power7`;
 
 CREATE TABLE `account_forcepermission` (
   `id` int(11) unsigned NOT NULL DEFAULT '0',
@@ -239,3 +249,4 @@ ALTER TABLE `character_reputation` CHANGE `faction` `faction` SMALLINT UNSIGNED 
 ALTER TABLE `character_reputation` CHANGE `flags` `flags` SMALLINT UNSIGNED NOT NULL;
 
 ALTER TABLE `pet_spell` CHANGE `active` `active` TINYINT UNSIGNED NOT NULL;
+

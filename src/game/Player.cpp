@@ -16332,7 +16332,10 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
     // 40          41          42              43           44              45
     //"totalKills, todayKills, yesterdayKills, chosenTitle, watchedFaction, drunk,"
     // 46      47      48      49      50      51      52         53          54             55              56           57          58    59
-    //"health, power1, power2, power3, power4, power5, specCount, activeSpec, exploredZones, equipmentCache, knownTitles, actionBars, slot, grantableLevels FROM characters WHERE guid = '%u'", GUID_LOPART(m_guid));
+    //"health, power1, power2, power3, power4, power5, specCount, activeSpec, exploredZones, equipmentCache, knownTitles, actionBars, slot, grantableLevels,"
+    // 335 only fields:
+    // 60           61
+    //"arenaPoints, totalHonorPoints FROM characters WHERE guid = '%u'", GUID_LOPART(m_guid));
     QueryResult *result = holder->GetResult(PLAYER_LOGIN_QUERY_LOADFROM);
 
     if(!result)
@@ -16903,6 +16906,18 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
 
     _LoadCUFProfiles(holder->GetResult(PLAYER_LOGIN_QUERY_LOAD_CUF_PROFILES));
 
+    // convert 335 fields
+    if (uint32 oldArenaPoints = fields[60].GetUInt32())
+    {
+        ModifyCurrencyCount(CURRENCY_HONOR_POINTS, int32(oldArenaPoints * 85), false, false, true);
+        CharacterDatabase.PExecute("UPDATE characters SET arenaPoints = 0 WHERE guid = %u", guid.GetCounter());
+    }
+    if (uint32 oldHonorPoints = fields[61].GetUInt32())
+    {
+        ModifyCurrencyCount(CURRENCY_HONOR_POINTS, int32(oldHonorPoints * 2.4f), false, false, true);
+        CharacterDatabase.PExecute("UPDATE characters SET totalHonorPoints = 0 WHERE guid = %u", guid.GetCounter());
+    }
+
     // all fields read
     delete result;
 
@@ -17345,6 +17360,116 @@ void Player::LoadCorpse()
     }
 }
 
+enum ConvertType335
+{
+    CONVERT_TYPE_GOLD       = 0,
+    CONVERT_TYPE_CURRENCY   = 1,
+};
+
+struct ConvertStruct335
+{
+    uint8 type;
+    union
+    {
+        struct
+        {
+            int32 moneyPerOne;
+        } moneyConv;
+        struct
+        {
+            uint32 currencyId;
+            float currencyPerOne;
+        } currencyConv;
+    };
+};
+
+bool ConvertTemplateFrom335(uint32 entry, ConvertStruct335& st)
+{
+    switch (entry)
+    {
+        case 29434: // Badge of Justice
+        {
+            st.type = CONVERT_TYPE_GOLD;
+            st.moneyConv.moneyPerOne = 1 * GOLD + 83 * SILVER + 30 * COPPER;
+            break;
+        }
+        case 49426: // Emblem of Frost
+        case 47241: // Emblem of Triumph
+        {
+            st.type = CONVERT_TYPE_CURRENCY;
+            st.currencyConv.currencyId = 395;
+            st.currencyConv.currencyPerOne = 1158;
+            break;
+        }
+        case 45624: // Emblem of Conquest
+        case 40752: // Emblem of Heroism
+        case 40753: // Emblem of Valor
+        {
+            st.type = CONVERT_TYPE_GOLD;
+            st.moneyConv.moneyPerOne = 5 * GOLD + 50 * SILVER;
+            break;
+        }
+        case 43228: // Stone Keeper's Shard
+        {
+            st.type = CONVERT_TYPE_CURRENCY;
+            st.currencyConv.currencyId = 392;
+            st.currencyConv.currencyPerOne = 160;
+            break;
+        }
+        case 43016: // Dalaran Cooking Award
+        {
+            st.type = CONVERT_TYPE_CURRENCY;
+            st.currencyConv.currencyId = 81;
+            st.currencyConv.currencyPerOne = 1;
+            break;
+        }
+        case 41596: // Dalaran Jewelcrafter's Token
+        {
+            st.type = CONVERT_TYPE_CURRENCY;
+            st.currencyConv.currencyId = 61;
+            st.currencyConv.currencyPerOne = 1;
+            break;
+        }
+        case 20558: // Warsong Gulch Mark of Honor
+        case 20559: // Arathi Basin Mark of Honor
+        case 20560: // Alterac Valley Mark of Honor
+        case 29024: // Eye of the Storm Mark of Honor
+        case 47395: // Isle of Conquest Mark of Honor
+        case 42425: // Strand of the Ancients Mark of Honor
+        {
+            st.type = CONVERT_TYPE_CURRENCY;
+            st.currencyConv.currencyId = 392;
+            st.currencyConv.currencyPerOne = 297.6f;
+            break;
+        }
+        case 43589: // Wintergrasp Mark of Honor
+        {
+            st.type = CONVERT_TYPE_CURRENCY;
+            st.currencyConv.currencyId = 392;
+            st.currencyConv.currencyPerOne = 1908;
+            break;
+        }
+        case 44990: // Champion's Seal
+        {
+            st.type = CONVERT_TYPE_CURRENCY;
+            st.currencyConv.currencyId = 241;
+            st.currencyConv.currencyPerOne = 1;
+            break;
+        }
+        case 37836: // Venture Coin
+        {
+            st.type = CONVERT_TYPE_CURRENCY;
+            st.currencyConv.currencyId = 392;
+            st.currencyConv.currencyPerOne = 300;
+            break;
+        }
+        default:
+            return false;
+    }
+
+    return true;
+}
+
 void Player::_LoadInventory(QueryResult *result, uint32 timediff)
 {
     //QueryResult *result = CharacterDatabase.PQuery("SELECT data,text,bag,slot,item,item_template FROM character_inventory JOIN item_instance ON character_inventory.item = item_instance.guid LEFT JOIN item_instance_text ON character_inventory.item = item_instance_text.guid WHERE character_inventory.guid = '%u' ORDER BY bag,slot", GetGUIDLow());
@@ -17370,14 +17495,48 @@ void Player::_LoadInventory(QueryResult *result, uint32 timediff)
             uint32 item_lowguid = fields[4].GetUInt32();
             uint32 item_id   = fields[5].GetUInt32();
 
-            ItemPrototype const * proto = ObjectMgr::GetItemPrototype(item_id);
+            ItemPrototype const * proto = NULL;
 
-            if (!proto)
+            bool converted = false;
+            ConvertStruct335 st;
+            if (converted = ConvertTemplateFrom335(item_id, st))
+            {
+                Item* item = new Item();
+                item->LoadValues(fields[0].GetString(), converted);
+                if (converted)
+                {
+                    switch (st.type)
+                    {
+                        case CONVERT_TYPE_GOLD:
+                        {
+                            ModifyMoney(int64(st.moneyConv.moneyPerOne * item->GetCount()));
+                            break;
+                        }
+                        case CONVERT_TYPE_CURRENCY:
+                        {
+                            ModifyCurrencyCount(st.currencyConv.currencyId, st.currencyConv.currencyPerOne * item->GetCount(), false, false, true);
+                            break;
+                        }
+                        default:
+                            converted = false;
+                            break;
+                    }
+                }
+                delete item;
+            }
+
+            if (!converted)
+                proto = ObjectMgr::GetItemPrototype(item_id);
+
+            if (!proto || converted)
             {
                 CharacterDatabase.PExecute("DELETE FROM character_inventory WHERE item = '%u'", item_lowguid);
                 CharacterDatabase.PExecute("DELETE FROM item_instance WHERE guid = '%u'", item_lowguid);
                 CharacterDatabase.PExecute("DELETE FROM item_instance_text WHERE guid = '%u'", item_lowguid);
-                ERROR_LOG( "Player::_LoadInventory: Player %s has an unknown item (id: #%u) in inventory, deleted.", GetName(),item_id );
+                if (converted)
+                    ERROR_LOG("Player::_LoadInventory: Player %s has an item (id: #%u) that should be converted post-335, converted and deleted.", GetName(), item_id);
+                else
+                    ERROR_LOG("Player::_LoadInventory: Player %s has an unknown item (id: #%u) in inventory, deleted.", GetName(), item_id);
                 continue;
             }
 
