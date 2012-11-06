@@ -4582,7 +4582,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                             (*itr)->GetCastItemGuid() == item->GetObjectGuid())
                         {
                             m_damage += m_damage * damage / 100;
-                            return;
+                            break;
                         }
                     }
                 }
@@ -4591,13 +4591,16 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 {
                     if (SpellEntry const * spellInfo = plrCaster->GetKnownTalentRankById(5563))
                     {
+                        sLog.outDebug(">>>>>>>>>>>>1>>>>>>>>>>>>>>>>>>");
                         // Searing Flames
                         Unit::SpellAuraHolderBounds bounds = unitTarget->GetSpellAuraHolderBounds(77661);
                         for (Unit::SpellAuraHolderMap::const_iterator i = bounds.first; i != bounds.second; ++i)
                         {
                             if (i->second->GetCasterGuid() == m_caster->GetObjectGuid())
                             {
+                                sLog.outDebug(">>>>>>>>>>>>2>>>>>>>>>>>>>>>>>> %i", m_damage);
                                 m_damage = int32(m_damage * (i->second->GetStackAmount() * spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) + 100.0f) / 100.0f);
+                                sLog.outDebug(">>>>>>>>>>>>3>>>>>>>>>>>>>>>>>> %i", m_damage);
                                 break;
                             }
                         }
