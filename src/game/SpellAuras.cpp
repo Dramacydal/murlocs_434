@@ -9987,13 +9987,21 @@ void Aura::PeriodicDummyTick()
             // Earthquake
             else if (spell->Id == 61882)
             {
-                target->CastSpell(target, 77478, true, NULL, this, GetCasterGuid());
+                if (Unit* caster = GetCaster())
+                {
+                    if (DynamicObject* dynObj = caster->GetDynObject(spell->Id))
+                        target->CastSpell(dynObj->GetPositionX(), dynObj->GetPositionY(), dynObj->GetPositionZ(), 77478, true, NULL, this, GetCasterGuid());
+                }
                 return;
             }
             // Healing Rain
             else if (spell->Id == 73920)
             {
-                target->CastSpell(target, 73921, true, NULL, this, GetCasterGuid());
+                if (Unit* caster = GetCaster())
+                {
+                    if (DynamicObject* dynObj = caster->GetDynObject(spell->Id))
+                        target->CastSpell(dynObj->GetPositionX(), dynObj->GetPositionY(), dynObj->GetPositionZ(), 73921, true, NULL, this, GetCasterGuid());
+                }
                 return;
             }
             break;
