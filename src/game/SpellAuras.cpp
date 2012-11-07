@@ -9987,20 +9987,14 @@ void Aura::PeriodicDummyTick()
             // Earthquake
             else if (spell->Id == 61882)
             {
-                if (Unit* caster = GetCaster())
-                {
-                    caster->CastSpell(target, 77478, true);
-                    return;
-                }
+                target->CastSpell(target, 77478, true, NULL, this, GetCasterGuid());
+                return;
             }
             // Healing Rain
             else if (spell->Id == 73920)
             {
-                if (Unit* caster = GetCaster())
-                {
-                    caster->CastSpell(target, 73921, true);
-                    return;
-                }
+                target->CastSpell(target, 73921, true, NULL, this, GetCasterGuid());
+                return;
             }
             break;
         }
