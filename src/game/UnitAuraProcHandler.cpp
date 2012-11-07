@@ -3306,38 +3306,13 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 return SPELL_AURA_PROC_OK;
             }
             // Static Shock
-            if(dummySpell->SpellIconID == 3059)
+            if (dummySpell->SpellIconID == 3059)
             {
                 // lookup Lightning Shield
-                AuraList const& vs = GetAurasByType(SPELL_AURA_PROC_TRIGGER_SPELL);
-                for(AuraList::const_iterator itr = vs.begin(); itr != vs.end(); ++itr)
+                if (SpellAuraHolder* shield = GetSpellAuraHolder(324, GetObjectGuid()))
                 {
-                    SpellClassOptionsEntry const* itrClassOptions = (*itr)->GetSpellProto()->GetSpellClassOptions();
-                    if (itrClassOptions && itrClassOptions->SpellFamilyName == SPELLFAMILY_SHAMAN &&
-                        (itrClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000000400)))
-                    {
-                        uint32 spell = 0;
-                        switch ((*itr)->GetId())
-                        {
-                            case   324: spell = 26364; break;
-                            case   325: spell = 26365; break;
-                            case   905: spell = 26366; break;
-                            case   945: spell = 26367; break;
-                            case  8134: spell = 26369; break;
-                            case 10431: spell = 26370; break;
-                            case 10432: spell = 26363; break;
-                            case 25469: spell = 26371; break;
-                            case 25472: spell = 26372; break;
-                            case 49280: spell = 49278; break;
-                            case 49281: spell = 49279; break;
-                            default:
-                                return SPELL_AURA_PROC_FAILED;
-                        }
-                        CastSpell(target, spell, true, castItem, triggeredByAura);
-                        if ((*itr)->GetHolder()->DropAuraCharge())
-                            RemoveAuraHolderFromStack((*itr)->GetId());
-                        return SPELL_AURA_PROC_OK;
-                    }
+                    CastSpell(target, 26364, true, castItem, triggeredByAura);
+                    return SPELL_AURA_PROC_OK;
                 }
                 return SPELL_AURA_PROC_FAILED;
             }
