@@ -303,7 +303,7 @@ class Spell
         void EffectJump(SpellEffectEntry const* effect);
         void EffectTeleUnitsFaceCaster(SpellEffectEntry const* effect);
         void EffectLearnSkill(SpellEffectEntry const* effect);
-        void EffectAddHonor(SpellEffectEntry const* effect);
+        void EffectPlayMovie(SpellEffectEntry const* effect);
         void EffectTradeSkill(SpellEffectEntry const* effect);
         void EffectEnchantItemPerm(SpellEffectEntry const* effect);
         void EffectEnchantItemTmp(SpellEffectEntry const* effect);
@@ -391,6 +391,7 @@ class Spell
         void EffectActivateSpec(SpellEffectEntry const* effect);
         void EffectCancelAura(SpellEffectEntry const* effect);
         void EffectFriendSummon(SpellEffectEntry const* effect);
+        void EffectRewardCurrency(SpellEffectEntry const* effect);
 
         Spell(Unit* caster, SpellEntry const *info, bool triggered, ObjectGuid originalCasterGUID = ObjectGuid(), SpellEntry const* triggeredBy = NULL);
         ~Spell();
