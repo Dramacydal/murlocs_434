@@ -4586,27 +4586,6 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                         }
                     }
                 }
-                // Improved Lava Lash
-                if (unitTarget)
-                {
-                    if (SpellEntry const * spellInfo = plrCaster->GetKnownTalentRankById(5563))
-                    {
-                        sLog.outDebug(">>>>>>>>>>>>1>>>>>>>>>>>>>>>>>>");
-                        // Searing Flames
-                        Unit::SpellAuraHolderBounds bounds = unitTarget->GetSpellAuraHolderBounds(77661);
-                        for (Unit::SpellAuraHolderMap::const_iterator i = bounds.first; i != bounds.second; ++i)
-                        {
-                            if (i->second->GetCasterGuid() == m_caster->GetObjectGuid())
-                            {
-                                sLog.outDebug(">>>>>>>>>>>>2>>>>>>>>>>>>>>>>>> %i", m_damage);
-                                m_damage = int32(m_damage * (i->second->GetStackAmount() * spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) + 100.0f) / 100.0f);
-                                sLog.outDebug(">>>>>>>>>>>>3>>>>>>>>>>>>>>>>>> %i", m_damage);
-                                break;
-                            }
-                        }
-                    }
-                }
-
                 return;
             }
             // Spirit Link
@@ -8018,8 +7997,12 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
                     // Improved Lava Lash
                     if (SpellEntry const * spellInfo = ((Player*)m_caster)->GetKnownTalentRankById(5563))
                     {
-                        // Remove Searing flames
-                        unitTarget->RemoveAurasByCasterSpell(77661, m_caster->GetObjectGuid());
+                        // Searing Flames
+                        if (SpellAuraHolder* flames = unitTarget->GetSpellAuraHolder(77661, m_caster->GetObjectGuid()))
+                        {
+                            m_damage = int32(m_damage * (flames->GetStackAmount() * spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) + 100.0f) / 100.0f);
+                            unitTarget->RemoveSpellAuraHolder(flames);
+                        }
 
                         // Flame Shock
                         if (unitTarget->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_SHAMAN, UI64LIT(0x10000000), 0, m_caster->GetObjectGuid()))
