@@ -72,9 +72,9 @@ DELETE FROM `spell_proc_event` WHERE `entry` IN (51123, 51127, 51128, 51129, 511
 INSERT INTO `spell_proc_event` (`entry`, `ppmRate`) VALUES
 (51123, 1),
 (51127, 2),
-(51128, 3),
-(51129, 4),
-(51139, 5);
+(51128, 4),
+(51129, 6),
+(51139, 8);
 
 DELETE FROM `spell_proc_event` WHERE `entry` = 51124;
 INSERT INTO `spell_proc_event` (`entry`, `SpellFamilyName`, `procFlags`, `procEx`) VALUE
