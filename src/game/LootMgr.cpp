@@ -349,6 +349,12 @@ bool LootStoreItem::IsValid(LootStore const& store, uint32 entry) const
 
 bool PriorLootItem::operator () (LootItem const& left, LootItem const& right) const
 {
+    if (left.currency)
+        return false;
+
+    if (right.currency)
+        return !left.currency;
+
     ItemPrototype const * pLeft = ObjectMgr::GetItemPrototype(left.itemid);
     ItemPrototype const * pRight = ObjectMgr::GetItemPrototype(right.itemid);
 
