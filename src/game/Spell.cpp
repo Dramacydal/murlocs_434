@@ -6889,6 +6889,17 @@ SpellCastResult Spell::CheckCast(bool strict)
                             return SPELL_FAILED_NOT_IN_BATTLEGROUND;
                 break;
             }
+            case SPELL_EFFECT_RESURRECT:
+            case SPELL_EFFECT_RESURRECT_NEW:
+            case SPELL_EFFECT_SELF_RESURRECT:
+            {
+                if (m_caster->isInCombat())
+                    return SPELL_FAILED_AFFECTING_COMBAT;
+
+                if (unitTarget->HasAuraType(SPELL_AURA_PREVENT_RESURRECTION))
+                    return SPELL_FAILED_TARGET_CANNOT_BE_RESURRECTED;
+                break;
+            }
             default:
                 break;
         }

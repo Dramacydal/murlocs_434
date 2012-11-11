@@ -1034,6 +1034,8 @@ bool IsPositiveAura(SpellEntry const * spellproto, SpellEffectIndex effIndex)
                     if (spellproto->Id == 69438)            // Sample Satisfaction
                         return false;
                     break;
+                case SPELL_AURA_PREVENT_RESURRECTION:
+                    return false;
                 default:
                     break;
             }
