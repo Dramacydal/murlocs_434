@@ -12290,14 +12290,40 @@ void Unit::ApplyAttackTimePercentMod( WeaponAttackType att,float val, bool apply
         ApplyPercentModFloatVar(m_modAttackSpeedPct[att], -val, apply);
         ApplyPercentModFloatValue(UNIT_FIELD_BASEATTACKTIME+att,-val,apply);
     }
+
+    if (GetTypeId() == TYPEID_PLAYER)
+    {
+        uint32 field;
+        CombatRating cr;
+
+        if (att == RANGED_ATTACK)
+        {
+            field = PLAYER_FIELD_MOD_RANGED_HASTE;
+            cr = CR_HASTE_RANGED;
+        }
+        else
+        {
+            field = PLAYER_FIELD_MOD_HASTE;
+            cr = CR_HASTE_MELEE;
+        }
+
+        float val = m_modAttackSpeedPct[att] + ((Player*)this)->GetRatingBonusValue(cr);
+        SetUInt32Value(field, val);
+    }
 }
 
-void Unit::ApplyCastTimePercentMod(float val, bool apply )
+void Unit::ApplyCastTimePercentMod(float val, bool apply)
 {
-    if(val > 0)
-        ApplyPercentModFloatValue(UNIT_MOD_CAST_SPEED,val,!apply);
+    if (val > 0)
+    {
+        ApplyPercentModFloatValue(UNIT_MOD_CAST_SPEED, val, !apply);
+        ApplyPercentModFloatValue(UNIT_MOD_CAST_HASTE, val, !apply);
+    }
     else
-        ApplyPercentModFloatValue(UNIT_MOD_CAST_SPEED,-val,apply);
+    {
+        ApplyPercentModFloatValue(UNIT_MOD_CAST_SPEED, -val, apply);
+        ApplyPercentModFloatValue(UNIT_MOD_CAST_HASTE, -val, apply);
+    }
 }
 
 void Unit::UpdateAuraForGroup(uint8 slot)
