@@ -12308,7 +12308,7 @@ void Unit::ApplyAttackTimePercentMod( WeaponAttackType att,float val, bool apply
         }
 
         float val = m_modAttackSpeedPct[att] + ((Player*)this)->GetRatingBonusValue(cr);
-        SetUInt32Value(field, val);
+        SetFloatValue(field, val);
     }
 }
 
