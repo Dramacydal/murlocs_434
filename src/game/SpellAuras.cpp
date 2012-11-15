@@ -11133,6 +11133,8 @@ void SpellAuraHolder::SendAuraUpdate(bool remove) const
 
 void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
 {
+    DEBUG_LOG("SpellAuraHolder::HandleSpellSpecificBoosts for %u apply: %u", GetId(), apply);
+
     bool cast_at_remove = false;                            // if spell must be casted at last aura from stack remove
     uint32 spellId1 = 0;
     uint32 spellId2 = 0;
