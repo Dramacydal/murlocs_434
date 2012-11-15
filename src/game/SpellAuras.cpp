@@ -1198,8 +1198,10 @@ void Aura::HandleAddModifier(bool apply, bool Real)
             case 54741:                                     // Firestarter
             case 57761:                                     // Fireball!
             case 64823:                                     // Elune's Wrath (Balance Druid T8 Set)
-            case 57529:                                     // Arcane Potency r1
-            case 57531:                                     // Arcane Potency r2
+            case 57529:                                     // Arcane Potency (Rank 1)
+            case 57531:                                     // Arcane Potency (Rank 2)
+            case 63165:                                     // Decimation (Rank 1)
+            case 63167:                                     // Decimation (Rank 2)
                 GetHolder()->SetAuraCharges(1);
                 break;
         }
@@ -7984,15 +7986,6 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             else
                 ++itr;
         }
-    }
-
-    // Ranger: Improved Barkskin - apply/remove armor bonus due to shapeshift
-    if (target->GetTypeId() == TYPEID_PLAYER && (((Player*)target)->HasSpell(63410) || ((Player*)target)->HasSpell(63411)))
-    {
-        target->RemoveAurasDueToSpell(66530);
-        // "while in Travel Form or while not shapeshifted"
-        if (target->GetShapeshiftForm() == FORM_TRAVEL || target->GetShapeshiftForm() == FORM_NONE)
-            target->CastSpell(target, 66530, true);
     }
 }
 

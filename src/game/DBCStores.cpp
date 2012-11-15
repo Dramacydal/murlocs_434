@@ -670,12 +670,12 @@ void LoadDBCStores(const std::string& dataPath)
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellStore,               dbcPath,"Spell.dbc", &CustomSpellEntryfmt, &CustomSpellEntryIndex);
     for(uint32 i = 1; i < sSpellStore.GetNumRows(); ++i)
     {
-        SpellEntry const * spell = sSpellStore.LookupEntry(i);
+        SpellEntry* spell = (SpellEntry*)sSpellStore.LookupEntry(i);
         if (!spell)
             continue;
-            if(SpellCategoriesEntry const* category = spell->GetSpellCategories())
-                if(uint32 cat = category->Category)
-                    sSpellCategoryStore[cat].insert(i);
+        if (SpellCategoriesEntry const* category = spell->GetSpellCategories())
+            if(uint32 cat = category->Category)
+                sSpellCategoryStore[cat].insert(i);
 
         // DBC not support uint64 fields but SpellEntry have SpellFamilyFlags mapped at 2 uint32 fields
         // uint32 field already converted to bigendian if need, but must be swapped for correct uint64 bigendian view
@@ -683,26 +683,31 @@ void LoadDBCStores(const std::string& dataPath)
         std::swap(*((uint32*)(&spell->SpellFamilyFlags)),*(((uint32*)(&spell->SpellFamilyFlags))+1));
         #endif
 
-        /*
         switch (spell->Id)
         {
             case 2654:                          // Summon Tamed (TEST) -> Premium NPC Summoner
             {
                 spell->Attributes = 0x10000110;
                 spell->CastingTimeIndex = 0;
-                spell->AuraInterruptFlags = 0x1F;
                 spell->DurationIndex = 21;
                 spell->rangeIndex = 1;
-                spell->EquippedItemClass = -1;
-                spell->Effect[0] = 28;
-                spell->EffectDieSides[0] = 1;
-                spell->EffectImplicitTargetA[0] = 32;
-                spell->EffectRadiusIndex[0] = 15;
-                spell->EffectMultipleValue[0] = 1000;
-                spell->EffectMiscValue[0] = 88004;
-                spell->EffectMiscValueB[0] = 41;
+                
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                {
+                    eff->Effect = 28;
+                    eff->EffectDieSides = 1;
+                    eff->EffectImplicitTargetA = 32;
+                    eff->EffectRadiusIndex = 15;
+                    eff->EffectMultipleValue = 1000;
+                    eff->EffectMiscValue = 88004;
+                    eff->EffectMiscValueB = 41;
+                }
+
                 spell->SpellVisual[0] = 6744;
                 spell->SpellIconID = 597;
+
+                spell->SpellInterruptsId = 14290;
+                //intr->AuraInterruptFlags = 0x1F;
                 break;
             }
             case 6358:                          // Seduction
@@ -717,35 +722,28 @@ void LoadDBCStores(const std::string& dataPath)
             }
             case 12051:                         // Evocation
             {
-                spell->InterruptFlags = 0x15;
+                if (SpellInterruptsEntry* intr = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
+                    intr->InterruptFlags = 0x15;
                 break;
             }
             case 15290:                         // Improved Vampiric Embrace heal part
             {
-                spell->SpellFamilyFlags.Flags |= UI64LIT(0x0000000000000004);
-                break;
-            }
-            case 15259:                         // Darkness Hack
-            case 15307:
-            case 15308:
-            case 15309:
-            case 15310:
-            {
-                spell->EffectBasePoints[0] -= 1;
-                spell->EffectBasePoints[1] -= 1;
-                spell->EffectBasePoints[2] -= 1;
+                spell->SpellClassOptionsId = 859;
+                //spell->SpellFamilyFlags.Flags |= UI64LIT(0x0000000000000004);
                 break;
             }
             case 18562:                         // Swiftmend
             {
-                spell->DmgClass = SPELL_DAMAGE_CLASS_NONE;
+                if (SpellCategoriesEntry* cat = (SpellCategoriesEntry*)spell->GetSpellCategories())
+                    cat->DmgClass = SPELL_DAMAGE_CLASS_NONE;
                 break;
             }
             case 18754:                         // Improved Succubus
             case 18755:
             case 18756:
             {
-                spell->EffectImplicitTargetA[0] = TARGET_SELF;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectImplicitTargetA = TARGET_SELF;
                 break;
             }
             case 20224:                         // Seals of the Pure
@@ -754,36 +752,45 @@ void LoadDBCStores(const std::string& dataPath)
             case 20331:
             case 20332:
             {
-                spell->EffectSpellClassMask[0].Flags |= UI64LIT(0x2000000000000000); // Seal of Righteoussness proc
-                spell->EffectSpellClassMask[1].Flags |= UI64LIT(0x2000000000000000); // Seal of Righteoussness proc
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectSpellClassMask.Flags |= UI64LIT(0x2000000000000000); // Seal of Righteoussness proc
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_1))
+                    eff->EffectSpellClassMask.Flags |= UI64LIT(0x2000000000000000); // Seal of Righteoussness proc
                 break;
             }
             case 24706:                         // Stinking Up Southshore Hack
             {
-                spell->Effect[2] = SPELL_EFFECT_QUEST_COMPLETE;
-                spell->EffectMiscValue[2] = 1657;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_2))
+                {
+                    eff->Effect = SPELL_EFFECT_QUEST_COMPLETE;
+                    eff->EffectMiscValue = 1657;
+                }
                 break;
             }
             case 25771:                         // Ranger: Forbearance mechanic immune
             {
-                spell->EffectMiscValue[0] = 29;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectMiscValue = 29;
                 break;
             }
             case 27792:                         // megai2: set interrupt and castingtimeindex to 0 for spirit of redemption
             case 27827:
             {
-                spell->AuraInterruptFlags = 0;
+                if (SpellInterruptsEntry* intr = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
+                    intr->AuraInterruptFlags = 0;
                 spell->CastingTimeIndex = 0;
                 break;
             }
             case 27795:                         // interupt only for spirit of redemption
             {
-                spell->AuraInterruptFlags = 0;
+                // no interrupts as of 4.3.4+
+                //spell->AuraInterruptFlags = 0;
                 break;
             }
             case 30526:                         // Flame Turret
             {
-                spell->Effect[0] = 0;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->Effect = 0;
                 break;
             }
             case 31117:                         // Unstable Affliction dispel damage
@@ -796,31 +803,27 @@ void LoadDBCStores(const std::string& dataPath)
                 spell->Attributes |= SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY;
                 break;
             }
-            case 33221:                         // Shadow Power Hack
-            case 33222:
-            case 33223:
-            case 33224:
-            case 33225:
-            {
-                spell->EffectBasePoints[0] -= 10;
-                break;
-            }
             case 36032:                         // Arcance Blast Debuff
             {
-                spell->EffectSpellClassMask[0].Flags |= UI64LIT(0x800000200000);
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectSpellClassMask.Flags |= UI64LIT(0x800000200000);
                 break;
             }
             case 37212:                         // Flametongue Weapon (Passive)
             {
-                spell->EffectSpellClassMask[0].Flags = UI64LIT(0x0000000000200000);
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectSpellClassMask.Flags = UI64LIT(0x0000000000200000);
                 break;
             }
             case 40851:                         // Disgruntled
             {
                 for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
                 {
-                    spell->EffectImplicitTargetA[i] = TARGET_SELF;
-                    spell->EffectImplicitTargetB[i] = TARGET_NONE;
+                    if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(SpellEffectIndex(i)))
+                    {
+                        eff->EffectImplicitTargetA = TARGET_SELF;
+                        eff->EffectImplicitTargetB = TARGET_NONE;
+                    }
                 }
                 break;
             }
@@ -836,8 +839,11 @@ void LoadDBCStores(const std::string& dataPath)
             }
             case 44807:                         // Crazed Rage
             {
-                spell->EffectImplicitTargetA[0] = TARGET_SELF;
-                spell->EffectImplicitTargetB[0] = TARGET_SELF;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                {
+                    eff->EffectImplicitTargetA = TARGET_SELF;
+                    eff->EffectImplicitTargetB = TARGET_SELF;
+                }
                 break;
             }
             case 45284: case 45286: case 45287: case 45288: // Lightning (Lightning Overload)
@@ -853,66 +859,54 @@ void LoadDBCStores(const std::string& dataPath)
             }
             case 45440:                         // Steam Tonk Controller
             {
-                spell->Effect[0] = 0;
-                spell->Effect[1] = 0;
-                spell->Effect[2] = 0;
+                for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+                {
+                    if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(SpellEffectIndex(i)))
+                        eff->Effect = 0;
+                }
                 break;
             }
             case 45732:                         // Torch Toss
             case 46054:                         // Torch Toss (land)
             {
-                spell->RequiresSpellFocus = 0;
-                spell->EffectImplicitTargetA[0] = TARGET_SCRIPT_COORDINATES;
+                if (SpellCastingRequirementsEntry* req = (SpellCastingRequirementsEntry*)spell->GetSpellCastingRequirements())
+                    req->RequiresSpellFocus = 0;
+
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectImplicitTargetA = TARGET_SCRIPT_COORDINATES;
                 break;
             }
             case 46747:                         // Fling Torch
             {
-                spell->RequiresSpellFocus = 0;
-                spell->EffectImplicitTargetA[0] = TARGET_SELF;
+                if (SpellCastingRequirementsEntry* req = (SpellCastingRequirementsEntry*)spell->GetSpellCastingRequirements())
+                    req->RequiresSpellFocus = 0;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectImplicitTargetA = TARGET_SELF;
                 break;
             }
             case 46924:                         // Bladestorm
             {
-                spell->EffectMiscValue[1] &= ~(1 << (MECHANIC_DISARM-1));
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_1))
+                    eff->EffectMiscValue &= ~(1 << (MECHANIC_DISARM-1));
                 break;
             }
             case 47094:                         // No Man's Land
             case 58101:                         // No Man's Land
             {
-                spell->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA_ENEMY;
-                spell->EffectRadiusIndex[0] = 12;   // 100 yards
-                break;
-            }
-            case 47201:                         // Everlasting Affliction
-            case 47202:
-            case 47203:
-            case 47204:
-            case 47205:
-            {
-                spell->EffectSpellClassMask[1].Flags = UI64LIT(0x11000000002);
-                break;
-            }
-            case 47573:                         // Twisted Faith
-            case 47577:
-            case 47578:
-            case 51166:
-            case 51167:
-            {
-                spell->EffectSpellClassMask[1].Flags |= UI64LIT(0x800000);
-                break;
-            }
-            case 48156:                         // Mind Flay (Rank 9)
-            {
-                // all mind flay channeled spells have flags2&0x40
-                // many priest spells and all mind flays except rank 9 have flags2&0x400
-                spell->SpellFamilyFlags.Flags2 |= 0x400;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                {
+                    eff->Effect = SPELL_EFFECT_APPLY_AREA_AURA_ENEMY;
+                    eff->EffectRadiusIndex = 12;   // 100 yards
+                }
                 break;
             }
             case 48650:                         // Haxx: disable Fetch Ball
             {
-                spell->Effect[0] = 0;
-                spell->Effect[1] = 0;
-                spell->EffectTriggerSpell[1] = 0;
+                for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+                {
+                    if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(SpellEffectIndex(i)))
+                        eff->Effect = 0;
+                }
                 break;
             }
             case 48743:                         // Death Pact
@@ -923,14 +917,8 @@ void LoadDBCStores(const std::string& dataPath)
             case 49036:                         // Epidemic (Rank 1)
             case 49562:                         // Epidemic (Rank 2)
             {
-                spell->EffectSpellClassMask[0].Flags2 |= 0x40;  // affect Ebon Plaguebringer
-                break;
-            }
-            case 49571:                         // Ravenous Dead Rank 2
-            case 49572:                         // Ravenous Dead Rank 3
-            {
-                spell->Effect[1] = SPELL_EFFECT_APPLY_AURA;
-                spell->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectSpellClassMask.Flags2 |= 0x40;  // affect Ebon Plaguebringer
                 break;
             }
             case 50025:                         // Plague Barrel
@@ -939,31 +927,32 @@ void LoadDBCStores(const std::string& dataPath)
             }
             case 50026:                         // Plague Slime
             {
-                spell->Effect[2] = 0;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_2))
+                    eff->Effect = 0;
                 break;
             }
             case 50317:                         // D.I.S.C.O
             {
-                spell->Effect[0] = SPELL_EFFECT_TRANS_DOOR; // was SPELL_EFFECT_SUMMON
-                spell->EffectMiscValue[0] = 190351;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                {
+                    eff->Effect = SPELL_EFFECT_TRANS_DOOR; // was SPELL_EFFECT_SUMMON
+                    eff->EffectMiscValue = 190351;
+                }
                 break;
             }
             case 50421:                         // Scent of Blood
             {
-                spell->procCharges = 1;
-                break;
-            }
-            case 51726:                         // Ebon Plague
-            case 51734:
-            case 51735:
-            {
-                spell->AttributesEx3 |= SPELL_ATTR_EX3_STACK_FOR_DIFF_CASTERS;
+                if (SpellAuraOptionsEntry* opt = (SpellAuraOptionsEntry*)spell->GetSpellAuraOptions())
+                    opt->procCharges = 1;
                 break;
             }
             case 51804:                         // Power Siphon disable
             {
-                spell->Effect[0] = 0;
-                spell->Effect[1] = 0;
+                for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+                {
+                    if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(SpellEffectIndex(i)))
+                        eff->Effect = 0;
+                }
                 break;
             }
             //case 52481:                       // Disable Gift of the Harvester
@@ -975,11 +964,6 @@ void LoadDBCStores(const std::string& dataPath)
             case 52752:                         // Ancestral Awakening can crit
             {
                 spell->AttributesEx2 &= ~SPELL_ATTR_EX2_CANT_CRIT;
-                break;
-            }
-            case 52916:                         // Honor Among Thieves
-            {
-                spell->AttributesEx3 |= SPELL_ATTR_EX3_NO_INITIAL_AGGRO;
                 break;
             }
             case 53209:                         // Chimera Shot
@@ -995,58 +979,53 @@ void LoadDBCStores(const std::string& dataPath)
             case 54412:
             case 54413:
             {
-                spell->manaCost = 0;
+                if (SpellPowerEntry* pow = (SpellPowerEntry*)spell->GetSpellPower())
+                    pow->manaCost = 0;
                 break;
             }
             case 54861:                         // Nitro Boosts
             {
-                spell->AuraInterruptFlags |= 0x01000000; // AURA_INTERRUPT_FLAG_DIRECT_DAMAGE;
+                spell->SpellInterruptsId = 9309; // AURA_INTERRUPT_FLAG_DIRECT_DAMAGE;
                 break;
             }
             case 55078:                         // Blood Fever
             {
-                spell->DmgClass = SPELL_DAMAGE_CLASS_NONE;
+                if (SpellCategoriesEntry* cat = (SpellCategoriesEntry*)spell->GetSpellCategories())
+                    cat->DmgClass = SPELL_DAMAGE_CLASS_NONE;
                 break;
             }
             case 55098:                         // Transformation
             {
-                spell->InterruptFlags |= 0x04;
+                if (SpellInterruptsEntry* intr = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
+                    intr->InterruptFlags |= 0x04;
                 break;
             }
             case 55277:                         // Effect of Glyph of Stoneclaw Totem
             {
-                spell->SpellFamilyFlags.Flags &= ~(UI64LIT(0x1));
-                break;
-            }
-            case 55689:                         // Glyph of Shadow
-            {
-                spell->Stances = 0;
+                if (SpellClassOptionsEntry* opt = (SpellClassOptionsEntry*)spell->GetSpellClassOptions())
+                    opt->SpellFamilyFlags.Flags &= ~(UI64LIT(0x1));
                 break;
             }
             case 57529:                         // Arcane potency
             case 57531:
             {
-                spell->EffectSpellClassMask[0].Flags |= UI64LIT(0x800000000802);    // Arcane Missiles + Fire Blast + Arcane Barrage
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectSpellClassMask.Flags |= UI64LIT(0x800000000802);    // Arcane Missiles + Fire Blast + Arcane Barrage
                 break;
             }
             case 58530:                         // Return to Stormwind
             case 58551:                         // Return to Orgrimmar
             {
-                spell->Effect[0] = 0;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->Effect = 0;
                 break;
             }
             case 59887:                         // Borrowed Time proc
             case 59888:
             case 59889:
-            case 59890:
-            case 59891:
             {
-                spell->EffectSpellClassMask[0].Flags |= UI64LIT(0x142490);
-                break;
-            }
-            case 60069:                         // Dispersion
-            {
-                spell->EffectMiscValue[0] = 0;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectSpellClassMask.Flags |= UI64LIT(0x142490);
                 break;
             }
             case 60661:                         // LK Arena 4 Gladiator's Libram of Justice
@@ -1054,23 +1033,19 @@ void LoadDBCStores(const std::string& dataPath)
             case 60664:                         // LK Arena 6 Gladiator's Libram of Justice
             case 60800:                         // Libram of Souls Redeemed
             {
-                spell->SpellFamilyFlags.Flags &= ~UI64LIT(0x0000000040000000);
+                if (SpellClassOptionsEntry* opt = (SpellClassOptionsEntry*)spell->GetSpellClassOptions())
+                    opt->SpellFamilyFlags.Flags &= ~UI64LIT(0x0000000040000000);
                 break;
             }
             case 61719:                         // Easter Lay Noblegarden Egg Aura
             {
-                spell->AuraInterruptFlags = 1 | 2; //AURA_INTERRUPT_FLAG_UNK0 | AURA_INTERRUPT_FLAG_DAMAGE;
+                if (SpellInterruptsEntry* intr = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
+                    intr->AuraInterruptFlags = 1 | 2; //AURA_INTERRUPT_FLAG_UNK0 | AURA_INTERRUPT_FLAG_DAMAGE;
                 break;
             }
             case 62991:                         // Bonked!
             {
                 spell->Attributes |= SPELL_ATTR_CANT_CANCEL;
-                break;
-            }
-            case 63165:                         // Decimation (Warlock)
-            case 63167:
-            {
-                spell->procCharges = 1;
                 break;
             }
             case 63675:                         // Improved Devouring Plague
@@ -1085,24 +1060,22 @@ void LoadDBCStores(const std::string& dataPath)
             }
             case 64568:                         // Blood Reserve
             {
-                spell->procCharges = 1;
+                if (SpellAuraOptionsEntry* opt = (SpellAuraOptionsEntry*)spell->GetSpellAuraOptions())
+                    opt->procCharges = 1;
                 break;
             }
             case 64844:                         // Divine Hymn trigger
             {
                 spell->AttributesEx &= ~SPELL_ATTR_EX_NEGATIVE;
-                spell->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
+                if (SpellCategoriesEntry* cat = (SpellCategoriesEntry*)spell->GetSpellCategories())
+                    cat->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
                 break;
             }
             case 64904:                         // Hymn of Hope trigger
             {
-                spell->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_1))
+                    eff->EffectApplyAuraName = SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT;
                 spell->AttributesEx &= ~SPELL_ATTR_EX_NEGATIVE;
-                break;
-            }
-            case 66530:                         // Improved Barkskin (Passive)
-            {
-                spell->StancesNot |= (1 << (FORM_DIREBEAR-1))|(1 << (FORM_AQUA-1));
                 break;
             }
             case 66532:                         // Fel Fireball
@@ -1110,51 +1083,61 @@ void LoadDBCStores(const std::string& dataPath)
             case 66964:
             case 66965:
             {
-                spell->InterruptFlags |= 0x04;
+                if (SpellInterruptsEntry* intr = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
+                    intr->InterruptFlags |= 0x04;
                 break;
             }
             case 67712:                         // Item - Coliseum 25 Normal Caster Trinket
             {
-                spell->EffectTriggerSpell[0] = 67713;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectTriggerSpell = 67713;
                 break;
             }
             case 67758:                         // Item - Coliseum 25 Heroic Caster Trinket
             {
-                spell->EffectTriggerSpell[0] = 67759;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectTriggerSpell = 67759;
                 break;
             }
             case 70157:                         // megai2: sindragosa icetomb
             {
-                spell->EffectTriggerSpell[2] = 43979;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_2))
+                    eff->EffectTriggerSpell = 43979;
                 break;
             }
             case 70873:                         // Valithria Emerald Vigor
             {
-                spell->EffectImplicitTargetA[0] = TARGET_SELF;
-                spell->EffectImplicitTargetA[1] = TARGET_SELF;
-                spell->EffectImplicitTargetA[2] = TARGET_SELF;
-                spell->EffectImplicitTargetB[0] = TARGET_NONE;
-                spell->EffectImplicitTargetB[1] = TARGET_NONE;
-                spell->EffectImplicitTargetB[2] = TARGET_NONE;
+                for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+                {
+                    if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(SpellEffectIndex(i)))
+                    {
+                        eff->EffectImplicitTargetA = TARGET_SELF;
+                        eff->EffectImplicitTargetB = TARGET_NONE;
+                    }
+                }
                 break;
             }
             case 71880:                         // Heartpiece dummy aura
             case 71892:
             {
-                spell->EffectTriggerSpell[0] = 0;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectTriggerSpell = 0;
                 break;
             }
             case 70346:                         // megai2: set 8yd range for slime puddle of proffesor putricide
             case 72868:
             case 72869:
             {
-                spell->EffectRadiusIndex[0] = 14;
-                spell->EffectRadiusIndex[1] = 14;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectRadiusIndex = 14;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_1))
+                    eff->EffectRadiusIndex = 14;
                 break;
             }
             case 72706:                         // Achievement Check (Valithria Dreamwalker)
             {
-                spell->EffectRadiusIndex[0] = EFFECT_RADIUS_200_YARDS;   // 200yd
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectRadiusIndex = EFFECT_RADIUS_200_YARDS;   // 200yd
                 break;
             }
             case 72968:                         // Precious's Ribbon
@@ -1166,13 +1149,15 @@ void LoadDBCStores(const std::string& dataPath)
         
 
         //megai2: set 8 sec update to dk death rune auras
-        if (spell->SpellFamilyName ==  SPELLFAMILY_DEATHKNIGHT && spell->EffectApplyAuraName[0] == SPELL_AURA_PERIODIC_DUMMY &&
-            (spell->IsFitToFamilyMask(UI64LIT(0x4000)) || spell->SpellIconID == 22 || spell->SpellIconID == 3041))
-            spell->EffectAmplitude[0] = 8*IN_MILLISECONDS;
+        if (spell->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && (spell->IsFitToFamilyMask(UI64LIT(0x4000)) || spell->SpellIconID == 22 || spell->SpellIconID == 3041))
+            if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                if (eff->EffectApplyAuraName == SPELL_AURA_PERIODIC_DUMMY)
+                    eff->EffectAmplitude = 8 * IN_MILLISECONDS;
 
         // Lightwell, enable healing spd scale
         if (spell->IsFitToFamily(SPELLFAMILY_PRIEST, UI64LIT(0x0), 0x4000))
-            spell->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
+            if (SpellCategoriesEntry* cat = (SpellCategoriesEntry*)spell->GetSpellCategories())
+                cat->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
 
         // Blind and Sap speed
         if (spell->Id == 2094 || spell->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0x80)))
@@ -1185,7 +1170,6 @@ void LoadDBCStores(const std::string& dataPath)
         // Penance heal start trigger
         if (spell->IsFitToFamily(SPELLFAMILY_PRIEST, UI64LIT(0x1000000000000), 0x80))
             spell->AttributesEx &= ~SPELL_ATTR_EX_NEGATIVE;
-        */
     }
 
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellAuraOptionsStore,    dbcPath,"SpellAuraOptions.dbc");

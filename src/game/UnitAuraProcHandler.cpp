@@ -4055,12 +4055,6 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Glyph of Shadow Word: Pain
             else if (auraSpellInfo->Id == 55681)
                 basepoints[0] = triggerAmount * GetCreateMana() / 100;
-            // Glyph of Shadow
-            else if (auraSpellInfo->Id == 55689)
-            {
-                if (!HasAura(15473)) // Shadowform
-                    return SPELL_AURA_PROC_FAILED;
-            }
             // Improved Spirit Tap
             else if (auraSpellInfo->Id == 15337 || auraSpellInfo->Id == 15338)
             {
