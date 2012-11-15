@@ -12294,21 +12294,12 @@ void Unit::ApplyAttackTimePercentMod( WeaponAttackType att,float val, bool apply
     if (GetTypeId() == TYPEID_PLAYER)
     {
         uint32 field;
-        CombatRating cr;
-
         if (att == RANGED_ATTACK)
-        {
             field = PLAYER_FIELD_MOD_RANGED_HASTE;
-            cr = CR_HASTE_RANGED;
-        }
         else
-        {
             field = PLAYER_FIELD_MOD_HASTE;
-            cr = CR_HASTE_MELEE;
-        }
 
-        float val = m_modAttackSpeedPct[att] + ((Player*)this)->GetRatingBonusValue(cr);
-        SetFloatValue(field, val);
+        SetStatFloatValue(field, m_modAttackSpeedPct[att]);
     }
 }
 
