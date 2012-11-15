@@ -2587,14 +2587,14 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
 
             break;
         case SPELLFAMILY_PRIEST:
-            if (classOptions2 && classOptions2->SpellFamilyName == SPELLFAMILY_PRIEST )
+            if (classOptions2 && classOptions2->SpellFamilyName == SPELLFAMILY_PRIEST)
             {
-                //Devouring Plague and Shadow Vulnerability
+                // Devouring Plague and Shadow Vulnerability
                 if (classOptions1 && (classOptions1->SpellFamilyFlags & UI64LIT(0x2000000)) && (classOptions2->SpellFamilyFlags & UI64LIT(0x800000000)) ||
                     (classOptions2->SpellFamilyFlags & UI64LIT(0x2000000)) && (classOptions1->SpellFamilyFlags & UI64LIT(0x800000000)))
                     return false;
 
-                //StarShards and Shadow Word: Pain
+                // StarShards and Shadow Word: Pain
                 if (classOptions1 && (classOptions1->SpellFamilyFlags & UI64LIT(0x200000)) && (classOptions2->SpellFamilyFlags & UI64LIT(0x8000)) ||
                     (classOptions2->SpellFamilyFlags & UI64LIT(0x200000)) && (classOptions1->SpellFamilyFlags & UI64LIT(0x8000)))
                     return false;
@@ -2894,10 +2894,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
     if (IsRankSpellDueToSpell(spellInfo_1, spellId_2))
         return true;
 
-    if ((classOptions1 && classOptions1->SpellFamilyName == 0) || (classOptions2 && classOptions2->SpellFamilyName == 0))
+    if (!classOptions1 || classOptions1->SpellFamilyName == 0 || !classOptions2 || classOptions2->SpellFamilyName == 0)
         return false;
 
-    if (classOptions1 && classOptions2 && classOptions1->SpellFamilyName != classOptions2->SpellFamilyName)
+    if (classOptions1->SpellFamilyName != classOptions2->SpellFamilyName)
         return false;
 
     bool dummy_only = true;
@@ -2905,18 +2905,23 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
     {
         SpellEffectEntry const* spellEffect1 = spellInfo_1->GetSpellEffect(SpellEffectIndex(i));
         SpellEffectEntry const* spellEffect2 = spellInfo_2->GetSpellEffect(SpellEffectIndex(i));
-        if(!spellEffect1 || !spellEffect2)
+        if (!spellEffect1 && !spellEffect2)
             continue;
+
+        if (!spellEffect1 || !spellEffect2)
+            return false;
+
         if (spellEffect1->Effect != spellEffect2->Effect ||
-        spellEffect1->EffectItemType != spellEffect2->EffectItemType ||
-        spellEffect1->EffectMiscValue != spellEffect2->EffectMiscValue ||
-        spellEffect1->EffectApplyAuraName != spellEffect2->EffectApplyAuraName)
+            spellEffect1->EffectItemType != spellEffect2->EffectItemType ||
+            spellEffect1->EffectMiscValue != spellEffect2->EffectMiscValue ||
+            spellEffect1->EffectApplyAuraName != spellEffect2->EffectApplyAuraName)
             return false;
 
         // ignore dummy only spells
-        if(spellEffect1->Effect && spellEffect1->Effect != SPELL_EFFECT_DUMMY && spellEffect1->EffectApplyAuraName != SPELL_AURA_DUMMY)
+        if (spellEffect1->Effect && spellEffect1->Effect != SPELL_EFFECT_DUMMY && spellEffect1->EffectApplyAuraName != SPELL_AURA_DUMMY)
             dummy_only = false;
     }
+
     if (dummy_only)
         return false;
 
