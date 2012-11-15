@@ -907,12 +907,14 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                     {
                         int32 mod = 10;
                         if (SpellAuraHolder* talent = m_caster->GetSpellAuraHolder(77486, m_caster->GetObjectGuid()))
-                            if (Aura* aur = talent->GetAuraByEffectIndex(EFFECT_INDEX_1))
+                            if (Aura* aur = talent->GetAuraByEffectIndex(EFFECT_INDEX_0))
                                 mod += aur->GetModifier()->m_amount;
-                        damage = int32(damage * (100.0f + mod * orb->GetStackAmount()) / 100.0f);
-                        m_caster->RemoveSpellAuraHolder(orb);
                         // Empowered Shadow
                         m_caster->CastCustomSpell(m_caster, 95799, &mod, &mod, NULL, true);
+                        mod *= orb->GetStackAmount();
+                        damage = int32(damage * (100.0f + mod) / 100.0f);
+
+                        m_caster->RemoveSpellAuraHolder(orb);
                     }
                 }
                 break;

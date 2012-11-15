@@ -5492,7 +5492,7 @@ void Unit::RemoveAura(Aura *Aur, AuraRemoveMode mode)
     // remove aura from list before to prevent deleting it before
     ///m_Auras.erase(i);
 
-    DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Aura %u now is remove mode %d",Aur->GetModifier()->m_auraname, mode);
+    DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Aura %u of spell %u now is remove mode %d",Aur->GetModifier()->m_auraname, Aur->GetSpellProto()->Id, mode);
 
     // aura _MUST_ be remove from holder before unapply.
     // un-apply code expected that aura not find by diff searches
