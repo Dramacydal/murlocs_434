@@ -11669,6 +11669,17 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                         spellId1 = 64134;                   // Body and Soul (periodic dispel effect)
                     break;
                 }
+                case 15473:                                 // Shadowform
+                {
+                    if (!apply)
+                    {
+                        spellId1 = 107903;
+                        spellId2 = 107904;
+                    }
+                    else
+                        // Glyph of Shadow alters Shadowform visual
+                        spellId1 = GetTarget()->HasAura(107906) ? 107904 : 107903;
+                }
                 // Dispersion mana reg and immunity
                 case 47585:
                     spellId1 = 60069;                       // Dispersion

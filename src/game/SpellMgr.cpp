@@ -2618,6 +2618,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if (spellInfo_1->Id == 56161 && spellInfo_2->IsFitToFamilyMask(UI64LIT(0x40)) ||
                     spellInfo_2->Id == 56161 && spellInfo_1->IsFitToFamilyMask(UI64LIT(0x40)))
                     return false;
+
+                // Shadowform and Shadowform Visuals
+                if (spellInfo_1->SpellIconID == 1552 && spellInfo_2->SpellIconID == 1552 ||
+                    spellInfo_2->SpellIconID == 1552 && spellInfo_1->SpellIconID == 1552)
+                    return false;
             }
             break;
         case SPELLFAMILY_DRUID:
