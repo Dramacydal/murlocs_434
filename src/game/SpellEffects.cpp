@@ -840,11 +840,21 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                 // Shadow Word: Death - deals damage equal to damage done to caster
                 if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000200000000))
                 {
-                    // Glyph of Shadow Word: Death
-                    if (Aura* pAura = m_caster->GetAura(55682, EFFECT_INDEX_1))
-                        if (unitTarget->HasAuraState(AURA_STATE_HEALTHLESS_35_PERCENT))
-                            damage += int32(damage / 100 * pAura->GetModifier()->m_amount);
-                    
+                    if (unitTarget->GetHealthPercent() <= 25.0f)
+                    {
+                        // Search Mind Melt
+                        Unit::AuraList const& mindMelt = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
+                        for (Unit::AuraList::const_iterator i = mindMelt.begin(); i != mindMelt.end(); ++i)
+                        {
+                            if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST &&
+                                ((*i)->GetSpellProto()->SpellIconID == 3139))
+                            {
+                                damage += int32(damage * (*i)->GetModifier()->m_amount / 100.0f);
+                                break;
+                            }
+                        }
+                    }
+
                     int32 back_damage = m_caster->SpellDamageBonusDone(unitTarget,m_spellInfo,uint32(damage),SPELL_DIRECT_DAMAGE);
                     m_caster->CastCustomSpell(m_caster, 32409, &back_damage, 0, 0, true);
                 }
