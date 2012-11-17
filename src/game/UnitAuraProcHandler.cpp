@@ -4062,6 +4062,14 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 if (procSpell->SpellIconID == 548 && roll_chance_i(50))
                     return SPELL_AURA_PROC_FAILED;
             }
+            // Masochism
+            else if (auraSpellInfo->SpellIconID == 2211)
+            {
+                // If damage inflicted is less that pct health and not from SWD
+                if (damage * auraSpellInfo->CalculateSimpleValue(EFFECT_INDEX_1) < target->GetMaxHealth() &&
+                    (!procSpell || procSpell->Id != 32409))
+                    return SPELL_AURA_PROC_FAILED;
+            }
             break;
         }
         case SPELLFAMILY_DRUID:

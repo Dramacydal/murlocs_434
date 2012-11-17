@@ -11159,7 +11159,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
         }
         case SPELLFAMILY_PRIEST:
         {
-            switch(m_spellInfo->Id)
+            switch (m_spellInfo->Id)
             {
                 case 47948:                                 // Pain and Suffering
                 {
@@ -11189,7 +11189,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
         }
         case SPELLFAMILY_HUNTER:
         {
-            switch(m_spellInfo->Id)
+            switch (m_spellInfo->Id)
             {
                 case 53209:                                 // Chimera Shot
                 {

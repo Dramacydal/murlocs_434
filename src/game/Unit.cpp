@@ -5079,24 +5079,27 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
     // Vampiric touch (first dummy aura)
     else if (classOptions && classOptions->SpellFamilyName == SPELLFAMILY_PRIEST && classOptions->SpellFamilyFlags & UI64LIT(0x0000040000000000))
     {
-        if (Aura *dot = GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_PRIEST, UI64LIT(0x0000040000000000), 0x00000000, casterGuid))
+        if (Aura* dot = GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_PRIEST, UI64LIT(0x0000040000000000), 0x00000000, casterGuid))
         {
-            if (dot->GetCaster())
+            if (Unit* caster = dot->GetCaster())
             {
-                //megai2: like in unstable afl but more complicated
-                //megai2: (x + 0.4 * spd) * y + z = (x * 8 + 1.2 * spd)
-                //megai2: (x + 0.4 * spd) * 3 + x * 5 = (x * 8 + 1.2 * spd)
-                //mgeai2: m_amount * 3 + bp0 * 5 = bp0 * 8 + 1.2 * spd
-                //megai2: for test (170 + 0.4 * 3000) * 3 + 170 * 5 = 4.9k
-                int32 bp0 = dot->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1);
-                bp0 = dot->GetModifier()->m_amount * 3 + bp0 * 5;
-
-                // Remove spell auras from stack
-                RemoveAuraHolderFromStack(spellId, stackAmount, casterGuid, AURA_REMOVE_BY_DISPEL);
-
-                CastCustomSpell(this, 64085, &bp0, NULL, NULL, true, NULL, NULL, casterGuid);
-                return;
+                // Search for Sin and Punishment
+                Unit::AuraList const& auras = caster->GetAurasByType(SPELL_AURA_DUMMY);
+                for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
+                {
+                    if ((*i)->GetSpellProto()->SpellIconID == 1869 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST)
+                    {
+                        // Cast Sin and Punishment
+                        if (roll_chance_i((*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0)))
+                            dispeller->CastSpell(dispeller, 87204, true, NULL, NULL, caster->GetObjectGuid());
+                        break;
+                    }
+                }
             }
+
+            // Remove spell auras from stack
+            RemoveAuraHolderFromStack(spellId, stackAmount, casterGuid, AURA_REMOVE_BY_DISPEL);
+            return;
         }
     }
 
@@ -7573,7 +7576,6 @@ uint32 Unit::SpellDamageBonusTaken(Unit *pCaster, SpellEntry const *spellProto, 
                 break;
             case 47580:                                     // Pain and Suffering (Rank 1)      TODO: can be pct modifier aura
             case 47581:                                     // Pain and Suffering (Rank 2)
-            case 47582:                                     // Pain and Suffering (Rank 3)
                 // Shadow Word: Death
                 if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000000200000000)))
                     TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
