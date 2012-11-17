@@ -905,7 +905,7 @@ void Spell::prepareDataForTriggerSystem()
                 m_canTrigger = true;
             break;
         case SPELLFAMILY_PRIEST:
-            // For Penance,Mind Sear,Mind Flay, Improved Devouring Plague heal/damage triggers need do it
+            // For Penance, Mind Sear,Mind Flay, Improved Devouring Plague heal/damage triggers need do it
             if (m_spellInfo->IsFitToFamilyMask(UI64LIT(0x0001800000800000), 0x00000048))
                 m_canTrigger = true;
             // Empowered Renew
