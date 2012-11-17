@@ -1759,12 +1759,22 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 return SPELL_AURA_PROC_OK;                                // no hidden cooldown
             }
 
-            switch(dummySpell->SpellIconID)
+            switch (dummySpell->SpellIconID)
             {
+                // Sin and Punishment
+                case 1869:
+                {
+                    if (GetTypeId() != TYPEID_PLAYER)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    // modify Shadowfiend cooldown
+                    ((Player*)this)->SendModifyCooldown(34433, -triggerAmount * IN_MILLISECONDS);
+                    return;
+                }
                 // Divine Aegis
                 case 2820:
                 {
-                    if(!pVictim || !pVictim->isAlive())
+                    if (!pVictim || !pVictim->isAlive())
                         return SPELL_AURA_PROC_FAILED;
 
                     // find Divine Aegis on the target and get absorb amount
@@ -1783,7 +1793,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // Phantasm
                 case 2901:
                 {
-                    if(!roll_chance_i(triggerAmount))
+                    if (!roll_chance_i(triggerAmount))
                         return SPELL_AURA_PROC_FAILED;
 
                     RemoveSpellsCausingAura(SPELL_AURA_MOD_ROOT);
