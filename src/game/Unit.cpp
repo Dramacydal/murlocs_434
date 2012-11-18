@@ -7789,6 +7789,7 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                         break;
                     }
                     case SPELLFAMILY_PRIEST:
+                    {
                         // Flash Heal
                         if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000000000000800)))
                         {
@@ -7822,6 +7823,7 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                             }
                         }
                         break;
+                    }
                     case SPELLFAMILY_DRUID:
                         // Improved Insect Swarm (Starfire part)
                         if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000000000000004)))
