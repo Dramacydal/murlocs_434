@@ -7554,14 +7554,23 @@ uint32 Unit::SpellDamageBonusTaken(Unit *pCaster, SpellEntry const *spellProto, 
 
     // .. taken pct: dummy auras
     AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
-    for(AuraList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
+    for (AuraList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
     {
         switch((*i)->GetId())
         {
+            case 14747:                                     // Inner Sanctum
+            case 14770:
+            case 14771:
+                // only with Inner Fire active
+                if (!HasAura(588))
+                    continue;
+
+                TakenTotalMod *= (100.0f - (*i)->GetModifier()->m_amount) / 100.0f;
+                break;
             case 45182:                                     // Cheating Death
-                if((*i)->GetModifier()->m_miscvalue & SPELL_SCHOOL_MASK_NORMAL)
+                if ((*i)->GetModifier()->m_miscvalue & SPELL_SCHOOL_MASK_NORMAL)
                 {
-                    if(GetTypeId() != TYPEID_PLAYER)
+                    if (GetTypeId() != TYPEID_PLAYER)
                         continue;
 
                     TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
@@ -7578,18 +7587,11 @@ uint32 Unit::SpellDamageBonusTaken(Unit *pCaster, SpellEntry const *spellProto, 
                     TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
                 break;
         }
-
-        //Renewed hope
-        if (Aura *dummy = GetDummyAura(63944))
-        {
-            float mod = float(dummy->GetModifier()->m_amount);
-            TakenTotalMod *= (mod+100.0f)/100.0f;
-        }
-
-        //megai2: Vigilance -3% damage taken
-        if (HasAura(50720))
-            TakenTotalMod *= 0.97f;
     }
+
+    //megai2: Vigilance -3% damage taken
+    if (HasAura(50720))
+        TakenTotalMod *= 0.97f;
 
     // From caster spells
     AuraList const& mOwnerTaken = GetAurasByType(SPELL_AURA_MOD_DAMAGE_FROM_CASTER);
