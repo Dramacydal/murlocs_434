@@ -4565,6 +4565,7 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
                 // don't reapply aura, just refresh it's duration
                 if (aurSpellInfo->Id == 81782 || aurSpellInfo->Id == 90785)
                 {
+                    DEBUG_LOG(">>>>>>>>>>>>1");
                     foundHolder->RefreshHolder();
                     delete holder;
                     return false;
