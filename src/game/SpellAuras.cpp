@@ -11667,6 +11667,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 case 87117:
                 case 87118:
                     spellId1 = 87154;                       // Archangel enabler
+                    break;
                 default:
                     return;
             }
