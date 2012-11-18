@@ -2911,6 +2911,9 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
 
                 FillRaidOrPartyHealthPriorityTargets(targetUnitMap, m_caster, target, radius, 5, true, false, true);
             }
+            // Power Word: Barrier
+            else if (m_spellInfo->Id == 62618)
+                targetUnitMap.push_back(m_caster);
             // Item - Icecrown 25 Heroic/Normal Healer Trinket 2
             else if (m_spellInfo->Id == 71641 || m_spellInfo->Id == 71610)
                 FillRaidOrPartyHealthPriorityTargets(targetUnitMap, m_caster, m_caster, radius, 1, true, false, false);
