@@ -2620,9 +2620,12 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     return false;
 
                 // Shadowform and Shadowform Visuals
-                if (spellInfo_1->SpellIconID == 1552 && spellInfo_2->SpellIconID == 1552 ||
-                    spellInfo_2->SpellIconID == 1552 && spellInfo_1->SpellIconID == 1552)
+                if (spellInfo_1->SpellIconID == 1552 && spellInfo_2->SpellIconID == 1552)
                     return false;
+
+                // Evangelism and Dark Evangelism
+                if (spellInfo_1->SpellIconID == 2138 && spellInfo_2->SpellIconID == 2138)
+                    return true;
             }
             break;
         case SPELLFAMILY_DRUID:

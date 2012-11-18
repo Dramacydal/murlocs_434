@@ -8230,22 +8230,8 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                         float baseAmt = (float)spellProto->CalculateSimpleValue(EFFECT_INDEX_0);
                         float spd = caster->SpellBaseHealingBonusDone(GetSpellSchoolMask(spellProto));
                         float spdBonus = 0.8068f;
-                        float BT = 0.0f;
                         float IMP = 0.0f;
                         float TD = 0.0f;
-                        float FP = 0.0f;
-
-                        // Borrowed Time
-                        Unit::AuraList const& borrowedTime = caster->GetAurasByType(SPELL_AURA_DUMMY);
-                        for (Unit::AuraList::const_iterator itr = borrowedTime.begin(); itr != borrowedTime.end(); ++itr)
-                        {
-                            SpellEntry const* i_spell = (*itr)->GetSpellProto();
-                            if(i_spell->GetSpellFamilyName()==SPELLFAMILY_PRIEST && i_spell->SpellIconID == 2899 && i_spell->GetEffectMiscValue((*itr)->GetEffIndex()) == 24)
-                            {
-                                BT = (*itr)->GetModifier()->m_amount / 100.0f;
-                                break;
-                            }
-                        }
 
                         uint8 counter = 0;
                         Unit::AuraList const& ipwstd = caster->GetAurasByType(SPELL_AURA_ADD_PCT_MODIFIER);
@@ -8267,20 +8253,9 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                             if (counter == 2)
                                 break;
                         }
-                        // Focused Power
-                        Unit::AuraList const& focusedPower = caster->GetAurasByType(SPELL_AURA_MOD_HEALING_DONE_PERCENT);
-                        for (Unit::AuraList::const_iterator itr = focusedPower.begin(); itr != focusedPower.end(); ++itr)
-                        {
-                            SpellEntry const * spellProto = (*itr)->GetSpellProto();
-                            if (spellProto->GetSpellFamilyName() == SPELLFAMILY_PRIEST && spellProto->SpellIconID == 2210)
-                            {
-                                FP = (*itr)->GetModifier()->m_amount / 100.0f;
-                                break;
-                            }
-                        }
 
                         // +80.68% from +spell bonus
-                        customModifier = (baseAmt + (spdBonus + BT) * spd) * (1.0f + IMP) * (1.0f + TD) * (1.0f + FP);
+                        customModifier = (baseAmt + spdBonus * spd) * (1.0f + IMP) * (1.0f + TD);
                     }
                     break;
                 case SPELLFAMILY_MAGE:
@@ -11685,6 +11660,13 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     spellId1 = 60069;                       // Dispersion
                     spellId2 = 63230;                       // Dispersion
                     break;
+                // Evangelism
+                case 81660:
+                case 81661:
+                // Dark Evangelism
+                case 87117:
+                case 87118:
+                    spellId1 = 87154;                       // Archangel enabler
                 default:
                     return;
             }
