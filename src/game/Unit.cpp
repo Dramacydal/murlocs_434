@@ -5079,23 +5079,17 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
     // Vampiric touch (first dummy aura)
     else if (classOptions && classOptions->SpellFamilyName == SPELLFAMILY_PRIEST && classOptions->SpellFamilyFlags & UI64LIT(0x0000040000000000))
     {
-        sLog.outDebug(">>>>>>>1");
         if (Unit* caster = GetMap()->GetUnit(casterGuid))
         {
-            sLog.outDebug(">>>>>>>2");
             // Search for Sin and Punishment
             Unit::AuraList const& auras = caster->GetAurasByType(SPELL_AURA_DUMMY);
             for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
             {
                 if ((*i)->GetSpellProto()->SpellIconID == 1869 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST)
                 {
-                    sLog.outDebug(">>>>>>>3");
                     // Cast Sin and Punishment
                     if (roll_chance_i((*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0)))
-                    {
-                        sLog.outDebug(">>>>>>>4");
                         dispeller->CastSpell(dispeller, 87204, true, NULL, NULL, caster->GetObjectGuid());
-                    }
                     break;
                 }
             }
