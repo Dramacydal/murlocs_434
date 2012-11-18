@@ -7821,7 +7821,6 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             break;
         case FORM_SHADOW:
             spellId1 = 49868;
-            spellId2 = 71167;                               //megai2: DOTs boost
             break;
         case FORM_GHOSTWOLF:
             spellId1 = 67116;
@@ -11679,6 +11678,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     else
                         // Glyph of Shadow alters Shadowform visual
                         spellId1 = GetTarget()->HasAura(107906) ? 107904 : 107903;
+                    break;
                 }
                 // Dispersion mana reg and immunity
                 case 47585:

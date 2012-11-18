@@ -13449,8 +13449,18 @@ bool Unit::CheckCanCastDispellOn(Unit* target, SpellEntry const * spellInfo)
     if (GetTypeId() != TYPEID_PLAYER)
         return true;
 
-    uint32 dispelMask = 0;
     bool offensive = !target->IsFriendlyTo(this);
+    // Priest Dispel Magic has dummy effect
+    if (spellInfo->Id == 527)
+    {
+        // check Absolution talent
+        if (!offensive && target != this && !HasAura(33167))
+            return false;
+
+        spellInfo = sSpellStore.LookupEntry(offensive ? 97691 : 97690);
+    }
+
+    uint32 dispelMask = 0;
     for (uint8 i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
         SpellEffectEntry const * spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(i));
