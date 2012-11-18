@@ -4076,7 +4076,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             else if (auraSpellInfo->SpellIconID == 2211)
             {
                 // If damage inflicted is less that pct health and not from SWD
-                if (damage * auraSpellInfo->CalculateSimpleValue(EFFECT_INDEX_1) < target->GetMaxHealth() &&
+                if (damage * auraSpellInfo->CalculateSimpleValue(EFFECT_INDEX_1) < pVictim->GetMaxHealth() &&
                     (!procSpell || procSpell->Id != 32409))
                     return SPELL_AURA_PROC_FAILED;
             }
