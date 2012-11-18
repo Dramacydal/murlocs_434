@@ -1145,8 +1145,23 @@ void LoadDBCStores(const std::string& dataPath)
                 spell->AttributesEx3 |= SPELL_ATTR_EX3_DEATH_PERSISTENT;
                 break;
             }
+            case 81782:                         // Power Word: Barrier
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectApplyAuraName = 128;
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_1))
+                    eff->EffectApplyAuraName = 128;
+                spell->DurationIndex = 21;
+                break;
+            }
+            case 90785:                         // Glyph of Power Word: Barrier
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectApplyAuraName = 128;
+                spell->DurationIndex = 21;
+                break;
+            }
         }
-        
 
         //megai2: set 8 sec update to dk death rune auras
         if (spell->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && (spell->IsFitToFamilyMask(UI64LIT(0x4000)) || spell->SpellIconID == 22 || spell->SpellIconID == 3041))
