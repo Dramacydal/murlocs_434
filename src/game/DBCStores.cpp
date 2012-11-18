@@ -1148,16 +1148,28 @@ void LoadDBCStores(const std::string& dataPath)
             case 81782:                         // Power Word: Barrier
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                {
                     eff->EffectApplyAuraName = 128;
+                    eff->EffectImplicitTargetA = 1;
+                    eff->EffectImplicitTargetA = 0;
+                }
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_1))
+                {
                     eff->EffectApplyAuraName = 128;
+                    eff->EffectImplicitTargetA = 1;
+                    eff->EffectImplicitTargetA = 0;
+                }
                 spell->DurationIndex = 21;
                 break;
             }
             case 90785:                         // Glyph of Power Word: Barrier
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                {
                     eff->EffectApplyAuraName = 128;
+                    eff->EffectImplicitTargetA = 1;
+                    eff->EffectImplicitTargetA = 0;
+                }
                 spell->DurationIndex = 21;
                 break;
             }

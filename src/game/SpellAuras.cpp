@@ -1987,35 +1987,19 @@ void Aura::TriggerSpell()
 //                }
 //                break;
 //            }
-            case SPELLFAMILY_PRIEST:
-            {
-                switch (auraId)
-                {
-                    // Blue Beam
-                    case 32930: break;
-                    // Fury of the Dreghood Elders
-                    case 35460: break;
-                    // Power Word: Barrier
-                    case 81781:
-                    {
-                        // cast only once
-                        m_isPeriodic = false;
-
-                        if (GetEffIndex() ==  EFFECT_INDEX_1)
-                        {
-                            if (Unit* caster = GetCaster())
-                                if (Unit* owner = caster->GetOwner())
-                                    // Glyph of Power Word: Barrier
-                                    if (!owner->HasAura(55689))
-                                        return;
-                        }
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                break;
-            }
+//            case SPELLFAMILY_PRIEST:
+//            {
+//                switch (auraId)
+//                {
+//                    // Blue Beam
+//                    case 32930: break;
+//                    // Fury of the Dreghood Elders
+//                    case 35460: break;
+//                    default:
+//                        break;
+//                }
+//                break;
+//            }
             case SPELLFAMILY_HUNTER:
             {
                 switch (auraId)
@@ -2310,6 +2294,22 @@ void Aura::TriggerSpell()
             {
                 if (GetAuraTicks() != 1 && GetAuraTicks()%7)
                     return;
+                break;
+            }
+            // Power Word: Barrier
+            case 81781:
+            {
+                // cast only once
+                m_isPeriodic = false;
+
+                if (GetEffIndex() ==  EFFECT_INDEX_1)
+                {
+                    if (Unit* caster = GetCaster())
+                        if (Unit* owner = caster->GetOwner())
+                            // Glyph of Power Word: Barrier
+                            if (!owner->HasAura(55689))
+                                return;
+                }
                 break;
             }
             default:
