@@ -836,7 +836,7 @@ namespace MaNGOS
                         // Cant cast spells which require friendly targets on duelling players
                         Player* caster = i_originalCaster->GetTypeId() == TYPEID_PLAYER ? (Player*)i_originalCaster : NULL;
                         Player* target = itr->getSource()->GetTypeId() == TYPEID_PLAYER ? (Player*)itr->getSource() : NULL;
-                        if (caster && target && target->duel)
+                        if (caster && target && target->duel && caster != target)
                             continue;
 
                         break;
@@ -849,7 +849,7 @@ namespace MaNGOS
                         // Cant cast spells which require friendly targets on duelling players
                         Player* caster = i_originalCaster->GetTypeId() == TYPEID_PLAYER ? (Player*)i_originalCaster : NULL;
                         Player* target = itr->getSource()->GetTypeId() == TYPEID_PLAYER ? (Player*)itr->getSource() : NULL;
-                        if (caster && target && target->duel)
+                        if (caster && target && target->duel && caster != target)
                             continue;
 
                         break;
