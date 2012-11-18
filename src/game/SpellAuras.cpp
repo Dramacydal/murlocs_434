@@ -8335,62 +8335,20 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
             (m_removeMode == AURA_REMOVE_BY_SHIELD_BREAK || m_removeMode == AURA_REMOVE_BY_DISPEL))
         {
             Unit::AuraList const& vDummyAuras = caster->GetAurasByType(SPELL_AURA_DUMMY);
-            for(Unit::AuraList::const_iterator itr = vDummyAuras.begin(); itr != vDummyAuras.end(); ++itr)
+            for (Unit::AuraList::const_iterator itr = vDummyAuras.begin(); itr != vDummyAuras.end(); ++itr)
             {
                 SpellEntry const* vSpell = (*itr)->GetSpellProto();
 
-                // Rapture (main spell)
-                if(vSpell->GetSpellFamilyName() == SPELLFAMILY_PRIEST && vSpell->SpellIconID == 2894 && vSpell->GetSpellEffectIdByIndex(EFFECT_INDEX_1))
+                // Rapture
+                if (vSpell->GetSpellFamilyName() == SPELLFAMILY_PRIEST && vSpell->SpellIconID == 2894 && (*itr)->GetEffIndex() == EFFECT_INDEX_0)
                 {
-                    switch((*itr)->GetEffIndex())
-                    {
-                        case EFFECT_INDEX_0:
-                        {
-                            // energize caster
-                            int32 manapct1000 = 5 * ((*itr)->GetModifier()->m_amount + sSpellMgr.GetSpellRank(vSpell->Id));
-                            int32 basepoints0 = caster->GetMaxPower(POWER_MANA) * manapct1000 / 1000;
-                            caster->CastCustomSpell(caster, 47755, &basepoints0, NULL, NULL, true);
-                            break;
-                        }
-                        case EFFECT_INDEX_1:
-                        {
-                            // energize target
-                            if (!roll_chance_i((*itr)->GetModifier()->m_amount) || caster->HasAura(63853))
-                                break;
-
-                            switch(target->getPowerType())
-                            {
-                                case POWER_RUNIC_POWER:
-                                    target->CastSpell(target, 63652, true, NULL, NULL, GetCasterGuid());
-                                    break;
-                                case POWER_RAGE:
-                                    target->CastSpell(target, 63653, true, NULL, NULL, GetCasterGuid());
-                                    break;
-                                case POWER_MANA:
-                                    {
-                                        int32 basepoints0 = target->GetMaxPower(POWER_MANA) * 2 / 100;
-                                        target->CastCustomSpell(target, 63654, &basepoints0, NULL, NULL, true);
-                                        break;
-                                    }
-                                case POWER_ENERGY:
-                                    target->CastSpell(target, 63655, true, NULL, NULL, GetCasterGuid());
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            //cooldown aura
-                            caster->CastSpell(caster, 63853, true);
-                            break;
-                        }
-                        default:
-                            ERROR_LOG("Changes in R-dummy spell???: effect 3");
-                            break;
-                    }
+                    int32 bp = caster->GetMaxPower(POWER_MANA) * (*itr)->GetModifier()->m_amount / 100;
+                    caster->CastCustomSpell(caster, 47755, &bp, NULL, NULL, true);
+                    break;
                 }
             }
         }
-        //Ranger: Glyph of Guardian Spirit (http://getmangos.com/community/post/119077/)
+        // Ranger: Glyph of Guardian Spirit (http://getmangos.com/community/post/119077/)
         if (spellProto->Id == 47788)
         {
             if (m_removeMode != AURA_REMOVE_BY_EXPIRE)
