@@ -1202,6 +1202,7 @@ void Aura::HandleAddModifier(bool apply, bool Real)
             case 57531:                                     // Arcane Potency (Rank 2)
             case 63165:                                     // Decimation (Rank 1)
             case 63167:                                     // Decimation (Rank 2)
+            case 89485:                                     // Inner Focus
                 GetHolder()->SetAuraCharges(1);
                 break;
         }
