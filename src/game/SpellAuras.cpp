@@ -1236,9 +1236,7 @@ void Aura::HandleAddModifier(bool apply, bool Real)
                 if (GetEffIndex() == EFFECT_INDEX_0)
                 {
                     Unit* target = GetTarget();
-                    if (apply)
-                        target->CastSpell(target, 87154, true);
-                    else
+                    if (!apply)
                         target->RemoveAurasByCasterSpell(87154, GetCasterGuid());
                 }
                 break;
