@@ -1769,7 +1769,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
 
                     // modify Shadowfiend cooldown
                     ((Player*)this)->SendModifyCooldown(34433, -triggerAmount * IN_MILLISECONDS);
-                    return;
+                    return SPELL_AURA_PROC_OK;
                 }
                 // Divine Aegis
                 case 2820:
