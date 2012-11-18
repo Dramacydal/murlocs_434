@@ -2299,9 +2299,6 @@ void Aura::TriggerSpell()
             // Power Word: Barrier
             case 81781:
             {
-                // cast only once
-                m_isPeriodic = false;
-
                 if (GetEffIndex() ==  EFFECT_INDEX_1)
                 {
                     if (Unit* caster = GetCaster())

@@ -4561,6 +4561,15 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
                 if (holder->IsWeaponBuffCoexistableWith(foundHolder))
                     continue;
 
+                // Power Word: Barrier and Glyph of Power Word: Barrier:
+                // don't reapply aura, just refresh it's duration
+                if (aurSpellInfo->Id == 81782 || aurSpellInfo->Id == 90785)
+                {
+                    foundHolder->RefreshHolder();
+                    delete holder;
+                    return false;
+                }
+
                 // can be only single
                 RemoveSpellAuraHolder(foundHolder, AURA_REMOVE_BY_STACK);
                 break;
