@@ -11237,6 +11237,29 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     unitTarget->RemoveSpellAuraHolder(holder);
                     return;
                 }
+                case 89490:                                 // Strength of Soul
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    // Weakened Soul
+                    SpellAuraHolder* ws = unitTarget->GetSpellAuraHolder(6788, m_caster->GetObjectGuid());
+                    if (!ws)
+                        return;
+
+                    int32 durMod = damage * IN_MILLISECONDS;
+                    int32 oldDur = ws->GetAuraDuration();
+                    if (oldDur <= durMod)
+                    {
+                        unitTarget->RemoveSpellAuraHolder(ws);
+                        return;
+                    }
+
+                    int32 newDur = oldDur - durMod;
+                    ws->SetAuraDuration(newDur);
+                    ws->SendAuraUpdate(false);
+                    return;
+                }
                 default:
                     break;
             }
