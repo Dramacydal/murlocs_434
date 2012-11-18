@@ -5079,28 +5079,31 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
     // Vampiric touch (first dummy aura)
     else if (classOptions && classOptions->SpellFamilyName == SPELLFAMILY_PRIEST && classOptions->SpellFamilyFlags & UI64LIT(0x0000040000000000))
     {
-        if (Aura* dot = GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_PRIEST, UI64LIT(0x0000040000000000), 0x00000000, casterGuid))
+        sLog.outDebug(">>>>>>>1");
+        if (Unit* caster = GetMap()->GetUnit(casterGuid))
         {
-            if (Unit* caster = dot->GetCaster())
+            sLog.outDebug(">>>>>>>2");
+            // Search for Sin and Punishment
+            Unit::AuraList const& auras = caster->GetAurasByType(SPELL_AURA_DUMMY);
+            for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
             {
-                // Search for Sin and Punishment
-                Unit::AuraList const& auras = caster->GetAurasByType(SPELL_AURA_DUMMY);
-                for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
+                if ((*i)->GetSpellProto()->SpellIconID == 1869 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST)
                 {
-                    if ((*i)->GetSpellProto()->SpellIconID == 1869 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST)
+                    sLog.outDebug(">>>>>>>3");
+                    // Cast Sin and Punishment
+                    if (roll_chance_i((*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0)))
                     {
-                        // Cast Sin and Punishment
-                        if (roll_chance_i((*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0)))
-                            dispeller->CastSpell(dispeller, 87204, true, NULL, NULL, caster->GetObjectGuid());
-                        break;
+                        sLog.outDebug(">>>>>>>4");
+                        dispeller->CastSpell(dispeller, 87204, true, NULL, NULL, caster->GetObjectGuid());
                     }
+                    break;
                 }
             }
-
-            // Remove spell auras from stack
-            RemoveAuraHolderFromStack(spellId, stackAmount, casterGuid, AURA_REMOVE_BY_DISPEL);
-            return;
         }
+
+        // Remove spell auras from stack
+        RemoveAuraHolderFromStack(spellId, stackAmount, casterGuid, AURA_REMOVE_BY_DISPEL);
+        return;
     }
 
     if (dispelCharges)
