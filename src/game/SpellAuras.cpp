@@ -1224,6 +1224,29 @@ void Aura::HandleAddModifier(bool apply, bool Real)
         }*/
     }
 
+    switch (GetId())
+    {
+        case SPELLFAMILY_PRIEST:
+        {
+            // Evangelism
+            case 81661:
+            // Dark Evangelism
+            case 87118:
+            {
+                if (GetEffIndex() == EFFECT_INDEX_0)
+                {
+                    Unit* target = GetTarget();
+                    if (apply)
+                        target->CastSpell(target, 87154, true);
+                    else
+                        target->RemoveAurasByCasterSpell(87154, GetCasterGuid());
+                }
+                break;
+            }
+        }
+        default:
+            break;
+    }
     ((Player*)GetTarget())->AddSpellMod(this, apply);
 
     ReapplyAffectedPassiveAuras();
@@ -11659,14 +11682,6 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 case 47585:
                     spellId1 = 60069;                       // Dispersion
                     spellId2 = 63230;                       // Dispersion
-                    break;
-                // Evangelism
-                case 81660:
-                case 81661:
-                // Dark Evangelism
-                case 87117:
-                case 87118:
-                    spellId1 = 87154;                       // Archangel enabler
                     break;
                 default:
                     return;

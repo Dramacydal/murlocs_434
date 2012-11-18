@@ -1776,6 +1776,13 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 {
                     // Mind Flay
                     bool dark = procSpell && procSpell->Id == 15407;
+
+                    // Don't allow proc from Holy Fire periodic and Mind Flay apply
+                    if (dark && (procFlag & PROC_FLAG_ON_DO_PERIODIC) == 0)
+                        return SPELL_AURA_PROC_FAILED;
+                    else if (!dark && (procFlag & PROC_FLAG_ON_DO_PERIODIC) != 0)
+                        return SPELL_AURA_PROC_FAILED;
+
                     // Rank 1
                     if (dummySpell->Id == 81659)
                         triggered_spell_id = dark ? 87117 : 81660;
