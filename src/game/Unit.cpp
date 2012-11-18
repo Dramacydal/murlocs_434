@@ -7734,7 +7734,7 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                 crit_chance = 0.0f;
             // For other schools
             else if (GetTypeId() == TYPEID_PLAYER)
-                crit_chance = GetFloatValue( PLAYER_SPELL_CRIT_PERCENTAGE1 + GetFirstSchoolInMask(schoolMask));
+                crit_chance = GetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1 + GetFirstSchoolInMask(schoolMask));
             else
             {
                 crit_chance = float(m_baseSpellCritChance);
@@ -7765,11 +7765,6 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                         case  911: if (pVictim->isFrozen() || IsIgnoreUnitState(spellProto, IGNORE_UNIT_TARGET_NON_FROZEN)) crit_chance+= 50.0f; break; //Shatter Rank 3
                         case 7917:                          // Glyph of Shadowburn
                             if (pVictim->HasAuraState(AURA_STATE_HEALTHLESS_35_PERCENT))
-                                crit_chance+=(*i)->GetModifier()->m_amount;
-                            break;
-                        case 7997:                          // Renewed Hope
-                        case 7998:
-                            if (pVictim->HasAura(6788))
                                 crit_chance+=(*i)->GetModifier()->m_amount;
                             break;
                         default:
@@ -7809,6 +7804,21 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                                     crit_chance+=(*i)->GetModifier()->m_amount;
                                     break;
                                 }
+                            }
+                        }
+
+                        // Search Renewed Hope
+                        AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                        for (AuraList::const_iterator i = mDummyAuras.begin(); i!= mDummyAuras.end(); ++i)
+                        {
+                            // Renewed Hope
+                            if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST &&
+                                (*i)->GetSpellProto()->SpellIconID == 329 &&
+                                (*i)->isAffectedOnSpell(spellProto))
+                            {
+                                if (pVictim->HasAura(6788) || pVictim->HasAura(47930) || pVictim->HasAura(77613))
+                                    crit_chance += (*i)->GetModifier()->m_amount;
+                                break;
                             }
                         }
                         break;
@@ -8022,12 +8032,6 @@ uint32 Unit::SpellHealingBonusDone(Unit *pVictim, SpellEntry const *spellProto, 
             case 3736: // Hateful Totem of the Third Wind / Increased Lesser Healing Wave / LK Arena (4/5/6) Totem of the Third Wind / Savage Totem of the Third Wind
                 DoneTotal+=(*i)->GetModifier()->m_amount;
                 break;
-            //megai2: wtf? old talent?
-            /*case 7997: // Renewed Hope
-            case 7998:
-                if (pVictim->HasAura(6788))
-                    DoneTotalMod *=((*i)->GetModifier()->m_amount + 100.0f)/100.0f;
-                break;*/
             case   21: // Test of Faith
             case 6935:
             case 6918:
@@ -8728,12 +8732,6 @@ uint32 Unit::MeleeDamageBonusTaken(Unit *pCaster, uint32 pdamage,WeaponAttackTyp
     {
         switch((*i)->GetId())
         {
-            case 329:                                       // Renewed hope
-            {
-                float mod = float((*i)->GetModifier()->m_amount);
-                TakenPercent *= (mod+100.0f)/100.0f;
-                break;
-            }
             case 45182:                                     // Cheating Death
                 if((*i)->GetModifier()->m_miscvalue & SPELL_SCHOOL_MASK_NORMAL)
                 {
@@ -8743,7 +8741,6 @@ uint32 Unit::MeleeDamageBonusTaken(Unit *pCaster, uint32 pdamage,WeaponAttackTyp
                     TakenPercent *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
                 }
                 break;
-
             case 20911:                                     // Blessing of Sanctuary
             case 25899:                                     // Greater Blessing of Sanctuary
                 TakenPercent *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
