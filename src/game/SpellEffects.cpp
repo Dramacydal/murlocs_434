@@ -11986,7 +11986,10 @@ void Spell::DoSummonTotem(SpellEffectEntry const * effect, uint8 slot_dbc)
     if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
     {
         DEBUG_LOG("Spell::DoSummonTotem: TARGET_FLAG_DEST_LOCATION is used for spell %u effIdx %u", m_spellInfo->Id, effect->EffectIndex);
-        pos = CreatureCreatePos(m_caster->GetMap(), m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, m_caster->GetOrientation(), m_caster->GetPhaseMask());
+        float x, y, z;
+        m_targets.getDestination(x, y, z);
+        m_caster->UpdateGroundPositionZ(x, y, z);
+        pos = CreatureCreatePos(m_caster->GetMap(), x, y, z, m_caster->GetOrientation(), m_caster->GetPhaseMask());
     }
     else
         pos = CreatureCreatePos(m_caster, m_caster->GetOrientation(), 2.0f, angle);

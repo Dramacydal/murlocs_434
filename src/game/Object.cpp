@@ -1563,7 +1563,7 @@ void WorldObject::UpdateGroundPositionZ(float x, float y, float &z, float maxDif
         if(normalizedZ <= INVALID_HEIGHT || fabs(normalizedZ-z) > maxDiff)
             return;                                        // Do nothing in case of another bad result 
     }
-    z = normalizedZ + 0.1f;  
+    z = normalizedZ + 0.1f;
 }
 
 void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
