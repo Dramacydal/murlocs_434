@@ -7706,7 +7706,7 @@ void Aura::HandleModDamagePercentDone(bool apply, bool Real)
             // done in Player::_ApplyWeaponDependentAuraMods
         }
         // For show in client
-        if(target->GetTypeId() == TYPEID_PLAYER)
+        if (target->GetTypeId() == TYPEID_PLAYER)
             target->ApplyModSignedFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT, m_modifier.m_amount/100.0f, apply);
     }
 
@@ -10123,6 +10123,20 @@ void Aura::PeriodicDummyTick()
                 // damage not expected to be show in logs, not any damage spell related to damage apply
                 uint32 deal = m_modifier.m_amount * target->GetMaxHealth() / 100;
                 target->DealDamage(target, deal, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+                return;
+            }
+            break;
+        }
+        case SPELLFAMILY_PRIEST:
+        {
+            // Holy Word: Sanctuary
+            if (spell->Id == 88685)
+            {
+                if (Unit* caster = GetCaster())
+                {
+                    if (DynamicObject* dynObj = caster->GetDynObject(spell->Id))
+                        target->CastSpell(dynObj->GetPositionX(), dynObj->GetPositionY(), dynObj->GetPositionZ(), 88686, true, NULL, this, GetCasterGuid());
+                }
                 return;
             }
             break;
