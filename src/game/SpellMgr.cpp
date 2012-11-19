@@ -690,6 +690,7 @@ bool IsSingleFromSpellSpecificPerTarget(SpellSpecific spellSpec1,SpellSpecific s
         case SPELL_PRESENCE:
         case SPELL_WELL_FED:
         case SPELL_PRIEST_INNER:
+        case SPELL_PRIEST_CHAKRA:
             return spellSpec1==spellSpec2;
         case SPELL_BATTLE_ELIXIR:
             return spellSpec2==SPELL_BATTLE_ELIXIR
