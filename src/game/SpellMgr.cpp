@@ -561,9 +561,19 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
                 (interrupts && interrupts->InterruptFlags & SPELL_INTERRUPT_FLAG_AUTOATTACK) &&
                 (spellInfo->SpellIconID == 52 || spellInfo->SpellIconID == 79))
                 return SPELL_WELL_FED;
-            // Inner Fire and Inner Will
-            if (spellId == 588 || spellId == 73413)
-                return SPELL_PRIEST_INNER;
+            switch (spellId)
+            {
+                case 588:           // Inner Fire
+                case 73413:         // Inner Will
+                    return SPELL_PRIEST_INNER;
+                case 14751:         // Chakra
+                case 81206:         // Chakra: Sanctuary
+                case 81208:         // Chakra: Serenity
+                case 81209:         // Chakra: Chastice
+                    return SPELL_PRIEST_CHAKRA;
+                default:
+                    break;
+            }
             break;
         }
         case SPELLFAMILY_HUNTER:

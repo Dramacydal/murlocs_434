@@ -1224,6 +1224,16 @@ void Aura::HandleAddModifier(bool apply, bool Real)
             SpellEntry *entry = const_cast<SpellEntry*>(spellProto);
             entry->EffectSpellClassMask[GetEffIndex()].Flags = UI64LIT(0x0000000000200000);
         }*/
+
+        // Chakra
+        if (spellProto->Id == 14751)
+        {
+            if (SpellClassOptionsEntry* opt = const_cast<SpellClassOptionsEntry*>(spellProto->GetSpellClassOptions()))
+            {
+                opt->SpellFamilyFlags.Flags = 0;
+                opt->SpellFamilyFlags.Flags2 = 0;
+            }
+        }
     }
 
     switch (GetId())
@@ -11609,34 +11619,8 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 return;
             }
 
-            switch(GetId())
+            switch (GetId())
             {
-                // Abolish Disease (remove 1 more poison effect with Body and Soul)
-                case 552:
-                {
-                    if(apply)
-                    {
-                        int chance =0;
-                        Unit::AuraList const& dummyAuras = m_target->GetAurasByType(SPELL_AURA_DUMMY);
-                        for(Unit::AuraList::const_iterator itr = dummyAuras.begin(); itr != dummyAuras.end(); ++itr)
-                        {
-                            SpellEntry const* dummyEntry = (*itr)->GetSpellProto();
-                            // Body and Soul (talent ranks)
-                            if (dummyEntry->GetSpellFamilyName() == SPELLFAMILY_PRIEST && dummyEntry->SpellIconID == 2218 &&
-                                dummyEntry->SpellVisual[0]==0)
-                            {
-                                chance = (*itr)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1);
-                                break;
-                            }
-                        }
-
-                        if(roll_chance_i(chance))
-                            spellId1 = 64134;               // Body and Soul (periodic dispel effect)
-                    }
-                    else
-                        spellId1 = 64134;                   // Body and Soul (periodic dispel effect)
-                    break;
-                }
                 case 15473:                                 // Shadowform
                 {
                     if (!apply)

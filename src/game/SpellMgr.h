@@ -73,6 +73,7 @@ enum SpellSpecific
     SPELL_FOOD_AND_DRINK    = 22,
     SPELL_UA_IMMOLATE       = 23,                           // Unstable Affliction and Immolate
     SPELL_PRIEST_INNER      = 24,
+    SPELL_PRIEST_CHAKRA     = 25,
 };
 
 SpellSpecific GetSpellSpecific(uint32 spellId);
