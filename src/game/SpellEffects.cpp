@@ -5733,7 +5733,7 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
         else if (m_spellInfo->Id == 94472)
         {
             if (unitTarget == m_caster)
-                damage /= 2;
+                addhealth /= 2;
         }
 
         // Chain Healing
