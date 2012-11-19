@@ -1997,8 +1997,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // Echo of Light
                 case 77485:
                 {
-                    basepoints[0] = int32(damage * triggerAmount / 100);
                     triggered_spell_id = 77489;
+                    basepoints[0] = int32(damage * triggerAmount / 100 / GetSpellAuraMaxTicks(triggered_spell_id));
                     break;
                 }
             }
