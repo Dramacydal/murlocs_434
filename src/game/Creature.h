@@ -426,6 +426,9 @@ enum VirtualItemSlot
 struct CreatureCreatePos
 {
     public:
+        CreatureCreatePos()
+            : m_map(NULL), m_phaseMask(PHASEMASK_NORMAL), m_closeObject(NULL),
+            m_angle(0.0f), m_dist(0.0f) { }
         // exactly coordinates used
         CreatureCreatePos(Map* map, float x, float y, float z, float o, uint32 phaseMask)
             : m_map(map), m_phaseMask(phaseMask), m_closeObject(NULL), m_angle(0.0f), m_dist(0.0f) { m_pos.x = x; m_pos.y = y; m_pos.z = z; m_pos.o = NormalizeOrientation(o); }

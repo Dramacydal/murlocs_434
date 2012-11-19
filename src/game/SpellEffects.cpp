@@ -11982,7 +11982,14 @@ void Spell::DoSummonTotem(SpellEffectEntry const * effect, uint8 slot_dbc)
     // if totem have creature_template_addon.auras with persistent point for example or script call
     float angle = slot < MAX_TOTEM_SLOT ? M_PI_F/MAX_TOTEM_SLOT - (slot*2*M_PI_F/MAX_TOTEM_SLOT) : 0;
 
-    CreatureCreatePos pos(m_caster, m_caster->GetOrientation(), 2.0f, angle);
+    CreatureCreatePos pos;
+    if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+    {
+        DEBUG_LOG("Spell::DoSummonTotem: TARGET_FLAG_DEST_LOCATION is used for spell %u effIdx %u", m_spellInfo->Id, effect->EffectIndex);
+        pos = CreatureCreatePos(m_caster->GetMap(), m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, m_caster->GetOrientation(), m_caster->GetPhaseMask());
+    }
+    else
+        pos = CreatureCreatePos(m_caster, m_caster->GetOrientation(), 2.0f, angle);
 
     CreatureInfo const *cinfo = ObjectMgr::GetCreatureTemplate(effect->EffectMiscValue);
     if (!cinfo)
