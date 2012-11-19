@@ -10279,7 +10279,8 @@ int32 Unit::CalculateSpellDamage(Unit const* target, SpellEntry const* spellProt
                 {
                     // Revelations
                     if (!HasAura(88627))
-                        return 0;
+                        // do not change Holy Word: Chastice
+                        return 88625;
                     break;
                 }
             }
