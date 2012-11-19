@@ -460,6 +460,10 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
     targets.ReadAdditionalData(recvPacket, cast_flags);
 
+    DEBUG_LOG("Target mask %u dest: %f %f %f src: %f %f %f",
+        targets.m_targetMask, targets.m_destX, targets.m_destY, targets.m_destZ,
+        targets.m_srcX, targets.m_srcY, targets.m_srcZ); 
+
     // auto-selection buff level base at target level (in spellInfo)
     if (Unit* target = targets.getUnitTarget())
     {
