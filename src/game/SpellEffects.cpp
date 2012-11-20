@@ -4225,7 +4225,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER)
                     return;
 
-                target->CastSpell(target, ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup() ? 79104 : 79105, true, NULL, NULL, m_caster->GetObjectGuid());
+                m_caster->CastSpell(target, ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup() ? 79104 : 79105, true);
                 return;
             }
             // Shadow Protection
@@ -4238,7 +4238,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER)
                     return;
 
-                target->CastSpell(target, ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup() ? 79106 : 79107, true, NULL, NULL, m_caster->GetObjectGuid());
+                m_caster->CastSpell(target, ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup() ? 79106 : 79107, true);
                 return;
             }
             break;
