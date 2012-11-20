@@ -2750,7 +2750,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
         }
         case TARGET_ALL_RAID_AROUND_CASTER:
         {
-            if(m_spellInfo->Id == 57669)                    // Replenishment (special target selection)
+            if (m_spellInfo->Id == 57669)                   // Replenishment (special target selection)
             {
                 // in arena, target should be only caster
                 if (m_caster->GetMap()->IsBattleArena())

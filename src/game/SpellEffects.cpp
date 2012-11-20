@@ -4215,6 +4215,32 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 // cast jump spell
                 unitTarget->CastSpell(m_caster, 92832, true, NULL, NULL, m_caster->GetObjectGuid());
             }
+            // Power Word: Fortitude
+            else if (m_spellInfo->Id == 21562)
+            {
+                Unit* target = unitTarget;
+                if (!target)
+                    target = m_caster;
+
+                if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER)
+                    return;
+
+                target->CastSpell(target, ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup() ? 79104 : 79105, true, NULL, NULL, m_caster->GetObjectGuid());
+                return;
+            }
+            // Shadow Protection
+            else if (m_spellInfo->Id == 27683)
+            {
+                Unit* target = unitTarget;
+                if (!target)
+                    target = m_caster;
+
+                if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER)
+                    return;
+
+                target->CastSpell(target, ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup() ? 79106 : 79107, true, NULL, NULL, m_caster->GetObjectGuid());
+                return;
+            }
             break;
         }
         case SPELLFAMILY_DRUID:
