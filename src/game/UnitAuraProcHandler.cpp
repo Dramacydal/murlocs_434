@@ -1997,6 +1997,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // Echo of Light
                 case 77485:
                 {
+                    if (effIndex != EFFECT_INDEX_0)
+                        return SPELL_AURA_PROC_FAILED;
+
                     triggered_spell_id = 77489;
                     basepoints[0] = int32(damage * triggerAmount / 100 / GetSpellAuraMaxTicks(triggered_spell_id));
                     break;
@@ -4997,8 +5000,7 @@ SpellAuraProcResult Unit::HandleMendingAuraProc( Unit* /*pVictim*/, uint32 /*dam
                 triggeredByAura->SetInUse(false);
             }
 
-            //Ranger: www.wowwiki.com/Spell_power_coefficient - Prayer of Mending (per charge) 80.57% - Patch 3.2.0
-            heal += int32(caster->SpellBaseHealingBonusDone(GetSpellSchoolMask(spellProto)) * 0.8057f);
+            heal += int32(caster->SpellBaseHealingBonusDone(GetSpellSchoolMask(spellProto)) * 1.59f);
 
         }
     }
