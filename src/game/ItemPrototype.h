@@ -681,7 +681,7 @@ struct ItemPrototype
         if (MaxCount > 1)
             return false;
 
-        for (int i = 0; i < 5; ++i)
+        for (int i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
             if (Spells[i].SpellId && Spells[i].SpellCharges > 1 && Spells[i].SpellTrigger == ITEM_SPELLTRIGGER_ON_USE)
                 return false;
 

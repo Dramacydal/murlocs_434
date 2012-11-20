@@ -10301,6 +10301,23 @@ int32 Unit::CalculateSpellDamage(Unit const* target, SpellEntry const* spellProt
             }
             break;
         }
+        case SPELL_AURA_MOD_RESISTANCE_EXCLUSIVE:
+        {
+            int32 amount = GetResistancesAtLevel(target ? target->getLevel() : getLevel());
+
+            switch (spellProto->Id)
+            {
+                case 8185:  // Elemental Resistance
+                case 19891: // Resistance Aura
+                case 20043: // Aspect of the Wild
+                case 79106: // Shadow Protection
+                    return amount;
+                case 79060: // Mark of the Wild
+                case 79062: // Blessing of Kings
+                    return amount / 2;
+            }
+            break;
+        }
         // crowd control auras
         case SPELL_AURA_MOD_CONFUSE:
         case SPELL_AURA_MOD_FEAR:
