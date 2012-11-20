@@ -19045,7 +19045,7 @@ void Player::_SaveInventory()
 
             // Ranger: autoban system
             uint32 alarm_count = 0;
-            QueryResult *countRes = CharacterDatabase.PQuery("SELECT COUNT(count) FROM cheaters WHERE player='%s' AND reason LIKE '%_SaveInventory ERROR #2%' AND last_date >= NOW()-1800", GetName());
+            QueryResult *countRes = CharacterDatabase.PQuery("SELECT COUNT(count) FROM cheaters WHERE player='%s' AND reason LIKE '%%_SaveInventory ERROR #2%%' AND last_date >= NOW()-1800", GetName());
             if (countRes)
             {
                 alarm_count = (*countRes)[0].GetUInt32();
