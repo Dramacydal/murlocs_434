@@ -8273,35 +8273,32 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                     // Power Word: Shield
                     if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000000001))
                     {
-                        float baseAmt = (float)spellProto->CalculateSimpleValue(EFFECT_INDEX_0);
+                        float baseAmt = caster->CalculateSpellDamage(target, spellProto, SpellEffectIndex(m_spellEffect->EffectIndex));
                         float spd = caster->SpellBaseHealingBonusDone(GetSpellSchoolMask(spellProto));
-                        float spdBonus = 0.8068f;
-                        float IMP = 0.0f;
-                        float TD = 0.0f;
+                        float spdBonus = 0.0f;
+                        if (SpellBonusEntry const* bonus = sSpellMgr.GetSpellBonusData(spellProto->Id))
+                            spdBonus = bonus->direct_damage;
+
+                        int32 IMP = 0;
+                        int32 SD = 0;
 
                         uint8 counter = 0;
-                        Unit::AuraList const& ipwstd = caster->GetAurasByType(SPELL_AURA_ADD_PCT_MODIFIER);
+                        Unit::AuraList const& ipwstd = caster->GetAurasByType(SPELL_AURA_DUMMY);
                         for (Unit::AuraList::const_iterator itr = ipwstd.begin(); itr != ipwstd.end(); ++itr)
                         {
-                            // Improved Power Word: Shield
-                            SpellEntry const * spellProto = (*itr)->GetSpellProto();
-                            if (spellProto->GetSpellFamilyName() == SPELLFAMILY_PRIEST && spellProto->SpellIconID == 566)
+                            switch (spellProto->Id)
                             {
-                                IMP = (*itr)->GetModifier()->m_amount / 100.0f;
-                                ++counter;
+                                case 14748:     // Improved Power Word: Shield
+                                case 14768:
+                                    IMP = (*itr)->GetModifier()->m_amount;
+                                    break;
+                                case 77484:     // Shield Discipline
+                                    SD = (*itr)->GetModifier()->m_amount;
+                                    break;
                             }
-                            // Twin Disciplines
-                            if (spellProto->GetSpellFamilyName() == SPELLFAMILY_PRIEST && spellProto->SpellIconID == 2292)
-                            {
-                                TD = (*itr)->GetModifier()->m_amount / 100.0f;
-                                ++counter;
-                            }
-                            if (counter == 2)
-                                break;
                         }
 
-                        // +80.68% from +spell bonus
-                        customModifier = (baseAmt + spdBonus * spd) * (1.0f + IMP) * (1.0f + TD);
+                        customModifier = (baseAmt + spdBonus * spd) * (100.0f + IMP) / 100.0f * (100.0f + SD) / 100.0f;
                     }
                     break;
                 case SPELLFAMILY_MAGE:
@@ -8340,12 +8337,12 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
             if (customModifier == 0.0f)
             {
                 DoneActualBenefit *= caster->CalculateLevelPenalty(GetSpellProto());
-                m_modifier.m_amount += (int32)DoneActualBenefit;
+                ChangeAmount(m_modifier.m_amount + (int32)DoneActualBenefit);
             }
             else
             {
                 customModifier *= caster->CalculateLevelPenalty(GetSpellProto());
-                m_modifier.m_amount = (int32)customModifier;
+                ChangeAmount((int32)customModifier);
             }
         }
     }
@@ -11627,7 +11624,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 if (Aura* glyph = caster->GetAura(55672, EFFECT_INDEX_0))
                 {
                     Aura *shield = GetAuraByEffectIndex(EFFECT_INDEX_0);
-                    int32 heal = (glyph->GetModifier()->m_amount * shield->GetModifier()->m_amount)/100;
+                    int32 heal = (glyph->GetModifier()->m_amount * shield->GetModifier()->m_amount) / 100;
                     caster->CastCustomSpell(m_target, 56160, &heal, NULL, NULL, true, 0, shield);
                 }
                 return;
