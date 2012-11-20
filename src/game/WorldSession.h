@@ -160,6 +160,9 @@ enum TutorialDataState
     TUTORIALDATA_NEW       = 2
 };
 
+#define DB2_REPLY_SPARSE 2442913102
+#define DB2_REPLY_ITEM   1344507586
+
 enum AccountPremiumType
 {
     PREMIUM_DEFAULT     = 0,
@@ -919,6 +922,11 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleBfExitRequest(WorldPacket& recv_data);
 
         void HandleSetCurrencyFlagsOpcode(WorldPacket& recv_data);
+
+        // Hotfix handlers
+        void HandleRequestHotfix(WorldPacket& recv_data);
+        void SendItemDb2Reply(uint32 entry);
+        void SendItemSparseDb2Reply(uint32 entry);
 
         // Compact Unit Frames
         void HandleSaveCUFProfiles(WorldPacket& recv_data);

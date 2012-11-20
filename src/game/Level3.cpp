@@ -518,6 +518,14 @@ bool ChatHandler::HandleReloadGOQuestInvRelationsCommand(char* /*args*/)
     return true;
 }
 
+bool ChatHandler::HandleReloadHotfixDataCommand(char* /*args*/)
+{
+    sLog.outString("Re-Loading hotfix data...");
+    sObjectMgr.LoadHotfixData();
+    sWorld.SendGMGlobalText("DB table `hotfix_data` reloaded.");
+    return true;
+}
+
 bool ChatHandler::HandleReloadQuestAreaTriggersCommand(char* /*args*/)
 {
     sLog.outString( "Re-Loading Quest Area Triggers..." );

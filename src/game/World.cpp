@@ -1500,6 +1500,9 @@ void World::SetInitialWorldSettings()
     sLog.outString("Loading custom area flags...");
     sObjectMgr.LoadCustomAreaFlags();
 
+    sLog.outString("Loading hotfix data...");
+    sObjectMgr.LoadHotfixData();
+
     ///- Handle outdated emails (delete/return)
     sLog.outString( "Returning old mails..." );
     sObjectMgr.ReturnOrDeleteOldMails(false);

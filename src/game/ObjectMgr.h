@@ -568,6 +568,15 @@ class MANGOS_DLL_DECL StatMgr
 
 typedef std::map<uint32, std::list<WorldSafeLocsEntry> > CustomWorldSafeLocMap;
 
+struct HotfixInfo
+{
+    uint32 Type;
+    uint32 Timestamp;
+    uint32 Entry;
+};
+
+typedef std::vector<HotfixInfo> HotfixData;
+
 class ObjectMgr
 {
     friend class PlayerDumpReader;
@@ -1213,6 +1222,19 @@ class ObjectMgr
 
         void LoadCustomAreaFlags();
 
+        void LoadHotfixData();
+        HotfixData const& GetHotfixData() const { return m_hotfixData; }
+        time_t GetHotfixDate(uint32 entry, uint32 type) const
+        {
+            time_t ret = 0;
+            for (HotfixData::const_iterator itr = m_hotfixData.begin(); itr != m_hotfixData.end(); ++itr)
+                if (itr->Entry == entry && itr->Type == type)
+                    if (itr->Timestamp > ret)
+                        ret = itr->Timestamp;
+
+            return ret ? ret : time(NULL);
+        }
+
     protected:
 
         // first free id for selected id type
@@ -1364,6 +1386,8 @@ class ObjectMgr
         CustomWorldSafeLocMap m_customWorldSafeLocs;
 
         std::set<uint32> m_allowedPets;
+
+        HotfixData m_hotfixData;
 };
 
 #define sObjectMgr MaNGOS::Singleton<ObjectMgr>::Instance()
