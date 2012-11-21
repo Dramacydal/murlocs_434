@@ -1408,8 +1408,8 @@ void LoadDBCStores(const std::string& dataPath)
                 {
                     eff->Effect = 27;
                     eff->EffectApplyAuraName = 4;
-                    eff->EffectImplicitTargetA = 87;
-                    eff->EffectImplicitTargetB = 88;
+                    eff->EffectImplicitTargetA = 18;
+                    eff->EffectImplicitTargetB = 16;
                 }
                 break;
             }
