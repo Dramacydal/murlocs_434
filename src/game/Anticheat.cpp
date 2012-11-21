@@ -398,7 +398,7 @@ void AntiCheat::DoAntiCheatAction(AntiCheatCheck checkType, std::string reason)
         {
             m_alarmCount = 0;
 
-            if (m_currLatency < 1000)
+            if (m_currLatency < 500)
                 HelperNeedBan = true;
             else
             {
