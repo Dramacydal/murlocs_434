@@ -10143,17 +10143,16 @@ void Aura::PeriodicDummyTick()
             // Consecration
             if (spell->Id == 26573)
             {
-                DEBUG_LOG("Concecration %u dummy tick, caster %s, target %s", spell->Id,
-                    GetCasterGuid().GetString().c_str(), target->GetGuidStr().c_str());
                 if (Unit* caster = GetCaster())
-                {
                     if (DynamicObject* dynObj = caster->GetDynObject(spell->Id))
-                    {
-                        DEBUG_LOG("Dyn Obj %s", dynObj->GetGuidStr().c_str());
                         target->CastSpell(dynObj->GetPositionX(), dynObj->GetPositionY(), dynObj->GetPositionZ(), 81297, true, NULL, this, GetCasterGuid());
-                    }
-                }
                 return;
+            }
+            // Holy Radiance
+            else if (spell->Id == 82327)
+            {
+                if (Unit* caster = GetCaster())
+                    caster->CastSpell(target, 86452, true);
             }
             break;
         }
