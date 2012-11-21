@@ -160,8 +160,8 @@ enum TutorialDataState
     TUTORIALDATA_NEW       = 2
 };
 
-#define DB2_REPLY_SPARSE 2442913102
 #define DB2_REPLY_ITEM   1344507586
+#define DB2_REPLY_SPARSE 2442913102
 
 enum AccountPremiumType
 {
