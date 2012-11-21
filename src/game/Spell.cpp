@@ -1515,6 +1515,13 @@ void Spell::DoSpellHitOnUnit(Unit *unit, uint32 effectMask)
             if (realCaster->HasAura(56370))
                 effectMask &= ~(1 << 0);
         }
+        // Exorcism
+        else if (m_spellInfo->Id == 879)
+        {
+            // Glyph of Exorcism
+            if (!realCaster->HasAura(54934))
+                effectMask &= ~(1 << 1);
+        }
     }
 
     // Recheck immune (only for delayed spells)
