@@ -10141,7 +10141,7 @@ void Aura::PeriodicDummyTick()
         case SPELLFAMILY_PALADIN:
         {
             // Consecration
-            if (spell->Id == 82366)
+            if (spell->Id == 26573)
             {
                 if (Unit* caster = GetCaster())
                 {

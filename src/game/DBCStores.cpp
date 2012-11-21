@@ -1145,7 +1145,7 @@ void LoadDBCStores(const std::string& dataPath)
                 spell->AttributesEx3 |= SPELL_ATTR_EX3_DEATH_PERSISTENT;
                 break;
             }
-            case 82366:
+            case 26573:
             {
                 spell->SpellVisual[0] = 5600;
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_2))
