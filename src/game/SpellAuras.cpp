@@ -6466,7 +6466,7 @@ void Aura::HandleAuraPeriodicDummy(bool apply, bool Real)
                     if (apply)
                         GetHolder()->SendFakeAuraUpdate(62388, false);
                     else
-                    {   
+                    {
                         //GetTarget()->RemoveGameObject(spell->Id,true);//megai2: maybe it deletes somewhere in prev code?
                         GetHolder()->SendFakeAuraUpdate(62388, true);
                     }
@@ -10143,11 +10143,15 @@ void Aura::PeriodicDummyTick()
             // Consecration
             if (spell->Id == 26573)
             {
-                DEBUG_LOG("Concecration %u dummy tick", spell->Id == 26573);
+                DEBUG_LOG("Concecration %u dummy tick, caster %s, target %s", spell->Id,
+                    GetCasterGuid().GetString().c_str(), target->GetGuidStr().c_str());
                 if (Unit* caster = GetCaster())
                 {
                     if (DynamicObject* dynObj = caster->GetDynObject(spell->Id))
+                    {
+                        DEBUG_LOG("Dyn Obj %s", dynObj->GetGuidStr().c_str());
                         target->CastSpell(dynObj->GetPositionX(), dynObj->GetPositionY(), dynObj->GetPositionZ(), 81297, true, NULL, this, GetCasterGuid());
+                    }
                 }
                 return;
             }
