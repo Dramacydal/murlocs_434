@@ -10143,6 +10143,7 @@ void Aura::PeriodicDummyTick()
             // Consecration
             if (spell->Id == 26573)
             {
+                DEBUG_LOG("Concecration %u dummy tick", spell->Id == 26573);
                 if (Unit* caster = GetCaster())
                 {
                     if (DynamicObject* dynObj = caster->GetDynObject(spell->Id))
