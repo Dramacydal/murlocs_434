@@ -4084,28 +4084,16 @@ void Spell::cast(bool skipCheck)
                 if (m_targets.getUnitTarget() && m_targets.getUnitTarget()->getVictim() != m_caster)
                     AddPrecastSpell(67485);                 // Hand of Rekoning (no typos in name ;) )
             }
-            // Divine Shield, Divine Protection or Hand of Protection
-            else if (classOpt && classOpt->SpellFamilyFlags & UI64LIT(0x0000000000400080))
-            {
+            // Divine Shield or Hand of Protection
+            else if (classOpt && classOpt->SpellFamilyFlags & UI64LIT(0x0000000000000080))
                 AddPrecastSpell(25771);                     // Forbearance
-
-                // only for self cast
-                if (m_caster == m_targets.getUnitTarget())
-                    AddPrecastSpell(61987);                     // Avenging Wrath Marker
-            }
             // Lay on Hands
             else if (classOpt && classOpt->SpellFamilyFlags & UI64LIT(0x0000000000008000))
             {
                 // only for self cast
                 if (m_caster == m_targets.getUnitTarget())
-                {
                     AddPrecastSpell(25771);                     // Forbearance
-                    AddPrecastSpell(61987);                     // Avenging Wrath Marker
-                }
             }
-            // Avenging Wrath
-            else if (classOpt && classOpt->SpellFamilyFlags & UI64LIT(0x0000200000000000))
-                AddPrecastSpell(61987);                     // Avenging Wrath Marker
             break;
         }
         case SPELLFAMILY_SHAMAN:
@@ -5818,18 +5806,19 @@ SpellCastResult Spell::CheckCast(bool strict)
         return SPELL_FAILED_CASTER_AURASTATE;
 
     // Caster aura req check if need
-    if(auraRestrictions && auraRestrictions->casterAuraSpell && !m_caster->HasAura(auraRestrictions->casterAuraSpell))
+    if (auraRestrictions && auraRestrictions->casterAuraSpell && !m_caster->HasAura(auraRestrictions->casterAuraSpell))
         return SPELL_FAILED_CASTER_AURASTATE;
-    if(auraRestrictions && auraRestrictions->excludeCasterAuraSpell)
+
+    if (auraRestrictions && auraRestrictions->excludeCasterAuraSpell)
     {
         // Special cases of non existing auras handling
-        if(auraRestrictions->excludeCasterAuraSpell == 61988)
+        if (auraRestrictions->excludeCasterAuraSpell == 61988)
         {
-            // Avenging Wrath Marker
-            if(m_caster->HasAura(61987))
+            // Forbearance
+            if (m_caster->HasAura(25771))
                 return SPELL_FAILED_CASTER_AURASTATE;
         }
-        else if(m_caster->HasAura(auraRestrictions->excludeCasterAuraSpell))
+        else if (m_caster->HasAura(auraRestrictions->excludeCasterAuraSpell))
             return SPELL_FAILED_CASTER_AURASTATE;
     }
 
@@ -5871,7 +5860,7 @@ SpellCastResult Spell::CheckCast(bool strict)
 
     SpellClassOptionsEntry const* classOptions = m_spellInfo->GetSpellClassOptions();
 
-    if(Unit *target = m_targets.getUnitTarget())
+    if (Unit *target = m_targets.getUnitTarget())
     {
         // target state requirements (not allowed state), apply to self also
         if(auraRestrictions && auraRestrictions->TargetAuraStateNot && target->HasAuraState(AuraState(auraRestrictions->TargetAuraStateNot)))
@@ -5889,8 +5878,8 @@ SpellCastResult Spell::CheckCast(bool strict)
             // Special cases of non existing auras handling
             if (auraRestrictions->excludeTargetAuraSpell == 61988)
             {
-                // Avenging Wrath Marker
-                if (target->HasAura(61987))
+                // Forbearance
+                if (target->HasAura(25771))
                     return SPELL_FAILED_CASTER_AURASTATE;
 
             }
@@ -5911,7 +5900,7 @@ SpellCastResult Spell::CheckCast(bool strict)
 
         bool non_caster_target = target != m_caster && !IsSpellWithCasterSourceTargetsOnly(m_spellInfo);
 
-        if(non_caster_target)
+        if (non_caster_target)
         {
             // target state requirements (apply to non-self only), to allow cast affects to self like Dirty Deeds
             if (auraRestrictions && auraRestrictions->TargetAuraState && !target->HasAuraStateForCaster(AuraState(auraRestrictions->TargetAuraState), m_caster->GetObjectGuid()) &&
@@ -5952,8 +5941,6 @@ SpellCastResult Spell::CheckCast(bool strict)
                 classOptions->SpellFamilyFlags & UI64LIT(0x0000000000008000))
             {
                 if (target->HasAura(25771))                 // Forbearance
-                    return SPELL_FAILED_CASTER_AURASTATE;
-                if (target->HasAura(61987))                 // Avenging Wrath Marker
                     return SPELL_FAILED_CASTER_AURASTATE;
             }
         }
