@@ -108,7 +108,7 @@ void DynamicObject::Update(uint32 /*update_diff*/, uint32 p_time)
 {
     // caster can be not in world at time dynamic object update, but dynamic object not yet deleted in Unit destructor
     Unit* caster = GetCaster();
-    if(!caster)
+    if (!caster)
     {
         Delete();
         return;
@@ -116,21 +116,22 @@ void DynamicObject::Update(uint32 /*update_diff*/, uint32 p_time)
 
     bool deleteThis = false;
 
-    if(m_aliveDuration > int32(p_time))
+    if (m_aliveDuration > int32(p_time))
         m_aliveDuration -= p_time;
     else
         deleteThis = true;
 
     // have radius and work as persistent effect
-    if(m_radius)
+    if (m_radius)
     {
         // TODO: make a timer and update this in larger intervals
         MaNGOS::DynamicObjectUpdater notifier(*this, caster, m_positive);
         Cell::VisitAllObjects(this, notifier, m_radius);
     }
 
-    if(deleteThis)
+    if (deleteThis)
     {
+        DEBUG_LOG("DynObject %s removed from caster %s", GetGuidStr().c_str(), caster->GetGuidStr().c_str());
         caster->RemoveDynObjectWithGUID(GetObjectGuid());
         Delete();
     }
