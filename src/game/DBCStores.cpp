@@ -683,6 +683,262 @@ void LoadDBCStores(const std::string& dataPath)
         std::swap(*((uint32*)(&spell->SpellFamilyFlags)),*(((uint32*)(&spell->SpellFamilyFlags))+1));
         #endif
 
+    }
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellAuraOptionsStore,    dbcPath,"SpellAuraOptions.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellAuraRestrictionsStore, dbcPath,"SpellAuraRestrictions.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellCastingRequirementsStore, dbcPath,"SpellCastingRequirements.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellClassOptionsStore,   dbcPath,"SpellClassOptions.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellCooldownsStore,      dbcPath,"SpellCooldowns.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellEffectStore,         dbcPath,"SpellEffect.dbc");
+
+    for(uint32 i = 1; i < sSpellEffectStore.GetNumRows(); ++i)
+    {
+        if (SpellEffectEntry const *spellEffect = sSpellEffectStore.LookupEntry(i))
+        {
+            switch (spellEffect->EffectApplyAuraName)
+            {
+                case SPELL_AURA_MOD_INCREASE_ENERGY:
+                case SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT:
+                case SPELL_AURA_PERIODIC_MANA_LEECH:
+                case SPELL_AURA_PERIODIC_ENERGIZE:
+                case SPELL_AURA_POWER_BURN_ENERGY:
+                    MANGOS_ASSERT(spellEffect->EffectMiscValue >= 0 && spellEffect->EffectMiscValue < MAX_POWERS);
+                    break;
+            }
+
+            sSpellEffectMap[spellEffect->EffectSpellId].effects[spellEffect->EffectIndex] = spellEffect;
+        }
+    }
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellEquippedItemsStore,  dbcPath,"SpellEquippedItems.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellInterruptsStore,     dbcPath,"SpellInterrupts.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellLevelsStore,         dbcPath,"SpellLevels.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellPowerStore,          dbcPath,"SpellPower.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellReagentsStore,       dbcPath,"SpellReagents.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellScalingStore,        dbcPath,"SpellScaling.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellShapeshiftStore,     dbcPath,"SpellShapeshift.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellTargetRestrictionsStore, dbcPath,"SpellTargetRestrictions.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellTotemsStore,         dbcPath,"SpellTotems.dbc");
+
+    for (uint32 j = 0; j < sSkillLineAbilityStore.GetNumRows(); ++j)
+    {
+        SkillLineAbilityEntry const *skillLine = sSkillLineAbilityStore.LookupEntry(j);
+
+        if(!skillLine)
+            continue;
+
+        SpellEntry const* spellInfo = sSpellStore.LookupEntry(skillLine->spellId);
+
+        if (spellInfo && (spellInfo->Attributes & (SPELL_ATTR_UNK4 | SPELL_ATTR_PASSIVE | SPELL_ATTR_UNK7 | SPELL_ATTR_UNK8)) == (SPELL_ATTR_UNK4 | SPELL_ATTR_PASSIVE | SPELL_ATTR_UNK7 | SPELL_ATTR_UNK8))
+        {
+            for (unsigned int i = 1; i < sCreatureFamilyStore.GetNumRows(); ++i)
+            {
+                CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(i);
+                if(!cFamily)
+                    continue;
+
+                if(skillLine->skillId != cFamily->skillLine[0] && skillLine->skillId != cFamily->skillLine[1])
+                    continue;
+
+                sPetFamilySpellsStore[i].insert(spellInfo->Id);
+            }
+        }
+    }
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellCastTimesStore,      dbcPath,"SpellCastTimes.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellDurationStore,       dbcPath,"SpellDuration.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellDifficultyStore,     dbcPath,"SpellDifficulty.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellFocusObjectStore,    dbcPath,"SpellFocusObject.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellItemEnchantmentStore,dbcPath,"SpellItemEnchantment.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellItemEnchantmentConditionStore,dbcPath,"SpellItemEnchantmentCondition.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellRadiusStore,         dbcPath,"SpellRadius.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellRangeStore,          dbcPath,"SpellRange.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellRuneCostStore,       dbcPath,"SpellRuneCost.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellShapeshiftFormStore, dbcPath,"SpellShapeshiftForm.dbc");
+    //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sStableSlotPricesStore,    dbcPath,"StableSlotPrices.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSummonPropertiesStore,    dbcPath,"SummonProperties.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTalentStore,              dbcPath,"Talent.dbc");
+
+    // create talent spells set
+    for (unsigned int i = 0; i < sTalentStore.GetNumRows(); ++i)
+    {
+        TalentEntry const *talentInfo = sTalentStore.LookupEntry(i);
+        if (!talentInfo) continue;
+        for (int j = 0; j < MAX_TALENT_RANK; j++)
+            if(talentInfo->RankID[j])
+                sTalentSpellPosMap[talentInfo->RankID[j]] = TalentSpellPos(i,j);
+    }
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTalentTabStore,           dbcPath,"TalentTab.dbc");
+
+    // prepare fast data access to bit pos of talent ranks for use at inspecting
+    {
+        // now have all max ranks (and then bit amount used for store talent ranks in inspect)
+        for(uint32 talentTabId = 1; talentTabId < sTalentTabStore.GetNumRows(); ++talentTabId)
+        {
+            TalentTabEntry const *talentTabInfo = sTalentTabStore.LookupEntry( talentTabId );
+            if(!talentTabInfo)
+                continue;
+
+            for (uint32 i = 0; i < MAX_MASTERY_SPELLS; ++i)
+                if (uint32 spellid = talentTabInfo->masterySpells[i])
+                    if (sSpellStore.LookupEntry(spellid))
+                        sTalentTreeMasterySpellsMap[talentTabId].push_back(spellid);
+
+            // prevent memory corruption; otherwise cls will become 12 below
+            if ((talentTabInfo->ClassMask & CLASSMASK_ALL_PLAYABLE)==0)
+                continue;
+
+            // store class talent tab pages
+            for (uint32 cls = 1; cls < MAX_CLASSES; ++cls)
+                if (talentTabInfo->ClassMask & (1 << (cls - 1)))
+                    sTalentTabPages[cls][talentTabInfo->tabpage] = talentTabId;
+
+            sTalentTreeRolesMap[talentTabId] = talentTabInfo->rolesMask;
+        }
+    }
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files, sTalentTreePrimarySpellsStore, dbcPath, "TalentTreePrimarySpells.dbc");
+    for (uint32 i = 0; i < sTalentTreePrimarySpellsStore.GetNumRows(); ++i)
+        if (TalentTreePrimarySpellsEntry const* talentSpell = sTalentTreePrimarySpellsStore.LookupEntry(i))
+            if (sSpellStore.LookupEntry(talentSpell->SpellId))
+                sTalentTreePrimarySpellsMap[talentSpell->TalentTree].push_back(talentSpell->SpellId);
+    sTalentTreePrimarySpellsStore.Clear();
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTaxiNodesStore,           dbcPath,"TaxiNodes.dbc");
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTaxiPathStore,            dbcPath,"TaxiPath.dbc");
+    for(uint32 i = 1; i < sTaxiPathStore.GetNumRows(); ++i)
+        if(TaxiPathEntry const* entry = sTaxiPathStore.LookupEntry(i))
+            sTaxiPathSetBySource[entry->from][entry->to] = TaxiPathBySourceAndDestination(entry->ID,entry->price);
+    uint32 pathCount = sTaxiPathStore.GetNumRows();
+
+    //## TaxiPathNode.dbc ## Loaded only for initialization different structures
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTaxiPathNodeStore,        dbcPath,"TaxiPathNode.dbc");
+    // Calculate path nodes count
+    std::vector<uint32> pathLength;
+    pathLength.resize(pathCount);                           // 0 and some other indexes not used
+    for(uint32 i = 1; i < sTaxiPathNodeStore.GetNumRows(); ++i)
+        if(TaxiPathNodeEntry const* entry = sTaxiPathNodeStore.LookupEntry(i))
+        {
+            if (pathLength[entry->path] < entry->index + 1)
+                pathLength[entry->path] = entry->index + 1;
+        }
+    // Set path length
+    sTaxiPathNodesByPath.resize(pathCount);                 // 0 and some other indexes not used
+    for(uint32 i = 1; i < sTaxiPathNodesByPath.size(); ++i)
+        sTaxiPathNodesByPath[i].resize(pathLength[i]);
+    // fill data (pointers to sTaxiPathNodeStore elements
+    for(uint32 i = 1; i < sTaxiPathNodeStore.GetNumRows(); ++i)
+        if(TaxiPathNodeEntry const* entry = sTaxiPathNodeStore.LookupEntry(i))
+            sTaxiPathNodesByPath[entry->path].set(entry->index, entry);
+
+    // Initialize global taxinodes mask
+    // include existing nodes that have at least single not spell base (scripted) path
+    {
+        std::set<uint32> spellPaths;
+        for(uint32 i = 1; i < sSpellStore.GetNumRows (); ++i)
+            if(SpellEntry const* sInfo = sSpellStore.LookupEntry (i))
+                for(int j=0; j < MAX_EFFECT_INDEX; ++j)
+                    if(SpellEffectEntry const* effect = sInfo->GetSpellEffect(SpellEffectIndex(j)))
+                        if(effect->Effect==123 /*SPELL_EFFECT_SEND_TAXI*/)
+                            spellPaths.insert(effect->EffectMiscValue);
+
+        memset(sTaxiNodesMask,0,sizeof(sTaxiNodesMask));
+        memset(sOldContinentsNodesMask,0,sizeof(sTaxiNodesMask));
+        memset(sHordeTaxiNodesMask, 0, sizeof(sHordeTaxiNodesMask));
+        memset(sAllianceTaxiNodesMask, 0, sizeof(sAllianceTaxiNodesMask));
+        memset(sDeathKnightTaxiNodesMask, 0, sizeof(sDeathKnightTaxiNodesMask));
+        for(uint32 i = 1; i < sTaxiNodesStore.GetNumRows(); ++i)
+        {
+            TaxiNodesEntry const* node = sTaxiNodesStore.LookupEntry(i);
+            if(!node)
+                continue;
+
+            TaxiPathSetBySource::const_iterator src_i = sTaxiPathSetBySource.find(i);
+            if(src_i!=sTaxiPathSetBySource.end() && !src_i->second.empty())
+            {
+                bool ok = false;
+                for(TaxiPathSetForSource::const_iterator dest_i = src_i->second.begin();dest_i != src_i->second.end(); ++dest_i)
+                {
+                    // not spell path
+                    if(spellPaths.find(dest_i->second.ID)==spellPaths.end())
+                    {
+                        ok = true;
+                        break;
+                    }
+                }
+
+                if(!ok)
+                    continue;
+            }
+
+            // valid taxi network node
+            uint8  field   = (uint8)((i - 1) / 8);
+            uint32 submask = 1 << ((i-1) % 8);
+            sTaxiNodesMask[field] |= submask;
+
+            if (node->MountCreatureID[0] && node->MountCreatureID[0] != 32981)
+                sHordeTaxiNodesMask[field] |= submask;
+            if (node->MountCreatureID[1] && node->MountCreatureID[1] != 32981)
+                sAllianceTaxiNodesMask[field] |= submask;
+            if (node->MountCreatureID[0] == 32981 || node->MountCreatureID[1] == 32981)
+                sDeathKnightTaxiNodesMask[field] |= submask;
+
+            // old continent node (+ nodes virtually at old continents, check explicitly to avoid loading map files for zone info)
+            if (node->map_id < 2 || i == 82 || i == 83 || i == 93 || i == 94)
+                sOldContinentsNodesMask[field] |= submask;
+
+            // fix DK node at Ebon Hold
+            if (i == 315)
+                ((TaxiNodesEntry*)node)->MountCreatureID[1] = 32981;
+        }
+    }
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTotemCategoryStore,       dbcPath,"TotemCategory.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sVehicleStore,             dbcPath,"Vehicle.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sVehicleSeatStore,         dbcPath,"VehicleSeat.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWorldMapAreaStore,        dbcPath,"WorldMapArea.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWMOAreaTableStore,        dbcPath,"WMOAreaTable.dbc");
+    for(uint32 i = 0; i < sWMOAreaTableStore.GetNumRows(); ++i)
+    {
+        if(WMOAreaTableEntry const* entry = sWMOAreaTableStore.LookupEntry(i))
+        {
+            sWMOAreaInfoByTripple.insert(WMOAreaInfoByTripple::value_type(WMOAreaTableTripple(entry->rootId, entry->adtId, entry->groupId), entry));
+        }
+    }
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWorldMapOverlayStore,     dbcPath,"WorldMapOverlay.dbc");
+    // Undercity -> Ruins of Lordaeron
+    if (WorldMapOverlayEntry* entry = (WorldMapOverlayEntry*)(uint32*)sWorldMapOverlayStore.LookupEntry(228))
+        entry->areatableID[1] = 153;
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWorldSafeLocsStore,       dbcPath,"WorldSafeLocs.dbc");
+
+    // error checks
+    if (bad_dbc_files.size() >= DBCFilesCount )
+    {
+        sLog.outError("\nIncorrect DataDir value in mangosd.conf or ALL required *.dbc files (%d) not found by path: %sdbc",DBCFilesCount,dataPath.c_str());
+        Log::WaitBeforeContinueIfNeed();
+        exit(1);
+    }
+    else if (!bad_dbc_files.empty() )
+    {
+        std::string str;
+        for(std::list<std::string>::iterator i = bad_dbc_files.begin(); i != bad_dbc_files.end(); ++i)
+            str += *i + "\n";
+
+        sLog.outError("\nSome required *.dbc files (%u from %d) not found or not compatible:\n%s",(uint32)bad_dbc_files.size(),DBCFilesCount,str.c_str());
+        Log::WaitBeforeContinueIfNeed();
+        exit(1);
+    }
+
+    for (uint32 i = 0; i < sSpellStore.GetNumRows(); ++i)
+    {
+        SpellEntry* spell = const_cast<SpellEntry*>(sSpellStore.LookupEntry(i));
+        if (!spell)
+            continue;
+
         switch (spell->Id)
         {
             case 2654:                          // Summon Tamed (TEST) -> Premium NPC Summoner
@@ -1181,254 +1437,6 @@ void LoadDBCStores(const std::string& dataPath)
         // Penance heal start trigger
         if (spell->IsFitToFamily(SPELLFAMILY_PRIEST, UI64LIT(0x1000000000000), 0x80))
             spell->AttributesEx &= ~SPELL_ATTR_EX_NEGATIVE;
-    }
-
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellAuraOptionsStore,    dbcPath,"SpellAuraOptions.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellAuraRestrictionsStore, dbcPath,"SpellAuraRestrictions.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellCastingRequirementsStore, dbcPath,"SpellCastingRequirements.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellClassOptionsStore,   dbcPath,"SpellClassOptions.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellCooldownsStore,      dbcPath,"SpellCooldowns.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellEffectStore,         dbcPath,"SpellEffect.dbc");
-
-    for(uint32 i = 1; i < sSpellEffectStore.GetNumRows(); ++i)
-    {
-        if (SpellEffectEntry const *spellEffect = sSpellEffectStore.LookupEntry(i))
-        {
-            switch (spellEffect->EffectApplyAuraName)
-            {
-                case SPELL_AURA_MOD_INCREASE_ENERGY:
-                case SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT:
-                case SPELL_AURA_PERIODIC_MANA_LEECH:
-                case SPELL_AURA_PERIODIC_ENERGIZE:
-                case SPELL_AURA_POWER_BURN_ENERGY:
-                    MANGOS_ASSERT(spellEffect->EffectMiscValue >= 0 && spellEffect->EffectMiscValue < MAX_POWERS);
-                    break;
-            }
-
-            sSpellEffectMap[spellEffect->EffectSpellId].effects[spellEffect->EffectIndex] = spellEffect;
-        }
-    }
-
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellEquippedItemsStore,  dbcPath,"SpellEquippedItems.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellInterruptsStore,     dbcPath,"SpellInterrupts.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellLevelsStore,         dbcPath,"SpellLevels.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellPowerStore,          dbcPath,"SpellPower.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellReagentsStore,       dbcPath,"SpellReagents.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellScalingStore,        dbcPath,"SpellScaling.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellShapeshiftStore,     dbcPath,"SpellShapeshift.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellTargetRestrictionsStore, dbcPath,"SpellTargetRestrictions.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellTotemsStore,         dbcPath,"SpellTotems.dbc");
-
-    for (uint32 j = 0; j < sSkillLineAbilityStore.GetNumRows(); ++j)
-    {
-        SkillLineAbilityEntry const *skillLine = sSkillLineAbilityStore.LookupEntry(j);
-
-        if(!skillLine)
-            continue;
-
-        SpellEntry const* spellInfo = sSpellStore.LookupEntry(skillLine->spellId);
-
-        if (spellInfo && (spellInfo->Attributes & (SPELL_ATTR_UNK4 | SPELL_ATTR_PASSIVE | SPELL_ATTR_UNK7 | SPELL_ATTR_UNK8)) == (SPELL_ATTR_UNK4 | SPELL_ATTR_PASSIVE | SPELL_ATTR_UNK7 | SPELL_ATTR_UNK8))
-        {
-            for (unsigned int i = 1; i < sCreatureFamilyStore.GetNumRows(); ++i)
-            {
-                CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(i);
-                if(!cFamily)
-                    continue;
-
-                if(skillLine->skillId != cFamily->skillLine[0] && skillLine->skillId != cFamily->skillLine[1])
-                    continue;
-
-                sPetFamilySpellsStore[i].insert(spellInfo->Id);
-            }
-        }
-    }
-
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellCastTimesStore,      dbcPath,"SpellCastTimes.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellDurationStore,       dbcPath,"SpellDuration.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellDifficultyStore,     dbcPath,"SpellDifficulty.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellFocusObjectStore,    dbcPath,"SpellFocusObject.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellItemEnchantmentStore,dbcPath,"SpellItemEnchantment.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellItemEnchantmentConditionStore,dbcPath,"SpellItemEnchantmentCondition.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellRadiusStore,         dbcPath,"SpellRadius.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellRangeStore,          dbcPath,"SpellRange.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellRuneCostStore,       dbcPath,"SpellRuneCost.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellShapeshiftFormStore, dbcPath,"SpellShapeshiftForm.dbc");
-    //LoadDBC(availableDbcLocales,bar,bad_dbc_files,sStableSlotPricesStore,    dbcPath,"StableSlotPrices.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSummonPropertiesStore,    dbcPath,"SummonProperties.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTalentStore,              dbcPath,"Talent.dbc");
-
-    // create talent spells set
-    for (unsigned int i = 0; i < sTalentStore.GetNumRows(); ++i)
-    {
-        TalentEntry const *talentInfo = sTalentStore.LookupEntry(i);
-        if (!talentInfo) continue;
-        for (int j = 0; j < MAX_TALENT_RANK; j++)
-            if(talentInfo->RankID[j])
-                sTalentSpellPosMap[talentInfo->RankID[j]] = TalentSpellPos(i,j);
-    }
-
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTalentTabStore,           dbcPath,"TalentTab.dbc");
-
-    // prepare fast data access to bit pos of talent ranks for use at inspecting
-    {
-        // now have all max ranks (and then bit amount used for store talent ranks in inspect)
-        for(uint32 talentTabId = 1; talentTabId < sTalentTabStore.GetNumRows(); ++talentTabId)
-        {
-            TalentTabEntry const *talentTabInfo = sTalentTabStore.LookupEntry( talentTabId );
-            if(!talentTabInfo)
-                continue;
-
-            for (uint32 i = 0; i < MAX_MASTERY_SPELLS; ++i)
-                if (uint32 spellid = talentTabInfo->masterySpells[i])
-                    if (sSpellStore.LookupEntry(spellid))
-                        sTalentTreeMasterySpellsMap[talentTabId].push_back(spellid);
-
-            // prevent memory corruption; otherwise cls will become 12 below
-            if ((talentTabInfo->ClassMask & CLASSMASK_ALL_PLAYABLE)==0)
-                continue;
-
-            // store class talent tab pages
-            for (uint32 cls = 1; cls < MAX_CLASSES; ++cls)
-                if (talentTabInfo->ClassMask & (1 << (cls - 1)))
-                    sTalentTabPages[cls][talentTabInfo->tabpage] = talentTabId;
-
-            sTalentTreeRolesMap[talentTabId] = talentTabInfo->rolesMask;
-        }
-    }
-
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files, sTalentTreePrimarySpellsStore, dbcPath, "TalentTreePrimarySpells.dbc");
-    for (uint32 i = 0; i < sTalentTreePrimarySpellsStore.GetNumRows(); ++i)
-        if (TalentTreePrimarySpellsEntry const* talentSpell = sTalentTreePrimarySpellsStore.LookupEntry(i))
-            if (sSpellStore.LookupEntry(talentSpell->SpellId))
-                sTalentTreePrimarySpellsMap[talentSpell->TalentTree].push_back(talentSpell->SpellId);
-    sTalentTreePrimarySpellsStore.Clear();
-
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTaxiNodesStore,           dbcPath,"TaxiNodes.dbc");
-
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTaxiPathStore,            dbcPath,"TaxiPath.dbc");
-    for(uint32 i = 1; i < sTaxiPathStore.GetNumRows(); ++i)
-        if(TaxiPathEntry const* entry = sTaxiPathStore.LookupEntry(i))
-            sTaxiPathSetBySource[entry->from][entry->to] = TaxiPathBySourceAndDestination(entry->ID,entry->price);
-    uint32 pathCount = sTaxiPathStore.GetNumRows();
-
-    //## TaxiPathNode.dbc ## Loaded only for initialization different structures
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTaxiPathNodeStore,        dbcPath,"TaxiPathNode.dbc");
-    // Calculate path nodes count
-    std::vector<uint32> pathLength;
-    pathLength.resize(pathCount);                           // 0 and some other indexes not used
-    for(uint32 i = 1; i < sTaxiPathNodeStore.GetNumRows(); ++i)
-        if(TaxiPathNodeEntry const* entry = sTaxiPathNodeStore.LookupEntry(i))
-        {
-            if (pathLength[entry->path] < entry->index + 1)
-                pathLength[entry->path] = entry->index + 1;
-        }
-    // Set path length
-    sTaxiPathNodesByPath.resize(pathCount);                 // 0 and some other indexes not used
-    for(uint32 i = 1; i < sTaxiPathNodesByPath.size(); ++i)
-        sTaxiPathNodesByPath[i].resize(pathLength[i]);
-    // fill data (pointers to sTaxiPathNodeStore elements
-    for(uint32 i = 1; i < sTaxiPathNodeStore.GetNumRows(); ++i)
-        if(TaxiPathNodeEntry const* entry = sTaxiPathNodeStore.LookupEntry(i))
-            sTaxiPathNodesByPath[entry->path].set(entry->index, entry);
-
-    // Initialize global taxinodes mask
-    // include existing nodes that have at least single not spell base (scripted) path
-    {
-        std::set<uint32> spellPaths;
-        for(uint32 i = 1; i < sSpellStore.GetNumRows (); ++i)
-            if(SpellEntry const* sInfo = sSpellStore.LookupEntry (i))
-                for(int j=0; j < MAX_EFFECT_INDEX; ++j)
-                    if(SpellEffectEntry const* effect = sInfo->GetSpellEffect(SpellEffectIndex(j)))
-                        if(effect->Effect==123 /*SPELL_EFFECT_SEND_TAXI*/)
-                            spellPaths.insert(effect->EffectMiscValue);
-
-        memset(sTaxiNodesMask,0,sizeof(sTaxiNodesMask));
-        memset(sOldContinentsNodesMask,0,sizeof(sTaxiNodesMask));
-        memset(sHordeTaxiNodesMask, 0, sizeof(sHordeTaxiNodesMask));
-        memset(sAllianceTaxiNodesMask, 0, sizeof(sAllianceTaxiNodesMask));
-        memset(sDeathKnightTaxiNodesMask, 0, sizeof(sDeathKnightTaxiNodesMask));
-        for(uint32 i = 1; i < sTaxiNodesStore.GetNumRows(); ++i)
-        {
-            TaxiNodesEntry const* node = sTaxiNodesStore.LookupEntry(i);
-            if(!node)
-                continue;
-
-            TaxiPathSetBySource::const_iterator src_i = sTaxiPathSetBySource.find(i);
-            if(src_i!=sTaxiPathSetBySource.end() && !src_i->second.empty())
-            {
-                bool ok = false;
-                for(TaxiPathSetForSource::const_iterator dest_i = src_i->second.begin();dest_i != src_i->second.end(); ++dest_i)
-                {
-                    // not spell path
-                    if(spellPaths.find(dest_i->second.ID)==spellPaths.end())
-                    {
-                        ok = true;
-                        break;
-                    }
-                }
-
-                if(!ok)
-                    continue;
-            }
-
-            // valid taxi network node
-            uint8  field   = (uint8)((i - 1) / 8);
-            uint32 submask = 1 << ((i-1) % 8);
-            sTaxiNodesMask[field] |= submask;
-
-            if (node->MountCreatureID[0] && node->MountCreatureID[0] != 32981)
-                sHordeTaxiNodesMask[field] |= submask;
-            if (node->MountCreatureID[1] && node->MountCreatureID[1] != 32981)
-                sAllianceTaxiNodesMask[field] |= submask;
-            if (node->MountCreatureID[0] == 32981 || node->MountCreatureID[1] == 32981)
-                sDeathKnightTaxiNodesMask[field] |= submask;
-
-            // old continent node (+ nodes virtually at old continents, check explicitly to avoid loading map files for zone info)
-            if (node->map_id < 2 || i == 82 || i == 83 || i == 93 || i == 94)
-                sOldContinentsNodesMask[field] |= submask;
-
-            // fix DK node at Ebon Hold
-            if (i == 315)
-                ((TaxiNodesEntry*)node)->MountCreatureID[1] = 32981;
-        }
-    }
-
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sTotemCategoryStore,       dbcPath,"TotemCategory.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sVehicleStore,             dbcPath,"Vehicle.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sVehicleSeatStore,         dbcPath,"VehicleSeat.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWorldMapAreaStore,        dbcPath,"WorldMapArea.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWMOAreaTableStore,        dbcPath,"WMOAreaTable.dbc");
-    for(uint32 i = 0; i < sWMOAreaTableStore.GetNumRows(); ++i)
-    {
-        if(WMOAreaTableEntry const* entry = sWMOAreaTableStore.LookupEntry(i))
-        {
-            sWMOAreaInfoByTripple.insert(WMOAreaInfoByTripple::value_type(WMOAreaTableTripple(entry->rootId, entry->adtId, entry->groupId), entry));
-        }
-    }
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWorldMapOverlayStore,     dbcPath,"WorldMapOverlay.dbc");
-    // Undercity -> Ruins of Lordaeron
-    if (WorldMapOverlayEntry* entry = (WorldMapOverlayEntry*)(uint32*)sWorldMapOverlayStore.LookupEntry(228))
-        entry->areatableID[1] = 153;
-
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWorldSafeLocsStore,       dbcPath,"WorldSafeLocs.dbc");
-
-    // error checks
-    if (bad_dbc_files.size() >= DBCFilesCount )
-    {
-        sLog.outError("\nIncorrect DataDir value in mangosd.conf or ALL required *.dbc files (%d) not found by path: %sdbc",DBCFilesCount,dataPath.c_str());
-        Log::WaitBeforeContinueIfNeed();
-        exit(1);
-    }
-    else if (!bad_dbc_files.empty() )
-    {
-        std::string str;
-        for(std::list<std::string>::iterator i = bad_dbc_files.begin(); i != bad_dbc_files.end(); ++i)
-            str += *i + "\n";
-
-        sLog.outError("\nSome required *.dbc files (%u from %d) not found or not compatible:\n%s",(uint32)bad_dbc_files.size(),DBCFilesCount,str.c_str());
-        Log::WaitBeforeContinueIfNeed();
-        exit(1);
     }
 
     // Check loaded DBC files proper version
