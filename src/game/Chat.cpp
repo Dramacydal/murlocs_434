@@ -287,6 +287,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "bgopendoorevent",SEC_ADMINISTRATOR,  false, &ChatHandler::HandleDebugBgOpenDoorEventCommand,     "", NULL },
         { "crash",                          9,  true,  &ChatHandler::HandleCrashCommand,                    "", NULL },
         { "distance",       SEC_ADMINISTRATOR,  false, &ChatHandler::HandleDebugDistanceCommand,            "", NULL },
+        { "dynamicobjectsinfo", SEC_ADMINISTRATOR,  false, &ChatHandler::HandleGetDynobjectsInfoCommand,        "", NULL },
         { "getitemstate",   SEC_ADMINISTRATOR,  false, &ChatHandler::HandleDebugGetItemStateCommand,        "", NULL },
         { "lootrecipient",  SEC_GAMEMASTER,     false, &ChatHandler::HandleDebugGetLootRecipientCommand,    "", NULL },
         { "getitemvalue",   SEC_ADMINISTRATOR,  false, &ChatHandler::HandleDebugGetItemValueCommand,        "", NULL },

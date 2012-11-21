@@ -270,6 +270,8 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleDebugResistanceCommand(char* args);
         bool HandleDebugTransportCommand(char* args);
 
+        bool HandleGetDynobjectsInfoCommand(char* args);
+
         bool HandleCrashCommand(char* args);
 
         bool HandleEventListCommand(char* args);

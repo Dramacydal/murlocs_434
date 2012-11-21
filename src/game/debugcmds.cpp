@@ -35,6 +35,7 @@
 #include "SpellMgr.h"
 #include "SpellAuras.h"
 #include "Transports.h"
+#include "DynamicObject.h"
 
 bool ChatHandler::HandleDebugSendSpellFailCommand(char* args)
 {
@@ -1393,5 +1394,39 @@ bool ChatHandler::HandleCrashCommand(char* /*args*/)
         return true;
 
     *((uint32 volatile*)NULL) = 0;
+    return true;
+}
+
+bool ChatHandler::HandleGetDynobjectsInfoCommand(char* args)
+{
+    Unit* target = getSelectedUnit();
+    if (!target)
+    {
+        SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    GuidList& guids = target->GetDynObjectsGuids();
+    int i = 0;
+    for (GuidList::iterator itr = guids.begin(); itr != guids.end(); ++itr, ++i)
+    {
+        std::stringstream ss;
+        ss << i << ": " << itr->GetString();
+        if (DynamicObject* obj = target->GetMap()->GetDynamicObject(*itr))
+        {
+            ss << " SpellId: " << obj->GetSpellId() <<
+                " EffIdx: " << obj->GetEffIndex() <<
+                " Duration: " << obj->GetDuration() <<
+                " Radius: " << obj->GetRadius() <<
+                " Caster: " << obj->GetCasterGuid().GetString() <<
+                " Type: " << obj->GetType() <<
+                " X: " << obj->GetPositionX() <<
+                " Y: " << obj->GetPositionY() <<
+                " Z: " << obj->GetPositionZ();
+        }
+        PSendSysMessage(ss.str().c_str());
+    }
+
     return true;
 }

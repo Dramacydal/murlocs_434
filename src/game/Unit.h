@@ -1878,6 +1878,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void RemoveDynObject(uint32 spellid);
         void RemoveDynObjectWithGUID(ObjectGuid guid) { m_dynObjGUIDs.remove(guid); }
         void RemoveAllDynObjects();
+        GuidList& GetDynObjectsGuids() { return m_dynObjGUIDs; }
 
         GameObject* GetGameObject(uint32 spellId) const;
         void AddGameObject(GameObject* gameObj);
