@@ -8311,7 +8311,7 @@ void Spell::UpdatePointers()
     m_targets.Update(m_caster);
 }
 
-bool Spell::CheckTargetCreatureType(Unit* target) const
+bool Spell::CheckTargetCreatureType(Unit* target, uint32 effMask) const
 {
     uint32 spellCreatureTargetMask = m_spellInfo->GetTargetCreatureType();
 
@@ -8323,6 +8323,14 @@ bool Spell::CheckTargetCreatureType(Unit* target) const
             return false;
 
         spellCreatureTargetMask = 0x7FF;
+    }
+    // Holy Wrath
+    else if (m_spellInfo->Id == 2812 && (effMask & (1 << EFFECT_INDEX_1)))
+    {
+        spellCreatureTargetMask = CREATURE_TYPEMASK_DEMON_OR_UNDEAD;
+        // Glyph of Holy Wrath
+        if (m_caster->HasAura(56420))
+            spellCreatureTargetMask |= (1 << (CREATURE_TYPE_DRAGONKIN - 1)) | (1 << (CREATURE_TYPE_ELEMENTAL - 1));
     }
 
     // Dismiss Pet and Taming Lesson and Control Roskipped
@@ -8354,7 +8362,7 @@ CurrentSpellTypes Spell::GetCurrentContainer()
         return(CURRENT_GENERIC_SPELL);
 }
 
-bool Spell::CheckTarget( Unit* target, SpellEffectIndex eff )
+bool Spell::CheckTarget(Unit* target, SpellEffectIndex eff)
 {
     SpellEffectEntry const* spellEffect = m_spellInfo->GetSpellEffect(eff);
     if(!spellEffect)
@@ -8363,7 +8371,7 @@ bool Spell::CheckTarget( Unit* target, SpellEffectIndex eff )
     // Check targets for creature type mask and remove not appropriate (skip explicit self target case, maybe need other explicit targets)
     if(spellEffect->EffectImplicitTargetA != TARGET_SELF )
     {
-        if (!CheckTargetCreatureType(target))
+        if (!CheckTargetCreatureType(target, 1 << eff))
             return false;
     }
 
