@@ -10138,6 +10138,20 @@ void Aura::PeriodicDummyTick()
             }
             break;
         }
+        case SPELLFAMILY_PALADIN:
+        {
+            // Consecration
+            if (spell->Id == 82366)
+            {
+                if (Unit* caster = GetCaster())
+                {
+                    if (DynamicObject* dynObj = caster->GetDynObject(spell->Id))
+                        target->CastSpell(dynObj->GetPositionX(), dynObj->GetPositionY(), dynObj->GetPositionZ(), 81297, true, NULL, this, GetCasterGuid());
+                }
+                return;
+            }
+            break;
+        }
         default:
             break;
     }
