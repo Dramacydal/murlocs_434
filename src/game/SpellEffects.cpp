@@ -5774,7 +5774,7 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
         else if (m_spellInfo->Id == 85673)
         {
             if (m_caster->GetPowerIndex(POWER_HOLY_POWER) != INVALID_POWER_INDEX)
-                damage *= m_caster->GetPower(POWER_HOLY_POWER);
+                damage *= m_powerCost;
         }
         // Atonement
         else if (m_spellInfo->Id == 94472)
@@ -8394,7 +8394,7 @@ void Spell::EffectInterruptCast(SpellEffectEntry const* effect)
             if ((spell->getState() == SPELL_STATE_CASTING || spell->getState() == SPELL_STATE_PREPARING && spell->GetCastTime() > 0.0f) &&
                 (curSpellInfo->GetInterruptFlags() & SPELL_INTERRUPT_FLAG_INTERRUPT) && curSpellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_SILENCE)
             {
-                unitTarget->ProhibitSpellSchool(GetSpellSchoolMask(curSpellInfo), unitTarget->CalculateAuraDuration(m_spellInfo, (1 << effect->EffectIndex), GetSpellDuration(m_spellInfo), m_caster));
+                unitTarget->ProhibitSpellSchool(GetSpellSchoolMask(curSpellInfo), unitTarget->CalculateAuraDuration(m_spellInfo, (1 << effect->EffectIndex), GetSpellDuration(m_spellInfo), m_caster, spell));
                 unitTarget->InterruptSpell(CurrentSpellTypes(i), false);
                 spellSchoolMask = GetSpellSchoolMask(curSpellInfo);
             }
