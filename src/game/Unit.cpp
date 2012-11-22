@@ -7884,6 +7884,23 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                             if (pVictim->GetCreatureTypeMask() & CREATURE_TYPEMASK_DEMON_OR_UNDEAD)
                                 return true;
                         }
+                        // Word of Glory
+                        else if (spellProto->SpellIconID == 85673)
+                        {
+                            // Search Last Word
+                            AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                            for (AuraList::const_iterator i = mDummyAuras.begin(); i!= mDummyAuras.end(); ++i)
+                            {
+                                // Renewed Hope
+                                if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PALADIN &&
+                                    (*i)->GetSpellProto()->SpellIconID == 2139 &&
+                                    (*i)->isAffectedOnSpell(spellProto))
+                                {
+                                    crit_chance += (*i)->GetModifier()->m_amount;
+                                    break;
+                                }
+                            }
+                        }
                         break;
                     case SPELLFAMILY_SHAMAN:
                         // Lava Burst

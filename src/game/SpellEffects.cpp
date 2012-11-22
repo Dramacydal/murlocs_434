@@ -11486,91 +11486,24 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                 if (!unitTarget || !unitTarget->isAlive())
                     return;
 
-                uint32 spellId1 = 0;
-                uint32 spellId2 = 0;
+                uint32 damageSpell;
+                // Seal of Righteousness
+                if (m_caster->HasAura(20154))
+                    damageSpell = 20187;        // Judgement of Righteousness
+                // Seal of Justice
+                else if (m_caster->HasAura(20164))
+                    damageSpell = 20170;        // Judgement of Justice
+                // Seal of Truth
+                else if (m_caster->HasAura(31801))
+                    damageSpell = 31804;        // Judgement of Truth
+                else
+                    damageSpell = 54158;        // Judgement
 
-                uint32 spellId3 = 0;
-                int32 SoR_damage = 0;
+                m_caster->CastSpell(unitTarget, damageSpell, true);
 
-                // Judgement self add switch
-                switch (m_spellInfo->Id)
-                {
-                    case 53407: spellId1 = 20184; break;    // Judgement of Justice
-                    case 20271:                             // Judgement of Light
-                    case 57774: spellId1 = 20185; break;    // Judgement of Light
-                    case 53408: spellId1 = 20186; break;    // Judgement of Wisdom
-                    default:
-                        ERROR_LOG("Unsupported Judgement (seal trigger) spell (Id: %u) in Spell::EffectScriptEffect",m_spellInfo->Id);
-                        return;
-                }
-
-                // offensive seals have aura dummy in 2 effect
-                Unit::AuraList const& m_dummyAuras = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
-                for(Unit::AuraList::const_iterator itr = m_dummyAuras.begin(); itr != m_dummyAuras.end(); ++itr)
-                {
-                    // search seal (offensive seals have judgement's aura dummy spell id in 2 effect
-                    if ((*itr)->GetEffIndex() != EFFECT_INDEX_2 || !IsSealSpell((*itr)->GetSpellProto()))
-                        continue;
-                    spellId2 = (*itr)->GetModifier()->m_amount;
-                    SpellEntry const *judge = sSpellStore.LookupEntry(spellId2);
-                    if (!judge)
-                        continue;
-                    break;
-                }
-
-                int32 basepoints0 = 0;
-                // if there were no offensive seals than there is seal with proc trigger aura
-                if (!spellId2)
-                {
-                    Unit::AuraList const& procTriggerAuras = m_caster->GetAurasByType(SPELL_AURA_PROC_TRIGGER_SPELL);
-                    for(Unit::AuraList::const_iterator itr = procTriggerAuras.begin(); itr != procTriggerAuras.end(); ++itr)
-                    {
-                        if ((*itr)->GetEffIndex() != EFFECT_INDEX_0 || !IsSealSpell((*itr)->GetSpellProto()))
-                            continue;
-
-                        // Seal of Wisdom
-                        if ((*itr)->GetId() == 20166)
-                        {
-                            int32 holy = m_caster->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_HOLY);
-                            if (holy < 0)
-                                holy = 0;
-
-                            basepoints0 = int32(0.32f * holy);
-                        }
-                        spellId2 = 54158;
-                        break;
-                    }
-                }
-
-                // Ranger: Seal of Righteousness - Judgement proc dummy (addition ${$MWS*(0.022*$AP+0.044*$SPH)} damage)
-                if (spellId2 == 20187)
-                {
-                    float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
-                    int32 holy = m_caster->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_HOLY);
-                    if (holy < 0)
-                        holy = 0;
-
-                    SoR_damage = int32(m_caster->GetAttackTime(BASE_ATTACK) * (ap * 0.022f + 0.044f * holy) * 0.001f);
-
-                    spellId3 = 25742;
-                }
-
-                if (spellId1)
-                    m_caster->CastSpell(unitTarget, spellId1, true);
-
-                if (spellId2)
-                {
-                    if (!basepoints0)
-                        m_caster->CastSpell(unitTarget, spellId2, true);
-                    else
-                        m_caster->CastCustomSpell(unitTarget, spellId2, &basepoints0, NULL, NULL, true);
-                }
-
-                if (spellId3)
-                {
-                    m_caster->CastCustomSpell(unitTarget, spellId3, &SoR_damage, NULL, NULL, true);
-                }
-
+                // Communion
+                if (m_caster->HasAura(31876))
+                    m_caster->CastSpell(m_caster, 57669, true); // Replenishment
                 return;
             }
             break;

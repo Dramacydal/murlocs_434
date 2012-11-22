@@ -4328,6 +4328,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 }
             }
             */
+            // Protector of the Innocent
+            if (auraSpellInfo->SpellIconID == 5014)
+            {
+                if (pVictim != this)
+                    return SPELL_AURA_PROC_FAILED;
+            }
             // Healing Discount
             if (auraSpellInfo->Id==37705)
             {
