@@ -2867,6 +2867,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // Illuminated Healing
                 case 76669:
                 {
+                    if (effIndex != EFFECT_INDEX_0)
+                        return SPELL_AURA_PROC_FAILED;
+
                     triggered_spell_id = 86273;
                     int32 maxAmt = GetHealth() / 3;
                     if (Aura* oldAura = pVictim->GetAura(triggered_spell_id, EFFECT_INDEX_0))
