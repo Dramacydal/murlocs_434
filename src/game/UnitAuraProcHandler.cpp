@@ -2692,7 +2692,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
 
                     // beacon
                     Unit* beacon = triggeredByAura->GetCaster();
-                    if (!beacon || procSpell->Id == 20267)
+                    if (!beacon || !procSpell || procSpell->Id == 20267)
                         return SPELL_AURA_PROC_FAILED;
 
                     // find caster main aura at beacon
@@ -2721,10 +2721,13 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         !beacon->IsWithinLOSInMap(pVictim))
                         return SPELL_AURA_PROC_FAILED;
 
-                    basepoints[0] = triggeredByAura->GetModifier()->m_amount*damage/100;
+                    basepoints[0] = triggeredByAura->GetModifier()->m_amount * damage / 100;
+                    // Holy Light heals for 100%
+                    if (procSpell && procSpell->Id == 635)
+                        basepoints[0] *= 2;
 
                     // cast with original caster set but beacon to beacon for apply caster mods and avoid LoS check
-                    beacon->CastCustomSpell(beacon,triggered_spell_id,&basepoints[0],NULL,NULL,true,castItem,triggeredByAura,pVictim->GetObjectGuid());
+                    beacon->CastCustomSpell(beacon, triggered_spell_id, &basepoints[0], NULL, NULL, true, castItem, triggeredByAura, pVictim->GetObjectGuid());
                     return SPELL_AURA_PROC_OK;
                 }
                 // Seal of Corruption (damage calc on apply aura)
@@ -4313,28 +4316,20 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
         }
         case SPELLFAMILY_PALADIN:
         {
-            /*
-            // Blessed Life
-            if (auraSpellInfo->SpellIconID == 2137)
+            // Tower of Radiance
+            if (auraSpellInfo->SpellIconID == 3402)
             {
-                switch (auraSpellInfo->Id)
-                {
-                    case 31828:                         // Rank 1
-                    case 31829:                         // Rank 2
-                    case 31830:                         // Rank 3
-                        break;
-                    default:
-                        ERROR_LOG("Unit::HandleProcTriggerSpellAuraProc: Spell %u miss posibly Blessed Life", auraSpellInfo->Id);
-                        return SPELL_AURA_PROC_FAILED;
-                }
-            }
-            */
-            // Protector of the Innocent
-            if (auraSpellInfo->SpellIconID == 5014)
-            {
-                if (pVictim != this)
+                // Must be target of Beacon of Light
+                if (!pVictim || !pVictim->HasAura(53563))
                     return SPELL_AURA_PROC_FAILED;
             }
+            // Protector of the Innocent
+            else if (auraSpellInfo->SpellIconID == 5014)
+            {
+                if (pVictim == this)
+                    return SPELL_AURA_PROC_FAILED;
+            }
+
             // Healing Discount
             if (auraSpellInfo->Id==37705)
             {
