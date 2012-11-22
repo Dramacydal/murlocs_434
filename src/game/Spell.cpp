@@ -4144,7 +4144,7 @@ void Spell::cast(bool skipCheck)
 
     FillTargetMap();
 
-    if(m_spellState == SPELL_STATE_FINISHED)                // stop cast if spell marked as finish somewhere in FillTargetMap
+    if (m_spellState == SPELL_STATE_FINISHED)               // stop cast if spell marked as finish somewhere in FillTargetMap
     {
         m_caster->DecreaseCastCounter();
         SetExecutedCurrently(false);
@@ -5393,13 +5393,13 @@ void Spell::TakeCastItem()
 
 void Spell::TakePower()
 {
-    if(m_CastItem || m_triggeredByAuraSpell)
+    if (m_CastItem || m_triggeredByAuraSpell)
         return;
 
     bool hit = true;
     if (m_caster->GetTypeId() == TYPEID_PLAYER)
     {
-        if (m_spellInfo->powerType == POWER_RAGE || m_spellInfo->powerType == POWER_ENERGY)
+        if (m_spellInfo->powerType == POWER_RAGE || m_spellInfo->powerType == POWER_ENERGY || m_spellInfo->powerType == POWER_HOLY_POWER)
         {
             ObjectGuid targetGuid = m_targets.getUnitTargetGuid();
             if (!targetGuid.IsEmpty())
@@ -5420,13 +5420,18 @@ void Spell::TakePower()
     }
 
     // health as power used
-    if(m_spellInfo->powerType == POWER_HEALTH)
+    if (m_spellInfo->powerType == POWER_HEALTH)
     {
-        m_caster->ModifyHealth( -(int32)m_powerCost );
+        m_caster->ModifyHealth(-(int32)m_powerCost);
         return;
     }
 
-    if(m_spellInfo->powerType >= MAX_POWERS)
+    int32 powerCost = m_powerCost;
+    // spells consume all holy power when successfully hit
+    if (hit && m_spellInfo->powerType == POWER_HOLY_POWER)
+        powerCost = m_caster->GetPower(POWER_HOLY_POWER);
+
+    if (m_spellInfo->powerType >= MAX_POWERS)
     {
         ERROR_LOG("Spell::TakePower: Unknown power type '%d'", m_spellInfo->powerType);
         return;
@@ -5434,31 +5439,31 @@ void Spell::TakePower()
 
     Powers powerType = Powers(m_spellInfo->powerType);
 
-    if(hit && powerType == POWER_RUNE)
+    if (hit && powerType == POWER_RUNE)
     {
         CheckOrTakeRunePower(true);
         return;
     }
 
-    m_caster->ModifyPower(powerType, -(int32)m_powerCost);
+    m_caster->ModifyPower(powerType, -(int32)powerCost);
 }
 
 SpellCastResult Spell::CheckOrTakeRunePower(bool take)
 {
-    if(m_caster->GetTypeId() != TYPEID_PLAYER)
+    if (m_caster->GetTypeId() != TYPEID_PLAYER)
         return SPELL_CAST_OK;
 
-    Player *plr = (Player*)m_caster;
+    Player* plr = (Player*)m_caster;
 
-    if(plr->getClass() != CLASS_DEATH_KNIGHT)
+    if (plr->getClass() != CLASS_DEATH_KNIGHT)
         return SPELL_CAST_OK;
 
-    SpellRuneCostEntry const *src = sSpellRuneCostStore.LookupEntry(m_spellInfo->runeCostID);
+    SpellRuneCostEntry const* src = sSpellRuneCostStore.LookupEntry(m_spellInfo->runeCostID);
 
-    if(!src)
+    if (!src)
         return SPELL_CAST_OK;
 
-    if(src->NoRuneCost() && (!take || src->NoRunicPowerGain()))
+    if (src->NoRuneCost() && (!take || src->NoRunicPowerGain()))
         return SPELL_CAST_OK;
 
     if (take)
@@ -5466,7 +5471,7 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take)
 
     // at this moment for rune cost exist only no cost mods, and no percent mods
     int32 runeCostMod = 10000;
-    if(Player* modOwner = plr->GetSpellModOwner())
+    if (Player* modOwner = plr->GetSpellModOwner())
         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_COST, runeCostMod, this);
 
     if (runeCostMod > 0)
@@ -5474,20 +5479,20 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take)
         int32 runeCost[NUM_RUNE_TYPES];                         // blood, frost, unholy, death
 
         // init cost data and apply mods
-        for(uint32 i = 0; i < RUNE_DEATH; ++i)
+        for (uint32 i = 0; i < RUNE_DEATH; ++i)
             runeCost[i] = runeCostMod > 0 ? src->RuneCost[i] : 0;
 
         runeCost[RUNE_DEATH] = 0;                               // calculated later
 
         // scan non-death runes (death rune not used explicitly in rune costs)
-        for(uint32 i = 0; i < MAX_RUNES; ++i)
+        for (uint32 i = 0; i < MAX_RUNES; ++i)
         {
             RuneType rune = plr->GetCurrentRune(i);
             if (runeCost[rune] <= 0)
                 continue;
 
             // already used
-            if(plr->GetRuneCooldown(i) != 0)
+            if (plr->GetRuneCooldown(i) != 0)
                 continue;
 
             if (take)
@@ -5497,21 +5502,21 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take)
         }
 
         // collect all not counted rune costs to death runes cost
-        for(uint32 i = 0; i < RUNE_DEATH; ++i)
-            if(runeCost[i] > 0)
+        for (uint32 i = 0; i < RUNE_DEATH; ++i)
+            if (runeCost[i] > 0)
                 runeCost[RUNE_DEATH] += runeCost[i];
 
         // scan death runes
-        if(runeCost[RUNE_DEATH] > 0)
+        if (runeCost[RUNE_DEATH] > 0)
         {
-            for(uint32 i = 0; i < MAX_RUNES && runeCost[RUNE_DEATH]; ++i)
+            for (uint32 i = 0; i < MAX_RUNES && runeCost[RUNE_DEATH]; ++i)
             {
                 RuneType rune = plr->GetCurrentRune(i);
                 if (rune != RUNE_DEATH)
                     continue;
 
                 // already used
-                if(plr->GetRuneCooldown(i) != 0)
+                if (plr->GetRuneCooldown(i) != 0)
                     continue;
 
                 if (take)
@@ -5524,11 +5529,11 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take)
             }
         }
 
-        if(!take && runeCost[RUNE_DEATH] > 0)
+        if (!take && runeCost[RUNE_DEATH] > 0)
             return SPELL_FAILED_NO_POWER;                       // not sure if result code is correct
     }
 
-    if(take)
+    if (take)
     {
         // you can gain some runic power when use runes
         float rp = float(src->runePowerGain);
@@ -7665,6 +7670,7 @@ uint32 Spell::CalculatePowerCost(SpellEntry const* spellInfo, Unit* caster, Spel
                 return 0;
         }
     }
+
     SpellSchools school = GetFirstSchoolInMask(spell ? spell->m_spellSchoolMask : GetSpellSchoolMask(spellInfo));
     // Flat mod from caster auras by spell school
     powerCost += caster->GetInt32Value(UNIT_FIELD_POWER_COST_MODIFIER + school);
@@ -7689,7 +7695,7 @@ uint32 Spell::CalculatePowerCost(SpellEntry const* spellInfo, Unit* caster, Spel
 SpellCastResult Spell::CheckPower()
 {
     // item cast not used power
-    if(m_CastItem)
+    if (m_CastItem)
         return SPELL_CAST_OK;
 
     // Do precise power regen on spell cast
