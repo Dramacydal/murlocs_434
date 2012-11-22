@@ -1228,11 +1228,8 @@ void Aura::HandleAddModifier(bool apply, bool Real)
         // Chakra
         if (spellProto->Id == 14751)
         {
-            if (SpellClassOptionsEntry* opt = const_cast<SpellClassOptionsEntry*>(spellProto->GetSpellClassOptions()))
-            {
-                opt->SpellFamilyFlags.Flags = 0;
-                opt->SpellFamilyFlags.Flags2 = 0;
-            }
+            const_cast<SpellEffectEntry*>(m_spellEffect)->EffectSpellClassMask.Flags = 0;
+            const_cast<SpellEffectEntry*>(m_spellEffect)->EffectSpellClassMask.Flags2 = 0;
         }
     }
 
