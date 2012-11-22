@@ -759,6 +759,9 @@ void Spell::FillTargetMap()
                             break;
                     }
                     break;
+                case TARGET_ALLY_IN_FRONT_OF_CASTER_30:
+                    SetTargetMap(SpellEffectIndex(i), spellEffect->EffectImplicitTargetA, tmpUnitLists[i /*==effToIndex[i]*/]);
+                    break;
                 case TARGET_SELF2:
                     switch(spellEffect->EffectImplicitTargetB)
                     {
@@ -3012,6 +3015,26 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
         case TARGET_LARGE_FRONTAL_CONE:
             FillAreaTargets(targetUnitMap, radius, PUSH_IN_FRONT_90, SPELL_TARGETS_AOE_DAMAGE);
             break;
+        case TARGET_ALLY_IN_FRONT_OF_CASTER_30:
+        {
+            if (m_caster->GetTypeId() == TYPEID_PLAYER)
+            {
+                Player* pCaster = (Player*)m_caster;
+                if (pCaster->GetGroup())
+                {
+                    UnitList tempTargets;
+                    FillAreaTargets(tempTargets, radius, PUSH_IN_FRONT_30, SPELL_TARGETS_FRIENDLY);
+                    for (UnitList::iterator itr = tempTargets.begin(); itr != tempTargets.end(); ++itr)
+                    {
+                        Player* plr = (*itr)->GetCharmerOrOwnerPlayerOrPlayerItself();
+                        if (plr && plr->GetGroup() == pCaster->GetGroup())
+                            targetUnitMap.push_back(*itr);
+                    }
+                    targetUnitMap.remove(m_caster);
+                }
+            }
+            break;
+        }
         case TARGET_NARROW_FRONTAL_CONE:
             // Foam Sword Attack & Bonked!
             if (m_spellInfo->Id == 62973 || m_spellInfo->Id == 62991)
