@@ -10549,6 +10549,12 @@ int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMas
                     if (Aura *aur = GetAura(57979, EFFECT_INDEX_0))
                         duration += aur->GetModifier()->m_amount * MINUTE * IN_MILLISECONDS;
                 }
+                // Inquisition
+                else if (spellProto->Id == 84963)
+                {
+                    if (GetPowerIndex(POWER_HOLY_POWER) != INVALID_POWER_INDEX)
+                        duration *= GetPower(POWER_HOLY_POWER);
+                }
                 break;
             default:
                 break;
