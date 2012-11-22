@@ -2513,6 +2513,15 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 basepoints[0] = triggerAmount * damage / 100 / GetSpellAuraMaxTicks(triggered_spell_id);
                 break;
             }
+            // Speed of Light
+            if (dummySpell->SpellIconID == 5062)
+            {
+                triggered_spell_id = 85497;
+                basepoints[0] = triggerAmount;
+                target = this;
+                break;
+            }
+
             switch(dummySpell->Id)
             {
                 // Judgement of Light
