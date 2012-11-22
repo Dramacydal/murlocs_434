@@ -2514,7 +2514,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 break;
             }
 
-            switch(dummySpell->Id)
+            switch (dummySpell->Id)
             {
                 // Judgement of Light
                 case 20185:
@@ -2862,6 +2862,20 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         default:
                             return SPELL_AURA_PROC_FAILED;
                     }
+                    break;
+                }
+                // Illuminated Healing
+                case 76669:
+                {
+                    triggered_spell_id = 86273;
+                    int32 maxAmt = GetHealth() / 3;
+                    if (Aura* oldAura = pVictim->GetAura(triggered_spell_id, EFFECT_INDEX_0))
+                        basepoints[0] = oldAura->GetModifier()->m_amount;
+
+                    basepoints[0] += int32(triggerAmount * damage / 100);
+                    // Must not exceed 1/3 of paladin's health
+                    if (basepoints[0] > maxAmt)
+                        basepoints[0] = maxAmt;
                     break;
                 }
             }
