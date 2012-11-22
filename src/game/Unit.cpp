@@ -10500,7 +10500,7 @@ int32 Unit::CalculateSpellDamage(Unit const* target, SpellEntry const* spellProt
     return value;
 }
 
-int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMask, int32 duration, Unit const* caster)
+int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMask, int32 duration, Unit const* caster, Spell const* spell /*=NULL*/)
 {
     if (duration <= 0)
         return duration;
@@ -10569,8 +10569,8 @@ int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMas
                 // Inquisition
                 else if (spellProto->Id == 84963)
                 {
-                    if (GetPowerIndex(POWER_HOLY_POWER) != INVALID_POWER_INDEX)
-                        duration *= GetPower(POWER_HOLY_POWER);
+                    if (spell && GetPowerIndex(POWER_HOLY_POWER) != INVALID_POWER_INDEX)
+                        duration *= spell->GetPowerCost();
                 }
                 break;
             default:

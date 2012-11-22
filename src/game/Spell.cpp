@@ -1695,7 +1695,7 @@ void Spell::DoSpellHitOnUnit(Unit *unit, uint32 effectMask)
                 }
             }
 
-            duration = unit->CalculateAuraDuration(m_spellInfo, effectMask, duration, m_caster);
+            duration = unit->CalculateAuraDuration(m_spellInfo, effectMask, duration, m_caster, this);
 
             if (duration != originalDuration)
             {
@@ -5433,10 +5433,16 @@ void Spell::TakePower()
         return;
     }
 
-    int32 powerCost = m_powerCost;
-    // spells consume all holy power when successfully hit
-    if (hit && m_spellInfo->powerType == POWER_HOLY_POWER)
-        powerCost = m_caster->GetPower(POWER_HOLY_POWER);
+    if (m_spellInfo->powerType == POWER_HOLY_POWER)
+    {
+        // spells consume all holy power when successfully hit
+        if (hit)
+            m_powerCost = m_caster->GetPower(POWER_HOLY_POWER);
+
+        // Inquisition - does not take power
+        if (m_spellInfo->Id == 84963)
+            return;
+    }
 
     if (m_spellInfo->powerType >= MAX_POWERS)
     {
@@ -5452,7 +5458,7 @@ void Spell::TakePower()
         return;
     }
 
-    m_caster->ModifyPower(powerType, -(int32)powerCost);
+    m_caster->ModifyPower(powerType, -(int32)m_powerCost);
 }
 
 SpellCastResult Spell::CheckOrTakeRunePower(bool take)
