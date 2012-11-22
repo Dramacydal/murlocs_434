@@ -4832,7 +4832,7 @@ bool Unit::RemoveNoStackAurasDueToAuraHolder(SpellAuraHolder *holder)
                 if(CompareAuraRanks(spellId, i_spellId) < 0)
                     return false;
 
-            DEBUG_LOG("Unit::RemoveNoStackAurasDueToAuraHolder %u will be removed due to single spell specific per  rank %u on unit %s", i_spellId, spellId, GetGuidStr().c_str());
+            DEBUG_LOG("Unit::RemoveNoStackAurasDueToAuraHolder %u will be removed due to single spell specific per target %u on unit %s", i_spellId, spellId, GetGuidStr().c_str());
 
             // Its a parent aura (create this aura in ApplyModifier)
             if ((*i).second->IsInUse())

@@ -2146,6 +2146,14 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                         EffectChainTarget = 0;              // no chain targets
                 }
             }
+            // Light of Dawn
+            else if (m_spellInfo->Id == 85222)
+            {
+                unMaxTargets = 6;
+                // Glyph of Light of Dawn
+                if (Aura* aura = m_caster->GetDummyAura(54940))
+                    unMaxTargets -= aura->GetModifier()->m_amount;
+            }
             break;
         case SPELLFAMILY_DEATHKNIGHT:
         {
@@ -3017,21 +3025,19 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             break;
         case TARGET_ALLY_IN_FRONT_OF_CASTER_30:
         {
-            if (m_caster->GetTypeId() == TYPEID_PLAYER)
+            FillRaidOrPartyTargets(targetUnitMap, m_caster, m_caster, radius, true, false, false);
+
+            PrioritizeHealthUnitQueue healthQueue;
+            for (UnitList::const_iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end(); ++itr)
+                if (!(*itr)->isDead())
+                    healthQueue.push(PrioritizeHealthUnitWraper(*itr));
+
+            targetUnitMap.clear();
+            while (!healthQueue.empty() && targetUnitMap.size() < unMaxTargets)
             {
-                Player* pCaster = (Player*)m_caster;
-                if (pCaster->GetGroup())
-                {
-                    UnitList tempTargets;
-                    FillAreaTargets(tempTargets, radius, PUSH_IN_FRONT_30, SPELL_TARGETS_FRIENDLY);
-                    for (UnitList::iterator itr = tempTargets.begin(); itr != tempTargets.end(); ++itr)
-                    {
-                        Player* plr = (*itr)->GetCharmerOrOwnerPlayerOrPlayerItself();
-                        if (plr && plr->GetGroup() == pCaster->GetGroup())
-                            targetUnitMap.push_back(*itr);
-                    }
-                    targetUnitMap.remove(m_caster);
-                }
+                if (m_caster->isInFront(healthQueue.top().getUnit(), radius, M_PI_F / 4 ))
+                    targetUnitMap.push_back(healthQueue.top().getUnit());
+                healthQueue.pop();
             }
             break;
         }
