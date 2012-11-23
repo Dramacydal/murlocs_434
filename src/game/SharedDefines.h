@@ -2925,7 +2925,7 @@ enum DiminishingGroup
     DIMINISHING_MIND_CONTROL,
     DIMINISHING_ENTRAPMENT,
     DIMINISHING_SCATTER_SHOT,
-    // Don't Diminish, but limit duration to 10s
+    // Don't Diminish, but limit duration to 8s
     DIMINISHING_LIMITONLY
 };
 

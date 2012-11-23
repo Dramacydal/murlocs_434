@@ -1113,44 +1113,29 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
             case SPELLFAMILY_PALADIN:
             {
                 // Judgement of Righteousness - receive benefit from Spell Damage and Attack power
+                // ${1+0.2*$AP+0.32*$SPH}
                 if (m_spellInfo->Id == 20187)
                 {
                     float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
                     int32 holy = m_caster->SpellBaseDamageBonusDone(GetSpellSchoolMask(m_spellInfo));
                     if (holy < 0)
                         holy = 0;
-                    damage = int32(ap * 0.20f) + int32(holy * 0.32f);
+                    damage = 1 + int32(ap * 0.20f) + int32(holy * 0.32f);
                 }
-                // Judgement of Vengeance/Corruption ${1+0.22*$SPH+0.14*$AP} + 10% for each application of Holy Vengeance/Blood Corruption on the target
-                else if ((classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x800000000)) && m_spellInfo->SpellIconID==2292)
+                // Judgement of Truth ${1+0.223*$SPH+0.142*$AP} + 20% for each application of Censure on the target
+                else if (m_spellInfo->Id == 31804)
                 {
-                    uint32 debuf_id;
-                    switch(m_spellInfo->Id)
-                    {
-                        case 53733: debuf_id = 53742; break;// Judgement of Corruption -> Blood Corruption
-                        case 31804: debuf_id = 31803; break;// Judgement of Vengeance -> Holy Vengeance
-                        default: return;
-                    }
-
                     float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
                     int32 holy = m_caster->SpellBaseDamageBonusDone(GetSpellSchoolMask(m_spellInfo));
                     if (holy < 0)
                         holy = 0;
-                    damage+=int32(ap * 0.14f) + int32(holy * 22 / 100);
+                    damage = 1 + int32(ap * 0.142f) + int32(holy * 0.223f);
                     // Get stack of Holy Vengeance on the target added by caster
-                    uint32 stacks = 0;
-                    Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
-                    for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
-                    {
-                        if (((*itr)->GetId() == debuf_id) && (*itr)->GetCasterGuid()==m_caster->GetObjectGuid())
-                        {
-                            stacks = (*itr)->GetStackAmount();
-                            break;
-                        }
-                    }
-                    // + 10% for each application of Holy Vengeance on the target
-                    if(stacks)
-                        damage += damage * stacks * 10 /100;
+
+                    if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(31803, m_caster->GetObjectGuid()))
+                        if (uint32 stacks = holder->GetStackAmount())
+                            // + 20% for each application of Censure on the target
+                            damage += damage * stacks * 20 /100;
                 }
                 // Avenger's Shield ($m1+0.07*$SPH+0.07*$AP) - ranged sdb for future
                 else if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000004000))
@@ -1181,8 +1166,12 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                 // Judgement
                 else if (m_spellInfo->Id == 54158)
                 {
-                    // [1 + 0.32 * SPH + 0.2 * AP]
-                    damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.2f);
+                    // ${1+0.25*$SPH+0.16*$AP}
+                    float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
+                    int32 holy = m_caster->SpellBaseDamageBonusDone(GetSpellSchoolMask(m_spellInfo));
+                    if (holy < 0)
+                        holy = 0;
+                    damage = 1 + int32(ap * 0.16f) + int32(holy * 0.25f);
                 }
                 break;
             }
@@ -4466,16 +4455,13 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 // Seal of Righteousness
                 if (m_caster->HasAura(20154))
                     damageSpell = 20187;        // Judgement of Righteousness
-                // Seal of Justice
-                else if (m_caster->HasAura(20164))
-                    damageSpell = 20170;        // Judgement of Justice
                 // Seal of Truth
                 else if (m_caster->HasAura(31801))
                     damageSpell = 31804;        // Judgement of Truth
                 else
                     damageSpell = 54158;        // Judgement
 
-                m_caster->CastSpell(unitTarget, damageSpell, true);
+                m_caster->CastSpell(unitTarget, damageSpell, true, NULL, NULL, m_caster->GetObjectGuid(), m_spellInfo);
 
                 // Communion
                 if (m_caster->HasAura(31876))
@@ -5728,7 +5714,7 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
             int32 holy = caster->SpellBaseHealingBonusDone(GetSpellSchoolMask(m_spellInfo));
             if (holy < 0)
                 holy = 0;
-            addhealth += int32(ap * 0.15) + int32(holy * 15 / 100);
+            addhealth += int32(ap * 0.15f) + int32(holy * 0.15f);
         }
         // Vessel of the Naaru (Vial of the Sunwell trinket)
         else if (m_spellInfo->Id == 45064)
@@ -6115,6 +6101,7 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
             level_diff = m_caster->getLevel() - 60;
             level_multiplier = 4;
             break;
+        case 20167:                                         // Seal of Insight
         case 31930:                                         // Judgements of the Wise
         case 63375:                                         // Improved Stormstrike
         case 68082:                                         // Glyph of Seal of Command

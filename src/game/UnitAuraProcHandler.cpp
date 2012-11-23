@@ -2485,8 +2485,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
         }
         case SPELLFAMILY_PALADIN:
         {
-            // Seal of Righteousness - melee proc dummy (addition ${$MWS*(0.022*$AP+0.044*$SPH)} damage)
-            if (dummyClassOptions && (dummyClassOptions->SpellFamilyFlags & UI64LIT(0x000000008000000)) && effIndex == EFFECT_INDEX_0)
+            // Seal of Righteousness - melee proc dummy (addition $MWS*(0.011*$AP+0.022*$SPH) damage)
+            if (dummySpell->Id == 20154 && effIndex == EFFECT_INDEX_0)
             {
                 triggered_spell_id = 25742;
                 float ap = GetTotalAttackPowerValue(BASE_ATTACK);
@@ -2494,8 +2494,19 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 if (holy < 0)
                     holy = 0;
 
-                basepoints[0] = int32(GetAttackTime(BASE_ATTACK) * (ap * 0.022f + 0.044f * holy) / 1000);
+                basepoints[0] = int32(GetAttackTime(BASE_ATTACK) * (ap * 0.011f + 0.022f * holy) / 1000);
+                break;
+            }
+            // Seal of Justice - melee proc dummy (addition $MWS*(0.005*$AP+0.01*$SPH) damage)
+            else if (dummySpell->Id == 20164)
+            {
+                triggered_spell_id = 20170;
+                float ap = GetTotalAttackPowerValue(BASE_ATTACK);
+                int32 holy = SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_HOLY);
+                if (holy < 0)
+                    holy = 0;
 
+                basepoints[1] = int32(GetAttackTime(BASE_ATTACK) * (ap * 0.005f + 0.01f * holy) / 1000);
                 break;
             }
             // Righteous Vengeance
@@ -2623,29 +2634,20 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     triggered_spell_id = 31786;
                     break;
                 }
-                // Seal of Vengeance (damage calc on apply aura)
+                // Seal of Truth (damage calc on apply aura)
                 case 31801:
                 {
                     if (effIndex != EFFECT_INDEX_0)         // effect 1,2 used by seal unleashing code
                         return SPELL_AURA_PROC_FAILED;
 
                     // At melee attack or Hammer of the Righteous spell damage considered as melee attack
-                    if ((procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT) || (procSpell && procSpell->Id == 53595) )
-                        triggered_spell_id = 31803;         // Holy Vengeance
+                    if ((procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT) || procSpell && procSpell->Id == 53595)
+                        triggered_spell_id = 31803;         // Censure
 
-                    // Add 5-stack effect from Holy Vengeance
-                    uint32 stacks = 0;
-                    AuraList const& auras = target->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
-                    for(AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
-                    {
-                        if (((*itr)->GetId() == 31803) && (*itr)->GetCasterGuid() == GetObjectGuid())
-                        {
-                            stacks = (*itr)->GetStackAmount();
-                            break;
-                        }
-                    }
-                    if (stacks >= 5)
-                        CastSpell(target,42463,true,NULL,triggeredByAura);
+                    // Add 5-stack effect from Censure
+                    if (SpellAuraHolder* holder = target->GetSpellAuraHolder(triggered_spell_id, GetObjectGuid()))
+                        if (holder->GetStackAmount() >= holder->GetSpellProto()->GetStackAmount())
+                            CastSpell(target, 42463, true, NULL, triggeredByAura);
                     break;
                 }
                 // Judgements of the Wise
@@ -2736,31 +2738,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     // cast with original caster set but beacon to beacon for apply caster mods and avoid LoS check
                     beacon->CastCustomSpell(beacon, triggered_spell_id, &basepoints[0], NULL, NULL, true, castItem, triggeredByAura, pVictim->GetObjectGuid());
                     return SPELL_AURA_PROC_OK;
-                }
-                // Seal of Corruption (damage calc on apply aura)
-                case 53736:
-                {
-                    if (effIndex != EFFECT_INDEX_0)         // effect 1,2 used by seal unleashing code
-                        return SPELL_AURA_PROC_FAILED;
-
-                    // At melee attack or Hammer of the Righteous spell damage considered as melee attack
-                    if ((procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT) || (procSpell && procSpell->Id == 53595))
-                        triggered_spell_id = 53742;         // Blood Corruption
-
-                    // Add 5-stack effect from Blood Corruption
-                    uint32 stacks = 0;
-                    AuraList const& auras = target->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
-                    for(AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
-                    {
-                        if (((*itr)->GetId() == 53742) && (*itr)->GetCasterGuid() == GetObjectGuid())
-                        {
-                            stacks = (*itr)->GetStackAmount();
-                            break;
-                        }
-                    }
-                    if (stacks >= 5)
-                        CastSpell(target, 53739, true, NULL, triggeredByAura);
-                    break;
                 }
                 // Glyph of Holy Light
                 case 54937:
