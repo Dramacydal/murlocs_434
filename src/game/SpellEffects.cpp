@@ -4456,7 +4456,34 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
         }
         case SPELLFAMILY_PALADIN:
         {
-            switch(m_spellInfo->SpellIconID)
+            // Judgement (seal trigger)
+            if (m_spellInfo->GetCategory() == SPELLCATEGORY_JUDGEMENT)
+            {
+                if (!unitTarget || !unitTarget->isAlive())
+                    return;
+
+                uint32 damageSpell;
+                // Seal of Righteousness
+                if (m_caster->HasAura(20154))
+                    damageSpell = 20187;        // Judgement of Righteousness
+                // Seal of Justice
+                else if (m_caster->HasAura(20164))
+                    damageSpell = 20170;        // Judgement of Justice
+                // Seal of Truth
+                else if (m_caster->HasAura(31801))
+                    damageSpell = 31804;        // Judgement of Truth
+                else
+                    damageSpell = 54158;        // Judgement
+
+                m_caster->CastSpell(unitTarget, damageSpell, true);
+
+                // Communion
+                if (m_caster->HasAura(31876))
+                    m_caster->CastSpell(m_caster, 57669, true); // Replenishment
+                return;
+            }
+
+            switch (m_spellInfo->SpellIconID)
             {
                 case 156:                                   // Holy Shock
                 {
@@ -11469,36 +11496,6 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                 }
                 default:
                     break;
-            }
-            break;
-        }
-        case SPELLFAMILY_PALADIN:
-        {
-            // Judgement (seal trigger)
-            if (m_spellInfo->GetCategory() == SPELLCATEGORY_JUDGEMENT)
-            {
-                if (!unitTarget || !unitTarget->isAlive())
-                    return;
-
-                uint32 damageSpell;
-                // Seal of Righteousness
-                if (m_caster->HasAura(20154))
-                    damageSpell = 20187;        // Judgement of Righteousness
-                // Seal of Justice
-                else if (m_caster->HasAura(20164))
-                    damageSpell = 20170;        // Judgement of Justice
-                // Seal of Truth
-                else if (m_caster->HasAura(31801))
-                    damageSpell = 31804;        // Judgement of Truth
-                else
-                    damageSpell = 54158;        // Judgement
-
-                m_caster->CastSpell(unitTarget, damageSpell, true);
-
-                // Communion
-                if (m_caster->HasAura(31876))
-                    m_caster->CastSpell(m_caster, 57669, true); // Replenishment
-                return;
             }
             break;
         }
