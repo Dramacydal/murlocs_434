@@ -2507,11 +2507,18 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 break;
             }
             // Sheath of Light
-            if (dummySpell->SpellIconID == 3030)
+            else if (dummySpell->SpellIconID == 3030)
             {
                 triggered_spell_id = 54203;
                 basepoints[0] = triggerAmount * damage / 100 / GetSpellAuraMaxTicks(triggered_spell_id);
                 break;
+            }
+            // Tower of Radiance, Rank 3
+            else if (dummySpell->SpellIconID == 3402)
+            {
+                // Must be target of Beacon of Light
+                if (!pVictim || !pVictim->GetSpellAuraHolder(53563, GetObjectGuid()))
+                    return SPELL_AURA_PROC_FAILED;
             }
 
             switch (dummySpell->Id)
@@ -4333,11 +4340,11 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
         }
         case SPELLFAMILY_PALADIN:
         {
-            // Tower of Radiance
+            // Tower of Radiance, Ranks 1-2
             if (auraSpellInfo->SpellIconID == 3402)
             {
                 // Must be target of Beacon of Light
-                if (!pVictim || !pVictim->HasAura(53563))
+                if (!pVictim || !pVictim->GetSpellAuraHolder(53563, GetObjectGuid()))
                     return SPELL_AURA_PROC_FAILED;
             }
             // Protector of the Innocent
