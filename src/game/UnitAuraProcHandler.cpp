@@ -2492,6 +2492,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             {
                 if (int32 bp = damage + absorb)
                 {
+                    bp = int32(bp * triggerAmount / 100);
                     triggered_spell_id = 76691;
                     // stack with old buff
                     if (SpellAuraHolder* oldHolder = GetSpellAuraHolder(triggered_spell_id, GetObjectGuid()))
@@ -2499,7 +2500,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                             bp += oldAura->GetModifier()->m_amount;
 
                     // not more than pct of health
-                    int32 maxVal = int32(triggerAmount * 2 * GetMaxHealth() / 100);
+                    int32 maxVal = int32(GetMaxHealth() / 10);
                     if (bp > maxVal)
                         bp = maxVal;
 
@@ -2572,20 +2573,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 case 20337:
                     triggered_spell_id = 54499;
                     break;
-                case 20911:                                 // Blessing of Sanctuary
-                case 25899:                                 // Greater Blessing of Sanctuary
-                {
-                    target = this;
-                    switch (target->getPowerType())
-                    {
-                        case POWER_MANA:
-                            triggered_spell_id = 57319;
-                            break;
-                        default:
-                            return SPELL_AURA_PROC_FAILED;
-                    }
-                    break;
-                }
                 // Holy Power (Redemption Armor set)
                 case 28789:
                 {

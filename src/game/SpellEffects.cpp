@@ -1155,6 +1155,23 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                         holy = 0;
                     damage += int32(ap * 0.15f) + int32(holy * 15 / 100);
                 }
+                // Shield of the Righteous
+                else if (m_spellInfo->Id == 53600)
+                {
+                    switch (m_usedHolyPower)
+                    {
+                        case 1:
+                            damage -= 1;
+                            break;
+                        case 2:
+                            damage = damage * 3 - 3;
+                            break;
+                        case 3:
+                            damage = damage * 6 - 6;
+                            break;
+                    }
+                    break;
+                }
                 // Judgement
                 else if (m_spellInfo->Id == 54158)
                 {

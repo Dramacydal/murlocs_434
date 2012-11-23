@@ -7590,10 +7590,6 @@ uint32 Unit::SpellDamageBonusTaken(Unit *pCaster, SpellEntry const *spellProto, 
                     TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
                 }
                 break;
-            case 20911:                                     // Blessing of Sanctuary
-            case 25899:                                     // Greater Blessing of Sanctuary
-                TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
-                break;
             case 47580:                                     // Pain and Suffering (Rank 1)      TODO: can be pct modifier aura
             case 47581:                                     // Pain and Suffering (Rank 2)
                 // Shadow Word: Death
@@ -8773,10 +8769,6 @@ uint32 Unit::MeleeDamageBonusTaken(Unit *pCaster, uint32 pdamage,WeaponAttackTyp
 
                     TakenPercent *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
                 }
-                break;
-            case 20911:                                     // Blessing of Sanctuary
-            case 25899:                                     // Greater Blessing of Sanctuary
-                TakenPercent *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
                 break;
         }
     }
