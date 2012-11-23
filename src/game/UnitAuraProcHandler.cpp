@@ -5117,7 +5117,7 @@ SpellAuraProcResult Unit::HandleAddFlatModifierAuraProc(Unit* pVictim, uint32 /*
                 if (!pVictim || triggeredByAura->GetEffIndex() != EFFECT_INDEX_0)
                     return SPELL_AURA_PROC_FAILED;
 
-                if (!procSpell || GetSpellSpecific(procSpell->Id) != SPELL_JUDGEMENT && procSpell->Id != 54158)
+                if (!procSpell || procSpell->Id != 54158)
                     return SPELL_AURA_PROC_FAILED;
 
                 int32 bp0 = triggeredByAura->GetModifier()->m_amount;
