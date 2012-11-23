@@ -525,6 +525,7 @@ class Spell
         WorldObject* GetCastingObject() const;
 
         uint32 GetPowerCost() const { return m_powerCost; }
+        uint32 GetUsedHolyPower() const { return m_usedHolyPower; }
 
         void UpdatePointers();                              // must be used at call Spell code after time delay (non triggered spell cast/update spell call/etc)
 
@@ -566,6 +567,7 @@ class Spell
         SpellSchoolMask m_spellSchoolMask;                  // Spell school (can be overwrite for some spells (wand shoot for example)
         WeaponAttackType m_attackType;                      // For weapon based attack
         uint32 m_powerCost;                                 // Calculated spell cost     initialized only in Spell::prepare
+        uint32 m_usedHolyPower;
         int32 m_casttime;                                   // Calculated spell cast time initialized only in Spell::prepare
         int32 m_duration;
         bool m_canReflect;                                  // can reflect this spell?
