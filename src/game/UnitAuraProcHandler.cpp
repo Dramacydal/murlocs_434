@@ -4350,7 +4350,8 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Protector of the Innocent
             else if (auraSpellInfo->SpellIconID == 5014)
             {
-                if (pVictim == this)
+                // Target must not be caster and not from Holy Radiance periodic heal
+                if (pVictim == this || !procSpell || procSpell->Id == 86452)
                     return SPELL_AURA_PROC_FAILED;
             }
 
