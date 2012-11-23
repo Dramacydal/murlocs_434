@@ -2487,6 +2487,28 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 basepoints[1] = int32(GetAttackTime(BASE_ATTACK) * (ap * 0.005f + 0.01f * holy) / 1000);
                 break;
             }
+            // Vengeance
+            else if (dummySpell->Id == 84839)
+            {
+                if (int32 bp = damage + absorb)
+                {
+                    triggered_spell_id = 76691;
+                    // stack with old buff
+                    if (SpellAuraHolder* oldHolder = GetSpellAuraHolder(triggered_spell_id, GetObjectGuid()))
+                        if (Aura* oldAura = oldHolder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                            bp += oldAura->GetModifier()->m_amount;
+
+                    // not more than pct of health
+                    int32 maxVal = int32(triggerAmount * 2 * GetMaxHealth() / 100);
+                    if (bp > maxVal)
+                        bp = maxVal;
+
+                    basepoints[0] = bp;
+                    basepoints[1] = bp;
+                }
+                break;
+            }
+
             // Righteous Vengeance
             if (dummySpell->SpellIconID == 3025)
             {
@@ -2829,8 +2851,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
 
                     triggered_spell_id = 86273;
                     int32 maxAmt = GetHealth() / 3;
-                    if (Aura* oldAura = pVictim->GetAura(triggered_spell_id, EFFECT_INDEX_0))
-                        basepoints[0] = oldAura->GetModifier()->m_amount;
+                    if (SpellAuraHolder* oldHolder = pVictim->GetSpellAuraHolder(triggered_spell_id, GetObjectGuid()))
+                        if (Aura* oldAura = oldHolder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                            basepoints[0] = oldAura->GetModifier()->m_amount;
 
                     basepoints[0] += int32(triggerAmount * damage / 100);
                     // Must not exceed 1/3 of paladin's health
