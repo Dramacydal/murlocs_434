@@ -6294,7 +6294,7 @@ void Aura::HandlePeriodicEnergize(bool apply, bool Real)
             }
             case 31930:                                     // Judgements of the Wise
             {
-                ChangeAmount(target->GetCreateMana() * GetBasePoints() / 100);
+                ChangeAmount(target->GetCreateMana() * GetBasePoints() / 100 / GetAuraMaxTicks());
                 break;
             }
             case 48391:                                     // Owlkin Frenzy 2% base mana
