@@ -5801,7 +5801,7 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
         else if (m_spellInfo->Id == 85222 || m_spellInfo->Id == 85673)
         {
             if (m_caster->GetPowerIndex(POWER_HOLY_POWER) != INVALID_POWER_INDEX)
-                m_healing *= m_powerCost;
+                addhealth *= m_powerCost;
         }
         // Atonement
         else if (m_spellInfo->Id == 94472)
