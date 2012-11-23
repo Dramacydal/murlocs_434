@@ -2629,18 +2629,13 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     break;
                 }
                 // Judgements of the Wise
-                case 31876:
-                case 31877:
                 case 31878:
                     // triggered only at casted Judgement spells, not at additional Judgement effects
-                    if(!procSpell || procSpell->GetCategory() != 1210)
+                    if (!procSpell || procSpell->GetCategory() != 1210)
                         return SPELL_AURA_PROC_FAILED;
 
                     target = this;
                     triggered_spell_id = 31930;
-
-                    // Replenishment
-                    CastSpell(this, 57669, true, NULL, triggeredByAura);
                     break;
                 // Paladin Tier 6 Trinket (Ashtongue Talisman of Zeal)
                 case 40470:

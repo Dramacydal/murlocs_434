@@ -6123,7 +6123,6 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
             level_multiplier = 4;
             break;
         case 20167:                                         // Seal of Insight
-        case 31930:                                         // Judgements of the Wise
         case 63375:                                         // Improved Stormstrike
         case 68082:                                         // Glyph of Seal of Command
             damage = damage * unitTarget->GetCreateMana() / 100;
