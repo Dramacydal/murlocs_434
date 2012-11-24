@@ -941,10 +941,10 @@ void Spell::prepareDataForTriggerSystem()
             if (m_spellInfo->IsFitToFamilyMask(UI64LIT(0x0001000900B80400)))
                 m_canTrigger = true;
             // Seal of Righteousness proc
-            else if (m_spellInfo->Id == 20154)
+            else if (m_spellInfo->Id == 25742)
                 m_canTrigger = true;
             // Seal of Justice proc
-            else if (m_spellInfo->Id == 20164)
+            else if (m_spellInfo->Id == 20170)
                 m_canTrigger = true;
             // Censure
             else if (m_spellInfo->Id == 31803)
