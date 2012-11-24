@@ -2143,25 +2143,13 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             break;
         }
         case SPELLFAMILY_PALADIN:
-            if (m_spellInfo->Id == 20424)                   // Seals of Command (2 more target for single targeted spell)
+            if (m_spellInfo->Id == 20424)                   // Seals of Command (2 more targets for Seal of Righteousness Proc)
             {
-                // overwrite EffectChainTarget for non single target spell
-                if (Spell* currSpell = m_caster->GetCurrentSpell(CURRENT_GENERIC_SPELL))
-                {
-                    for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
-                        if (SpellEffectEntry const* spellEffect = currSpell->m_spellInfo->GetSpellEffect(SpellEffectIndex(i)))
-                            if (spellEffect->EffectChainTarget > 0)
-                                EffectChainTarget = 0;      // no chain targets
-                    if (currSpell->m_spellInfo->GetMaxAffectedTargets() > 0)
-                        EffectChainTarget = 0;              // no chain targets
-                }
-
-                if (EffectChainTarget != 0)
-                    // Seal of Righteousness
-                    if (m_caster->HasAura(20154))
-                        EffectChainTarget = 3;
-                    else
-                        EffectChainTarget = 1;
+                // Seal of Righteousness
+                if (m_caster->HasAura(20154))
+                    EffectChainTarget = 3;
+                else
+                    EffectChainTarget = 1;
             }
             // Light of Dawn
             else if (m_spellInfo->Id == 85222)
