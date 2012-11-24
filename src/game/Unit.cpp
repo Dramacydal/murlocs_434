@@ -6952,23 +6952,26 @@ void Unit::UnsummonAllTotems()
 int32 Unit::DealHeal(Unit* pVictim, uint32 addhealth, SpellEntry const* spellProto, bool critical, uint32 absorb)
 {
     int32 gain = pVictim->ModifyHealth(int32(addhealth));
-
+    int32 overheal = int32(addhealth) - gain;
     Unit* unit = this;
 
     if (GetTypeId()==TYPEID_UNIT && ((Creature*)this)->IsTotem() && ((Totem*)this)->GetTotemType() != TOTEM_STATUE)
         unit = GetOwner();
 
     // overheal = addhealth - gain
-    unit->SendHealSpellLog(pVictim, spellProto->Id, addhealth, addhealth - gain, critical, absorb);
+    unit->SendHealSpellLog(pVictim, spellProto->Id, addhealth, overheal, critical, absorb);
 
-    if (addhealth - gain > 0)
+    if (overheal > 0)
     {
         // Guarded by the Light (Rank 2), paladin talent
-        if (HasAura(85646))
+        if (pVictim == this && HasAura(85646))
         {
-            int32 bp = addhealth - gain;
-            // cast absorb
-            CastCustomSpell(pVictim, 88063, &bp, NULL, NULL, true);
+            if (Aura* aura = GetAura(85646, EFFECT_INDEX_0))
+                if (aura->GetModifier()->m_amount > overheal)
+                    aura->GetHolder()->RefreshHolder();
+                else
+                    // cast absorb
+                    CastCustomSpell(pVictim, 88063, &overheal, NULL, NULL, true);
         }
     }
 
