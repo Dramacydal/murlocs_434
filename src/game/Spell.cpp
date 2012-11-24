@@ -6063,9 +6063,9 @@ SpellCastResult Spell::CheckCast(bool strict)
 
         //check creature type
         //ignore self casts (including area casts when caster selected as target)
-        if(non_caster_target)
+        if (non_caster_target)
         {
-            if(!CheckTargetCreatureType(target))
+            if (!CheckTargetCreatureType(target))
             {
                 if(target->GetTypeId() == TYPEID_PLAYER)
                     return SPELL_FAILED_TARGET_IS_PLAYER;
@@ -6082,7 +6082,7 @@ SpellCastResult Spell::CheckCast(bool strict)
             for(int k = 0; k < MAX_EFFECT_INDEX;  ++k)
             {
                 SpellEffectEntry const* spellEffect = m_spellInfo->GetSpellEffect(SpellEffectIndex(k));
-                if(!spellEffect)
+                if (!spellEffect)
                     continue;
                 if (IsExplicitPositiveTarget(spellEffect->EffectImplicitTargetA))
                 {
@@ -6092,7 +6092,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                         target_hostile = m_caster->IsHostileTo(target);
                     }
 
-                    if(target_hostile)
+                    if (target_hostile)
                         return SPELL_FAILED_BAD_TARGETS;
 
                     explicit_target_mode = true;
@@ -6105,7 +6105,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                         target_friendly = m_caster->IsFriendlyTo(target);
                     }
 
-                    if(target_friendly)
+                    if (target_friendly)
                         return SPELL_FAILED_BAD_TARGETS;
 
                     explicit_target_mode = true;
@@ -6116,7 +6116,7 @@ SpellCastResult Spell::CheckCast(bool strict)
             if (!explicit_target_mode && m_caster->GetTypeId() == TYPEID_UNIT && m_caster->GetCharmerOrOwnerGuid() && !IsDispelSpell(m_spellInfo))
             {
                 // check correctness positive/negative cast target (pet cast real check and cheating check)
-                if(IsPositiveSpell(m_spellInfo->Id))
+                if (IsPositiveSpell(m_spellInfo->Id))
                 {
                     if (!target_hostile_checked)
                     {
@@ -6124,7 +6124,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                         target_hostile = m_caster->IsHostileTo(target);
                     }
 
-                    if(target_hostile)
+                    if (target_hostile)
                         return SPELL_FAILED_BAD_TARGETS;
                 }
                 else
@@ -6135,7 +6135,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                         target_friendly = m_caster->IsFriendlyTo(target);
                     }
 
-                    if(target_friendly)
+                    if (target_friendly)
                         return SPELL_FAILED_BAD_TARGETS;
                 }
             }
@@ -6456,9 +6456,9 @@ SpellCastResult Spell::CheckCast(bool strict)
                 break;
             case SPELL_EFFECT_DUMMY:
             {
-                if(m_spellInfo->SpellIconID == 1648)        // Execute
+                if (m_spellInfo->SpellIconID == 1648)       // Execute
                 {
-                    if(!m_targets.getUnitTarget() || m_targets.getUnitTarget()->GetHealth() > m_targets.getUnitTarget()->GetMaxHealth()*0.2 && !m_caster->IsIgnoreUnitState(m_spellInfo, IGNORE_UNIT_TARGET_STATE))
+                    if (!m_targets.getUnitTarget() || m_targets.getUnitTarget()->GetHealth() > m_targets.getUnitTarget()->GetMaxHealth()*0.2 && !m_caster->IsIgnoreUnitState(m_spellInfo, IGNORE_UNIT_TARGET_STATE))
                         return SPELL_FAILED_BAD_TARGETS;
                 }
                 else if (m_spellInfo->Id == 51582)          // Rocket Boots Engaged
@@ -6513,13 +6513,10 @@ SpellCastResult Spell::CheckCast(bool strict)
             case SPELL_EFFECT_SCHOOL_DAMAGE:
             {
                 // Hammer of Wrath
-                if(m_spellInfo->SpellVisual[0] == 7250)
+                if (m_spellInfo->SpellVisual[0] == 7250)
                 {
                     if (!m_targets.getUnitTarget())
                         return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
-
-                    if(m_targets.getUnitTarget()->GetHealth() > m_targets.getUnitTarget()->GetMaxHealth()*0.2)
-                        return SPELL_FAILED_BAD_TARGETS;
                 }
                 break;
             }
@@ -6632,21 +6629,21 @@ SpellCastResult Spell::CheckCast(bool strict)
                     return SPELL_FAILED_BAD_TARGETS;
 
                 Item* foodItem = m_targets.getItemTarget();
-                if(!foodItem)
+                if (!foodItem)
                     return SPELL_FAILED_BAD_TARGETS;
 
                 Pet* pet = m_caster->GetPet();
 
-                if(!pet)
+                if (!pet)
                     return SPELL_FAILED_NO_PET;
 
-                if(!pet->HaveInDiet(foodItem->GetProto()))
+                if (!pet->HaveInDiet(foodItem->GetProto()))
                     return SPELL_FAILED_WRONG_PET_FOOD;
 
-                if(!pet->GetCurrentFoodBenefitLevel(foodItem->GetProto()->ItemLevel))
+                if (!pet->GetCurrentFoodBenefitLevel(foodItem->GetProto()->ItemLevel))
                     return SPELL_FAILED_FOOD_LOWLEVEL;
 
-                if(pet->isInCombat())
+                if (pet->isInCombat())
                     return SPELL_FAILED_AFFECTING_COMBAT;
 
                 break;
@@ -6899,21 +6896,21 @@ SpellCastResult Spell::CheckCast(bool strict)
 
                 Player* target = sObjectMgr.GetPlayer(((Player*)m_caster)->GetSelectionGuid());
 
-                if ( !target || ((Player*)m_caster) == target)
+                if (!target || ((Player*)m_caster) == target)
                     return SPELL_FAILED_BAD_TARGETS;
 
                 if (!target->IsInSameRaidWith((Player*)m_caster) && m_spellInfo->Id != 48955)
                     return SPELL_FAILED_BAD_TARGETS;
 
                 // check if our map is dungeon
-                if( sMapStore.LookupEntry(m_caster->GetMapId())->IsDungeon() )
+                if (sMapStore.LookupEntry(m_caster->GetMapId())->IsDungeon())
                 {
                     InstanceTemplate const* instance = ObjectMgr::GetInstanceTemplate(m_caster->GetMapId());
-                    if(!instance)
+                    if (!instance)
                         return SPELL_FAILED_TARGET_NOT_IN_INSTANCE;
-                    if ( instance->levelMin > target->getLevel() )
+                    if (instance->levelMin > target->getLevel())
                         return SPELL_FAILED_LOWLEVEL;
-                    if ( instance->levelMax && instance->levelMax < target->getLevel() )
+                    if (instance->levelMax && instance->levelMax < target->getLevel())
                         return SPELL_FAILED_HIGHLEVEL;
                 }
 
@@ -6924,10 +6921,10 @@ SpellCastResult Spell::CheckCast(bool strict)
             }
             case SPELL_EFFECT_FRIEND_SUMMON:
             {
-                if(m_caster->GetTypeId() != TYPEID_PLAYER)
+                if (m_caster->GetTypeId() != TYPEID_PLAYER)
                     return SPELL_FAILED_BAD_TARGETS;
 
-                if(((Player*)m_caster)->GetSelectionGuid().IsEmpty())
+                if (((Player*)m_caster)->GetSelectionGuid().IsEmpty())
                     return SPELL_FAILED_BAD_TARGETS;
 
                 Player* target = sObjectMgr.GetPlayer(((Player*)m_caster)->GetSelectionGuid());
@@ -7181,7 +7178,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (m_caster->GetTypeId() != TYPEID_PLAYER || m_CastItem)
                     break;
 
-                if(m_targets.getUnitTarget()->getPowerType() != POWER_MANA)
+                if (m_targets.getUnitTarget()->getPowerType() != POWER_MANA)
                     return SPELL_FAILED_BAD_TARGETS;
 
                 break;
@@ -7429,7 +7426,7 @@ SpellCastResult Spell::CheckPetCast(Unit* target)
         {
             if(IsPositiveSpell(m_spellInfo->Id) && !IsDispelSpell(m_spellInfo) && m_spellInfo->Id != 47482) // Ghoul Leap excluding
             {
-                if(m_caster->IsHostileTo(_target))
+                if (m_caster->IsHostileTo(_target))
                 {
                     DEBUG_LOG("Charmed creature attempt to cast positive spell %d, but target %s is hostile", m_spellInfo->Id, target->GetGuidStr().c_str());
                     return SPELL_FAILED_BAD_TARGETS;
@@ -7443,10 +7440,10 @@ SpellCastResult Spell::CheckPetCast(Unit* target)
             else
             {
                 bool dualEffect = false;
-                for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
+                for (int j = 0; j < MAX_EFFECT_INDEX; ++j)
                 {
                     SpellEffectEntry const* spellEffect = m_spellInfo->GetSpellEffect(SpellEffectIndex(j));
-                    if(!spellEffect)
+                    if (!spellEffect)
                         continue;
 
                     // This effects is positive AND negative. Need for vehicles cast.
@@ -8889,7 +8886,7 @@ SpellCastResult Spell::CanOpenLock(SpellEffectIndex effIndex, uint32 lockId, Ski
         }
     }
 
-    if(reqKey)
+    if (reqKey)
         return SPELL_FAILED_BAD_TARGETS;
 
     return SPELL_CAST_OK;

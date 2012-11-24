@@ -152,7 +152,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
     }
 
     // check also  BIND_WHEN_PICKED_UP and BIND_QUEST_ITEM for .additem or .additemset case by GM (not binded at adding to inventory)
-    if( pItem->GetProto()->Bonding == BIND_WHEN_USE || pItem->GetProto()->Bonding == BIND_WHEN_PICKED_UP || pItem->GetProto()->Bonding == BIND_QUEST_ITEM )
+    if (pItem->GetProto()->Bonding == BIND_WHEN_USE || pItem->GetProto()->Bonding == BIND_WHEN_PICKED_UP || pItem->GetProto()->Bonding == BIND_QUEST_ITEM)
     {
         if (!pItem->IsSoulBound())
         {
@@ -190,10 +190,10 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
             // for implicit area/coord target spells
             if (spellEffect && (IsPointEffectTarget(Targets(spellEffect->EffectImplicitTargetA)) ||
                 IsAreaEffectTarget(Targets(spellEffect->EffectImplicitTargetA))))
-                Spell::SendCastResult(_player,spellInfo,cast_count,SPELL_FAILED_NO_VALID_TARGETS);
+                Spell::SendCastResult(_player, spellInfo, cast_count, SPELL_FAILED_NO_VALID_TARGETS);
             // for explicit target spells
             else
-                Spell::SendCastResult(_player,spellInfo,cast_count,SPELL_FAILED_BAD_TARGETS);
+                Spell::SendCastResult(_player, spellInfo, cast_count, SPELL_FAILED_BAD_TARGETS);
         }
         return;
     }
@@ -202,7 +202,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
     if (!sScriptMgr.OnItemUse(pUser, pItem, targets))
     {
         // no script or script not process request by self
-        pUser->CastItemUseSpell(pItem,targets,cast_count,glyphIndex);
+        pUser->CastItemUseSpell(pItem, targets, cast_count, glyphIndex);
     }
 }
 
