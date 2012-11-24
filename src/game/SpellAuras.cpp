@@ -6131,7 +6131,8 @@ void Aura::HandleAuraProcTriggerSpell(bool apply, bool Real)
             else
                 target->getHostileRefManager().ResetThreatRedirection();
             break;
-        case 85416:                                         // Grand Crusader
+        case 75806:                                         // Grand Crusader (Rank 1)
+        case 85043:                                         // Grand Crusader (Rank 2)
         {
             if (apply)
             {
