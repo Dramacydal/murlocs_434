@@ -11899,9 +11899,8 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             if (GetSpellSpecific(m_spellProto->Id) != SPELL_AURA)
                 return;
 
-            // Sanctified Retribution and Swift Retribution (they share one aura), but not Retribution Aura (already gets modded)
-            if (classOptions && (classOptions->SpellFamilyFlags & UI64LIT(0x0000000000000008))==0)
-                spellId1 = 63531;                           // placeholder for talent spell mods
+            // Communion, party damage increase
+            spellId1 = 63531;                               // placeholder for talent spell mods
             // Improved Concentration Aura (auras bonus)
             spellId2 = 63510;                               // placeholder for talent spell mods
             // Improved Devotion Aura (auras bonus)
