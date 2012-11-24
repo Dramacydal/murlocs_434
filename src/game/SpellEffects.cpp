@@ -6160,7 +6160,6 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
             break;
         case 20167:                                         // Seal of Insight
         case 63375:                                         // Improved Stormstrike
-        case 68082:                                         // Glyph of Seal of Command
             damage = damage * unitTarget->GetCreateMana() / 100;
             break;
         case 48542:                                         // Revitalize (mana restore case) - Ranger: corrected mana restore!

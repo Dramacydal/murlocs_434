@@ -940,6 +940,15 @@ void Spell::prepareDataForTriggerSystem()
             // For Judgements (all) / Holy Shock triggers need do it
             if (m_spellInfo->IsFitToFamilyMask(UI64LIT(0x0001000900B80400)))
                 m_canTrigger = true;
+            // Seal of Righteousness proc
+            else if (m_spellInfo->Id == 20154)
+                m_canTrigger = true;
+            // Seal of Justice proc
+            else if (m_spellInfo->Id == 20164)
+                m_canTrigger = true;
+            // Censure
+            else if (m_spellInfo->Id == 31803)
+                m_canTrigger = true;
             break;
         default:
             break;
@@ -1956,11 +1965,11 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
     uint32 unMaxTargets = m_spellInfo->GetMaxAffectedTargets();
 
     // custom target amount cases
-    switch(m_spellInfo->GetSpellFamilyName())
+    switch (m_spellInfo->GetSpellFamilyName())
     {
         case SPELLFAMILY_GENERIC:
         {
-            switch(m_spellInfo->Id)
+            switch (m_spellInfo->Id)
             {
                 case 802:                                   // Mutate Bug
                 case 804:                                   // Explode Bug
@@ -2134,18 +2143,25 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             break;
         }
         case SPELLFAMILY_PALADIN:
-            if (m_spellInfo->Id == 20424)                   // Seal of Command (2 more target for single targeted spell)
+            if (m_spellInfo->Id == 20424)                   // Seals of Command (2 more target for single targeted spell)
             {
                 // overwrite EffectChainTarget for non single target spell
                 if (Spell* currSpell = m_caster->GetCurrentSpell(CURRENT_GENERIC_SPELL))
-               {
-                    for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
-                        if(SpellEffectEntry const* spellEffect = currSpell->m_spellInfo->GetSpellEffect(SpellEffectIndex(i)))
-                            if(spellEffect->EffectChainTarget > 0)
+                {
+                    for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+                        if (SpellEffectEntry const* spellEffect = currSpell->m_spellInfo->GetSpellEffect(SpellEffectIndex(i)))
+                            if (spellEffect->EffectChainTarget > 0)
                                 EffectChainTarget = 0;      // no chain targets
                     if (currSpell->m_spellInfo->GetMaxAffectedTargets() > 0)
                         EffectChainTarget = 0;              // no chain targets
                 }
+
+                if (EffectChainTarget != 0)
+                    // Seal of Righteousness
+                    if (m_caster->HasAura(20154))
+                        EffectChainTarget = 3;
+                    else
+                        EffectChainTarget = 1;
             }
             // Light of Dawn
             else if (m_spellInfo->Id == 85222)
@@ -2471,7 +2487,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
         {
             if (EffectChainTarget <= 1)
             {
-                if(Unit* pUnitTarget = m_caster->SelectMagnetTarget(m_targets.getUnitTarget(), this, effIndex))
+                if (Unit* pUnitTarget = m_caster->SelectMagnetTarget(m_targets.getUnitTarget(), this, effIndex))
                 {
                     m_targets.setUnitTarget(pUnitTarget);
                     m_spellFlags |= SPELL_FLAG_REDIRECTED;
@@ -2482,7 +2498,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             {
                 Unit* pUnitTarget = m_targets.getUnitTarget();
                 WorldObject* originalCaster = GetAffectiveCasterObject();
-                if(!pUnitTarget || !originalCaster)
+                if (!pUnitTarget || !originalCaster)
                     break;
 
                 unMaxTargets = EffectChainTarget;
@@ -2516,7 +2532,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
 
                 while (t && next != tempTargetUnitMap.end())
                 {
-                    if (!prev->IsWithinDist(*next,CHAIN_SPELL_JUMP_RADIUS))
+                    if (!prev->IsWithinDist(*next, CHAIN_SPELL_JUMP_RADIUS))
                         break;
 
                     if (!prev->IsWithinLOSInMap (*next) || ((m_spellInfo->AttributesEx6 & SPELL_ATTR_EX6_IGNORE_CCED_TARGETS) && !(*next)->CanFreeMove()))
