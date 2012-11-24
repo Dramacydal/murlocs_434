@@ -2718,39 +2718,11 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
             case SPELLFAMILY_PALADIN:
             {
                 // Ardent Defender
-                if (spellProto->SpellIconID == 2135 && GetTypeId() == TYPEID_PLAYER)
+                if (spellProto->Id == 31850)
                 {
-                    int32 remainingHealth = GetHealth() - RemainingDamage;
-                    int32 allowedHealth = GetMaxHealth() * 0.35f;
-                    // If damage kills us
-                    if (remainingHealth <= 0 && !((Player*)this)->HasSpellCooldown(66235))
-                    {
-                        // Cast healing spell, completely avoid damage
-                        RemainingDamage = 0;
-
-                        // FIXME: update to cata
-                        //uint32 defenseSkillValue = GetDefenseSkillValue();
-                        uint32 defenseSkillValue = 400;
-                        // Max heal when defense skill denies critical hits from raid bosses
-                        // Formula: max defense at level + 140 (raiting from gear)
-                        uint32 reqDefForMaxHeal  = getLevel() * 5 + 140;
-                        float pctFromDefense = (defenseSkillValue >= reqDefForMaxHeal)
-                            ? 1.0f
-                            : float(defenseSkillValue) / float(reqDefForMaxHeal);
-
-                        int32 healAmount = GetMaxHealth() * (*i)->GetModifier()->m_amount / 100.0f * pctFromDefense;
-                        CastCustomSpell(this, 66235, &healAmount, NULL, NULL, true);
-                        ((Player*)this)->AddSpellCooldown(66235, 0, time(NULL) + 120);
-                        CastSpell(this, 66233, true);
-                    }
-                    else if (remainingHealth < allowedHealth)
-                    {
-                        // Reduce damage that brings us under 35% (or full damage if we are already under 35%) by x%
-                        uint32 damageToReduce = (GetHealth() < (uint32)allowedHealth)
-                            ? RemainingDamage
-                            : allowedHealth - remainingHealth;
-                        RemainingDamage -= damageToReduce * currentAbsorb / 100;
-                    }
+                    RemainingDamage -= RemainingDamage * currentAbsorb / 100;
+                    preventDeathSpell = spellProto;
+                    preventDeathAmount = preventDeathSpell->CalculateSimpleValue(EFFECT_INDEX_1);
                     continue;
                 }
                 break;
@@ -2989,6 +2961,18 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
                 {
                     int32 healAmount = GetMaxHealth() * preventDeathAmount / 100;
                     CastCustomSpell(this, 48153, &healAmount, NULL, NULL, true);
+                    RemoveAurasDueToSpell(preventDeathSpell->Id);
+                    RemainingDamage = 0;
+                }
+                break;
+            }
+            case SPELLFAMILY_PALADIN:
+            {
+                // Ardent Defender
+                if (preventDeathSpell->Id == 31850)
+                {
+                    int32 healAmount = GetMaxHealth() * preventDeathAmount / 100;
+                    CastCustomSpell(this, 66235, &healAmount, NULL, NULL, true);
                     RemoveAurasDueToSpell(preventDeathSpell->Id);
                     RemainingDamage = 0;
                 }
@@ -6971,7 +6955,7 @@ int32 Unit::DealHeal(Unit* pVictim, uint32 addhealth, SpellEntry const* spellPro
                     aura->GetHolder()->RefreshHolder();
                 else
                     // cast absorb
-                    CastCustomSpell(pVictim, 88063, &overheal, NULL, NULL, true);
+                    CastCustomSpell(this, 88063, &overheal, NULL, NULL, true);
         }
     }
 
