@@ -5471,7 +5471,7 @@ SpellAuraProcResult Unit::HandlePeriodicDummyAuraProc(Unit* pVictim, uint32 dama
     return SPELL_AURA_PROC_OK;
 }
 
-SpellAuraProcResult Unit::HandlePeriodicDummyAuraProc(Unit* pVictim, uint32 damage, uint32 absorb, Aura* triggeredByAura, SpellEntry const *procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown)
+SpellAuraProcResult Unit::HandleIncreaseSpeedAuraProc(Unit* pVictim, uint32 damage, uint32 absorb, Aura* triggeredByAura, SpellEntry const *procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown)
 {
     SpellEntry const* spellProto = triggeredByAura->GetSpellProto();
 
