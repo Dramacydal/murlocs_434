@@ -6961,6 +6961,17 @@ int32 Unit::DealHeal(Unit* pVictim, uint32 addhealth, SpellEntry const* spellPro
     // overheal = addhealth - gain
     unit->SendHealSpellLog(pVictim, spellProto->Id, addhealth, addhealth - gain, critical, absorb);
 
+    if (addhealth - gain > 0)
+    {
+        // Guarded by the Light (Rank 2), paladin talent
+        if (HasAura(85646))
+        {
+            int32 bp = addhealth - gain;
+            // cast absorb
+            CastCustomSpell(pVictim, 88063, &bp, NULL, NULL, true);
+        }
+    }
+
     if (unit->GetTypeId() == TYPEID_PLAYER)
     {
         if (BattleGround* bg = ((Player*)unit)->GetBattleGround())
