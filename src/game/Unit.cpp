@@ -13175,7 +13175,7 @@ uint32 Unit::GetModelForForm(ShapeshiftForm form)
 bool Unit::IsIgnoreUnitState(SpellEntry const *spell, IgnoreUnitState ignoreState)
 {
     Unit::AuraList const& stateAuras = GetAurasByType(SPELL_AURA_IGNORE_UNIT_STATE);
-    for(Unit::AuraList::const_iterator itr = stateAuras.begin(); itr != stateAuras.end(); ++itr)
+    for (Unit::AuraList::const_iterator itr = stateAuras.begin(); itr != stateAuras.end(); ++itr)
     {
         if ((*itr)->GetModifier()->m_miscvalue == ignoreState)
         {
