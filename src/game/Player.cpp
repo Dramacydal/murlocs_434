@@ -21233,11 +21233,21 @@ void Player::AddSpellAndCategoryCooldowns(SpellEntry const* spellInfo, uint32 it
             rec = GetAttackTime(RANGED_ATTACK);
 
         // Now we have cooldown data (if found any), time to apply mods
-        if(rec > 0)
+        if (rec > 0)
             ApplySpellMod(spellInfo->Id, SPELLMOD_COOLDOWN, rec, spell);
 
-        if(catrec > 0)
+        if (catrec > 0)
             ApplySpellMod(spellInfo->Id, SPELLMOD_COOLDOWN, catrec, spell);
+
+        // reduce spell cooldowns from haste
+        Unit::AuraList const& mAuras = GetAurasByType(SPELL_AURA_MOD_CD_FROM_HASTE);
+        for (Unit::AuraList::const_iterator itr = mAuras.begin(); itr != mAuras.end(); ++itr)
+            if ((*itr)->isAffectedOnSpell(spellInfo))
+            {
+                rec = ceil(rec * GetFloatValue(UNIT_MOD_CAST_SPEED));
+                catrec = ceil(catrec * GetFloatValue(UNIT_MOD_CAST_SPEED));
+                break;
+            }
 
         // replace negative cooldowns by 0
         if (rec < 0) rec = 0;
