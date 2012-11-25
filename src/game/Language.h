@@ -1252,6 +1252,16 @@ enum MangosStrings
     LANG_BG_IC_NODE_QUARRY                          = 20081,
     LANG_BG_IC_NODE_HANGAR                          = 20082,
 
+    // Battle for Gilneas
+    LANG_BG_BG_START_ONE_MINUTE                     = 20083,
+    LANG_BG_BG_START_HALF_MINUTE                    = 20084,
+    LANG_BG_BG_HAS_BEGUN                            = 20085,
+    LANG_BG_BG_NODE_LIGHTHOUSE                      = 20086,
+    LANG_BG_BG_NODE_WATERWORKS                      = 20087,
+    LANG_BG_BG_NODE_MINE                            = 20088,
+    LANG_BG_BG_NODE_CLAIMED                         = 20089,
+    LANG_BG_BG_NODE_ASSAULTED                       = 20090,
+
     // NOT RESERVED IDS                   12000-1999999999
     // `db_script_string` table index     2000000000-2000009999 (MIN_DB_SCRIPT_STRING_ID-MAX_DB_SCRIPT_STRING_ID)
     // For other tables maybe             2000010000-2147483647 (max index)
