@@ -33,7 +33,7 @@
 #endif
 #define ACE_EXPORT_MACRO ACE_Export
 
-#if defined (__Lynx__) || defined (__OpenBSD__) || defined (__FreeBSD__)
+#if defined (__Lynx__)
 // LynxOS, OpenBSD and FreeBSD define pthread_sigmask() in pthread.h
 # include "ace/os_include/os_pthread.h"
 #endif /* __Lynx__ || OpenBSD || FreeBSD */
