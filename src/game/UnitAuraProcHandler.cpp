@@ -2530,6 +2530,18 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // Must be target of Beacon of Light
                 if (!pVictim || !pVictim->GetSpellAuraHolder(53563, GetObjectGuid()))
                     return SPELL_AURA_PROC_FAILED;
+                break;
+            }
+            // Selfless Healer
+            else if (dummySpell->SpellIconID == 3924)
+            {
+                target = this;
+                basepoints[0] = triggerAmount;
+                if (Spell* spell = GetCurrentSpell(CURRENT_GENERIC_SPELL))
+                    // Word of Glory
+                    if (spell->m_spellInfo->Id == 85673)
+                        basepoints[0] *= spell->GetUsedHolyPower();
+                break;
             }
 
             switch (dummySpell->Id)
@@ -2725,41 +2737,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 {
                     triggered_spell_id = 54968;
                     basepoints[0] = triggerAmount * damage / 100;
-                    break;
-                }
-                // Sacred Shield (talent rank)
-                case 53601:
-                {
-                    if (procFlag & PROC_FLAG_TAKEN_POSITIVE_SPELL)
-                    {
-                        // Flash of Light
-                        if (!procSpell || !procSpell->IsFitToFamily(SPELLFAMILY_PALADIN, UI64LIT(0x40000000)))
-                            return SPELL_AURA_PROC_FAILED;
-
-                        Unit* caster = triggeredByAura->GetCaster();
-                        if (!caster || pVictim != caster)
-                            return SPELL_AURA_PROC_FAILED;
-
-                        uint32 diff = GetMaxHealth() - GetHealth();
-                        if (!diff)
-                            return SPELL_AURA_PROC_FAILED;
-
-                        // Infusion of Light
-                        if (!caster->HasAura(53569) && !caster->HasAura(53576))
-                            return SPELL_AURA_PROC_FAILED;
-
-                        triggered_spell_id = 66922;
-                        basepoints[0] = int32((damage > diff ? diff : damage) / GetSpellAuraMaxTicks(triggered_spell_id));
-                        caster->CastCustomSpell(this, triggered_spell_id, &basepoints[0], NULL, NULL, true);
-                        return SPELL_AURA_PROC_OK;
-                    }
-                    else
-                    {
-                        // triggered_spell_id in spell data
-                        target = this;
-                        if (target->GetTypeId() == TYPEID_PLAYER && !((Player*)target)->HasSpellCooldown(triggered_spell_id))
-                            target->RemoveAurasDueToSpell(triggered_spell_id);
-                    }
                     break;
                 }
                 // Item - Paladin T8 Holy 2P Bonus
@@ -4443,6 +4420,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 // Do not proc other spells than seal triggers
                 // Seal of Justice, Seal of Righteousness, Censure
                 if (!procSpell || procSpell->Id != 20170 && procSpell->Id != 25742 && procSpell->Id != 31803)
+                    return SPELL_AURA_PROC_FAILED;
+            }
+            // Sacred Shield
+            else if (auraSpellInfo->Id == 85285)
+            {
+                if (GetHealthPercent() > 20.0f)
                     return SPELL_AURA_PROC_FAILED;
             }
             break;

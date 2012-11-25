@@ -8150,6 +8150,22 @@ uint32 Unit::SpellHealingBonusDone(Unit *pVictim, SpellEntry const *spellProto, 
                 }
         }
     }
+    // Word of Glory
+    else if (spellProto->Id == 85673)
+    {
+        if (pVictim != this)
+        {
+            // Search Selfless Healer
+            Unit::AuraList const& mDummyAuras = owner->GetAurasByType(SPELL_AURA_DUMMY);
+            for (Unit::AuraList::const_iterator itr = mDummyAuras.begin(); itr != mDummyAuras.end(); ++itr)
+                if ((*itr)->GetSpellProto()->SpellIconID == 3924 && (*itr)->GetEffIndex() == EFFECT_INDEX_0 &&
+                    (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PALADIN)
+                {
+                    DoneTotalMod *= (100.0f + (*itr)->GetModifier()->m_amount) / 100.0f;
+                    break;
+                }
+        }
+    }
 
     // Glyph of Lightwell
     if (spellProto->IsFitToFamily(SPELLFAMILY_PRIEST, UI64LIT(0x0), 0x4000))

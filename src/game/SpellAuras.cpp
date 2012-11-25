@@ -8328,11 +8328,10 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                     break;
                 case SPELLFAMILY_PALADIN:
                     // Sacred Shield
-                    // (check not strictly needed, only Sacred Shield has SPELL_AURA_SCHOOL_ABSORB in SPELLFAMILY_PALADIN at this time)
-                    if (spellProto->IsFitToFamilyMask(UI64LIT(0x0008000000000000)))
+                    if (spellProto->Id == 96263)
                     {
                         // +75% from spell power
-                        DoneActualBenefit = caster->SpellBaseHealingBonusDone(GetSpellSchoolMask(spellProto)) * 0.75f;
+                        DoneActualBenefit = caster->GetTotalAttackPowerValue(BASE_ATTACK) * 2.8f;
                     }
                     break;
                 default:
