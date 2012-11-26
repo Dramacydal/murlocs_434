@@ -367,6 +367,7 @@
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundAB.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundAV.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundBE.cpp" />
+    <ClCompile Include="..\..\src\game\BattleGround\BattleGroundBG.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundDS.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundEY.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundHandler.cpp" />
@@ -377,6 +378,7 @@
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundRL.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundRV.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundSA.cpp" />
+    <ClCompile Include="..\..\src\game\BattleGround\BattleGroundTP.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundWS.cpp" />
     <ClCompile Include="..\..\src\game\Calendar.cpp" />
     <ClCompile Include="..\..\src\game\CalendarHandler.cpp" />
@@ -560,6 +562,7 @@
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundAB.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundAV.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundBE.h" />
+    <ClInclude Include="..\..\src\game\BattleGround\BattleGroundBG.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundDS.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundEY.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundIC.h" />
@@ -569,6 +572,7 @@
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundRL.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundRV.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundSA.h" />
+    <ClInclude Include="..\..\src\game\BattleGround\BattleGroundTP.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundWS.h" />
     <ClInclude Include="..\..\src\game\Calendar.h" />
     <ClInclude Include="..\..\src\game\Camera.h" />
