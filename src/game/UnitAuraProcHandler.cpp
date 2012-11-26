@@ -2509,6 +2509,15 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 break;
             }
 
+            // Divine Purpose
+            if (dummySpell->SpellIconID == 2170)
+            {
+                if (!roll_chance_i(triggerAmount))
+                    return SPELL_AURA_PROC_FAILED;
+
+                triggered_spell_id = 90174;
+                break;
+            }
             // Righteous Vengeance
             if (dummySpell->SpellIconID == 3025)
             {
