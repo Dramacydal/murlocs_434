@@ -5426,6 +5426,10 @@ SpellAuraProcResult Unit::HandleRemoveByDamageProc(Unit* pVictim, uint32 damage,
             return SPELL_AURA_PROC_FAILED;
     }
 
+    // Repentance vs. Censure
+    if (triggeredByAura->GetId() == 20066 && procSpell && procSpell->Id == 31803)
+        return SPELL_AURA_PROC_FAILED;
+
     if (triggeredByAura->GetModifier()->m_amount < (int32)fullDamage)
     {
         triggeredByAura->SetInUse(true);

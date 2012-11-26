@@ -1343,7 +1343,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             next = i; ++next;
             if (spellProto && spellProto->Id == se->Id) // Not drop auras added by self
                 continue;
-            if (!se->GetProcFlags() && (se->GetAuraInterruptFlags() & AURA_INTERRUPT_FLAG_DAMAGE))
+            if (!se->GetProcFlags() && (se->GetAuraInterruptFlags() & (AURA_INTERRUPT_FLAG_DAMAGE | AURA_INTERRUPT_FLAG_DAMAGE2)))
             {
                 pVictim->RemoveAurasDueToSpell(i->second->GetId());
                 next = vAuras.begin();
@@ -2983,8 +2983,24 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
 
     *absorb = damage - RemainingDamage - *resist;
 
-    if (*absorb && (!spellProto || (spellProto->Attributes & SPELL_ATTR_STOP_ATTACK_TARGET) == 0))
-        RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_DAMAGE);
+    if (*absorb && !RemainingDamage && (!spellProto || (spellProto->Attributes & SPELL_ATTR_STOP_ATTACK_TARGET) == 0))
+    {
+        // TODO: Store auras by interrupt flag to speed this up.
+        SpellAuraHolderMap& vAuras = GetSpellAuraHolderMap();
+        for (SpellAuraHolderMap::const_iterator i = vAuras.begin(), next; i != vAuras.end(); i = next)
+        {
+            const SpellEntry *se = i->second->GetSpellProto();
+            next = i; ++next;
+            if (spellProto && spellProto->Id == se->Id) // Not drop auras added by self
+                continue;
+
+            if (!se->GetProcFlags() && (se->GetAuraInterruptFlags() & (AURA_INTERRUPT_FLAG_DAMAGE | AURA_INTERRUPT_FLAG_DAMAGE2)))
+            {
+                RemoveAurasDueToSpell(se->Id);
+                next = vAuras.begin();
+            }
+        }
+    }
 }
 
 void Unit::CalculateAbsorbResistBlock(Unit *pCaster, SpellNonMeleeDamage *damageInfo, SpellEntry const* spellProto, WeaponAttackType attType)
@@ -10162,7 +10178,7 @@ bool Unit::IsSecondChoiceTarget(Unit* pTarget, bool checkThreatArea) const
 
     return
         pTarget->IsImmunedToDamage(GetMeleeDamageSchoolMask()) ||
-        pTarget->hasNegativeAuraWithInterruptFlag(AURA_INTERRUPT_FLAG_DAMAGE) ||
+        pTarget->hasNegativeAuraWithInterruptFlag(AURA_INTERRUPT_FLAG_DAMAGE|AURA_INTERRUPT_FLAG_DAMAGE2) ||
         checkThreatArea && ((Creature*)this)->IsOutOfThreatArea(pTarget);
 }
 
@@ -10283,7 +10299,7 @@ bool Unit::SelectHostileTarget()
 int32 Unit::CalculateSpellDamage(Unit const* target, SpellEntry const* spellProto, SpellEffectIndex effect_index, int32 const* effBasePoints)
 {
     SpellEffectEntry const* spellEffect = spellProto->GetSpellEffect(effect_index);
-    if(!spellEffect)
+    if (!spellEffect)
         return 0;
 
     switch (spellEffect->EffectApplyAuraName)
@@ -10354,7 +10370,22 @@ int32 Unit::CalculateSpellDamage(Unit const* target, SpellEntry const* spellProt
             if (!spellProto->GetProcFlags() || !target)
                 break;
 
-            // Hungering Cold & Wywern Sting
+            if ((spellProto->GetAuraInterruptFlags() & (AURA_INTERRUPT_FLAG_DAMAGE | AURA_INTERRUPT_FLAG_DAMAGE)) == 0)
+                break;
+
+            if (spellProto->GetProcCharges())
+                return 1;
+
+            switch (spellEffect->EffectApplyAuraName)
+            {
+                case SPELL_AURA_MOD_CONFUSE:
+                case SPELL_AURA_TRANSFORM:
+                    return 1;
+                default:
+                    break;
+            }
+
+            // Wywern Sting
             if (spellProto->Id == 51209 || spellProto->IsFitToFamily(SPELLFAMILY_HUNTER, UI64LIT(0x100000000000)))
                 return 1;
 

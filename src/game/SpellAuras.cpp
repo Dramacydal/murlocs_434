@@ -5260,7 +5260,7 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
         target->SendMessageToSet(&data, true);
 
         // Summon the Naj'entus Spine GameObject on target if spell is Impaling Spine
-        if(GetId() == 39837)
+        if (GetId() == 39837)
         {
             GameObject* pObj = new GameObject;
             if(pObj->Create(target->GetMap()->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), 185584, target->GetMap(), target->GetPhaseMask(),
@@ -5274,8 +5274,6 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
             else
                 delete pObj;
         }
-        else if (GetId() == 20066)  // Repentance
-            target->RemoveAurasDueToSpell(61840);   // Righteous Vengeance
     }
     else
     {
