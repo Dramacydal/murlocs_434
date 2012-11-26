@@ -715,6 +715,49 @@ bool ChatHandler::HandleModifyHolyPowerCommand(char* args)
     return true;
 }
 
+bool ChatHandler::HandleModifySoulShardsCommand(char* args)
+{
+    if (!*args)
+        return false;
+
+    int32 power = atoi(args);
+
+    if (power < 0)
+    {
+        SendSysMessage(LANG_BAD_VALUE);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    Player* chr = getSelectedPlayer();
+    if (!chr)
+    {
+        SendSysMessage(LANG_NO_CHAR_SELECTED);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    // check online security
+    if (HasLowerSecurity(chr))
+        return false;
+
+    int32 maxPower = int32(chr->GetMaxPower(POWER_SOUL_SHARDS));
+    if (power > maxPower)
+    {
+        SendSysMessage(LANG_BAD_VALUE);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    PSendSysMessage(LANG_YOU_CHANGE_SOUL_SHARDS, GetNameLink(chr).c_str(), power, maxPower);
+    if (needReportToTarget(chr))
+        ChatHandler(chr).PSendSysMessage(LANG_YOURS_SOUL_SHARDS_CHANGED, GetNameLink().c_str(), power, maxPower);
+
+    chr->SetPower(POWER_SOUL_SHARDS, power);
+
+    return true;
+}
+
 // Edit Player HP
 bool ChatHandler::HandleModifyHPCommand(char* args)
 {

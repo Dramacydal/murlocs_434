@@ -1262,6 +1262,9 @@ enum MangosStrings
     LANG_BG_BG_NODE_CLAIMED                         = 20089,
     LANG_BG_BG_NODE_ASSAULTED                       = 20090,
 
+    LANG_YOU_CHANGE_SOUL_SHARDS                     = 20091,
+    LANG_YOURS_SOUL_SHARDS_CHANGED                  = 20092,
+
     // NOT RESERVED IDS                   12000-1999999999
     // `db_script_string` table index     2000000000-2000009999 (MIN_DB_SCRIPT_STRING_ID-MAX_DB_SCRIPT_STRING_ID)
     // For other tables maybe             2000010000-2147483647 (max index)
