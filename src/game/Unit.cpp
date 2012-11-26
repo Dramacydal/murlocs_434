@@ -12563,15 +12563,18 @@ void Unit::RemoveAurasAtMechanicImmunity(uint32 mechMask, uint32 exceptSpellId, 
     }
 }
 
-void Unit::RemoveAurasByMechanicMask(uint32 mechMask, bool positiveOnly)
+void Unit::RemoveAurasByMechanicMask(uint32 mechMask, bool positiveOnly, uint32 count)
 {
+    uint32 uCount = 0;
     Unit::SpellAuraHolderMap& auras = GetSpellAuraHolderMap();
-    for(Unit::SpellAuraHolderMap::iterator iter = auras.begin(); iter != auras.end();)
+    for(Unit::SpellAuraHolderMap::iterator iter = auras.begin(); iter != auras.end() && count && uCount < count;)
     {
         SpellEntry const *spell = iter->second->GetSpellProto();
         if ((GetAllSpellMechanicMask(spell) & mechMask) && (!positiveOnly || IsPositiveSpell(spell)))
         {
             RemoveAurasDueToSpell(spell->Id);
+            if (count)
+                ++uCount;
 
             if (auras.empty())
                 break;

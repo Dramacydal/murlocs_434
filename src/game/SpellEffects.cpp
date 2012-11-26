@@ -12834,19 +12834,34 @@ void Spell::EffectDispelMechanic(SpellEffectEntry const* effect)
 
         m_caster->SendMessageToSet(&data, true);
     }
+
+    // Cleanse powered by Acts of Sacrifice
+    if (effect->EffectIndex == EFFECT_INDEX_0 && m_caster->GetTypeId() == TYPEID_PLAYER && m_spellInfo->Id == 4987 && unitTarget == m_caster)
+    {
+        Unit::AuraList const& mPctAuras = m_caster->GetAurasByType(SPELL_AURA_ADD_PCT_MODIFIER);
+        for (Unit::AuraList::const_iterator itr = mPctAuras.begin(); itr != mPctAuras.end(); ++itr)
+        {
+            // Acts of Sacrifice Ranks 1, 2
+            if ((*itr)->GetId() == 85446 || (*itr)->GetId() == 85795)
+            {
+                m_caster->RemoveAurasByMechanicMask(IMMUNE_TO_ROOT_AND_SNARE_MASK, false, 1);
+                break;
+            }
+        }
+    }
 }
 
 void Spell::EffectSummonDeadPet(SpellEffectEntry const* /*effect*/)
 {
-    if(m_caster->GetTypeId() != TYPEID_PLAYER)
+    if (m_caster->GetTypeId() != TYPEID_PLAYER)
         return;
-    Player *_player = (Player*)m_caster;
-    Pet *pet = _player->GetPet();
-    if(!pet)
+    Player* _player = (Player*)m_caster;
+    Pet* pet = _player->GetPet();
+    if (!pet)
         return;
-    if(pet->isAlive())
+    if (pet->isAlive())
         return;
-    if(damage < 0)
+    if (damage < 0)
         return;
 
     pet->SetUInt32Value(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_NONE);

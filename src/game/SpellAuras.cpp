@@ -4074,10 +4074,9 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
                 uint32 aurMechMask = GetAllSpellMechanicMask(aurSpellInfo);
 
                 // If spell that caused this aura has Croud Control or Daze effect
-                if((aurMechMask & MECHANIC_NOT_REMOVED_BY_SHAPESHIFT) && ((aurMechMask & (1 << (MECHANIC_SNARE-1))) == 0) ||
+                if ((aurMechMask & (1 << (MECHANIC_SNARE-1))) == 0 &&
                     // some Daze spells have these parameters instead of MECHANIC_DAZE (skip snare spells)
-                    aurSpellInfo->SpellIconID == 15 && aurSpellInfo->GetDispel() == 0 &&
-                    (aurMechMask & (1 << (MECHANIC_SNARE-1))) == 0)
+                    (aurMechMask & MECHANIC_NOT_REMOVED_BY_SHAPESHIFT) || aurSpellInfo->SpellIconID == 15 && aurSpellInfo->GetDispel() == 0)
                 {
                     continue;
                 }
