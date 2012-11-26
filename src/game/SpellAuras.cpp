@@ -6465,7 +6465,9 @@ void Aura::HandleAuraPeriodicDummy(bool apply, bool Real)
         {
             switch (spell->Id)
             {
+                // Demonic Circle: Summon
                 case 48018:
+                {
                     if (apply)
                         GetHolder()->SendFakeAuraUpdate(62388, false);
                     else
@@ -6474,6 +6476,7 @@ void Aura::HandleAuraPeriodicDummy(bool apply, bool Real)
                         GetHolder()->SendFakeAuraUpdate(62388, true);
                     }
                     break;
+                }
             }
         }
         case SPELLFAMILY_HUNTER:
@@ -9917,15 +9920,28 @@ void Aura::PeriodicDummyTick()
         case SPELLFAMILY_WARLOCK:
             switch (spell->Id)
             {
+                // Demonic Circle: Summon
                 case 48018:
+                {
                     GameObject* obj = GetTarget()->GetGameObject(spell->Id);
-                    if (!obj) return;
+                    if (!obj)
+                        return;
                     // We must take a range of teleport spell, not summon.
-                    const SpellEntry* goToCircleSpell = sSpellStore.LookupEntry(48020);
-                    if (GetTarget()->IsWithinDist(obj,GetSpellMaxRange(sSpellRangeStore.LookupEntry(goToCircleSpell->rangeIndex))))
-                        GetHolder()->SendFakeAuraUpdate(62388,false);
+                    SpellEntry const* goToCircleSpell = sSpellStore.LookupEntry(48020);
+                    if (target->IsWithinDist(obj, GetSpellMaxRange(sSpellRangeStore.LookupEntry(goToCircleSpell->rangeIndex))))
+                        GetHolder()->SendFakeAuraUpdate(62388, false);
                     else
-                        GetHolder()->SendFakeAuraUpdate(62388,true);
+                        GetHolder()->SendFakeAuraUpdate(62388, true);
+                    break;
+                }
+                // Soul Harvest
+                case 79268:
+                {
+                    // Gain soul shard every 3rd tick
+                    if (m_periodicTick % 3 == 0)
+                        target->CastSpell(target, 101977, true);
+                    break;
+                }
             }
             break;
         case SPELLFAMILY_HUNTER:
