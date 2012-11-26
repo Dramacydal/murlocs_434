@@ -6291,6 +6291,7 @@ void Aura::HandlePeriodicEnergize(bool apply, bool Real)
                 break;
             }
             case 31930:                                     // Judgements of the Wise
+            case 89906:                                     // Judgements of the Bold
             {
                 ChangeAmount(target->GetCreateMana() * GetBasePoints() / 100 / GetAuraMaxTicks());
                 break;
