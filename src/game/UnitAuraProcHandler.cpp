@@ -4088,6 +4088,26 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 if (int32(pVictim->GetHealth() * 100 / pVictim->GetMaxHealth()) > aur->GetModifier()->m_amount)
                     return SPELL_AURA_PROC_FAILED;
             }
+            // Aftermath
+            else if (auraSpellInfo->SpellIconID == 11)
+            {
+                if (!procSpell)
+                    return SPELL_AURA_PROC_FAILED;
+
+                int32 chance;
+                // Conflagrate - take chance and trigger spell from dbc, Rain of Fire - chance from basepoints
+                if (procSpell->Id == 5740)
+                {
+                    chance = triggerAmount;
+                    trigger_spell_id = 85387;
+                }
+                else
+                    chance = auraSpellInfo->GetProcChance();
+
+                if (!roll_chance_i)
+                    return SPELL_AURA_PROC_FAILED;
+                break;
+            }
             break;
         }
         case SPELLFAMILY_PRIEST:
