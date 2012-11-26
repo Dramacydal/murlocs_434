@@ -4091,7 +4091,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Aftermath
             else if (auraSpellInfo->SpellIconID == 11)
             {
-                if (!procSpell)
+                if (!procSpell || pVictim == this)
                     return SPELL_AURA_PROC_FAILED;
 
                 int32 chance;
