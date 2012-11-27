@@ -2572,8 +2572,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void AddRunePower(uint8 index);
         void InitRunes();
 
-        AchievementMgr const& GetAchievementMgr() const { return m_achievementMgr; }
-        AchievementMgr& GetAchievementMgr() { return m_achievementMgr; }
+        AchievementMgr<Player> const& GetAchievementMgr() const { return m_achievementMgr; }
+        AchievementMgr<Player>& GetAchievementMgr() { return m_achievementMgr; }
         void UpdateAchievementCriteria(AchievementCriteriaTypes type, uint32 miscvalue1=0, uint32 miscvalue2=0, Unit *unit=NULL, uint32 time=0);
         void StartTimedAchievementCriteria(AchievementCriteriaTypes type, uint32 timedRequirementId, time_t startTime = 0);
 
@@ -2997,7 +2997,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         uint32 m_petScalingUpdateTimer;
 
-        AchievementMgr m_achievementMgr;
+        AchievementMgr<Player> m_achievementMgr;
         ReputationMgr  m_reputationMgr;
 
         uint32 m_timeSyncCounter;

@@ -1430,6 +1430,11 @@ enum Opcodes
     SMSG_LOAD_CUF_PROFILES                                = 0x50B1, // 4.3.4 15595
     CMSG_REQUEST_HOTFIX                                   = 0x2401, // 4.3.4 15595
     SMSG_DB_REPLY                                         = 0x38A4, // 4.3.4 15595
+    SMSG_GUILD_ACHIEVEMENT_DATA                           = 0x54B7, // 4.3.4 15595
+    SMSG_GUILD_ACHIEVEMENT_DELETED                        = 0x35A0, // 4.3.4 15595
+    SMSG_GUILD_ACHIEVEMENT_EARNED                         = 0x50B5, // 4.3.4 15595
+    SMSG_GUILD_CRITERIA_DATA                              = 0x14B4, // 4.3.4 15595
+    SMSG_GUILD_CRITERIA_DELETED                           = 0x55B1, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF

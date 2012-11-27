@@ -28,6 +28,8 @@
 #include "Language.h"
 #include "MapManager.h"
 #include "GameEventMgr.h"
+#include "Guild.h"
+#include "GuildMgr.h"
 
 BattleGroundWS::BattleGroundWS()
 {
@@ -621,7 +623,7 @@ void BattleGroundWS::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
     }
 
     if (achCriId)
-        Source->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BG_OBJECTIVE_CAPTURE, 1, achCriId);
+        Source->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BG_OBJECTIVE_CAPTURE, 1, achCriId);
 }
 
 WorldSafeLocsEntry const* BattleGroundWS::GetClosestGraveYard(Player* player)

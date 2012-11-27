@@ -1080,7 +1080,7 @@ void LFGMgr::SendLFGReward(Player* player, LFGDungeonEntry const* dungeon)
     {
         if (Group* group = player->GetGroup())
             if (group->GetLFGState()->GetRandomPlayersCount())
-                player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_LFD_TO_GROUP_WITH_PLAYERS, group->GetLFGState()->GetRandomPlayersCount());
+                player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_LFD_TO_GROUP_WITH_PLAYERS, group->GetLFGState()->GetRandomPlayersCount());
     }
 
     player->GetLFGState()->SetState(LFG_STATE_FINISHED_DUNGEON);

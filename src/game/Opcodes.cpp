@@ -1412,4 +1412,9 @@ void InitializeOpcodes()
     OPCODE(SMSG_LOAD_CUF_PROFILES,                       STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
     OPCODE(CMSG_REQUEST_HOTFIX,                          STATUS_AUTHED,   PROCESS_INPLACE,      &WorldSession::HandleRequestHotfix             );
     OPCODE(SMSG_DB_REPLY,                                STATUS_NEVER,     PROCESS_INPLACE,     &WorldSession::Handle_ServerSide               );
+    OPCODE(SMSG_GUILD_ACHIEVEMENT_DATA,                  STATUS_NEVER,     PROCESS_INPLACE,     &WorldSession::Handle_ServerSide               );
+    OPCODE(SMSG_GUILD_ACHIEVEMENT_DELETED,               STATUS_NEVER,     PROCESS_INPLACE,     &WorldSession::Handle_ServerSide               );
+    OPCODE(SMSG_GUILD_ACHIEVEMENT_EARNED,                STATUS_NEVER,     PROCESS_INPLACE,     &WorldSession::Handle_ServerSide               );
+    OPCODE(SMSG_GUILD_CRITERIA_DATA,                     STATUS_NEVER,     PROCESS_INPLACE,     &WorldSession::Handle_ServerSide               );
+    OPCODE(SMSG_GUILD_CRITERIA_DELETED,                  STATUS_NEVER,     PROCESS_INPLACE,     &WorldSession::Handle_ServerSide               );
 };

@@ -182,9 +182,9 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
         --loot->unlootedCount;
 
         player->SendNewItem(newitem, uint32(item->count), false, false, true);
-        player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count);
-        player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, loot->loot_type, item->count);
-        player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, item->itemid, item->count);
+        player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count);
+        player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, loot->loot_type, item->count);
+        player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, item->itemid, item->count);
     }
     else
         player->SendEquipError( msg, NULL, NULL, item->itemid );
@@ -271,7 +271,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & /*recv_data*/ )
             for (std::vector<Player*>::const_iterator i = playersNear.begin(); i != playersNear.end(); ++i)
             {
                 (*i)->ModifyMoney( money_per_player );
-                (*i)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, money_per_player);
+                (*i)->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, money_per_player);
 
                 if (Guild* guild = sGuildMgr.GetGuildById((*i)->GetGuildId()))
                     if (uint32 guildGold = (*i)->GetTotalAuraModifier(SPELL_AURA_MOD_MONEY_TO_GUILD_BANK) / 100.0f * money_per_player)
@@ -286,7 +286,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & /*recv_data*/ )
         else
         {
             player->ModifyMoney( pLoot->gold );
-            player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, pLoot->gold);
+            player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, pLoot->gold);
 
             if (Guild* guild = sGuildMgr.GetGuildById(player->GetGuildId()))
                 if (uint32 guildGold = player->GetTotalAuraModifier(SPELL_AURA_MOD_MONEY_TO_GUILD_BANK) / 100.0f * pLoot->gold)
@@ -606,9 +606,9 @@ void WorldSession::HandleLootMasterGiveOpcode( WorldPacket & recv_data )
     // now move item from loot to target inventory
     Item* newitem = target->StoreNewItem(dest, item.itemid, true, item.randomPropertyId, looters);
     target->SendNewItem(newitem, uint32(item.count), false, false, true );
-    target->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item.itemid, item.count);
-    target->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, pLoot->loot_type, item.count);
-    target->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, item.itemid, item.count);
+    target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item.itemid, item.count);
+    target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, pLoot->loot_type, item.count);
+    target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, item.itemid, item.count);
 
     // mark as looted
     item.count=0;

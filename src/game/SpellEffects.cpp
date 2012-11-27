@@ -2340,7 +2340,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     //if (m_caster->GetTypeId() != TYPEID_PLAYER || !m_caster->IsInWorld())
                     //    return;
 
-                    //((Player*)m_caster)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_CAST_SPELL2, 45280, 0, m_caster);
+                    //((Player*)m_caster)->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_CAST_SPELL2, 45280, 0, m_caster);
                     return;
                 }
                 case 45958:                                 // Signal Alliance

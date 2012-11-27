@@ -165,8 +165,7 @@ void GuildMgr::LoadGuilds()
             !newGuild->LoadRanksFromDB(guildRanksResult) ||
             !newGuild->LoadMembersFromDB(guildMembersResult) ||
             !newGuild->LoadBankRightsFromDB(guildBankTabRightsResult) ||
-            !newGuild->CheckGuildStructure()
-            )
+            !newGuild->CheckGuildStructure())
         {
             newGuild->Disband();
             delete newGuild;
@@ -176,6 +175,10 @@ void GuildMgr::LoadGuilds()
         newGuild->LoadGuildEventLogFromDB();
         newGuild->LoadGuildBankEventLogFromDB();
         newGuild->LoadGuildBankFromDB();
+        QueryResult* achievementResult = CharacterDatabase.PQuery("SELECT achievement, date, guids FROM guild_achievement WHERE guildId = %u", newGuild->GetId());
+        QueryResult* criteriaResult = CharacterDatabase.PQuery("SELECT criteria, counter, date, completedGuid FROM guild_achievement_progress WHERE guildId = %u", newGuild->GetId());
+        newGuild->GetAchievementMgr().LoadFromDB(achievementResult, criteriaResult);
+
         AddGuild(newGuild);
     } while(result->NextRow());
 

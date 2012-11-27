@@ -907,7 +907,7 @@ void Group::CountTheRoll(Rolls::iterator& rollI)
 
             if(player && player->GetSession())
             {
-                player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_ROLL_NEED_ON_LOOT, roll->itemid, maxresul);
+                player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_ROLL_NEED_ON_LOOT, roll->itemid, maxresul);
 
                 ItemPosCountVec dest;
                 LootItem *item = &(roll->getLoot()->items[roll->itemSlot]);
@@ -919,9 +919,9 @@ void Group::CountTheRoll(Rolls::iterator& rollI)
                     roll->getLoot()->NotifyItemRemoved(roll->itemSlot);
                     --roll->getLoot()->unlootedCount;
                     player->StoreNewItem(dest, roll->itemid, true, item->randomPropertyId, looters);
-                    player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, roll->itemid, item->count);
-                    player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, roll->getLoot()->loot_type, item->count);
-                    player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, roll->itemid, item->count);
+                    player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, roll->itemid, item->count);
+                    player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, roll->getLoot()->loot_type, item->count);
+                    player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, roll->itemid, item->count);
                 }
                 else
                 {
@@ -960,7 +960,7 @@ void Group::CountTheRoll(Rolls::iterator& rollI)
 
             if(player && player->GetSession())
             {
-                player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_ROLL_GREED_ON_LOOT, roll->itemid, maxresul);
+                player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_ROLL_GREED_ON_LOOT, roll->itemid, maxresul);
 
                 LootItem *item = &(roll->getLoot()->items[roll->itemSlot]);
 
@@ -975,9 +975,9 @@ void Group::CountTheRoll(Rolls::iterator& rollI)
                         roll->getLoot()->NotifyItemRemoved(roll->itemSlot);
                         --roll->getLoot()->unlootedCount;
                         player->StoreNewItem(dest, roll->itemid, true, item->randomPropertyId, looters);
-                        player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, roll->itemid, item->count);
-                        player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, roll->getLoot()->loot_type, item->count);
-                        player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, roll->itemid, item->count);
+                        player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, roll->itemid, item->count);
+                        player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, roll->getLoot()->loot_type, item->count);
+                        player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, roll->itemid, item->count);
                     }
                     else
                     {
@@ -2060,7 +2060,7 @@ void Group::RewardGroupAtKill(Unit* pVictim, Player* player_tap)
             if (pVictim->GetTypeId()==TYPEID_UNIT)
                 if (CreatureInfo const* normalInfo = ObjectMgr::GetCreatureTemplate(pVictim->GetEntry()))
                     if(uint32 normalType = normalInfo->type)
-                        pGroupGuy->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, normalType, xp);
+                        pGroupGuy->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, normalType, xp);
 
             RewardGroupAtKill_helper(pGroupGuy, pVictim, count, PvP, group_rate, sum_level, is_dungeon, not_gray_member_with_max_level, member_with_max_level, xp);
         }
@@ -2074,8 +2074,8 @@ void Group::RewardGroupAtKill(Unit* pVictim, Player* player_tap)
             if (pVictim->GetTypeId()==TYPEID_UNIT)
                 if (CreatureInfo const* normalInfo = ObjectMgr::GetCreatureTemplate(pVictim->GetEntry()))
                     if(uint32 normalType = normalInfo->type)
-                        player_tap->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, normalType, xp);
-            player_tap->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GET_KILLING_BLOWS, 1, 0, pVictim);
+                        player_tap->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, normalType, xp);
+            player_tap->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GET_KILLING_BLOWS, 1, 0, pVictim);
         }
     }
 }

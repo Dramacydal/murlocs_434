@@ -273,6 +273,8 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>
         // Get Holder for Creature Linking
         CreatureLinkingHolder* GetCreatureLinkingHolder() { return &m_creatureLinkingHolder; }
 
+        virtual uint32 GetOwnerGuildId(Team /*team*/ = TEAM_NONE) const { return 0; }
+
     private:
         void LoadMapAndVMap(int gx, int gy);
 
