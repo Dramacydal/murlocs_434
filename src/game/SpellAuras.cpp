@@ -10721,8 +10721,8 @@ void SpellAuraHolder::_AddSpellAuraHolder()
         if (IsSealSpell(m_spellProto))
             m_target->ModifyAuraState(AURA_STATE_JUDGEMENT, true);
 
-        // Conflagrate aura state on Immolate and Shadowflame
-        if (m_spellProto->IsFitToFamily(SPELLFAMILY_WARLOCK, UI64LIT(0x0000000000000004), 0x00000002))
+        // Conflagrate aura state on Immolate
+        if (m_spellProto->Id == 348)
             m_target->ModifyAuraState(AURA_STATE_CONFLAGRATE, true);
 
         // Faerie Fire (druid versions)
@@ -10838,10 +10838,10 @@ void SpellAuraHolder::_RemoveSpellAuraHolder()
                     removeState = AURA_STATE_JUDGEMENT;     // Update Seals information
                 break;
             case SPELLFAMILY_WARLOCK:
-                // Conflagrate aura state on Immolate and Shadowflame,
-                if (m_spellProto->IsFitToFamilyMask(UI64LIT(0x0000000000000004), 0x00000002))
+                // Conflagrate aura state on Immolate
+                if (m_spellProto->Id == 348)
                 {
-                    removeFamilyFlag = ClassFamilyMask(UI64LIT(0x0000000000000004), 0x00000002);
+                    removeFamilyFlag = ClassFamilyMask(UI64LIT(0x0000000000000004));
                     removeState = AURA_STATE_CONFLAGRATE;
                 }
                 break;
@@ -10886,12 +10886,12 @@ void SpellAuraHolder::_RemoveSpellAuraHolder()
             }
 
             // this has been last aura
-            if(!found)
+            if (!found)
                 m_target->ModifyAuraState(AuraState(removeState), false);
         }
 
         // reset cooldown state for spells
-        if(caster && caster->GetTypeId() == TYPEID_PLAYER)
+        if (caster && caster->GetTypeId() == TYPEID_PLAYER)
         {
             if (GetSpellProto()->HasAttribute(SPELL_ATTR_DISABLED_WHILE_ACTIVE))
                 // note: item based cooldowns and cooldown spell mods with charges ignored (unknown existing cases)
