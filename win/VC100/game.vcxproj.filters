@@ -183,8 +183,10 @@
     <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPNA.cpp" />
     <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPSI.cpp" />
     <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPTF.cpp" />
-    <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPWG.cpp" />
     <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPZM.cpp" />
+    <ClCompile Include="..\..\src\game\BattleField\BattleField.cpp" />
+    <ClCompile Include="..\..\src\game\BattleField\BattleFieldWG.cpp" />
+    <ClCompile Include="..\..\src\game\BattleGround\BattleGroundBG.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\AccountMgr.h" />
@@ -367,7 +369,9 @@
     <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPNA.h" />
     <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPSI.h" />
     <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPTF.h" />
-    <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPWG.h" />
     <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPZM.h" />
+    <ClInclude Include="..\..\src\game\BattleField\BattleField.h" />
+    <ClInclude Include="..\..\src\game\BattleField\BattleFieldWG.h" />
+    <ClInclude Include="..\..\src\game\BattleGround\BattleGroundBG.h" />
   </ItemGroup>
 </Project>
