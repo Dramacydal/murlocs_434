@@ -864,6 +864,10 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
     sLog.outChar("Account: %d (IP: %s) Login Character:[%s] (guid: %u)",
         GetAccountId(), IP_str.c_str(), pCurrChar->GetName(), pCurrChar->GetGUIDLow());
 
+    static SqlStatementID updLastIp;
+    stmt = CharacterDatabase.CreateStatement(updLastIp, "UPDATE characters SET last_ip = ? WHERE guid = ?");
+    stmt.PExecute(IP_str.c_str(), pCurrChar->GetGUIDLow());
+
     if(!pCurrChar->IsStandState() && !pCurrChar->hasUnitState(UNIT_STAT_STUNNED))
         pCurrChar->SetStandState(UNIT_STAND_STATE_STAND);
 
