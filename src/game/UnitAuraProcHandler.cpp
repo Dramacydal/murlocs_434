@@ -4104,7 +4104,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 else
                     chance = auraSpellInfo->GetProcChance();
 
-                if (!roll_chance_i)
+                if (!roll_chance_i(chance))
                     return SPELL_AURA_PROC_FAILED;
                 break;
             }
