@@ -93,6 +93,7 @@ struct AchievementCriteriaEntry
         } win_bg;
 
         // ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL            = 5
+        // ACHIEVEMENT_CRITERIA_TYPE_REACH_GUILD_LEVEL      = 125
         struct
         {
             uint32  unused;                                 // 3
@@ -1146,6 +1147,13 @@ struct GtOCTBaseHPByClassEntry
 struct GtOCTBaseMPByClassEntry
 {
     float ratio;
+};
+
+struct GuildPerkSpellsEntry
+{
+    //uint32 Id;
+    uint32 Level;
+    uint32 SpellId;
 };
 
 /*struct HolidayDescriptionsEntry

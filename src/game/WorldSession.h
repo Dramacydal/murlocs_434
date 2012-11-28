@@ -574,6 +574,12 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleSaveGuildEmblemOpcode(WorldPacket& recvPacket);
         void HandleGuildQueryRanksOpcode(WorldPacket& recvPacket);
         void HandleGuildAutoDeclineToggleOpcode(WorldPacket& recvPacket);
+        void HandleGuildRequestMaxDailyXP(WorldPacket& recvPacket);
+        void HandleGuildRewardsQueryOpcode(WorldPacket& recvPacket);
+        void HandleGuildRequestPartyState(WorldPacket& recvPacket);
+        void HandleGuildQueryXPOpcode(WorldPacket& recvPacket);
+        void HandleGuildQueryNewsOpcode(WorldPacket& recvPacket);
+        void HandleGuildNewsUpdateStickyOpcode(WorldPacket& recvPacket);
 
         void HandleTaxiNodeStatusQueryOpcode(WorldPacket& recvPacket);
         void HandleTaxiQueryAvailableNodes(WorldPacket& recvPacket);

@@ -1435,6 +1435,20 @@ enum Opcodes
     SMSG_GUILD_ACHIEVEMENT_EARNED                         = 0x50B5, // 4.3.4 15595
     SMSG_GUILD_CRITERIA_DATA                              = 0x14B4, // 4.3.4 15595
     SMSG_GUILD_CRITERIA_DELETED                           = 0x55B1, // 4.3.4 15595
+    CMSG_GUILD_REQUEST_PARTY_STATE                        = 0x3900, // 4.3.4 15595
+    CMSG_GUILD_REQUEST_MAX_DAILY_XP                       = 0x3232, // 4.3.4 15595
+    SMSG_GUILD_MAX_DAILY_XP                               = 0x79B5, // 4.3.4 15595
+    SMSG_GUILD_REWARDS_LIST                               = 0x1DB0, // 4.3.4 15595
+    SMSG_GUILD_PARTY_STATE_RESPONSE                       = 0x50A6, // 4.3.4 15595
+    SMSG_GUILD_MEMBER_DAILY_RESET                         = 0x10A5, // 4.3.4 15595
+    SMSG_GUILD_REPUTATION_WEEKLY_CAP                      = 0x30B7, // 4.3.4 15595
+    SMSG_GUILD_XP                                         = 0x3DB0, // 4.3.4 15595
+    SMSG_GUILD_XP_GAIN                                    = 0x14A1, // 4.3.4 15595
+    CMSG_QUERY_GUILD_REWARDS                              = 0x3012, // 4.3.4 15595
+    SMSG_GUILD_NEWS_UPDATE                                = 0x35A7, // 4.3.4 15595
+    CMSG_GUILD_QUERY_NEWS                                 = 0x3020, // 4.3.4 15595
+    CMSG_GUILD_NEWS_UPDATE_STICKY                         = 0x3223, // 4.3.4 15595
+    CMSG_QUERY_GUILD_XP                                   = 0x1237, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF

@@ -884,6 +884,12 @@ void World::LoadConfigSettings(bool reload)
     setConfigMin(CONFIG_UINT32_GUILD_BANK_EVENT_LOG_COUNT, "Guild.BankEventLogRecordsCount", GUILD_BANK_MAX_LOGS, GUILD_BANK_MAX_LOGS);
     setConfig(CONGIG_UINT32_GUILD_UNDELETABLE_LEVEL, "Guild.UndeletableLevel", 4);
     setConfig(CONFIG_BOOL_GUILD_LEVELING_ENABLED, "Guild.LevelingEnabled", true);
+    setConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP, "Guild.WeeklyReputationCap", 4375);
+    setConfig(CONFIG_UINT32_GUILD_EXPERIENCE_UNCAPPED_LEVEL, "Guild.ExperienceUncappedLevel", 20);
+    setConfig(CONFIG_UINT32_GUILD_DAILY_XP_CAP, "Guild.DailyXPCap", 7807500);
+    setConfig(CONFIG_UINT32_GUILD_MAX_LEVEL, "Guild.MaxLevel", 25);
+    setConfig(CONFIG_UINT32_GUILD_SAVE_INTERVAL, "Guild.SaveInterval", 15);
+    setConfig(CONFIG_FLOAT_RATE_GUILD_XP_MODIFIER, "Guild.XPModifier", 0.25f);
 
     setConfig(CONFIG_UINT32_TIMERBAR_FATIGUE_GMLEVEL, "TimerBar.Fatigue.GMLevel", SEC_CONSOLE);
     setConfig(CONFIG_UINT32_TIMERBAR_FATIGUE_MAX,     "TimerBar.Fatigue.Max", 60);
@@ -1461,6 +1467,12 @@ void World::SetInitialWorldSettings()
     sLog.outString( ">>> Auctions loaded" );
     sLog.outString();
 
+    sLog.outString("Loading Guild Rewards...");
+    sGuildMgr.LoadGuildRewards();
+
+    sLog.outString("Loading Guild XP for level...");
+    sGuildMgr.LoadGuildXpForLevel();
+
     sLog.outString( "Loading Guilds..." );
     sGuildMgr.LoadGuilds();
 
@@ -1580,6 +1592,8 @@ void World::SetInitialWorldSettings()
     m_timers[WUPDATE_AHBOT].SetInterval(20 * IN_MILLISECONDS); // every 20 sec
 
     m_timers[WUPDATE_UNBAN_CHAR].SetInterval(sConfig.GetIntDefault("World.Unban.Timer", 15) * MINUTE * IN_MILLISECONDS);
+
+    m_timers[WUPDATE_GUILD_SAVE].SetInterval(getConfig(CONFIG_UINT32_GUILD_SAVE_INTERVAL) * MINUTE * IN_MILLISECONDS);
 
     //to set mailtimer to return mails every day between 4 and 5 am
     //mailtimer is increased when updating auctions
@@ -1724,11 +1738,17 @@ void World::Update(uint32 diff)
 
     /// Handle daily quests reset time
     if (m_gameTime > m_NextDailyQuestReset)
+    {
         ResetDailyQuests();
+        sGuildMgr.ResetExperienceCaps();
+    }
 
     /// Handle weekly quests reset time
     if (m_gameTime > m_NextWeeklyQuestReset)
+    {
         ResetWeeklyQuests();
+        sGuildMgr.ResetReputationCaps();
+    }
 
     if (m_gameTime > m_NextRandomBGReset)
         ResetRandomBG();
@@ -1836,7 +1856,7 @@ void World::Update(uint32 diff)
     sLFGMgr.Update(diff);
 
     // execute callbacks from sql queries that were queued recently
-    UpdateResultQueue();      
+    UpdateResultQueue();
 
     ///- Erase corpses once every 20 minutes
     if (m_timers[WUPDATE_CORPSES].Passed())
@@ -1869,6 +1889,12 @@ void World::Update(uint32 diff)
         // TODO: move this to realm daemon
         //LoginDatabase.Execute("UPDATE account_banned SET active = 0 WHERE unbandate<=UNIX_TIMESTAMP() AND unbandate<>bandate");
         //LoginDatabase.Execute("DELETE FROM ip_banned WHERE unbandate<=UNIX_TIMESTAMP() AND unbandate<>bandate");
+    }
+
+    if (m_timers[WUPDATE_GUILD_SAVE].Passed())
+    {
+        m_timers[WUPDATE_GUILD_SAVE].Reset();
+        sGuildMgr.SaveGuilds();
     }
 
     /// </ul>

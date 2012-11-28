@@ -25,11 +25,17 @@
 class Guild;
 class ObjectGuid;
 
+struct GuildReward;
+
 class GuildMgr
 {
         typedef UNORDERED_MAP<uint32, Guild*> GuildMap;
 
         GuildMap m_GuildMap;
+
+        std::vector<uint64> GuildXPperLevel;
+        std::vector<GuildReward> GuildRewards;
+
     public:
         GuildMgr();
         ~GuildMgr();
@@ -45,7 +51,16 @@ class GuildMgr
         std::string GetGuildNameById(uint32 guildId) const;
         std::string GetGuildNameByGuid(ObjectGuid guildGuid) const;
 
+        void LoadGuildXpForLevel();
+        void LoadGuildRewards();
         void LoadGuilds();
+        void SaveGuilds();
+
+        void ResetExperienceCaps();
+        void ResetReputationCaps();
+
+        uint32 GetXPForGuildLevel(uint8 level) const;
+        std::vector<GuildReward> const& GetGuildRewards() const { return GuildRewards; }
 
         GuildMap const& GetGuildMap() const { return m_GuildMap; }
 };

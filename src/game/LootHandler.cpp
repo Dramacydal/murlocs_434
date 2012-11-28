@@ -185,6 +185,11 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
         player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count);
         player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, loot->loot_type, item->count);
         player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, item->itemid, item->count);
+
+        if (ItemPrototype const* proto = sObjectMgr.GetItemPrototype(item->itemid))
+            if (proto->Quality > ITEM_QUALITY_EPIC || (proto->Quality == ITEM_QUALITY_EPIC && proto->ItemLevel >= MinNewsItemLevel[sWorld.getConfig(CONFIG_UINT32_EXPANSION)]))
+                if (Guild* guild = sGuildMgr.GetGuildById(player->GetGuildId()))
+                    guild->LogNewsEvent(GUILD_NEWS_ITEM_LOOTED, time(NULL), player->GetObjectGuid(), 0, item->itemid);
     }
     else
         player->SendEquipError( msg, NULL, NULL, item->itemid );

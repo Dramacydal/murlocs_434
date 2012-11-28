@@ -54,6 +54,7 @@ enum ContentLevels
     CONTENT_61_70,
     CONTENT_71_80,
     CONTENT_81_85,
+    MAX_CONTENT,
 };
 ContentLevels GetContentLevelsForMap(uint32 mapid);
 
@@ -158,6 +159,7 @@ extern DBCStorage <GtRegenMPPerSptEntry>         sGtRegenMPPerSptStore;
 extern DBCStorage <GtSpellScalingEntry>          sGtSpellScalingStore;
 extern DBCStorage <GtOCTBaseHPByClassEntry>      sGtOCTBaseHPByClassStore;
 extern DBCStorage <GtOCTBaseMPByClassEntry>      sGtOCTBaseMPByClassStore;
+extern DBCStorage <GuildPerkSpellsEntry>         sGuildPerkSpellsStore;
 extern DBCStorage <HolidaysEntry>                sHolidaysStore;
 extern DBCStorage <ItemArmorQualityEntry>        sItemArmorQualityStore;
 extern DBCStorage <ItemArmorShieldEntry>         sItemArmorShieldStore;

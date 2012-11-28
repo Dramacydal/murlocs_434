@@ -14770,6 +14770,9 @@ void Player::RewardQuest(Quest const *pQuest, uint32 reward, Object* questGiver,
     {
         GiveXP(xp , NULL);
 
+        if (Guild* guild = sGuildMgr.GetGuildById(GetGuildId()))
+            guild->GiveXP(uint32(xp * sWorld.getConfig(CONFIG_FLOAT_RATE_GUILD_XP_MODIFIER)), this);
+
         // Give player extra money (for max level already included in pQuest->GetRewMoneyMaxLevel())
         if (pQuest->GetRewOrReqMoney() > 0)
         {
@@ -20961,8 +20964,16 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
     {
         pItem->SetRefundable(true, false, price, crItem->ExtendedCost);
         pItem->SaveRefundDataToDB();
-        pItem->SetPlayedTimeField(GetTotalPlayedTime());        
+        pItem->SetPlayedTimeField(GetTotalPlayedTime());
         AddRefundReference(pItem->GetObjectGuid());
+    }
+
+    if (crItem->maxcount != 0) // bought
+    {
+        if (pProto->Quality > ITEM_QUALITY_EPIC || (pProto->Quality == ITEM_QUALITY_EPIC && pProto->ItemLevel >= MinNewsItemLevel[sWorld.getConfig(CONFIG_UINT32_EXPANSION)]))
+            if (Guild* guild = sGuildMgr.GetGuildById(GetGuildId()))
+                guild->LogNewsEvent(GUILD_NEWS_ITEM_PURCHASED, time(NULL), GetGUID(), 0, item);
+        return true;
     }
 
     return crItem->maxcount != 0;
