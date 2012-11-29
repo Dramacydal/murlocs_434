@@ -85,6 +85,9 @@ namespace MaNGOS
     };
 }                                                           // namespace MaNGOS
 
+// Helper function to avoid having to specialize template for a 800 line long function
+template <typename T> static bool IsGuild() { return false; }
+template <> static bool IsGuild<Guild>() { return true; }
 
 bool AchievementCriteriaRequirement::IsValid(AchievementCriteriaEntry const* criteria)
 {
@@ -1064,10 +1067,6 @@ static const uint32 achievIdForDungeon[][4] =
     { 2219,      false,     false,  true  },                // Total deaths in 5-player heroic dungeons
     { 0,         false,     false,  false }
 };
-
-// Helper function to avoid having to specialize template for a 800 line long function
-template <typename T> static bool IsGuild() { return false; }
-template <> static bool IsGuild<Guild>() { return true; }
 
 static const uint32 achievIdByClass[MAX_CLASSES] = { 0, 459, 465 , 462, 458, 464, 461, 467, 460, 463, 0, 466 };
 static const uint32 achievIdByRace[MAX_RACES]    = { 0, 1408, 1410, 1407, 1409, 1413, 1411, 1404, 1412, 0, 1405, 1406 };
