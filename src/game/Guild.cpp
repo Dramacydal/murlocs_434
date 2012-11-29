@@ -2757,7 +2757,7 @@ void Guild::SendNewsEventLog(WorldSession* session)
     // Sending result
     WorldPacket data(SMSG_GUILD_NEWS_UPDATE, 0);
     // count, max count == 100
-    data.WriteBits(m_GuildNewsEventLog.size(), 23);
+    data.WriteBits(m_GuildNewsEventLog.size(), 21);
 
     for (GuildNewsEventLog::iterator itr = m_GuildNewsEventLog.begin(); itr != m_GuildNewsEventLog.end(); ++itr)
     {
