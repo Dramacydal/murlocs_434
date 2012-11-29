@@ -2718,7 +2718,7 @@ void Guild::LogNewsEvent(GuildNews eventType, time_t date, uint64 playerGuid, ui
 void Guild::LoadGuildNewsEventLogFromDB()
 {
     //                                                     0        1          2           3     4      5
-    QueryResult* result = CharacterDatabase.PQuery("SELECT LogGuid, EventType, PlayerGuid, Data, Flags, Date FROM guild_news_eventlog WHERE guildid = %u ORDER BY TimeStamp DESC,LogGuid DESC LIMIT %u", m_Id, GUILD_BANK_MONEY_LOGS_TAB);
+    QueryResult* result = CharacterDatabase.PQuery("SELECT LogGuid, EventType, PlayerGuid, Data, Flags, Date FROM guild_news_eventlog WHERE guildid = %u ORDER BY Date DESC, LogGuid DESC LIMIT %u", m_Id, GUILD_BANK_MONEY_LOGS_TAB);
     if (!result)
         return;
 
