@@ -2692,23 +2692,18 @@ void GuildBankEventLogEntry::WriteData(WorldPacket& data, ByteBuffer& buffer)
 
 void Guild::LogNewsEvent(GuildNews eventType, time_t date, uint64 playerGuid, uint32 flags, uint32 data)
 {
-    GuildNewsEventLogEntry NewEvent;
+    m_GuildNewsEventLogNextGuid = (m_GuildNewsEventLogNextGuid + 1) % GUILD_NEWS_MAX_LOGS;
+
+    GuildNewsEventLogEntry& NewEvent = m_GuildNewsEventLog[m_GuildNewsEventLogNextGuid];
     NewEvent.EventType = eventType;
     NewEvent.PlayerGuid = playerGuid;
     NewEvent.Data = data;
     NewEvent.Flags = flags;
     NewEvent.Date = date;
 
-    m_GuildNewsEventLogNextGuid = (m_GuildNewsEventLogNextGuid + 1) % GUILD_NEWS_MAX_LOGS;
-
-    if (m_GuildNewsEventLog.size() >= GUILD_NEWS_MAX_LOGS)
-        m_GuildNewsEventLog.pop_front();
-
     CharacterDatabase.PExecute("DELETE FROM guild_news_eventlog WHERE guildid = %u AND LogGuid = %u", m_Id, m_GuildNewsEventLogNextGuid);
     CharacterDatabase.PExecute("INSERT INTO guild_news_eventlog (guildid, LogGuid, EventType, PlayerGuid, Data, Flags, Date) VALUES (%u, %u, %u, " UI64FMTD ", %u, %u, %u)",
         m_Id, m_GuildNewsEventLogNextGuid, NewEvent.EventType, NewEvent.PlayerGuid, NewEvent.Data, NewEvent.Flags, uint32(NewEvent.Date));
-
-    m_GuildNewsEventLog.push_back(NewEvent);
 
     WorldPacket packet;
     NewEvent.WriteData(m_GuildNewsEventLogNextGuid, &packet);
@@ -2728,26 +2723,20 @@ void Guild::LoadGuildNewsEventLogFromDB()
     do
     {
         Field *fields = result->Fetch();
+        uint32 id = fields[0].GetUInt32();
         if (!isNextLogGuidSet)
         {
-            m_GuildNewsEventLogNextGuid = fields[0].GetUInt32();
+            m_GuildNewsEventLogNextGuid = id;
             isNextLogGuidSet = true;
         }
+
         // Fill entry
-        GuildNewsEventLogEntry NewEvent;
+        GuildNewsEventLogEntry& NewEvent = m_GuildNewsEventLog[id];
         NewEvent.EventType = GuildNews(fields[1].GetUInt32());
         NewEvent.PlayerGuid = fields[2].GetUInt64();
         NewEvent.Data = fields[3].GetUInt32();
         NewEvent.Flags = fields[4].GetUInt32();
         NewEvent.Date = time_t(fields[5].GetUInt32());
-
-        // There can be a problem if more events have same TimeStamp the ORDER can be broken when fields[0].GetUInt32() == configCount, but
-        // events with same timestamp can appear when there is lag, and we naively suppose that mangos isn't laggy
-        // but if problem appears, player will see set of guild events that have same timestamp in bad order
-
-        // Add entry to list
-        m_GuildNewsEventLog.push_front(NewEvent);
-
     } while (result->NextRow());
     delete result;
 }
@@ -2762,24 +2751,24 @@ void Guild::SendNewsEventLog(WorldSession* session)
     for (GuildNewsEventLog::iterator itr = m_GuildNewsEventLog.begin(); itr != m_GuildNewsEventLog.end(); ++itr)
     {
         data.WriteBits(0, 26); // Not yet implemented used for guild achievements
-        data.WriteGuidMask<7, 0, 6, 5, 4, 3, 1, 2>(itr->PlayerGuid);
+        data.WriteGuidMask<7, 0, 6, 5, 4, 3, 1, 2>(itr->second.PlayerGuid);
     }
 
     uint8 counter = 0;
     for (GuildNewsEventLog::iterator itr = m_GuildNewsEventLog.begin(); itr != m_GuildNewsEventLog.end(); ++itr, ++counter)
     {
-        ObjectGuid guid = itr->PlayerGuid;
+        ObjectGuid guid = itr->second.PlayerGuid;
         data.WriteGuidBytes<5>(guid);
 
-        data << uint32(itr->Flags);  // 1 sticky
-        data << uint32(itr->Data);
+        data << uint32(itr->second.Flags);  // 1 sticky
+        data << uint32(itr->second.Data);
         data << uint32(0);
 
         data.WriteGuidBytes<7, 6, 2, 3, 0, 4, 1>(guid);
 
-        data << uint32(counter);
-        data << uint32(itr->EventType);
-        data << uint32(secsToTimeBitFields(itr->Date));
+        data << uint32(itr->first);
+        data << uint32(itr->second.EventType);
+        data << uint32(secsToTimeBitFields(itr->second.Date));
     }
 
     session->SendPacket(&data);

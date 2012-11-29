@@ -1466,6 +1466,8 @@ void WorldSession::HandleGuildRequestMaxDailyXP(WorldPacket& recvPacket)
     recvPacket.ReadGuidMask<0, 3, 5, 1, 4, 6, 7, 2>(guid);
     recvPacket.ReadGuidBytes<7, 4, 3, 5, 1, 2, 6, 0>(guid);
 
+    DEBUG_LOG("WORLD: Received CMSG_GUILD_REQUEST_MAX_DAILY_XP");
+
     if (Guild* guild = sGuildMgr.GetGuildByGuid(guid))
     {
         if (guild->GetMemberSlot(_player->GetObjectGuid()))
@@ -1479,7 +1481,10 @@ void WorldSession::HandleGuildRequestMaxDailyXP(WorldPacket& recvPacket)
 
 void WorldSession::HandleGuildRewardsQueryOpcode(WorldPacket& recv_data)
 {
-    recv_data.read_skip<uint32>(); // Unk
+    uint32 unk;
+    recv_data >> unk;
+
+    DEBUG_LOG("WORLD: Received CMSG_QUERY_GUILD_REWARDS unk %u", unk);
 
     if (Guild* guild = sGuildMgr.GetGuildById(_player->GetGuildId()))
     {
@@ -1488,13 +1493,13 @@ void WorldSession::HandleGuildRewardsQueryOpcode(WorldPacket& recv_data)
         WorldPacket data(SMSG_GUILD_REWARDS_LIST, 3 + rewards.size() * (4 + 4 + 4 + 8 + 4 + 4));
         data.WriteBits(rewards.size(), 21);
 
-        for (uint32 i = 0; i < rewards.size(); i++)
+        for (uint32 i = 0; i < rewards.size(); ++i)
         {
             data << uint32(rewards[i].Standing);
             data << int32(rewards[i].Racemask);
             data << uint32(rewards[i].Entry);
             data << uint64(rewards[i].Price);
-            data << uint32(0); // Unused
+            data << uint32(0);  // faction standing?
             data << uint32(rewards[i].AchievementId);
         }
         data << uint32(time(NULL));
@@ -1529,7 +1534,10 @@ void WorldSession::HandleGuildQueryXPOpcode(WorldPacket& recv_packet)
 
 void WorldSession::HandleGuildQueryNewsOpcode(WorldPacket& recvPacket)
 {
-    recvPacket.read_skip<uint32>();
+    uint32 unk;
+    recvPacket >> unk;
+
+    DEBUG_LOG("WORLD: Received CMSG_GUILD_QUERY_NEWS unk %u", unk);
 
     if (Guild* guild = sGuildMgr.GetGuildById(_player->GetGuildId()))
         guild->SendNewsEventLog(this);
@@ -1548,20 +1556,19 @@ void WorldSession::HandleGuildNewsUpdateStickyOpcode(WorldPacket& recvPacket)
     recvPacket.ReadGuidMask<6, 7, 1, 5>(guid);
     recvPacket.ReadGuidBytes<6, 2, 1, 0, 5, 3, 7, 4>(guid);
 
+    DEBUG_LOG("WORLD: Received CMSG_GUILD_NEWS_UPDATE_STICKY guild %s newsId %u", guid.GetString().c_str(), newsId);
+
     if (Guild* guild = sGuildMgr.GetGuildById(_player->GetGuildId()))
     {
-        Guild::GuildNewsEventLog& news = guild->GetNewsEventLog();
-        Guild::GuildNewsEventLog::iterator itr = news.begin();
-        std::advance(itr, newsId);
-        if (itr != news.end())
+        if (GuildNewsEventLogEntry* entry = guild->GetNewsById(newsId))
         {
             if (sticky)
-                itr->Flags |= 1;
+                entry->Flags |= 1;
             else
-                itr->Flags &= ~1;
+                entry->Flags &= ~1;
 
             WorldPacket data;
-            itr->WriteData(newsId, &data);
+            entry->WriteData(newsId, &data);
             SendPacket(&data);
         }
     }

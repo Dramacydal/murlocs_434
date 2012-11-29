@@ -367,7 +367,7 @@ class Guild
         /** These are actually ordered lists. The first element is the oldest entry.*/
         typedef std::list<GuildEventLogEntry> GuildEventLog;
         typedef std::list<GuildBankEventLogEntry> GuildBankEventLog;
-        typedef std::list<GuildNewsEventLogEntry> GuildNewsEventLog;
+        typedef std::map<uint32, GuildNewsEventLogEntry> GuildNewsEventLog;
 
         Guild();
         ~Guild();
@@ -486,9 +486,16 @@ class Guild
 
         // News EventLog
         void LoadGuildNewsEventLogFromDB();
-        void SendNewsEventLog(WorldSession *session);
+        void SendNewsEventLog(WorldSession* session);
         void LogNewsEvent(GuildNews eventType, time_t date, uint64 playerGuid, uint32 flags, uint32 data);
-        GuildNewsEventLog& GetNewsEventLog() { return m_GuildNewsEventLog; }
+        GuildNewsEventLogEntry* GetNewsById(uint32 id)
+        {
+            GuildNewsEventLog::iterator itr = m_GuildNewsEventLog.find(id);
+            if (itr != m_GuildNewsEventLog.end())
+                return &itr->second;
+            else
+                return NULL;
+        }
 
         // Guild EventLog
         void LoadGuildEventLogFromDB();
