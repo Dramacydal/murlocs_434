@@ -558,7 +558,7 @@ void BattleGroundBG::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
     }
 
     if (achCriId)
-        Source->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BG_OBJECTIVE_CAPTURE, 1, achCriId);
+        Source->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BG_OBJECTIVE_CAPTURE, 1, achCriId);
 }
 
 bool BattleGroundBG::IsAllNodesControlledByTeam(Team team) const

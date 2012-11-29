@@ -3351,7 +3351,7 @@ void AchievementMgr<Player>::CompletedAchievement(AchievementEntry const* achiev
     if (!(achievement->flags & ACHIEVEMENT_FLAG_REALM_FIRST_KILL))
         sAchievementMgr.SetRealmCompleted(achievement);
 
-    UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT);
+    UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT, 0, 0, NULL, 0, referencePlayer);
 
     // reward items and titles if any
     AchievementReward const* reward = sAchievementMgr.GetAchievementReward(achievement, GetOwner()->getGender());
