@@ -604,24 +604,18 @@ void AchievementMgr<T>::DeleteFromDB(ObjectGuid guid)
 {
     uint32 lowguid = guid.GetCounter();
     CharacterDatabase.BeginTransaction();
-    CharacterDatabase.PExecute("DELETE FROM character_achievement WHERE guid = %u", lowguid);
-    CharacterDatabase.PExecute("DELETE FROM character_achievement_progress WHERE guid = %u", lowguid);
+    if (IsGuild<T>())
+    {
+        CharacterDatabase.PExecute("DELETE FROM guild_achievement WHERE guildId = %u", lowguid);
+        CharacterDatabase.PExecute("DELETE FROM guild_achievement_progress WHERE guildId = %u", lowguid);
+    }
+    else
+    {
+        CharacterDatabase.PExecute("DELETE FROM character_achievement WHERE guid = %u", lowguid);
+        CharacterDatabase.PExecute("DELETE FROM character_achievement_progress WHERE guid = %u", lowguid);
+    }
     CharacterDatabase.CommitTransaction();
 }
-
-/*
-template <>
-void AchievementMgr<Guild>::DeleteFromDB(ObjectGuid guid)
-{
-    std::string s;
-    WorldDatabase.escape_string(s);
-    uint32 lowguid = guid.GetCounter();
-    CharacterDatabase.BeginTransaction();
-    CharacterDatabase.PExecute("DELETE FROM guild_achievement WHERE guildId = %u", lowguid);
-    CharacterDatabase.PExecute("DELETE FROM guild_achievement_progress WHERE guildId = %u", lowguid);
-    CharacterDatabase.CommitTransaction();
-}
-*/
 
 template <class T>
 void AchievementMgr<T>::SaveToDB()
