@@ -261,6 +261,7 @@ void GuildMgr::LoadGuildXpForLevel()
         GuildXPperLevel[level] = requiredXP;
         ++count;
     } while (result->NextRow());
+    delete result;
 
     // fill level gaps
     for (uint8 level = 1; level < sWorld.getConfig(CONFIG_UINT32_GUILD_MAX_LEVEL); ++level)
@@ -319,6 +320,7 @@ void GuildMgr::LoadGuildRewards()
         GuildRewards.push_back(reward);
         ++count;
     } while (result->NextRow());
+    delete result;
 
     sLog.outString(">> Loaded %u guild reward definitions", count);
 }

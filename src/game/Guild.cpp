@@ -2737,7 +2737,9 @@ void Guild::LoadGuildNewsEventLogFromDB()
         NewEvent.Data = fields[3].GetUInt32();
         NewEvent.Flags = fields[4].GetUInt32();
         NewEvent.Date = time_t(fields[5].GetUInt32());
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
+
     delete result;
 }
 
