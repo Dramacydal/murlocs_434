@@ -830,6 +830,8 @@ class ObjectMgr
         void LoadCorpses();
         void LoadFishingBaseSkillLevel();
 
+        void LoadVoidStorageItemId();
+
         void LoadReputationRewardRate();
         void LoadReputationOnKill();
         void LoadReputationSpilloverTemplate();
@@ -891,6 +893,7 @@ class ObjectMgr
         //uint32 GenerateItemTextID() { return m_ItemGuids.Generate(); }
         uint32 GenerateMailID() { return m_MailIds.Generate(); }
         uint32 GeneratePetNumber() { return m_PetNumbers.Generate(); }
+        uint64 GenerateVoidStorageItemId() { return m_VoidStorageItemIds.Generate(); }
 
         MailLevelReward const* GetMailLevelReward(uint32 level,uint32 raceMask)
         {
@@ -1245,6 +1248,7 @@ class ObjectMgr
         IdGenerator<uint32> m_MailIds;
         IdGenerator<uint32> m_PetNumbers;
         IdGenerator<uint32> m_ArenaGameIds;
+        IdGenerator<uint64> m_VoidStorageItemIds;
 
         // initial free low guid for selected guid type for map local guids
         uint32 m_FirstTemporaryCreatureGuid;

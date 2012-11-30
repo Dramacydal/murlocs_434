@@ -20,6 +20,7 @@
 #include "Guild.h"
 #include "Log.h"
 #include "ObjectGuid.h"
+#include "ObjectMgr.h"
 #include "Database/DatabaseEnv.h"
 #include "Policies/SingletonImp.h"
 #include "ProgressBar.h"

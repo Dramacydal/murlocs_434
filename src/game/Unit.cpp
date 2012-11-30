@@ -57,6 +57,7 @@
 #include "CreatureLinkingMgr.h"
 #include "MovementStructures.h"
 #include "Guild.h"
+#include "GuildMgr.h"
 
 #include <math.h>
 #include <stdarg.h>

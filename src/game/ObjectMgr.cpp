@@ -229,6 +229,7 @@ ObjectMgr::ObjectMgr() :
     m_MailIds("Mail ids"),
     m_PetNumbers("Pet numbers"),
     m_ArenaGameIds("Arena game ids"),
+    m_VoidStorageItemIds("Void storage item ids"),
     m_FirstTemporaryCreatureGuid(1),
     m_FirstTemporaryGameObjectGuid(1)
 {
@@ -7088,7 +7089,7 @@ void ObjectMgr::LoadPetNames()
 void ObjectMgr::LoadPetNumber()
 {
     QueryResult* result = CharacterDatabase.Query("SELECT MAX(id) FROM character_pet");
-    if(result)
+    if (result)
     {
         Field *fields = result->Fetch();
         m_PetNumbers.Set(fields[0].GetUInt32()+1);
@@ -7117,6 +7118,22 @@ std::string ObjectMgr::GeneratePetName(uint32 entry)
     }
 
     return *(list0.begin()+urand(0, list0.size()-1)) + *(list1.begin()+urand(0, list1.size()-1));
+}
+
+void ObjectMgr::LoadVoidStorageItemId()
+{
+    if (QueryResult* result = CharacterDatabase.Query("SELECT MAX(itemId) FROM character_void_storage"))
+    {
+        Field* fields = result->Fetch();
+        m_VoidStorageItemIds.Set(fields[0].GetUInt64() + 1);
+        delete result;
+    }
+
+    BarGoLink bar(1);
+    bar.step();
+
+    sLog.outString();
+    sLog.outString(">> Loaded the max void storage item id: " UI64FMTD, m_VoidStorageItemIds.GetNextAfterMaxUsed() - 1);
 }
 
 void ObjectMgr::LoadCorpses()

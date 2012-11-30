@@ -527,6 +527,7 @@
     <ClCompile Include="..\..\src\game\UpdateData.cpp" />
     <ClCompile Include="..\..\src\game\Vehicle.cpp" />
     <ClCompile Include="..\..\src\game\VoiceChatHandler.cpp" />
+    <ClCompile Include="..\..\src\game\VoidStorageHandler.cpp" />
     <ClCompile Include="..\..\src\game\WardenBase.cpp" />
     <ClCompile Include="..\..\src\game\WardenDataStorage.cpp" />
     <ClCompile Include="..\..\src\game\WardenMac.cpp" />

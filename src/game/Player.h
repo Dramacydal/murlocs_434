@@ -961,6 +961,7 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOADMONTHLYQUESTSTATUS,
     PLAYER_LOGIN_QUERY_LOADCURRENCIES,
     PLAYER_LOGIN_QUERY_LOAD_CUF_PROFILES,
+    PLAYER_LOGIN_QUERY_LOAD_VOID_STORAGE,
 
     MAX_PLAYER_LOGIN_QUERY
 };
@@ -1167,6 +1168,32 @@ struct Visuals
 
     VisualsType m_type;
 
+};
+
+struct VoidStorageItem
+{
+    VoidStorageItem()
+    {
+        ItemId = 0;
+        ItemEntry = 0;
+        ItemRandomPropertyId = 0;
+        ItemSuffixFactor = 0;
+    }
+
+    VoidStorageItem(uint64 id, uint32 entry, ObjectGuid creator, uint32 randomPropertyId, uint32 suffixFactor)
+    {
+        ItemId = id;
+        ItemEntry = entry;
+        CreatorGuid = creator;
+        ItemRandomPropertyId = randomPropertyId;
+        ItemSuffixFactor = suffixFactor;
+    }
+
+    uint64 ItemId;
+    uint32 ItemEntry;
+    ObjectGuid CreatorGuid;
+    uint32 ItemRandomPropertyId;
+    uint32 ItemSuffixFactor;
 };
 
 class MANGOS_DLL_SPEC Player : public Unit
@@ -2656,6 +2683,21 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool Spectate(Player* target, bool sendErrors = false);
         bool UnSpectate(bool sendErrors = false);
 
+        // Void Storage
+        bool IsVoidStorageUnlocked() const { return HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_VOID_STORAGE_UNLOCKED); }
+        void UnlockVoidStorage() { SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_VOID_STORAGE_UNLOCKED); }
+        void LockVoidStorage() { RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_VOID_STORAGE_UNLOCKED); }
+        uint8 GetNextVoidStorageFreeSlot() const;
+        uint8 GetNumOfVoidStorageFreeSlots() const;
+        uint8 AddVoidStorageItem(const VoidStorageItem& item);
+        void AddVoidStorageItemAtSlot(uint8 slot, const VoidStorageItem& item);
+        void DeleteVoidStorageItem(uint8 slot);
+        bool SwapVoidStorageItem(uint8 oldSlot, uint8 newSlot);
+        VoidStorageItem* GetVoidStorageItem(uint8 slot) const;
+        VoidStorageItem* GetVoidStorageItem(uint64 id, uint8& slot) const;
+        void _LoadVoidStorage(QueryResult* result);
+        void _SaveVoidStorage();
+
     private:
         void CreateOrDeletePremiumItem(bool create);
         void ApplyPremiumSpells(bool apply);
@@ -2927,6 +2969,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         ObjectGuid m_curGrantLevelGiverGuid;
 
         int32 m_GrantableLevelsCount;
+
+        VoidStorageItem* m_voidStorageItems[VOID_STORAGE_MAX_SLOT];
 
     private:
         void _HandleDeadlyPoison(Unit* Target, WeaponAttackType attType, SpellEntry const *spellInfo);
