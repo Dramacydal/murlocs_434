@@ -414,6 +414,8 @@ class MANGOS_DLL_SPEC Item : public Object
         static bool CanTransmogrifyItemWithItem(Item const* transmogrified, Item const* transmogrifier);
         bool HasStats() const;
 
+        bool FitsToVoidStorage() const;
+
         uint32 GetVisibleEntry() const
         {
             if (uint32 transmogrification = GetEnchantmentId(TRANSMOGRIFY_ENCHANTMENT_SLOT))

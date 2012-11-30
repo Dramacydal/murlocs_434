@@ -233,16 +233,29 @@ void WorldSession::HandleVoidStorageTransfer(WorldPacket& recvData)
         return;
     }
 
-    std::pair<VoidStorageItem, uint8> depositItems[VOID_STORAGE_MAX_DEPOSIT];
-    uint8 depositCount = 0;
     for (std::vector<ObjectGuid>::iterator itr = itemGuids.begin(); itr != itemGuids.end(); ++itr)
     {
         Item* item = player->GetItemByGuid(*itr);
         if (!item)
         {
             ERROR_LOG("WORLD: HandleVoidStorageTransfer - %s wants to deposit an invalid item %s.", player->GetGuidStr().c_str(), itr->GetString().c_str());
-            continue;
+            SendVoidStorageTransferResult(VOID_TRANSFER_ERROR_INTERNAL_ERROR_1);
+            return;
         }
+
+        if (!item->FitsToVoidStorage())
+        {
+            ERROR_LOG("WORLD: HandleVoidStorageTransfer - %s wants to deposit an item %s that cannot be put in void storage.", player->GetGuidStr().c_str(), itr->GetString().c_str());
+            SendVoidStorageTransferResult(VOID_TRANSFER_ERROR_INTERNAL_ERROR_1);
+            return;
+        }
+    }
+
+    std::pair<VoidStorageItem, uint8> depositItems[VOID_STORAGE_MAX_DEPOSIT];
+    uint8 depositCount = 0;
+    for (std::vector<ObjectGuid>::iterator itr = itemGuids.begin(); itr != itemGuids.end(); ++itr)
+    {
+        Item* item = player->GetItemByGuid(*itr);
 
         VoidStorageItem itemVS(sObjectMgr.GenerateVoidStorageItemId(), item->GetEntry(), item->GetUInt64Value(ITEM_FIELD_CREATOR), item->GetItemRandomPropertyId(), item->GetItemSuffixFactor());
 
