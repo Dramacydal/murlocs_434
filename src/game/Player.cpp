@@ -16656,7 +16656,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
     m_resetTalentsTime = time_t(fields[25].GetUInt64());
 
     // reserve some flags
-    uint32 old_safe_flags = GetUInt32Value(PLAYER_FLAGS) & ( PLAYER_FLAGS_HIDE_CLOAK | PLAYER_FLAGS_HIDE_HELM );
+    uint32 old_safe_flags = GetUInt32Value(PLAYER_FLAGS) & (PLAYER_FLAGS_HIDE_CLOAK | PLAYER_FLAGS_HIDE_HELM | PLAYER_FLAGS_DEVELOPER | PLAYER_FLAGS_XP_USER_DISABLED | PLAYER_FLAGS_AUTO_DECLINE_GUILDS | PLAYER_FLAGS_VOID_STORAGE_UNLOCKED);
 
     if( HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GM) )
         SetUInt32Value(PLAYER_FLAGS, 0 | old_safe_flags);
