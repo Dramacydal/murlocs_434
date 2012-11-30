@@ -433,7 +433,7 @@ void WorldSession::HandleVoidSwapItem(WorldPacket& recvData)
         data.WriteGuidBytes<4, 6, 5, 2, 3, 1, 7, 0>(itemIdDest);
 
     if (usedSrcSlot)
-        data.WriteGuidBytes<6, 3, 5, 0, 1, 2, 4, 7>(itemIdDest);
+        data.WriteGuidBytes<6, 3, 5, 0, 1, 2, 4, 7>(itemId);
 
     if (usedDestSlot)
         data << uint32(oldSlot);
