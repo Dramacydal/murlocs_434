@@ -599,6 +599,7 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
     m_slot = 255;
 
     memset(_CUFProfiles, NULL, MAX_CUF_PROFILES * sizeof(CUFProfile*));
+    memset(m_voidStorageItems, NULL, VOID_STORAGE_MAX_SLOT * sizeof(VoidStorageItem*));
 }
 
 Player::~Player ()
