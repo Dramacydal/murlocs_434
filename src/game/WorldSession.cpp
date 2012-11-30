@@ -234,6 +234,8 @@ bool WorldSession::Update(PacketFilter& updater)
                         packet->GetOpcode());
         #endif*/
 
+        sLog.outString("Received packet %u %s from %s", packet->GetOpcode(), LookupOpcodeName(packet->GetOpcode()), GetPlayer() ? GetPlayer()->GetGuidStr().c_str() : "<unknown>");
+
         OpcodeHandler const& opHandle = opcodeTable[packet->GetOpcode()];
         try
         {
