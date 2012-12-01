@@ -1193,6 +1193,7 @@ void Aura::HandleAddModifier(bool apply, bool Real)
             case 17941:                                     // Shadow Trance
             case 22008:                                     // Netherwind Focus
             case 34936:                                     // Backlash
+            case 47283:                                     // Empowered Imp
             case 48108:                                     // Hot Streak
             case 51124:                                     // Killing Machine
             case 54741:                                     // Firestarter
