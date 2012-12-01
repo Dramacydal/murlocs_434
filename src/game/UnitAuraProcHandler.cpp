@@ -1625,7 +1625,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 54181;
                 break;
             }
-            switch(dummySpell->Id)
+            switch (dummySpell->Id)
             {
                 // Nightfall & Glyph of Corruption
                 case 18094:
@@ -1634,6 +1634,14 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 {
                     target = this;
                     triggered_spell_id = 17941;
+                    break;
+                }
+                // Improved Soul Fire
+                case 18119:
+                case 18120:
+                {
+                    basepoints[0] = triggerAmount;
+                    triggered_spell_id = 85383;
                     break;
                 }
                 //Soul Leech
