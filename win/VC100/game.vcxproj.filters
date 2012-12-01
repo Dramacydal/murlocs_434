@@ -187,6 +187,8 @@
     <ClCompile Include="..\..\src\game\BattleField\BattleField.cpp" />
     <ClCompile Include="..\..\src\game\BattleField\BattleFieldWG.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundBG.cpp" />
+    <ClCompile Include="..\..\src\game\BattleGround\BattleGroundTP.cpp" />
+    <ClCompile Include="..\..\src\game\VoidStorageHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\AccountMgr.h" />
@@ -373,5 +375,6 @@
     <ClInclude Include="..\..\src\game\BattleField\BattleField.h" />
     <ClInclude Include="..\..\src\game\BattleField\BattleFieldWG.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundBG.h" />
+    <ClInclude Include="..\..\src\game\BattleGround\BattleGroundTP.h" />
   </ItemGroup>
 </Project>

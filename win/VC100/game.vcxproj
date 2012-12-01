@@ -377,6 +377,7 @@
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundRL.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundRV.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundSA.cpp" />
+    <ClCompile Include="..\..\src\game\BattleGround\BattleGroundTP.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundWS.cpp" />
     <ClCompile Include="..\..\src\game\Calendar.cpp" />
     <ClCompile Include="..\..\src\game\CalendarHandler.cpp" />
@@ -525,6 +526,7 @@
     <ClCompile Include="..\..\src\game\UpdateData.cpp" />
     <ClCompile Include="..\..\src\game\Vehicle.cpp" />
     <ClCompile Include="..\..\src\game\VoiceChatHandler.cpp" />
+    <ClCompile Include="..\..\src\game\VoidStorageHandler.cpp" />
     <ClCompile Include="..\..\src\game\WardenBase.cpp" />
     <ClCompile Include="..\..\src\game\WardenDataStorage.cpp" />
     <ClCompile Include="..\..\src\game\WardenMac.cpp" />
@@ -571,6 +573,7 @@
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundRL.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundRV.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundSA.h" />
+    <ClInclude Include="..\..\src\game\BattleGround\BattleGroundTP.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundWS.h" />
     <ClInclude Include="..\..\src\game\Calendar.h" />
     <ClInclude Include="..\..\src\game\Camera.h" />
