@@ -18102,8 +18102,21 @@ void Player::_LoadMonthlyQuestStatus(QueryResult *result)
 
 void Player::_LoadSpells(QueryResult *result)
 {
+    typedef std::map<uint32, uint32> PerksMap;
+    PerksMap perksMap;
+    for (uint32 i = 0; i < sGuildPerkSpellsStore.GetNumRows(); ++i)
+        if (GuildPerkSpellsEntry const* entry = sGuildPerkSpellsStore.LookupEntry(i))
+            perksMap[entry->SpellId] = entry->Level;
+
+    uint32 guildLevel = 0;
+    if (uint32 guildId = GetGuildId())
+    {
+        if (Guild* guild = sGuildMgr.GetGuildById(GetGuildId()))
+            guildLevel = guild->GetLevel();
+    }
+
     //QueryResult *result = CharacterDatabase.PQuery("SELECT spell,active,disabled FROM character_spell WHERE guid = '%u'",GetGUIDLow());
-    if(result)
+    if (result)
     {
         do
         {
@@ -18112,7 +18125,7 @@ void Player::_LoadSpells(QueryResult *result)
             uint32 spell_id = fields[0].GetUInt32();
 
             // skip talents & drop unneeded data
-            if(GetTalentSpellPos(spell_id))
+            if (GetTalentSpellPos(spell_id))
             {
                 ERROR_LOG("Player::_LoadSpells: %s has talent spell %u in character_spell, removing it.",
                     GetGuidStr().c_str(), spell_id);
@@ -18120,9 +18133,22 @@ void Player::_LoadSpells(QueryResult *result)
                 continue;
             }
 
+            // check guild perks
+            PerksMap::const_iterator itr = perksMap.find(spell_id);
+            if (itr != perksMap.end())
+            {
+                if (!guildLevel || itr->second > guildLevel)
+                {
+                    ERROR_LOG("Player::_LoadSpells: %s has guild perk spell %u in character_spell, but no guild or not enough level, removing it.",
+                        GetGuidStr().c_str(), spell_id);
+                    CharacterDatabase.PExecute("DELETE FROM character_spell WHERE spell = '%u' AND guid = '%u'", spell_id, GetObjectGuid().GetCounter());
+                    continue;
+                }
+            }
+
             addSpell(spell_id, fields[1].GetBool(), false, false, fields[2].GetBool());
         }
-        while( result->NextRow() );
+        while(result->NextRow());
 
         delete result;
     }
