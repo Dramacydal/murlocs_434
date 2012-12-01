@@ -898,7 +898,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "distance",       SEC_ADMINISTRATOR,  false, &ChatHandler::HandleGetDistanceCommand,         "", NULL },
         { "recall",         SEC_MODERATOR,      false, &ChatHandler::HandleRecallCommand,              "", NULL },
         { "save",           SEC_PLAYER,         false, &ChatHandler::HandleSaveCommand,                "", NULL },
-        { "saveguilds",     SEC_ADMINISTRATOR,  false, &ChatHandler::HandleSaveGuildsCommand,          "", NULL },
+        { "saveguilds",     SEC_ADMINISTRATOR,  true, &ChatHandler::HandleSaveGuildsCommand,          "", NULL },
         { "saveall",        SEC_MODERATOR,      true,  &ChatHandler::HandleSaveAllCommand,             "", NULL },
         { "kick",           SEC_GAMEMASTER,     true,  &ChatHandler::HandleKickPlayerCommand,          "", NULL },
         { "ban",            SEC_ADMINISTRATOR,  true,  NULL,                                           "", banCommandTable      },
