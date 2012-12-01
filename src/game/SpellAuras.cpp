@@ -3638,6 +3638,16 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     }
                 }
             }
+            // Shadowburn
+            else if (GetId() == 29341)
+            {
+                if (m_removeMode == AURA_REMOVE_BY_DEATH)
+                {
+                    if (Unit* caster = GetCaster())
+                        // Soul Shard Energize
+                        caster->CastSpell(caster, 95810, true);
+                }
+            }
             break;
         }
         case SPELLFAMILY_DRUID:
