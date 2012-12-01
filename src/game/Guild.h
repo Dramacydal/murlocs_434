@@ -547,7 +547,8 @@ class Guild
 
         // Guild leveling
         uint32 GetLevel() const { return m_Level; }
-        void GiveXP(uint32 xp, Player* source);
+        void GiveXP(int64 xp, Player* source);
+        void TakeXP(int64 xp, Player* source);
         uint64 GetExperience() const { return m_Experience; }
         uint64 GetTodayExperience() const { return m_TodayExperience; }
         void SendGuildXP(Player* player);

@@ -2860,9 +2860,12 @@ void Guild::SendReputationWeeklyCap(Player* player)
     }
 }
 
-void Guild::GiveXP(uint32 xp, Player* source)
+void Guild::GiveXP(int64 xp, Player* source)
 {
     if (!sWorld.getConfig(CONFIG_BOOL_GUILD_LEVELING_ENABLED))
+        return;
+
+    if (xp < 0)
         return;
 
     /// @TODO: Award reputation and count activity for player
@@ -2870,12 +2873,15 @@ void Guild::GiveXP(uint32 xp, Player* source)
     if (GetLevel() >= sWorld.getConfig(CONFIG_UINT32_GUILD_MAX_LEVEL))
         xp = 0; // SMSG_GUILD_XP_GAIN is always sent, even for no gains
 
-    if (GetLevel() >= sWorld.getConfig(CONFIG_UINT32_GUILD_EXPERIENCE_UNCAPPED_LEVEL))
-        xp = std::min(xp, sWorld.getConfig(CONFIG_UINT32_GUILD_DAILY_XP_CAP) - uint32(m_TodayExperience));
+    if (source && GetLevel() < sWorld.getConfig(CONFIG_UINT32_GUILD_EXPERIENCE_UNCAPPED_LEVEL))
+        xp = std::min(xp, int64(sWorld.getConfig(CONFIG_UINT32_GUILD_DAILY_XP_CAP) - uint32(m_TodayExperience)));
 
-    WorldPacket data(SMSG_GUILD_XP_GAIN, 8);
-    data << uint64(xp);
-    source->GetSession()->SendPacket(&data);
+    if (source)
+    {
+        WorldPacket data(SMSG_GUILD_XP_GAIN, 8);
+        data << uint64(xp);
+        source->GetSession()->SendPacket(&data);
+    }
 
     m_Experience += xp;
     m_TodayExperience += xp;
@@ -2892,6 +2898,9 @@ void Guild::GiveXP(uint32 xp, Player* source)
         ++m_Level;
     }
 
+    if (m_Level == oldLevel)
+        return;
+
     // Find all guild perks to learn
     std::vector<uint32> perksToLearn;
     for (uint32 i = 0; i < sGuildPerkSpellsStore.GetNumRows(); ++i)
@@ -2907,6 +2916,50 @@ void Guild::GiveXP(uint32 xp, Player* source)
             player->SetGuildLevel(GetLevel());
             for (size_t i = 0; i < perksToLearn.size(); ++i)
                 player->learnSpell(perksToLearn[i], true);
+        }
+    }
+
+    LogNewsEvent(GUILD_NEWS_LEVEL_UP, time(NULL), 0, 0, m_Level);
+    GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_GUILD_LEVEL, GetLevel(), 0, NULL, 0, source);
+}
+
+void Guild::TakeXP(int64 xp, Player* source)
+{
+    if (!sWorld.getConfig(CONFIG_BOOL_GUILD_LEVELING_ENABLED))
+        return;
+
+    if (xp >= 0)
+        return;
+
+    uint32 oldLevel = GetLevel();
+
+    // Ding, mon!
+    while (xp - sGuildMgr.GetXPForGuildLevel(m_Level - 1) > 0 && m_Level >= 1)
+    {
+        xp -= sGuildMgr.GetXPForGuildLevel(m_Level - 1);
+        --m_Level;
+    }
+
+    m_Experience =  xp > m_Experience ? 0 : m_Experience - xp;
+
+    if (oldLevel == m_Level)
+        return;
+
+    // Find all guild perks to learn
+    std::vector<uint32> perksToLearn;
+    for (uint32 i = 0; i < sGuildPerkSpellsStore.GetNumRows(); ++i)
+        if (GuildPerkSpellsEntry const* entry = sGuildPerkSpellsStore.LookupEntry(i))
+            if (entry->Level <= oldLevel && entry->Level > GetLevel())
+                perksToLearn.push_back(entry->SpellId);
+
+    // Notify all online players that guild level changed and learn perks
+    for (MemberList::const_iterator itr = members.begin(); itr != members.end(); ++itr)
+    {
+        if (Player* player = sObjectMgr.GetPlayer(itr->second.guid))
+        {
+            player->SetGuildLevel(GetLevel());
+            for (size_t i = 0; i < perksToLearn.size(); ++i)
+                player->removeSpell(perksToLearn[i], false, false, true);
         }
     }
 

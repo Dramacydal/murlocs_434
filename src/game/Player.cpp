@@ -18103,7 +18103,6 @@ void Player::_LoadMonthlyQuestStatus(QueryResult *result)
 void Player::_LoadSpells(QueryResult *result)
 {
     //QueryResult *result = CharacterDatabase.PQuery("SELECT spell,active,disabled FROM character_spell WHERE guid = '%u'",GetGUIDLow());
-
     if(result)
     {
         do
