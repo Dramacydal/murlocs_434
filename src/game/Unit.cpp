@@ -7432,20 +7432,23 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
                 // Incinerate Rank 1, 2, 3, 4
                 if ((classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x00004000000000)) && spellProto->SpellIconID == 2128)
                 {
-                    // Incinerate does more dmg (dmg*0.25) if the target have Immolate debuff.
+                    // Incinerate does more dmg (dmg/6) if the target have Immolate debuff.
                     // Check aura state for speed but aura state set not only for Immolate spell
                     if (pVictim->HasAuraState(AURA_STATE_CONFLAGRATE))
                     {
                         Unit::AuraList const& RejorRegr = pVictim->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
                         for (Unit::AuraList::const_iterator i = RejorRegr.begin(); i != RejorRegr.end(); ++i)
                         {
+                            if ((*i)->GetCasterGuid() != GetObjectGuid())
+                                continue;
+
                             if (SpellClassOptionsEntry const * opt = (*i)->GetSpellProto()->GetSpellClassOptions())
                             {
                                 // Immolate
                                 if (opt->SpellFamilyName == SPELLFAMILY_WARLOCK &&
                                     (opt->SpellFamilyFlags & UI64LIT(0x00000000000004)))
                                 {
-                                    DoneTotalMod *= 1.25f;
+                                    DoneTotalMod *= 1.167f;
                                     break;
                                 }
                             }
