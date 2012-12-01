@@ -2920,7 +2920,8 @@ void Guild::GiveXP(int64 xp, Player* source)
     }
 
     LogNewsEvent(GUILD_NEWS_LEVEL_UP, time(NULL), 0, 0, m_Level);
-    GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_GUILD_LEVEL, GetLevel(), 0, NULL, 0, source);
+    if (source)
+        GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_GUILD_LEVEL, GetLevel(), 0, NULL, 0, source);
 }
 
 void Guild::TakeXP(int64 xp, Player* source)
@@ -2964,7 +2965,8 @@ void Guild::TakeXP(int64 xp, Player* source)
     }
 
     LogNewsEvent(GUILD_NEWS_LEVEL_UP, time(NULL), 0, 0, m_Level);
-    GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_GUILD_LEVEL, GetLevel(), 0, NULL, 0, source);
+    if (source)
+        GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_GUILD_LEVEL, GetLevel(), 0, NULL, 0, source);
 }
 
 void Guild::SendGuildXP(Player* player)
