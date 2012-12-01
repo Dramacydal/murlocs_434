@@ -1625,6 +1625,16 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 54181;
                 break;
             }
+            // Burning Embers
+            else if (dummySpell->SpellIconID == 5116)
+            {
+                if (effIndex != EFFECT_INDEX_0)
+                    return SPELL_AURA_PROC_FAILED;
+
+                triggered_spell_id = 85421;
+                basepoints[0] = int32(triggerAmount * damage / 100.0f);
+                break;
+            }
             switch (dummySpell->Id)
             {
                 // Nightfall & Glyph of Corruption
