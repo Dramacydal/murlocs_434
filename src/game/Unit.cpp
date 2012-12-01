@@ -7815,6 +7815,26 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                         }
                         break;
                     }
+                    case SPELLFAMILY_WARLOCK:
+                    {
+                        // Searing Pain
+                        if (spellProto->Id == 5676)
+                        {
+                            // Search Improved Searing Pain
+                            AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                            for(AuraList::const_iterator i = mDummyAuras.begin(); i!= mDummyAuras.end(); ++i)
+                            {
+                                if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_WARLOCK &&
+                                    (*i)->GetSpellProto()->SpellIconID == 816)
+                                {
+                                    if (pVictim->GetHealthPercent() < float((*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)))
+                                        crit_chance += (*i)->GetModifier()->m_amount;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
                     case SPELLFAMILY_PRIEST:
                     {
                         // Flash Heal
@@ -7829,7 +7849,7 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                                 if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST &&
                                     (*i)->GetSpellProto()->SpellIconID == 2542)
                                 {
-                                    crit_chance+=(*i)->GetModifier()->m_amount;
+                                    crit_chance += (*i)->GetModifier()->m_amount;
                                     break;
                                 }
                             }
