@@ -386,24 +386,6 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
         return;
     }
 
-    Unit::AuraList swaps = _mover->GetAurasByType(SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS);
-    Unit::AuraList const& swaps2 = _mover->GetAurasByType(SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS_2);
-    if (!swaps2.empty())
-        swaps.insert(swaps.end(), swaps2.begin(), swaps2.end());
-
-    for (Unit::AuraList::const_iterator itr = swaps.begin(); itr != swaps.end(); ++itr)
-    {
-        if ((*itr)->isAffectedOnSpell(spellInfo))
-        {
-            if (SpellEntry const* newInfo = sSpellStore.LookupEntry((*itr)->GetModifier()->m_amount))
-            {
-                spellInfo = newInfo;
-                spellId = newInfo->Id;
-            }
-            break;
-        }
-    }
-
     //  Players on vehicles may cast many simple spells (like knock) from self
     Unit* mover = NULL;
     if (spellInfo->AttributesEx6 & SPELL_ATTR_EX6_CASTABLE_ON_VEHICLE && _mover->IsCharmerOrOwnerPlayerOrPlayerItself())
@@ -450,6 +432,24 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
             //cheater? kick? ban?
             recvPacket.rpos(recvPacket.wpos());                 // prevent spam at ignore packet
             return;
+        }
+    }
+
+    Unit::AuraList swaps = _mover->GetAurasByType(SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS);
+    Unit::AuraList const& swaps2 = _mover->GetAurasByType(SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS_2);
+    if (!swaps2.empty())
+        swaps.insert(swaps.end(), swaps2.begin(), swaps2.end());
+
+    for (Unit::AuraList::const_iterator itr = swaps.begin(); itr != swaps.end(); ++itr)
+    {
+        if ((*itr)->isAffectedOnSpell(spellInfo))
+        {
+            if (SpellEntry const* newInfo = sSpellStore.LookupEntry((*itr)->GetModifier()->m_amount))
+            {
+                spellInfo = newInfo;
+                spellId = newInfo->Id;
+            }
+            break;
         }
     }
 
