@@ -10336,6 +10336,15 @@ int32 Unit::CalculateSpellDamage(Unit const* target, SpellEntry const* spellProt
         {
             switch (spellProto->Id)
             {
+                case 687:           // Demon Armor
+                case 28176:         // Fel Armor
+                {
+                    if (HasAura(91713)) // Nether Ward talent
+                        return 91711;   // Nether Ward
+                    else
+                        return 6229;    // Shadow Ward
+                    break;
+                }
                 case 81206:         // Chakra: Sanctuary
                 case 81208:         // Chakra: Serenity
                 {
