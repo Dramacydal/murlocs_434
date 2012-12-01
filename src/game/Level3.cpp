@@ -3995,7 +3995,7 @@ bool ChatHandler::HandleGuildLevelCommand(char* args)
     int32 oldLevel = targetGuild->GetLevel();
     int32 newLevel = oldLevel + mod;
 
-    if (newLevel <= 0 || newLevel >= sWorld.getConfig(CONFIG_UINT32_GUILD_MAX_LEVEL))
+    if (newLevel <= 0 || newLevel > sWorld.getConfig(CONFIG_UINT32_GUILD_MAX_LEVEL))
         return false;
 
     uint64 xp = targetGuild->GetExperience();
