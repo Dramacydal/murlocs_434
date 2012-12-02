@@ -1570,7 +1570,7 @@ void ScriptAction::HandleScriptStep()
             if (LogIfNotCreature(pSource))
                 break;
 
-            ((Creature*)pSource)->SetWalk(!m_script->run.run);
+            ((Creature*)pSource)->SetWalk(!m_script->run.run, true);
 
             break;
         }

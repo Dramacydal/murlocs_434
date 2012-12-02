@@ -7350,6 +7350,9 @@ void Spell::DoSummonPossessed(SpellEffectEntry const * effect)
         if (CharmInfo* charmInfo = summon->InitCharmInfo(summon))
             charmInfo->InitPossessCreateSpells();
         player->PossessSpellInitialize();
+
+        summon->SetWalk(m_caster->IsWalking(), true);
+        // TODO: Set Fly (ie glyph dependend)
     }
 
     // Notify Summoner
