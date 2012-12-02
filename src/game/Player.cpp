@@ -21067,13 +21067,9 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
         AddRefundReference(pItem->GetObjectGuid());
     }
 
-    if (crItem->maxcount != 0) // bought
-    {
-        if (pProto->Quality > ITEM_QUALITY_EPIC || (pProto->Quality == ITEM_QUALITY_EPIC && pProto->ItemLevel >= MinNewsItemLevel[sWorld.getConfig(CONFIG_UINT32_EXPANSION)]))
-            if (Guild* guild = sGuildMgr.GetGuildById(GetGuildId()))
-                guild->LogNewsEvent(GUILD_NEWS_ITEM_PURCHASED, time(NULL), GetGUID(), 0, item);
-        return true;
-    }
+    if (pProto->Quality > ITEM_QUALITY_EPIC || (pProto->Quality == ITEM_QUALITY_EPIC && pProto->ItemLevel >= MinNewsItemLevel[sWorld.getConfig(CONFIG_UINT32_EXPANSION)]))
+        if (Guild* guild = sGuildMgr.GetGuildById(GetGuildId()))
+            guild->LogNewsEvent(GUILD_NEWS_ITEM_PURCHASED, time(NULL), GetGUID(), 0, item);
 
     return crItem->maxcount != 0;
 }
