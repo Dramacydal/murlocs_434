@@ -6,7 +6,7 @@ FileLogWriter::FileLogWriter() {
     std::string fileName = sConfig.GetStringDefault("ChatLogger.FileLogWriter.FileName", "chatlog.log");
     file = fopen(fileName.c_str(), "a+");
     if (file == NULL) {
-        ERROR_LOG( "FileLogWriter can't open log file %s.", fileName );
+        ERROR_LOG( "FileLogWriter can't open log file %s.", fileName.c_str() );
     }
 }
 

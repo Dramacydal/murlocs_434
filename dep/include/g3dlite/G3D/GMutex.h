@@ -13,6 +13,10 @@
 #include "G3D/debugAssert.h"
 #include <string>
 
+#ifdef __linux__
+#include <unistd.h>
+#endif
+
 #ifndef G3D_WIN32
 #   include <pthread.h>
 #   include <signal.h>
