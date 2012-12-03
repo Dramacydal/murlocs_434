@@ -2808,12 +2808,15 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
             incanterAbsorption += currentAbsorb;
 
         // Reduce shield amount
-        mod->m_amount-=currentAbsorb;
-        if((*i)->GetHolder()->DropAuraCharge())
+        mod->m_amount -= currentAbsorb;
+        if ((*i)->GetHolder()->DropAuraCharge())
             mod->m_amount = 0;
+
         // Need remove it later
-        if (mod->m_amount<=0)
+        if (mod->m_amount <= 0)
             existExpired = true;
+        else
+            (*i)->GetHolder()->SendAuraUpdate(false);
     }
 
     // Remove all expired absorb auras
