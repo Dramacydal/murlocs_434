@@ -2628,17 +2628,17 @@ class MANGOS_DLL_SPEC Player : public Unit
         {
             if (mounted)
             {
-                CreatureDisplayInfoEntry const* mountDisplayInfo = sCreatureDisplayInfoStore.LookupEntry(GetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID));
+                CreatureDisplayInfoEntry const* mountDisplayInfo = GetCreatureDisplayInfoStore()->LookupEntry(GetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID));
                 if (!mountDisplayInfo)
                     return GetCollisionHeight(false);
                     
-                CreatureModelDataEntry const* mountModelData = sCreatureModelDataStore.LookupEntry(mountDisplayInfo->ModelId);
+                CreatureModelDataEntry const* mountModelData = GetCreatureModelDataStore()->LookupEntry(mountDisplayInfo->ModelId);
                 if (!mountModelData)
                     return GetCollisionHeight(false);
 
-                CreatureDisplayInfoEntry const* displayInfo = sCreatureDisplayInfoStore.LookupEntry(GetNativeDisplayId());
+                CreatureDisplayInfoEntry const* displayInfo = GetCreatureDisplayInfoStore()->LookupEntry(GetNativeDisplayId());
                 MANGOS_ASSERT(displayInfo);
-                CreatureModelDataEntry const* modelData = sCreatureModelDataStore.LookupEntry(displayInfo->ModelId);
+                CreatureModelDataEntry const* modelData = GetCreatureModelDataStore()->LookupEntry(displayInfo->ModelId);
                 MANGOS_ASSERT(modelData);
 
                 float scaleMod = GetFloatValue(OBJECT_FIELD_SCALE_X); // 99% sure about this
@@ -2648,9 +2648,9 @@ class MANGOS_DLL_SPEC Player : public Unit
             else
             {
                 //! Dismounting case - use basic default model data
-                CreatureDisplayInfoEntry const* displayInfo = sCreatureDisplayInfoStore.LookupEntry(GetNativeDisplayId());
+                CreatureDisplayInfoEntry const* displayInfo = GetCreatureDisplayInfoStore()->LookupEntry(GetNativeDisplayId());
                 MANGOS_ASSERT(displayInfo);
-                CreatureModelDataEntry const* modelData = sCreatureModelDataStore.LookupEntry(displayInfo->ModelId);
+                CreatureModelDataEntry const* modelData = GetCreatureModelDataStore()->LookupEntry(displayInfo->ModelId);
                 MANGOS_ASSERT(modelData);
 
                 return modelData->CollisionHeight;

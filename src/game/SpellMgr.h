@@ -74,6 +74,7 @@ enum SpellSpecific
     SPELL_UA_IMMOLATE       = 23,                           // Unstable Affliction and Immolate
     SPELL_PRIEST_INNER      = 24,
     SPELL_PRIEST_CHAKRA     = 25,
+    SPELL_WARLOCK_BANE      = 26,
 };
 
 SpellSpecific GetSpellSpecific(uint32 spellId);

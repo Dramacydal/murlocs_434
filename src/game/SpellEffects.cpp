@@ -780,7 +780,7 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
 
                     uint32 counter = 0;
                     Unit::AuraList const& dotAuras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
-                    for(Unit::AuraList::const_iterator itr = dotAuras.begin(); itr!=dotAuras.end(); ++itr)
+                    for (Unit::AuraList::const_iterator itr = dotAuras.begin(); itr!=dotAuras.end(); ++itr)
                         if ((*itr)->GetCasterGuid() == owner->GetObjectGuid())
                             ++counter;
 
@@ -805,6 +805,19 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                         damage += int32(aura->GetModifier()->m_amount * aura->GetAuraMaxTicks() * aura->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) / 100.0f);
                         break;
                     }
+                }
+                // Firebolt (imp)
+                else if (m_spellInfo->Id == 3110)
+                {
+                    // search Burning Embers
+                    Unit::AuraList const& dummyAuras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
+                    for (Unit::AuraList::const_iterator itr = dummyAuras.begin(); itr != dummyAuras.end(); ++itr)
+                        if ((*itr)->GetSpellProto()->SpellIconID == 5116 && (*itr)->GetEffIndex() == EFFECT_INDEX_0 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_WARLOCK)
+                        {
+                            int32 bp = int32(damage * (*itr)->GetModifier()->m_amount / 100.0f / 7);
+                            m_caster->CastCustomSpell(unitTarget, 85421, &bp, NULL, NULL, true);
+                            break;
+                        }
                 }
                 // Shadow Cleave
                 else if (m_spellInfo->Id == 50581)

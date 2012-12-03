@@ -540,6 +540,16 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
         }
         case SPELLFAMILY_WARLOCK:
         {
+            switch (spellId)
+            {
+                case 603:           // Bane of Doom
+                case 980:           // Bane of Agony
+                case 80240:         // Bane of Havoc
+                    return SPELL_WARLOCK_BANE;
+                default:
+                    break;
+            }
+
             // only warlock curses have this
             if (spellInfo->GetDispel() == DISPEL_CURSE)
                 return SPELL_CURSE;
@@ -654,6 +664,7 @@ bool IsSingleFromSpellSpecificPerTargetPerCaster(SpellSpecific spellSpec1,SpellS
         case SPELL_JUDGEMENT:
         case SPELL_HAND:
         case SPELL_UA_IMMOLATE:
+        case SPELL_WARLOCK_BANE:
             return spellSpec1==spellSpec2;
         default:
             return false;

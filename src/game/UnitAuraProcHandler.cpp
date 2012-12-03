@@ -1653,7 +1653,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     return SPELL_AURA_PROC_FAILED;
 
                 triggered_spell_id = 85421;
-                basepoints[0] = int32(triggerAmount * damage / 100.0f);
+                basepoints[0] = int32(triggerAmount * damage / 100.0f / 7);
                 break;
             }
 

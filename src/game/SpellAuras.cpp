@@ -3645,8 +3645,9 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 if (m_removeMode == AURA_REMOVE_BY_DEATH)
                 {
                     if (Unit* caster = GetCaster())
-                        // Soul Shard Energize
-                        caster->CastSpell(caster, 95810, true);
+                        if (caster->GetTypeId() == TYPEID_PLAYER && ((Player*)caster)->isHonorOrXPTarget(target))
+                            // Soul Shard Energize
+                            caster->CastSpell(caster, 95810, true);
                 }
             }
             break;
