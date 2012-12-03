@@ -269,8 +269,11 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     Unit *mover = _player->GetMover();
 
     uint32 opcode = recv_data.GetOpcode();
-    DEBUG_LOG("WORLD: Recvd %s (%u, 0x%X) opcode Player: %s Mover: %s", LookupOpcodeName(opcode), opcode, opcode, _player->GetGuidStr().c_str(), mover ? mover->GetGuidStr().c_str() : ObjectGuid().GetString().c_str());
-    //recv_data.hexlike();
+    if (!sLog.HasLogFilter(LOG_FILTER_PLAYER_MOVES))
+    {
+        DEBUG_LOG("WORLD: Recvd %s (%u, 0x%X) opcode Player: %s Mover: %s", LookupOpcodeName(opcode), opcode, opcode, _player->GetGuidStr().c_str(), mover ? mover->GetGuidStr().c_str() : ObjectGuid().GetString().c_str());
+        //recv_data.hexlike();
+    }
 
     Player *plMover = mover->GetTypeId() == TYPEID_PLAYER ? (Player*)mover : NULL;
 
