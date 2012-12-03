@@ -1,1 +1,0 @@
-ALTER TABLE `pet_spell` CHANGE `active` `active` TINYINT UNSIGNED NOT NULL;

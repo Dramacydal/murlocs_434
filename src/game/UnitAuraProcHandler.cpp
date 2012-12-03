@@ -1622,19 +1622,18 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     return SPELL_AURA_PROC_FAILED;
 
                 basepoints[0] = -triggerAmount;
-                switch (GetFirstSchoolInMask(GetSpellSchoolMask(procSpell)))
+
+                uint32 spellToSchool[MAX_SPELL_SCHOOL] = { 0, 54370, 54371, 54375, 54372, 54374, 54373 };
+                uint32 schoolMask = GetSpellSchoolMask(procSpell);
+                for (uint8 i = 0; i < MAX_SPELL_SCHOOL; ++i)
                 {
-                    case SPELL_SCHOOL_NORMAL:
-                        return SPELL_AURA_PROC_FAILED;                   // ignore
-                    case SPELL_SCHOOL_HOLY:   triggered_spell_id = 54370; break;
-                    case SPELL_SCHOOL_FIRE:   triggered_spell_id = 54371; break;
-                    case SPELL_SCHOOL_NATURE: triggered_spell_id = 54375; break;
-                    case SPELL_SCHOOL_FROST:  triggered_spell_id = 54372; break;
-                    case SPELL_SCHOOL_SHADOW: triggered_spell_id = 54374; break;
-                    case SPELL_SCHOOL_ARCANE: triggered_spell_id = 54373; break;
-                    default:
-                        return SPELL_AURA_PROC_FAILED;
+                    if (schoolMask & (1 << i))
+                        if (spellToSchool[i])
+                            CastCustomSpell(this, spellToSchool[i], &basepoints[0], NULL, NULL, true);
                 }
+
+                // TODO: must proc only from absorb by Shadow Ward, Nether Ward, voidwalker Sacrifice
+                return SPELL_AURA_PROC_OK;
             }
             // Fel Synergy
             else if (dummySpell->SpellIconID == 3222)

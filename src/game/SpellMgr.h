@@ -478,7 +478,7 @@ inline bool HasAuraWithTriggerEffect(SpellEntry const *spellInfo)
     for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
         SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i));
-        if(!effectEntry)
+        if (!effectEntry)
             continue;
 
         switch (effectEntry->Effect)
