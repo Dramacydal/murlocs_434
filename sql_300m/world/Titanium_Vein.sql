@@ -1,5 +1,5 @@
 
--- Расстановка 20 жил титана (Titanium Vein  http://www.wowhead.com/object=191133)
+-- Р Р°СЃСЃС‚Р°РЅРѕРІРєР° 20 Р¶РёР» С‚РёС‚Р°РЅР° (Titanium Vein  http://www.wowhead.com/object=191133)
 REPLACE INTO `gameobject` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`) VALUES
  (705000, 191133, 571, 1, 1, 5990.34, -976.312, 437.052, 3.65689, 0, 0, 0.966991, -0.25481, 900, 0, 1),
  (705001, 191133, 571, 1, 1, 7859.28, -105.325, 883.18, 2.95711, 0, 0, 0.995749, 0.0921126, 900, 0, 1),

@@ -1,4 +1,4 @@
-﻿-- The Ring of Valor
+-- The Ring of Valor
 UPDATE `gameobject_template` SET `faction` = '114', `flags` = '32' WHERE `entry` IN (192704, 192705, 192388, 192387, 192393, 192394, 192389, 192390);
 UPDATE `gameobject_template` SET `data5` = 1 WHERE `entry` IN (192393, 192394);
 

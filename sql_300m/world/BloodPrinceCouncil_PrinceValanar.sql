@@ -1,6 +1,6 @@
--- Совет Принцев Крови (http://lookingforgroup.ru/issues/858)
--- удаление спела Feign Death (http://www.wowhead.com/spell=71598)
--- и чистка пустого места.
+-- РЎРѕРІРµС‚ РџСЂРёРЅС†РµРІ РљСЂРѕРІРё (http://lookingforgroup.ru/issues/858)
+-- СѓРґР°Р»РµРЅРёРµ СЃРїРµР»Р° Feign Death (http://www.wowhead.com/spell=71598)
+-- Рё С‡РёСЃС‚РєР° РїСѓСЃС‚РѕРіРѕ РјРµСЃС‚Р°.
 
 UPDATE creature_template_addon SET auras = REPLACE( auras, '71598', '') WHERE entry = 37970;
 

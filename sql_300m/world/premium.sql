@@ -1,4 +1,4 @@
-﻿SET NAMES 'utf8';
+SET NAMES 'utf8';
 
 DELETE FROM `creature_template` WHERE `entry` = 88004;
 INSERT INTO `creature_template` 

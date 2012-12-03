@@ -1,5 +1,5 @@
 
--- дроп предмета Поврежденное ожерелье (http://www.wowhead.com/item=43297)
+-- РґСЂРѕРї РїСЂРµРґРјРµС‚Р° РџРѕРІСЂРµР¶РґРµРЅРЅРѕРµ РѕР¶РµСЂРµР»СЊРµ (http://www.wowhead.com/item=43297)
 
 DELETE FROM `creature_loot_template` WHERE `item` = '43297';
 INSERT INTO `creature_loot_template` (`entry`, `item`, `ChanceOrQuestChance`, `groupid`, `mincountOrRef`, `maxcount`, `lootcondition`, `condition_value1`, `condition_value2`) VALUES
@@ -340,7 +340,7 @@ INSERT INTO `creature_loot_template` (`entry`, `item`, `ChanceOrQuestChance`, `g
  (29553, 43297, -2, 0, 1, 1, 0, 0, 0);
 
 
--- дроп предмета Потертая рукоять (http://www.wowhead.com/item=50379, http://www.wowhead.com/item=50380)
+-- РґСЂРѕРї РїСЂРµРґРјРµС‚Р° РџРѕС‚РµСЂС‚Р°СЏ СЂСѓРєРѕСЏС‚СЊ (http://www.wowhead.com/item=50379, http://www.wowhead.com/item=50380)
 
 -- DELETE FROM `creature_loot_template` WHERE `item` = '50379';
 -- DELETE FROM `creature_loot_template` WHERE `item` = '50380';

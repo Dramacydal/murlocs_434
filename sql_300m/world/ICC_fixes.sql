@@ -1,9 +1,9 @@
--- Временной отключение стражей статуй и пауков. Было использовано EventAI
+-- Р’СЂРµРјРµРЅРЅРѕР№ РѕС‚РєР»СЋС‡РµРЅРёРµ СЃС‚СЂР°Р¶РµР№ СЃС‚Р°С‚СѓР№ Рё РїР°СѓРєРѕРІ. Р‘С‹Р»Рѕ РёСЃРїРѕР»СЊР·РѕРІР°РЅРѕ EventAI
 UPDATE `creature_template` SET `unit_flags`='33554438' WHERE `entry` IN (37007, 36725, 38058, 38031);
 UPDATE `creature_template` SET `AIName`='' WHERE `entry` IN (37007, 36725);
 
 
--- Mana void должен быть виден!
+-- Mana void РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РІРёРґРµРЅ!
 UPDATE `creature_template` SET `flags_extra`='0' WHERE `entry`='38068';
 
 
