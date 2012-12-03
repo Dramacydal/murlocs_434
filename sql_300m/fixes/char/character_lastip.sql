@@ -1,0 +1,1 @@
+ALTER TABLE `characters` ADD COLUMN `last_ip` varchar(30) NOT NULL default '0.0.0.0' AFTER deleteDate;
