@@ -61,7 +61,7 @@
 
 -- Spirit Wolf health points - blizzlike
 -- UPDATE `creature_template` SET `minhealth`='12593',`maxhealth`='12593' WHERE `entry`='29264';
---end of fixes for Feral Spirit - Spirit Wolf
+-- end of fixes for Feral Spirit - Spirit Wolf
 
 -- DELETE FROM `spell_bonus_data` WHERE `entry` IN
 -- (45284, 45286, 45287, 45288, 45289, 45290, 45291, 45292, 45293, 45294, 45295, 45296, 49239, 49240,

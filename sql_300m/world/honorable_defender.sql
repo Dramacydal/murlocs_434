@@ -3,7 +3,7 @@ UPDATE `creature_template` SET `faction_A` = 1802, `faction_H` = 1802, `unit_fla
 -- Horde Trigger
 UPDATE `creature_template` SET `faction_A` = 1801, `faction_H` = 1801, `unit_flags` = `unit_flags` | 0x2 | 0x02000000 WHERE `entry` IN (35380, 36350);
 
-DELETE FROM `creature_template_addon` WHERE `entry` IN (36349, 36350);
+DELETE FROM `creature_template_addon` WHERE `entry` IN (36349, 36350, 35379, 35380);
 INSERT INTO `creature_template_addon` (`entry`, `auras`) VALUES
 (35379, '66157'),
 (35380, '66157'),

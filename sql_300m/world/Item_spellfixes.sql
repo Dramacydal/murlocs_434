@@ -34,7 +34,7 @@ DELETE FROM `spell_proc_event` WHERE `entry` = 71903;
 INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `procFlags`, `CustomChance`) VALUE 
 (71903, 127, 0x51014, 20);
 
-DELETE FROM `spell_bonus_data` WHERE `entry` IN (7712, 7714, 10577, 16614, 18798, 27655, 28788, 38395, 55756, 6297, 13897, 20004, 28005, 20006, 44525, 28715, 38616, 43731, 43733);
+DELETE FROM `spell_bonus_data` WHERE `entry` IN (7712, 7714, 10577, 16614, 18798, 27655, 28788, 38395, 55756, 6297, 13897, 20004, 28005, 20006, 44525, 28715, 38616, 43731, 43733, 46579);
 INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `ap_dot_bonus`, `comments`) VALUES
 -- Items
 (7712, 0, 0, 0, 0, 'Item - Blazefury Medallion & Fiery Retributor (Fire Strike)'),

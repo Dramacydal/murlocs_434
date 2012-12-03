@@ -78,11 +78,11 @@ INSERT INTO `creature_ai_scripts` VALUES ('30250100', '30250', '6', '0', '100', 
 UPDATE `gossip_menu_option` SET `action_menu_id`='-1', `action_script_id`='10137100' WHERE `menu_id`='10137' AND `id`=0;
 UPDATE `gossip_menu_option` SET `action_menu_id`='-1', `action_script_id`='10137101' WHERE `menu_id`='10137' AND `id`=1;
 DELETE FROM `gossip_scripts` WHERE `id` BETWEEN 10137100 AND 10137101;
-INSERT INTO `gossip_scripts` (`id`, `delay`, `command`, `datalong`, `datalong2`, `datalong3`, `datalong4`, `data_flags`, `dataint`, `dataint2`, `dataint3`, `dataint4`, `x`, `y`, `z`, `o`, `comments`) VALUES
- (10137100, 0, 8, 31866, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'q13300 - killcredit 31866'),
- (10137100, 1, 18, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'q13300 - despawn'),
- (10137101, 0, 8, 31866, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'q13302 - killcredit 31866'),
- (10137101, 1, 18, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'q13302 - despawn');
+INSERT INTO `gossip_scripts` (`id`, `delay`, `command`, `datalong`, `datalong2`, `data_flags`, `dataint`, `dataint2`, `dataint3`, `dataint4`, `x`, `y`, `z`, `o`, `comments`) VALUES
+ (10137100, 0, 8, 31866, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'q13300 - killcredit 31866'),
+ (10137100, 1, 18, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'q13300 - despawn'),
+ (10137101, 0, 8, 31866, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'q13302 - killcredit 31866'),
+ (10137101, 1, 18, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'q13302 - despawn');
 
 -- Reconnaissance Flight (http://wh.300murlocs.com/?quest=12671)
 -- UPDATE `quest_template` SET `Method`='2' WHERE `entry`='12671';
@@ -174,7 +174,7 @@ UPDATE `creature_template` SET `ScriptName` = 'npc_mamtoth_disciple' WHERE `entr
 DELETE FROM `event_scripts` WHERE `id` = 18940;
 INSERT INTO `event_scripts` (`id`, `command`, `datalong`, `datalong2`) VALUE
 (18940, 11, 46814, 15);
-INSERT INTO `event_scripts` (`id`, `command`, `datalong2`, `datalong3`, `data_flags`) VALUE
+INSERT INTO `event_scripts` (`id`, `command`, `buddy_entry`, `search_radius`, `data_flags`) VALUE
 (18940, 26, 28902, 50, 0x2);
 UPDATE `creature` SET `spawntimesecs` = 20 WHERE `guid` = 99346;
 UPDATE `creature_template` SET `modelid_1` = 25749, `modelid_2` = 0 WHERE `entry` = 28927;
@@ -300,8 +300,8 @@ UPDATE `creature_template` SET `spell2`='64342' WHERE `entry`='33845';
 -- Ribbly Screwspigot (http://wh.300murlocs.com/?quest=4136)
 UPDATE `gossip_menu_option` SET `action_menu_id`='-1', `action_script_id`='1970' WHERE (`menu_id`='1970') AND (`id`='1');
 DELETE FROM `gossip_scripts` WHERE `id` = '1970';
-INSERT INTO `gossip_scripts` (`id`, `delay`, `command`, `datalong`, `datalong2`, `datalong3`, `datalong4`, `data_flags`, `dataint`, `dataint2`, `dataint3`, `dataint4`, `x`, `y`, `z`, `o`, `comments`) VALUES
- (1970, 1, 22, 14, 0, 5, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, '');
+INSERT INTO `gossip_scripts` (`id`, `delay`, `command`, `datalong`, `datalong2`, `search_radius`, `data_flags`, `dataint`, `dataint2`, `dataint3`, `dataint4`, `x`, `y`, `z`, `o`, `comments`) VALUES
+(1970, 1, 22, 14, 1, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, '');
 
 
 -- fix quest for achievement Call to Arms! (http://wh.300murlocs.com/?achievement=11051)
