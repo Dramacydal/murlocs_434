@@ -4003,7 +4003,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 {
                     if(m_caster->GetTypeId() != TYPEID_PLAYER)
                         return;
-                    
+
                     if(m_caster->getLevel() > 84)
                         m_caster->CastSpell(unitTarget, 92727, true); // conjure refreshment, rank 7
                     else if(m_caster->getLevel() > 79)
@@ -4018,6 +4018,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                         m_caster->CastSpell(unitTarget, 92799, true); // conjure refreshment, rank 2
                     else if(m_caster->getLevel() > 38)
                         m_caster->CastSpell(unitTarget, 92739, true); // conjure refreshment, rank 1
+                    return;
                 }
             }
 
