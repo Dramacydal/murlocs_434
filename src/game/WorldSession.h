@@ -920,12 +920,13 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleTransmogrifyItems(WorldPacket& recvData);
 
         // BattleField system
-        void SendBfInvitePlayerToWar(uint32 uiBattlefieldId, uint32 uiZoneId, uint32 uiTimeToAccept);
-        void SendBfInvitePlayerToQueue(uint32 uiBattlefieldId);
-        void SendBfQueueInviteResponse(uint32 uiBattlefieldId, uint32 uiZoneId, bool bCanQueue, bool bFull);
-        void SendBfEntered(uint32 uiBattlefieldId);
-        void SendBfLeaveMessage(uint32 uiBattlefieldId, BattlefieldLeaveReason reason);
+        void SendBfInvitePlayerToWar(ObjectGuid battlefieldGuid, uint32 uiZoneId, uint32 uiTimeToAccept);
+        void SendBfInvitePlayerToQueue(ObjectGuid battlefieldGuid);
+        void SendBfQueueInviteResponse(ObjectGuid battlefieldGuid, ObjectGuid queueGuid, uint32 uiZoneId, bool bCanQueue, bool bFull);
+        void SendBfEntered(ObjectGuid battlefieldGuid);
+        void SendBfLeaveMessage(ObjectGuid battlefieldGuid, BattlefieldLeaveReason reason);
         void HandleBfQueueInviteResponse(WorldPacket& recv_data);
+        void HandleBfQueueRequest(WorldPacket& recv_data);
         void HandleBfEntryInviteResponse(WorldPacket& recv_data);
         void HandleBfExitRequest(WorldPacket& recv_data);
 

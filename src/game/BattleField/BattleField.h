@@ -148,6 +148,8 @@ class BattleField : public OutdoorPvP
         void InvitePlayerToQueue(Player* player);
 
         uint32 GetBattlefieldId() const { return m_battleFieldId; }
+        ObjectGuid GetBattlefieldGuid() const { return ObjectGuid(HIGHGUID_BATTLEGROUND, uint32((2 << 16) | m_battleFieldId)); }
+        ObjectGuid GetQueueGuid() const { return ObjectGuid(uint64((HIGHGUID_BATTLEGROUND << 24) | m_battleFieldId)); }
 
     protected:
         void KickPlayer(Player* plr);

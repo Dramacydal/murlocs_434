@@ -93,6 +93,7 @@ class Player;
 class GameObject;
 class Creature;
 class OutdoorPvP;
+class ObjectGuid;
 
 class OutdoorPvPMgr
 {
@@ -124,6 +125,7 @@ class OutdoorPvPMgr
         float GetCapturePointSliderValue(uint32 entry, float defaultValue);
         void SetCapturePointSlider(uint32 entry, float value) { m_capturePointSlider[entry] = value; }
 
+        BattleField* GetBattlefieldByGuid(ObjectGuid guid);
         BattleField* GetBattlefieldById(uint32 id);
 
     private:

@@ -1634,12 +1634,12 @@ void WorldSession::HandleHearthandResurrect(WorldPacket & /*recv_data*/)
     DEBUG_LOG("WORLD: CMSG_HEARTH_AND_RESURRECT");
 
     bool ok = false;
-    if (BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP))
+    if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(_player->GetCachedZoneId()))
     {
-        if (ok = opvp->IsMember(_player->GetObjectGuid()))
+        if (opvp->IsBattleField() && (ok = opvp->IsMember(_player->GetObjectGuid())))
         {
-            SendBfLeaveMessage(BATTLEFIELD_WG, BATTLEFIELD_LEAVE_REASON_EXITED);
-            opvp->RemovePlayerFromRaid(_player->GetObjectGuid());
+            SendBfLeaveMessage(((BattleField*)opvp)->GetBattlefieldGuid(), BATTLEFIELD_LEAVE_REASON_EXITED);
+            ((BattleField*)opvp)->RemovePlayerFromRaid(_player->GetObjectGuid());
         }
     }
 

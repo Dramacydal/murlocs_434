@@ -215,6 +215,11 @@ float OutdoorPvPMgr::GetCapturePointSliderValue(uint32 entry, float defaultValue
     return defaultValue;
 }
 
+BattleField* OutdoorPvPMgr::GetBattlefieldByGuid(ObjectGuid guid)
+{
+    return GetBattlefieldById(guid.GetCounter() & 0xFFFF);
+}
+
 BattleField* OutdoorPvPMgr::GetBattlefieldById(uint32 id)
 {
     for (uint8 i = 0; i < MAX_OPVP_ID; ++i)
