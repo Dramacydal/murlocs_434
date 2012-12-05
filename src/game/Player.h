@@ -1263,8 +1263,9 @@ class MANGOS_DLL_SPEC Player : public Unit
         Visuals* m_vis;
         typedef std::list<Unit*> SummonUnitList;
         SummonUnitList m_summonList;
-        void RemoveSummonUnit(uint32 spellid);
         void AddSummonUnit(Unit* summon);
+        void RemoveSummonUnit(uint32 spellid);
+        void RemoveSummonUnit(Unit* summon); 
         Unit* GetSummonUnit(uint32 spellId) const;
 
         uint32 m_nextVehicleId;

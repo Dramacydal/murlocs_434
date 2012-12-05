@@ -1981,10 +1981,14 @@ void Aura::TriggerSpell()
                         // Here need periodic trigger reducing threat spell (or do it manually)
                         return;
                     case 82676:                             // Ring of Frost   
-                        trigger_spell_id = 82691;
                         if(GetCaster()->GetTypeId() == TYPEID_PLAYER)
                         {
-                            
+                            Unit* ring = ((Player *) GetCaster())->GetSummonUnit(auraId);
+                            if(ring)
+                            {
+                                trigger_spell_id = 82691;
+                                triggerTarget = ring;
+                            }
                         }
                         break;
                     default:

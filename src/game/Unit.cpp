@@ -11317,11 +11317,6 @@ void Unit::RemoveFromWorld()
         RemoveAllDynObjects();
         CleanupDeletedAuras();
         GetViewPoint().Event_RemovedFromWorld();
-        
-        if(GetUInt32Value(UNIT_CREATED_BY_SPELL) && GetCreator() && GetCreator()->GetTypeId() == TYPEID_PLAYER)
-        {
-            ((Player *) GetOwner())->RemoveSummonUnit(GetUInt32Value(UNIT_CREATED_BY_SPELL));
-        }
     }
 
     Object::RemoveFromWorld();
@@ -11339,6 +11334,12 @@ void Unit::CleanupsBeforeDelete()
 
         if (GetTypeId() == TYPEID_UNIT && GetTransport())
             GetTransport()->LeaveThisTransport(this);
+        
+        Unit *creator = GetCreator();
+        if(creator && creator->GetTypeId() == TYPEID_PLAYER && GetUInt32Value(UNIT_CREATED_BY_SPELL))
+        {
+            ((Player *) creator)->RemoveSummonUnit(this);
+        }
 
         InterruptNonMeleeSpells(true);
         m_Events.KillAllEvents(false);                      // non-delatable (currently casted spells) will not deleted now but it will deleted at call in Map::RemoveAllObjectsInRemoveList

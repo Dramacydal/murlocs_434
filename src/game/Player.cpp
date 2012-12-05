@@ -2287,20 +2287,10 @@ Unit* Player::GetSummonUnit(uint32 spellId) const
     return NULL;
 }
 
-void Player::RemoveSummonUnit(uint32 spellid)
+void Player::RemoveSummonUnit(Unit* summon)
 {
-    if (m_summonList.empty())
-        return;
-
-    SummonUnitList::iterator i, next;
-    for (i = m_summonList.begin(); i != m_summonList.end(); i = next)
-    {
-        next = i;
-        if (spellid == 0 || (*i)->GetUInt32Value(UNIT_CREATED_BY_SPELL) == spellid)
-            next = m_summonList.erase(i);
-        else
-            ++next;
-    }
+    MANGOS_ASSERT(summon);
+    m_summonList.remove(summon);
 }
 
 void Player::RemoveFromWorld()
