@@ -2272,6 +2272,37 @@ void Player::AddToWorld()
     }
 }
 
+void Player::AddSummonUnit(Unit* summon)
+{
+    MANGOS_ASSERT(summon);
+    m_summonList.push_back(summon);
+}
+
+Unit* Player::GetSummonUnit(uint32 spellId) const
+{
+    for (SummonUnitList::const_iterator i = m_summonList.begin(); i != m_summonList.end(); ++i)
+        if ((*i)->GetUInt32Value(UNIT_CREATED_BY_SPELL) == spellId)
+            return *i;
+    
+    return NULL;
+}
+
+void Player::RemoveSummonUnit(uint32 spellid)
+{
+    if (m_summonList.empty())
+        return;
+
+    SummonUnitList::iterator i, next;
+    for (i = m_summonList.begin(); i != m_summonList.end(); i = next)
+    {
+        next = i;
+        if (spellid == 0 || (*i)->GetUInt32Value(UNIT_CREATED_BY_SPELL) == spellid)
+            next = m_summonList.erase(i);
+        else
+            ++next;
+    }
+}
+
 void Player::RemoveFromWorld()
 {
     for(int i = PLAYER_SLOT_START; i < PLAYER_SLOT_END; ++i)

@@ -11317,6 +11317,11 @@ void Unit::RemoveFromWorld()
         RemoveAllDynObjects();
         CleanupDeletedAuras();
         GetViewPoint().Event_RemovedFromWorld();
+        
+        if(GetUInt32Value(UNIT_CREATED_BY_SPELL) && GetCreator() && GetCreator()->GetTypeId() == TYPEID_PLAYER)
+        {
+            ((Player *) GetOwner())->RemoveSummonUnit(GetUInt32Value(UNIT_CREATED_BY_SPELL));
+        }
     }
 
     Object::RemoveFromWorld();

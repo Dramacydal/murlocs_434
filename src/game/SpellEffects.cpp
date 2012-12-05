@@ -7204,6 +7204,9 @@ void Spell::DoSummonWild(SpellEffectEntry const * effect, uint32 forceFaction)
             // Does exceptions exist? If so, what are they?
             // Amaru: unforunately, commenting this break vehicles...
             summon->SetCreatorGuid(m_caster->GetObjectGuid());
+            
+            if(m_caster->GetTypeId() == TYPEID_PLAYER)
+                ((Player *) m_caster)->AddSummonUnit(summon);
 
             if(forceFaction)
                 summon->setFaction(forceFaction);

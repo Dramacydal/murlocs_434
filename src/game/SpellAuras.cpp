@@ -1980,6 +1980,13 @@ void Aura::TriggerSpell()
                     case 66:                                // Invisibility
                         // Here need periodic trigger reducing threat spell (or do it manually)
                         return;
+                    case 82676:                             // Ring of Frost   
+                        trigger_spell_id = 82691;
+                        if(GetCaster()->GetTypeId() == TYPEID_PLAYER)
+                        {
+                            
+                        }
+                        break;
                     default:
                         break;
                 }
