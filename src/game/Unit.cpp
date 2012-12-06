@@ -13713,20 +13713,53 @@ void Unit::_AddAura(uint32 spellID, uint32 duration)
 
 void Unit::SendMonsterMoveExitVehicle(float x, float y, float z)
 {
-    Movement::MoveSplineInit init(*this);
+    WorldPacket data(SMSG_MONSTER_MOVE, 1+12+4+1+4+4+4+12+GetPackGUID().size());
+    data << GetPackGUID();
+    data << uint8(0);                                       // new in 3.1, bool
+    data << GetPositionX() << GetPositionY() << GetPositionZ();
+    data << WorldTimer::getMSTime();
+
+    data << uint8(4);
+    data << float(NormalizeOrientation(GetOrientation()));  // guess
+    data << uint32(0x00010000);
+    data << uint32(0);                                      // Time in between points
+    data << uint32(1);                                      // 1 single waypoint
+    data << x << y << z;
+
+    SendMessageToSet(&data, true);
+
+    /*Movement::MoveSplineInit init(*this);
     init.MoveTo(x, y, z);
     init.SetFacing(GetOrientation());
     init.SetTransportExit();
-    init.Launch();
+    init.Launch();*/
 }
 
-void Unit::SendMonsterMoveVehicle(float x, float y, float z)
+void Unit::SendMonsterMoveVehicle(Unit* vehicleOwner)
 {
-    Movement::MoveSplineInit init(*this);
+    WorldPacket data(SMSG_MONSTER_MOVE, 64);
+    data << GetPackGUID();
+    data << GetTransportGuid().WriteAsPacked();
+    data << GetTransSeat();
+    data << uint8(0);
+    data << float(GetPositionX() - vehicleOwner->GetPositionX());
+    data << float(GetPositionY() - vehicleOwner->GetPositionY());
+    data << float(GetPositionZ() - vehicleOwner->GetPositionZ());
+    data << uint32(WorldTimer::getMSTime());
+    data << uint8(4);
+    data << NormalizeOrientation(GetTransOffsetO());    // facing angle?
+    data << uint32(0x00008000);
+    data << uint32(0);                      // move time
+    data << uint32(1);                      // amount of waypoints
+    data << uint32(0);                      // waypoint X
+    data << uint32(0);                      // waypoint Y
+    data << uint32(0);                      // waypoint Z
+
+    /*Movement::MoveSplineInit init(*this);
     init.MoveTo(x, y, z);
     init.SetFacing(0.0f);
     init.SetTransportEnter();
-    init.Launch();
+    init.Launch();*/
 }
 
 void Unit::SendMonsterMoveTransport(WorldObject* transport)
