@@ -318,7 +318,7 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
     }
 
     RelocatePassengers(m_pBase->GetPositionX(), m_pBase->GetPositionY(), m_pBase->GetPositionZ()+0.5f, m_pBase->GetOrientation());
-    passenger->SendMonsterMoveVehicle(m_pBase);
+    //passenger->SendMonsterMoveVehicle(m_pBase);
 
     UpdateFreeSeatCount();
 

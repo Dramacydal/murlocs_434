@@ -270,7 +270,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
     uint32 opcode = recv_data.GetOpcode();
     DEBUG_LOG("WORLD: Recvd %s (%u, 0x%X) opcode Player: %s Mover: %s", LookupOpcodeName(opcode), opcode, opcode, _player->GetGuidStr().c_str(), mover ? mover->GetGuidStr().c_str() : ObjectGuid().GetString().c_str());
-    recv_data.hexlike();
+    //recv_data.hexlike();
 
     Player *plMover = mover->GetTypeId() == TYPEID_PLAYER ? (Player*)mover : NULL;
 
@@ -325,9 +325,9 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
     mover->SendMessageToSetExcept(&data, _player);
 
-    if (mover && _player->GetObjectGuid() != mover->GetObjectGuid())
-        if (opcode == CMSG_MOVE_SET_WALK_MODE)
-            _player->SendDirectMessage(&data);
+    //if (mover && _player->GetObjectGuid() != mover->GetObjectGuid())
+    //    if (opcode == CMSG_MOVE_SET_WALK_MODE)
+    //        _player->SendDirectMessage(&data);
 }
 
 void WorldSession::HandleForceSpeedChangeAckOpcodes(WorldPacket &recv_data)

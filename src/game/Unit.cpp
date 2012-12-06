@@ -12856,7 +12856,7 @@ void Unit::ExitVehicle()
                 z = m_pVehicle->GetBase()->GetPositionZ() + 2;
                 break;
         }
-        SendMonsterMoveExitVehicle(x, y, z + 0.5f);
+        //SendMonsterMoveExitVehicle(x, y, z + 0.5f);
     }
 
     m_pVehicle = NULL;
