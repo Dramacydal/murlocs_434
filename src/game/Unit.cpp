@@ -12856,7 +12856,7 @@ void Unit::ExitVehicle()
                 z = m_pVehicle->GetBase()->GetPositionZ() + 2;
                 break;
         }
-        //SendMonsterMoveExitVehicle(x, y, z + 0.5f);
+        SendMonsterMoveExitVehicle(x, y, z + 0.5f);
     }
 
     m_pVehicle = NULL;
@@ -13713,43 +13713,20 @@ void Unit::_AddAura(uint32 spellID, uint32 duration)
 
 void Unit::SendMonsterMoveExitVehicle(float x, float y, float z)
 {
-    WorldPacket data(SMSG_MONSTER_MOVE, 1+12+4+1+4+4+4+12+GetPackGUID().size());
-    data << GetPackGUID();
-    data << uint8(GetTypeId() == TYPEID_PLAYER ? 1 : 0);    // new in 3.1, bool
-    data << GetPositionX() << GetPositionY() << GetPositionZ();
-    data << WorldTimer::getMSTime();
-
-    data << uint8(4);
-    data << float(GetOrientation());                        // guess
-    data << uint32(0x01000000);
-    data << uint32(0);                                      // Time in between points
-    data << uint32(1);                                      // 1 single waypoint
-    data << x << y << z;
-
-    SendMessageToSet(&data, true);
+    Movement::MoveSplineInit init(*this);
+    init.MoveTo(x, y, z);
+    init.SetFacing(GetOrientation());
+    init.SetTransportExit();
+    init.Launch();
 }
 
 void Unit::SendMonsterMoveVehicle(Unit* vehicleOwner)
 {
-    // TODO: Turn into BuildMonsterMoveTransport packet and allow certain variables (for npc movement aboard vehicles)
-    WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, GetPackGUID().size()+vehicleOwner->GetPackGUID().size() + 47);
-    data << GetPackGUID();
-    data << vehicleOwner->GetPackGUID();
-    data << int8(GetTransSeat());
-    data << uint8(0);
-    data << GetPositionX() - vehicleOwner->GetPositionX();
-    data << GetPositionY() - vehicleOwner->GetPositionY();
-    data << GetPositionZ() - vehicleOwner->GetPositionZ();
-    data << uint32(WorldTimer::getMSTime());// should be an increasing constant that indicates movement packet count
-    data << uint8(4);
-    data << GetTransOffsetO();              // facing angle?
-    data << uint32(0x00800000);
-    data << uint32(0);                      // move time
-    data << uint32(1);                      // amount of waypoints
-    data << uint32(0);                      // waypoint X
-    data << uint32(0);                      // waypoint Y
-    data << uint32(0);                      // waypoint Z
-    SendMessageToSet(&data, true);
+    Movement::MoveSplineInit init(*this);
+    init.MoveTo(GetPositionX() - vehicleOwner->GetPositionX(), GetPositionY() - vehicleOwner->GetPositionY(), GetPositionZ() - vehicleOwner->GetPositionZ());
+    init.SetFacing(0.0f);
+    init.SetTransportEnter();
+    init.Launch();
 }
 
 void Unit::SendMonsterMoveTransport(WorldObject* transport)
