@@ -815,7 +815,7 @@ bool Transport::EnterThisTransport(Unit* pPas, float xOffset, float yOffset, flo
     if (pPas->GetTypeId() != TYPEID_PLAYER)
     {
         pPas->SetActiveObjectState(true);
-        pPas->SendMonsterMoveTransport(this);
+        //pPas->SendMonsterMoveTransport(this);
         UpdateCreaturePosition((Creature*)pPas);
     }
 
