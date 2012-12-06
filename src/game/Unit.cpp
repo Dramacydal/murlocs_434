@@ -13737,9 +13737,9 @@ void Unit::SendMonsterMoveExitVehicle(float x, float y, float z)
 
 void Unit::SendMonsterMoveVehicle(Unit* vehicleOwner)
 {
-    WorldPacket data(SMSG_MONSTER_MOVE, 64);
+    WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 64);
     data << GetPackGUID();
-    data << GetTransportGuid().WriteAsPacked();
+    data << vehicleOwner->GetPackGUID();
     data << GetTransSeat();
     data << uint8(0);
     data << float(GetPositionX() - vehicleOwner->GetPositionX());
