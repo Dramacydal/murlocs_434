@@ -13720,10 +13720,10 @@ void Unit::SendMonsterMoveExitVehicle(float x, float y, float z)
     init.Launch();
 }
 
-void Unit::SendMonsterMoveVehicle(Unit* vehicleOwner)
+void Unit::SendMonsterMoveVehicle(float x, float y, float z)
 {
     Movement::MoveSplineInit init(*this);
-    init.MoveTo(GetPositionX() - vehicleOwner->GetPositionX(), GetPositionY() - vehicleOwner->GetPositionY(), GetPositionZ() - vehicleOwner->GetPositionZ());
+    init.MoveTo(x, y, z);
     init.SetFacing(0.0f);
     init.SetTransportEnter();
     init.Launch();

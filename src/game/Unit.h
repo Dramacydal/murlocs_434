@@ -1533,7 +1533,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         // if used additional args in ... part then floats must explicitly casted to double
         void SendHeartBeat();
         void SendMonsterMoveExitVehicle(float x, float y, float z);
-        void SendMonsterMoveVehicle(Unit* vehicleOwner);
+        void SendMonsterMoveVehicle(float x, float y, float z);
         void SendMonsterMoveTransport(WorldObject* transport);
         bool IsLevitating() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_LEVITATING);}
         bool IsWalking() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_WALK_MODE);}
