@@ -1113,13 +1113,13 @@ void WorldSession::SendBfInvitePlayerToQueue(ObjectGuid battlefieldGuid)
     data.WriteBit(1);
     data.WriteGuidMask<7>(battlefieldGuid);
 
-    data.ReadGuidBytes<2>(battlefieldGuid);
-    data.ReadGuidBytes<3, 6>(battlefieldGuid);
+    data.WriteGuidBytes<2>(battlefieldGuid);
+    data.WriteGuidBytes<3, 6>(battlefieldGuid);
     if (warmup)
         data << uint8(2);
-    data.ReadGuidBytes<5, 0>(battlefieldGuid);
-    data.ReadGuidBytes<4>(battlefieldGuid);
-    data.ReadGuidBytes<1, 7>(battlefieldGuid);
+    data.WriteGuidBytes<5, 0>(battlefieldGuid);
+    data.WriteGuidBytes<4>(battlefieldGuid);
+    data.WriteGuidBytes<1, 7>(battlefieldGuid);
 
     SendPacket(&data);
 }
