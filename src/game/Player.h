@@ -2096,6 +2096,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         void SetRoot(bool enable) override;
         void SetWaterWalk(bool enable) override;
+        void SetGravity(bool enable);
 
         void JoinedChannel(Channel *c);
         void LeftChannel(Channel *c);
@@ -3075,6 +3076,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SendRefundInfo(Item* item);
         void RefundItem(Item* item);
         void SendItemRefundResult(Item* item, uint32 result);
+
+        uint32 m_rootTimes;
 };
 
 void AddItemsSetItem(Player*player,Item *item);

@@ -1294,9 +1294,9 @@ enum Opcodes
     CMSG_START_BATTLEFIELD_CHEAT                          = 0x14CC,
     CMSG_END_BATTLEFIELD_CHEAT                            = 0x14CD,
     SMSG_COMPOUND_MOVE                                    = 0x14CE,
-    SMSG_MOVE_GRAVITY_DISABLE                             = 0x14CF,
+    SMSG_MOVE_GRAVITY_DISABLE                             = 0x75B2, // 4.3.4 15595
     CMSG_MOVE_GRAVITY_DISABLE_ACK                         = 0x14D0,
-    SMSG_MOVE_GRAVITY_ENABLE                              = 0x14D1,
+    SMSG_MOVE_GRAVITY_ENABLE                              = 0x30B3, // 4.3.4 15595
     CMSG_MOVE_GRAVITY_ENABLE_ACK                          = 0x14D2,
     MSG_MOVE_GRAVITY_CHNG                                 = 0x14D3,
     SMSG_SPLINE_MOVE_GRAVITY_DISABLE                      = 0x5DB5, // 4.3.4 15595

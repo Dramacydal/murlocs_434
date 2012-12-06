@@ -224,9 +224,8 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
         ((Player*)passenger)->UnsummonPetTemporaryIfAny();
         ((Player*)passenger)->GetCamera().SetView(m_pBase);
 
-        WorldPacket data;
-        passenger->BuildForceMoveRootPacket(&data, true, (passenger->m_movementInfo.GetVehicleSeatFlags() & SEAT_FLAG_CAN_CAST) ? 2 : 0);
-        passenger->SendMessageToSet(&data, true);
+        ((Player*)passenger)->SetGravity(false);
+        passenger->SetRoot(true);
     }
 
     //if (seat->second.seatInfo->m_flags & SEAT_FLAG_UNATTACKABLE || seat->second.seatInfo->m_flags & SEAT_FLAG_CAN_CONTROL)
@@ -274,12 +273,10 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
 
         passenger->SetCharm(m_pBase);
 
-        if(m_pBase->HasAuraType(SPELL_AURA_FLY) || m_pBase->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED))
+        if (m_pBase->HasAuraType(SPELL_AURA_FLY) || m_pBase->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED))
         {
             WorldPacket data;
-            data.Initialize(SMSG_MOVE_SET_CAN_FLY, 12);
-            data << m_pBase->GetPackGUID();
-            data << (uint32)(0);
+            m_pBase->BuildMoveSetCanFlyPacket(&data, true, 0);
             m_pBase->SendMessageToSet(&data,false);
         }
 
@@ -303,13 +300,13 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
         if (!(((Creature*)m_pBase)->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_KEEP_AI))
             ((Creature*)m_pBase)->AIM_Initialize();
 
-        if (m_pBase->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE))
+        /*if (m_pBase->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE))
         {
             WorldPacket data2;
             m_pBase->BuildForceMoveRootPacket(&data2, true, 2);
             m_pBase->SendMessageToSet(&data2,false);
         }
-        else if (passenger->m_movementInfo.GetMovementFlags() & MOVEFLAG_WALK_MODE)
+        else */if (passenger->m_movementInfo.GetMovementFlags() & MOVEFLAG_WALK_MODE)
             ((Creature*)m_pBase)->SetWalk(true);
         else
             ((Creature*)m_pBase)->SetWalk(false);
@@ -408,9 +405,8 @@ void VehicleKit::RemovePassenger(Unit *passenger)
     {
         ((Player*)passenger)->GetCamera().ResetView();
 
-        WorldPacket data;
-        passenger->BuildForceMoveRootPacket(&data, false, 2);
-        passenger->SendMessageToSet(&data, true);
+        ((Player*)passenger)->SetGravity(true);
+        passenger->SetRoot(false);
 
         ((Player*)passenger)->ResummonPetTemporaryUnSummonedIfAny();
     }

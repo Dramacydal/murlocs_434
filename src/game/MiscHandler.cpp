@@ -308,8 +308,7 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & /*recv_data*/ )
             GetPlayer()->SetStandState(UNIT_STAND_STATE_SIT);
 
         WorldPacket data;
-        GetPlayer()->BuildForceMoveRootPacket(&data, true, 2);
-        SendPacket(&data);
+        GetPlayer()->SetRoot(true);
         GetPlayer()->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
     }
 
@@ -338,8 +337,7 @@ void WorldSession::HandleLogoutCancelOpcode( WorldPacket & /*recv_data*/ )
     if(GetPlayer()->CanFreeMove())
     {
         //! we can move again
-        GetPlayer()->BuildForceMoveRootPacket(&data, false, 0);
-        SendPacket(&data);
+        GetPlayer()->SetRoot(false);
 
         //! Stand Up
         GetPlayer()->SetStandState(UNIT_STAND_STATE_STAND);

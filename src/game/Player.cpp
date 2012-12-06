@@ -600,6 +600,8 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
 
     memset(_CUFProfiles, NULL, MAX_CUF_PROFILES * sizeof(CUFProfile*));
     memset(m_voidStorageItems, NULL, VOID_STORAGE_MAX_SLOT * sizeof(VoidStorageItem*));
+
+    m_rootTimes = 0;
 }
 
 Player::~Player ()
@@ -2001,6 +2003,9 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
     // reset movement flags at teleport, because player will continue move with these flags after teleport
     m_movementInfo.SetMovementFlags(MOVEFLAG_NONE);
     DisableSpline();
+    WorldPacket data;
+    BuildForceMoveRootPacket(&data, false, 0);
+    SendMessageToSet(&data, true);
 
     if (GetMapId() == mapid && !GetTransport())
     {
@@ -4874,15 +4879,25 @@ void Player::DeleteOldCharacters(uint32 keepDays)
 
 void Player::SetRoot(bool enable)
 {
+    if (enable && m_rootTimes > 0)   // blizzard internal check?
+        ++m_rootTimes;
+
     WorldPacket data;
-    BuildForceMoveRootPacket(&data, enable, 0);
-    GetSession()->SendPacket(&data);
+    BuildForceMoveRootPacket(&data, enable, enable ? m_rootTimes : ++m_rootTimes);
+    SendMessageToSet(&data, true);
 }
 
 void Player::SetWaterWalk(bool enable)
 {
     WorldPacket data;
     BuildMoveWaterWalkPacket(&data, enable, 0);
+    GetSession()->SendPacket(&data);
+}
+
+void Player::SetGravity(bool enable)
+{
+    WorldPacket data;
+    BuildMoveGravityPacket(&data, enable, ++m_rootTimes);
     GetSession()->SendPacket(&data);
 }
 
@@ -22038,12 +22053,14 @@ void Player::SendInitialPacketsAfterAddToMap()
         SendMessageToSet(&data2, true);
     }
 
+    /*
     if (GetVehicle())
     {
         WorldPacket data3;
         BuildForceMoveRootPacket(&data3, true, (m_movementInfo.GetVehicleSeatFlags() & SEAT_FLAG_CAN_CAST) ? 2 : 0);
         SendMessageToSet(&data3, true);
     }
+    */
 
     SendAurasForTarget(this);
     SendEnchantmentDurations();                             // must be after add to map
