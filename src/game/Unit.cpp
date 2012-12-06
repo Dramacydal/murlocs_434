@@ -13751,9 +13751,10 @@ void Unit::SendMonsterMoveVehicle(Unit* vehicleOwner)
     data << uint32(0x00008000);
     data << uint32(0);                      // move time
     data << uint32(1);                      // amount of waypoints
-    data << uint32(0);                      // waypoint X
-    data << uint32(0);                      // waypoint Y
-    data << uint32(0);                      // waypoint Z
+    data << float(0.0f);                    // waypoint X
+    data << float(0.0f);                    // waypoint Y
+    data << float(0.0f);                    // waypoint Z
+    SendMessageToSet(&data, true);
 
     /*Movement::MoveSplineInit init(*this);
     init.MoveTo(x, y, z);
