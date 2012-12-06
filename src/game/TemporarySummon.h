@@ -29,6 +29,7 @@ class TemporarySummon : public Creature
         virtual ~TemporarySummon(){};
 
         void Update(uint32 update_diff, uint32 time) override;
+        uint32 GetRemainingDuration() {return m_timer; }
         void Summon(TempSummonType type, uint32 lifetime);
         void MANGOS_DLL_SPEC UnSummon(uint32 delay = 0);
         void SaveToDB();

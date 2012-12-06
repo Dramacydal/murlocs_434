@@ -50,6 +50,7 @@
 #include "Language.h"
 #include "DB2Stores.h"
 #include "SQLStorages.h"
+#include "TemporarySummon.h"
 
 extern pEffect SpellEffects[TOTAL_SPELL_EFFECTS];
 
@@ -9159,11 +9160,32 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
     // Resulting effect depends on spell that we want to cast
     switch (m_spellInfo->Id)
     {
+        case 82691: // Ring of Frost trigger spell
+        {
+            
+            if(m_targets.getUnitTarget() && m_targets.getUnitTarget()->GetObjectGuid().IsCreature())
+                if(((Creature *) m_targets.getUnitTarget())->GetSubtype() == CREATURE_SUBTYPE_TEMPORARY_SUMMON)
+                {
+                    TemporarySummon* ring = ((TemporarySummon *) m_targets.getUnitTarget());
+                    if(ring->GetRemainingDuration() > 8000)
+                        return true;
+                }
+            
+            FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_NOT_FRIENDLY);
+            for (UnitList::iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end();)
+            {
+                if ((*itr)->HasAura(m_spellInfo->Id))
+                    itr = targetUnitMap.erase(itr);
+                else
+                    ++itr;
+            }
+            return true;
+        }
         case 19185: // Entrapment
         case 64803:
         case 64804:
         {
-            FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_AOE_DAMAGE);
+            FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_NOT_FRIENDLY);
             break;
         }
         case 28374: // Decimate - Gluth encounter

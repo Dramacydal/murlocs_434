@@ -1986,6 +1986,7 @@ void Aura::TriggerSpell()
                             Unit* ring = ((Player *) GetCaster())->GetSummonUnit(auraId);
                             if(ring)
                             {
+                                GetCaster()->CastSpell(ring, 91264, true);
                                 trigger_spell_id = 82691;
                                 triggerTarget = ring;
                             }
