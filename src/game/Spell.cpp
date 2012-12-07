@@ -9162,15 +9162,11 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
     {
         case 82691: // Ring of Frost trigger spell
         {
+            // Need to trigger this only when ring is fully deployed...
+            if(m_targets.getUnitTarget() && m_targets.getUnitTarget()->HasAura(91264))
+                return true;
             
-            if(m_targets.getUnitTarget() && m_targets.getUnitTarget()->GetObjectGuid().IsCreature())
-                if(((Creature *) m_targets.getUnitTarget())->GetSubtype() == CREATURE_SUBTYPE_TEMPORARY_SUMMON)
-                {
-                    TemporarySummon* ring = ((TemporarySummon *) m_targets.getUnitTarget());
-                    if(ring->GetRemainingDuration() > 8000)
-                        return true;
-                }
-            
+            // ... and only once per target ...
             FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_NOT_FRIENDLY);
             for (UnitList::iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end();)
             {
@@ -9179,6 +9175,12 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
                 else
                     ++itr;
             }
+
+            // ... and has max 10 targets
+            Aura* triggerAura = m_caster->GetAura(m_triggeredByAuraSpell->Id, EFFECT_INDEX_1); // well I dunno... Are really all periodic auras placed at caster and only triggerSpell points at target?
+            if(triggerAura)
+                triggerAura->GetModifier()->m_amount -= targetUnitMap.size();
+
             return true;
         }
         case 19185: // Entrapment
