@@ -11318,10 +11318,11 @@ void Unit::RemoveFromWorld()
         CleanupDeletedAuras();
         GetViewPoint().Event_RemovedFromWorld();
         
-        Unit *creator = GetCreator();
-        if(creator && creator->GetTypeId() == TYPEID_PLAYER && GetUInt32Value(UNIT_CREATED_BY_SPELL))
+        if(GetUInt32Value(UNIT_CREATED_BY_SPELL))
         {
-            ((Player *) creator)->RemoveSummonUnit(this);
+            Unit *creator = GetCreator();
+            if(creator && creator->GetTypeId() == TYPEID_PLAYER)
+                ((Player *) creator)->RemoveSummonUnit(this);
         }
     }
 

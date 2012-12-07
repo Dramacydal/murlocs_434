@@ -2,13 +2,10 @@
 # NOTE! Don't add files that are generated in specific
 # subdirectories here. Add them in the ".gitignore" file
 # in that subdirectory instead.
-#
 # NOTE! Please use 'git-ls-files -i --exclude-standard'
 # command after changing this file, to see if there are
 # any tracked files which get ignored after the change.
-#
 # Normal rules
-#
 .*
 *.o
 *.o.*
@@ -21,18 +18,13 @@ Makefile.in
 *.m4
 *.kdev4
 
-#
 # Top-level generic files
-#
 tags
 TAGS
 INSTALL
 !.gitignore
 !.gitattributes
-
-#
 # Build generated files
-#
 aclocal.m4
 autom4te.cache
 compile
@@ -48,36 +40,21 @@ install-sh
 ltmain.sh
 missing
 stamp-h1
-
-Makefile.in
 Makefile
-
-#
 # Editors / debuggers / other output files
-#
 *~
 *.bak
 *.orig
 *.patch
-*.orig
 callgrind.out.*
-
-#
 # Git stuff
-#
 # stgit directories
 patches-*
-
-#
 # VS binaries output
-#
 bin/*
 *.svn
 src/build/*
-
-#
 # VS temporary files
-#
 *.ncb
 *.suo
 *.sdf
@@ -86,25 +63,17 @@ src/build/*
 *.vsp
 ipch
 *.user
-
-#
 # CMake temporary files
-#
 CMakeFiles
 CMakeCache.txt
 cmake_install.cmake
-
-#
 # OS specific
-#
 # MacOS
 .DS_Store
-
-#
 # Special exceptions
-#
 !dep/ACE_wrappers/ace/ace_message_table.bin
 !dep/tbb/src/Makefile
-
 # recastnavigation directory needs exception
 !dep/recastnavigation/RecastDemo/Build/
+/nbproject/
+/build/
