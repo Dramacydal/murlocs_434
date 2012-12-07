@@ -50,6 +50,7 @@
 #include "Language.h"
 #include "DB2Stores.h"
 #include "SQLStorages.h"
+#include "TemporarySummon.h"
 
 extern pEffect SpellEffects[TOTAL_SPELL_EFFECTS];
 
@@ -9159,6 +9160,29 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
     // Resulting effect depends on spell that we want to cast
     switch (m_spellInfo->Id)
     {
+        case 82691: // Ring of Frost trigger spell
+        {
+            // Need to trigger this only when ring is fully deployed...
+            if(m_targets.getUnitTarget() && m_targets.getUnitTarget()->HasAura(91264))
+                return true;
+            
+            // ... and only once per target ...
+            FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_NOT_FRIENDLY);
+            for (UnitList::iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end();)
+            {
+                if ((*itr)->HasAura(m_spellInfo->Id))
+                    itr = targetUnitMap.erase(itr);
+                else
+                    ++itr;
+            }
+
+            // ... and has max 10 targets
+            Aura* triggerAura = m_caster->GetAura(m_triggeredByAuraSpell->Id, EFFECT_INDEX_1); // well I dunno... Are really all periodic auras placed at caster and only triggerSpell points at target?
+            if(triggerAura)
+                triggerAura->GetModifier()->m_amount -= targetUnitMap.size();
+
+            return true;
+        }
         case 19185: // Entrapment
         case 64803:
         case 64804:

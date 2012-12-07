@@ -1261,6 +1261,12 @@ class MANGOS_DLL_SPEC Player : public Unit
         std::string autoReplyMsg;
 
         Visuals* m_vis;
+        typedef std::list<Unit*> SummonUnitList;
+        SummonUnitList m_summonList;
+        void AddSummonUnit(Unit* summon);
+        void RemoveSummonUnit(uint32 spellid);
+        void RemoveSummonUnit(Unit* summon); 
+        Unit* GetSummonUnit(uint32 spellId) const;
 
         uint32 m_nextVehicleId;
 
@@ -2614,7 +2620,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         bool canSeeSpellClickOn(Creature const* creature) const;
 
-        ObjectGuid m_lastSpellTargetGuid; // ÎÎÏ - õóéíÿ.
+        ObjectGuid m_lastSpellTargetGuid; // ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½.
         uint32 m_GMscore;
 
         // Ranger: DotA killing system ;)
