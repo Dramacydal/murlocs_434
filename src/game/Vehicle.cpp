@@ -63,7 +63,7 @@ VehicleKit::VehicleKit(Unit* base, VehicleEntry const* vehicleInfo) : m_vehicleI
         if (m_vehicleInfo->m_flags & VEHICLE_FLAG_ALLOW_PITCHING)
             m_pBase->m_movementInfo.AddMovementFlag2(MOVEFLAG2_ALLOW_PITCHING);
 
-        if (m_vehicleInfo->m_flags & VEHICLE_FLAG_ALLOW_PITCHING)
+        if (m_vehicleInfo->m_flags & VEHICLE_FLAG_FULLSPEEDPITCHING)
             m_pBase->m_movementInfo.AddMovementFlag2(MOVEFLAG2_FULLSPEEDPITCHING);
     }
 
