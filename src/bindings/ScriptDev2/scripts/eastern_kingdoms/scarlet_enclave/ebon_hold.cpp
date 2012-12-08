@@ -3299,13 +3299,7 @@ struct MANGOS_DLL_DECL npc_valkyr_battle_maidenAI : ScriptedAI
 
     void Reset()
     {
-        m_summonerGuid.Clear();
-
-        if (m_summonerGuid = (dynamic_cast<TemporarySummon*>(m_creature))->GetSummonerGuid())
-            if(Unit* pUnit = m_creature->GetMap()->GetUnit(m_summonerGuid))
-                if(pUnit->GetTypeId() != TYPEID_PLAYER)
-                    m_summonerGuid.Clear();
-
+        m_summonerGuid = m_creature->GetGuidValue(UNIT_FIELD_SUMMONEDBY);
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
         m_creature->SetVisibility(VISIBILITY_OFF);
@@ -3316,8 +3310,8 @@ struct MANGOS_DLL_DECL npc_valkyr_battle_maidenAI : ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        Player* pPlayer = NULL;
-        if (!(pPlayer = (Player*)m_creature->GetMap()->GetUnit(m_summonerGuid)))
+        Player* pPlayer = m_creature->GetMap()->GetPlayer(m_summonerGuid);
+        if (!pPlayer)
             m_uiPhase = 3;
 
         if (m_uiPhaseTimer <= uiDiff)
