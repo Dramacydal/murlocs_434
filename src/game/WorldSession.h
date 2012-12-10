@@ -948,6 +948,8 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleVoidStorageTransfer(WorldPacket& recvData);
         void HandleVoidSwapItem(WorldPacket& recvData);
 
+        void HandleObjectUpdateFailedOpcode(WorldPacket& recv_data);
+
     private:
         // private trade methods
         void moveItems(Item* myItems[], Item* hisItems[]);
