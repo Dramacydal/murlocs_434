@@ -512,6 +512,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "follow",         SEC_GAMEMASTER,     false, &ChatHandler::HandleNpcFollowCommand,           "", NULL },
         { "info",           SEC_ADMINISTRATOR,  false, &ChatHandler::HandleNpcInfoCommand,             "", NULL },
         { "move",           SEC_GAMEMASTER,     false, &ChatHandler::HandleNpcMoveCommand,             "", NULL },
+        { "near",           SEC_GAMEMASTER,     false, &ChatHandler::HandleNpcNearCommand,             "", NULL },
         { "ownerinfo",      SEC_GAMEMASTER,     false, &ChatHandler::HandleNpcOwnerInfoCommand,        "", NULL },
         { "playemote",      SEC_ADMINISTRATOR,  false, &ChatHandler::HandleNpcPlayEmoteCommand,        "", NULL },
         { "setmodel",       SEC_GAMEMASTER,     false, &ChatHandler::HandleNpcSetModelCommand,         "", NULL },
