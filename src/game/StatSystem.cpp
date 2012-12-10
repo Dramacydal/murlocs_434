@@ -191,7 +191,9 @@ void Player::UpdateArmor()
 
 float Player::GetHealthBonusFromStamina()
 {
-    GtOCTHpPerStaminaEntry const* hpBase = sGtOCTHpPerStaminaStore.LookupEntry((getClass() - 1) * GT_MAX_LEVEL + getLevel() - 1);
+    float ratio = 10.0f;
+    if (GtOCTHpPerStaminaEntry const* hpBase = sGtOCTHpPerStaminaStore.LookupEntry((getClass() - 1) * GT_MAX_LEVEL + getLevel() - 1))
+        ratio = hpBase->ratio;
 
     float stamina = GetStat(STAT_STAMINA);
 
@@ -200,7 +202,7 @@ float Player::GetHealthBonusFromStamina()
     if (moreStam < 0.0f)
         moreStam = 0.0f;
 
-    return baseStam + moreStam * hpBase->ratio;
+    return baseStam + moreStam * ratio;
 }
 
 float Player::GetManaBonusFromIntellect()
@@ -210,7 +212,7 @@ float Player::GetManaBonusFromIntellect()
     float baseInt = intellect < 20 ? intellect : 20;
     float moreInt = intellect - baseInt;
 
-    return baseInt + (moreInt*15.0f);
+    return baseInt + moreInt * 15.0f;
 }
 
 void Player::UpdateMaxHealth()
