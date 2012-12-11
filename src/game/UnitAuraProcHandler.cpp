@@ -1267,6 +1267,25 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     basepoints[0] = triggeredByAura->GetModifier()->m_amount * damage / 100;
                     break;
                 }
+                case 85466:                                 // Bane of Havoc
+                case 85468:
+                {
+                    triggered_spell_id = 85455;
+                    // search bane debuff
+                    target = NULL;
+                    SingleCastSpellTargetMap& scTargets = GetSingleCastSpellTargets();
+                    for (SingleCastSpellTargetMap::iterator itr = scTargets.begin(); itr != scTargets.end(); ++itr)
+                    {
+                        if (itr->first->Id == 80240)
+                        {
+                            target = GetMap()->GetUnit(itr->second);
+                            break;
+                        }
+                    }
+                    if (!target)
+                        return SPELL_AURA_PROC_FAILED;
+                    break;
+                }
             }
             break;
         }

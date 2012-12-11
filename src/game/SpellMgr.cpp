@@ -5222,6 +5222,9 @@ int32 GetDiminishingReturnsLimitDuration(DiminishingGroup group, SpellEntry cons
             // Banish
             else if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x800000000000000))
                 return 6000;
+            // Bane of Havoc
+            else if (spellproto->Id == 80240)
+                return 30000;
             break;
         }
         default:
