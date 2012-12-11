@@ -746,8 +746,8 @@ void Transport::UpdateForMap(Map const* targetMap)
                 transData.BuildPacket(&packet);
 
                 // Prevent sending transport maps in player update object
-                if (packet.ReadUInt16() != itr->getSource()->GetMapId())
-                    return;
+                //if (packet.ReadUInt16() != itr->getSource()->GetMapId())
+                //    return;
 
                 itr->getSource()->SendDirectMessage(&packet);
             }
@@ -765,8 +765,8 @@ void Transport::UpdateForMap(Map const* targetMap)
             if (this != itr->getSource()->GetTransport())
             {
                 // Prevent sending transport maps in player update object
-                if (out_packet.ReadUInt16() != itr->getSource()->GetMapId())
-                    return;
+                //if (out_packet.ReadUInt16() != itr->getSource()->GetMapId())
+                //    return;
 
                 itr->getSource()->SendDirectMessage(&out_packet);
             }
