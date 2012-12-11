@@ -8365,10 +8365,10 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                     }
                     break;
                 case SPELLFAMILY_WARLOCK:
-                    // Shadow Ward
-                    if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000000000000000), 0x00000040))
+                    // Shadow Ward and Nether Ward
+                    if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000000000000000), 0xA0000000))
                         //+30% from +spell bonus
-                        DoneActualBenefit = caster->SpellBaseDamageBonusDone(GetSpellSchoolMask(spellProto)) * 0.30f;
+                        DoneActualBenefit = caster->SpellBaseDamageBonusDone(GetSpellSchoolMask(spellProto)) * 0.807f;
                     break;
                 case SPELLFAMILY_PALADIN:
                     // Sacred Shield
