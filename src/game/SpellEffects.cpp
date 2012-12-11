@@ -3975,6 +3975,10 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     return;
                 }
                 /// Adonai, bug #34, spell 2
+                case 92283:                                 // Frostfire Orb Dummy
+                {
+                    return;
+                }
                 case 82731:                                 // Flame Orb Dummy
                 {
                     if (m_caster->GetTypeId() == TYPEID_PLAYER)
@@ -3983,8 +3987,14 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                         mage->CastSpell(m_caster, 84765, true);                  // Flame Orb summon spell
                         Unit *orb = mage->GetSummonUnit(84765);
                         if (orb)
-                            mage->CastSpell(orb, 82690, true);                   // Flame Orb Periodic Trigger Aura
+                            orb->CastSpell(orb, 82690, true, NULL, NULL, mage->GetGUID());                   // Flame Orb Periodic Trigger Aura
                     }
+                    return;
+                }
+                case 82734:                                 // Flame Orb Periodic Trigger Dummy
+                {
+                    if(unitTarget)
+                        m_caster->CastSpell(unitTarget, 82739, true, NULL, NULL, m_originalCasterGUID);
                     return;
                 }
                 case 31687:                                 // Summon Water Elemental

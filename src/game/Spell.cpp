@@ -3830,10 +3830,6 @@ void Spell::cancel()
 
 void Spell::cast(bool skipCheck)
 {
-    SpellEntry const* spellInfo = sSpellStore.LookupEntry(m_spellInfo->Id);
-    if (!spellInfo)
-        return;
-
     SetExecutedCurrently(true);
 
     if (!m_caster->CheckAndIncreaseCastCounter())
@@ -3982,7 +3978,7 @@ void Spell::cast(bool skipCheck)
 
             // Polymorph
             if (m_caster->GetTypeId() == TYPEID_PLAYER && m_spellInfo->IsFitToFamilyMask(UI64LIT(0x1000000)) &&
-                spellInfo->GetEffectApplyAuraNameByIndex(EFFECT_INDEX_0) == SPELL_AURA_MOD_CONFUSE && m_spellInfo->SpellIconID == 82)
+                m_spellInfo->GetEffectApplyAuraNameByIndex(EFFECT_INDEX_0) == SPELL_AURA_MOD_CONFUSE && m_spellInfo->SpellIconID == 82)
             {
                 if (m_caster->HasAura(52648))
                     AddTriggeredSpell(61635);
