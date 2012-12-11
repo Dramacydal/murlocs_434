@@ -302,17 +302,17 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
         hasTransport = !unit->m_movementInfo.GetTransportGuid().IsEmpty();
         isSplineEnabled = unit->IsSplineEnabled();
 
-        //if (GetTypeId() == TYPEID_PLAYER)
-        //{
-        //    // use flags received from client as they are more correct
-        //    hasPitch = unit->m_movementInfo.GetStatusInfo().hasPitch;
-        //    hasFallData = unit->m_movementInfo.GetStatusInfo().hasFallData;
-        //    hasFallDirection = unit->m_movementInfo.GetStatusInfo().hasFallDirection;
-        //    hasElevation = unit->m_movementInfo.GetStatusInfo().hasSplineElevation;
-        //    hasTransportTime2 = unit->m_movementInfo.GetStatusInfo().hasTransportTime2;
-        //    hasTransportTime3 = unit->m_movementInfo.GetStatusInfo().hasTransportTime3;
-        //}
-        //else
+        if (GetTypeId() == TYPEID_PLAYER)
+        {
+            // use flags received from client as they are more correct
+            hasPitch = unit->m_movementInfo.GetStatusInfo().hasPitch;
+            hasFallData = unit->m_movementInfo.GetStatusInfo().hasFallData;
+            hasFallDirection = unit->m_movementInfo.GetStatusInfo().hasFallDirection;
+            hasElevation = unit->m_movementInfo.GetStatusInfo().hasSplineElevation;
+            //hasTransportTime2 = unit->m_movementInfo.GetStatusInfo().hasTransportTime2;
+            //hasTransportTime3 = unit->m_movementInfo.GetStatusInfo().hasTransportTime3;
+        }
+        else
         {
             hasPitch = unit->m_movementInfo.HasMovementFlag(MovementFlags(MOVEFLAG_SWIMMING | MOVEFLAG_FLYING)) ||
                             unit->m_movementInfo.HasMovementFlag2(MOVEFLAG2_ALLOW_PITCHING);
@@ -348,9 +348,9 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
             ObjectGuid tGuid = unit->m_movementInfo.GetTransportGuid();
 
             data->WriteGuidMask<1>(tGuid);
-            data->WriteBit(0);  // data->WriteBit(hasTransportTime2);
+            data->WriteBit(hasTransportTime2);
             data->WriteGuidMask<4, 0, 6>(tGuid);
-            data->WriteBit(0);  // data->WriteBit(hasTransportTime3);
+            data->WriteBit(hasTransportTime3);
             data->WriteGuidMask<7, 5, 3, 2>(tGuid);
         }
 
@@ -377,9 +377,9 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
     {
         ObjectGuid transGuid;
         data->WriteGuidMask<5>(transGuid);
-        data->WriteBit(0);  // data->WriteBit(hasTransportTime3);
+        data->WriteBit(hasTransportTime3);
         data->WriteGuidMask<0, 3, 6, 1, 4, 2>(transGuid);
-        data->WriteBit(0);  // data->WriteBit(hasTransportTime2);
+        data->WriteBit(hasTransportTime2);
         data->WriteGuidMask<7>(transGuid);
     }
 
@@ -441,8 +441,8 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
             *data << uint32(unit->m_movementInfo.GetTransportTime());
             *data << float(NormalizeOrientation(unit->m_movementInfo.GetTransportPos()->o));
 
-            //if (hasTransportTime2)
-            //    *data << uint32(unit->m_movementInfo.GetTransportTime2());
+            if (hasTransportTime2)
+                *data << uint32(unit->m_movementInfo.GetTransportTime2());
 
             *data << float(unit->m_movementInfo.GetTransportPos()->y);
             *data << float(unit->m_movementInfo.GetTransportPos()->x);
@@ -450,8 +450,8 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
             *data << float(unit->m_movementInfo.GetTransportPos()->z);
             data->WriteGuidBytes<0>(tGuid);
 
-            //if (hasTransportTime3)
-            //    *data << uint32(unit->m_movementInfo.GetFallTime());
+            if (hasTransportTime3)
+                *data << uint32(unit->m_movementInfo.GetFallTime());
 
             *data << int32(unit->m_movementInfo.GetTransportSeat());
             data->WriteGuidBytes<1, 6, 2, 4>(tGuid);
@@ -494,8 +494,8 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
         ObjectGuid transGuid;
 
         data->WriteGuidBytes<0, 5>(transGuid);
-        //if (hasTransportTime3)
-        //    *data << uint32(0);
+        if (hasTransportTime3)
+            *data << uint32(0);
 
         data->WriteGuidBytes<3>(transGuid);
         *data << float(0.0f);   // x offset
@@ -507,8 +507,8 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
         *data << int8(-1);      // transport seat
         *data << float(0.0f);   // o offset
 
-        //if (hasTransportTime2)
-        //    *data << uint32(0);
+        if (hasTransportTime2)
+            *data << uint32(0);
     }
 
     if (updateFlags & UPDATEFLAG_ROTATION)
