@@ -1905,4 +1905,14 @@ void WorldSession::HandleObjectUpdateFailedOpcode(WorldPacket& recv_data)
 
     DEBUG_LOG("WORLD: Received CMSG_OBJECT_UPDATE_FAILED from %s (%u) guid: %s",
         GetPlayerName(), GetAccountId(), guid.GetString().c_str());
+
+    if (Map* map = _player->GetMap())
+    {
+        if (WorldObject* obj = _player->GetMap()->GetWorldObject(guid))
+            obj->SendCreateUpdateToPlayer(_player);
+    }
+    else
+    {
+        ERROR_LOG("WorldSession::HandleObjectUpdateFailedOpcode: received from player not in map");
+    }
 }
