@@ -302,17 +302,17 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
         hasTransport = !unit->m_movementInfo.GetTransportGuid().IsEmpty();
         isSplineEnabled = unit->IsSplineEnabled();
 
-        if (GetTypeId() == TYPEID_PLAYER)
-        {
-            // use flags received from client as they are more correct
-            hasPitch = unit->m_movementInfo.GetStatusInfo().hasPitch;
-            hasFallData = unit->m_movementInfo.GetStatusInfo().hasFallData;
-            hasFallDirection = unit->m_movementInfo.GetStatusInfo().hasFallDirection;
-            hasElevation = unit->m_movementInfo.GetStatusInfo().hasSplineElevation;
-            hasTransportTime2 = unit->m_movementInfo.GetStatusInfo().hasTransportTime2;
-            hasTransportTime3 = unit->m_movementInfo.GetStatusInfo().hasTransportTime3;
-        }
-        else
+        //if (GetTypeId() == TYPEID_PLAYER)
+        //{
+        //    // use flags received from client as they are more correct
+        //    hasPitch = unit->m_movementInfo.GetStatusInfo().hasPitch;
+        //    hasFallData = unit->m_movementInfo.GetStatusInfo().hasFallData;
+        //    hasFallDirection = unit->m_movementInfo.GetStatusInfo().hasFallDirection;
+        //    hasElevation = unit->m_movementInfo.GetStatusInfo().hasSplineElevation;
+        //    hasTransportTime2 = unit->m_movementInfo.GetStatusInfo().hasTransportTime2;
+        //    hasTransportTime3 = unit->m_movementInfo.GetStatusInfo().hasTransportTime3;
+        //}
+        //else
         {
             hasPitch = unit->m_movementInfo.HasMovementFlag(MovementFlags(MOVEFLAG_SWIMMING | MOVEFLAG_FLYING)) ||
                             unit->m_movementInfo.HasMovementFlag2(MOVEFLAG2_ALLOW_PITCHING);
