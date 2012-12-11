@@ -10712,7 +10712,18 @@ void SpellAuraHolder::_AddSpellAuraHolder()
     for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
         if (m_auras[i])
+        {
             flags |= (1 << i);
+
+            switch (m_auras[i]->GetModifier()->m_auraname)
+            {
+                case SPELL_AURA_SCHOOL_ABSORB:
+                    flags |= AFLAG_EFFECT_AMOUNT_SEND;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     if (GetCasterGuid() == GetTarget()->GetObjectGuid())
@@ -10727,7 +10738,7 @@ void SpellAuraHolder::_AddSpellAuraHolder()
         flags |= AFLAG_NEGATIVE;
 
     if (m_spellProto->HasAttribute(SPELL_ATTR_EX8_AURA_SENDS_AMOUNT) &&
-        flags & (AFLAG_EFF_INDEX_0 | AFLAG_EFF_INDEX_1 | AFLAG_EFF_INDEX_2))
+        (flags & (AFLAG_EFF_INDEX_0 | AFLAG_EFF_INDEX_1 | AFLAG_EFF_INDEX_2)))
         flags |= AFLAG_EFFECT_AMOUNT_SEND;
 
     SetAuraFlags(flags);
