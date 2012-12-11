@@ -9160,6 +9160,7 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
     // Resulting effect depends on spell that we want to cast
     switch (m_spellInfo->Id)
     {
+        /// Adonai, bug #34 spell 1
         case 82691: // Ring of Frost trigger spell
         {
             // Need to trigger this only when ring is fully deployed...

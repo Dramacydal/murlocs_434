@@ -3964,6 +3964,19 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     }
                     return;
                 }
+                /// Adonai, bug #34, spell 2
+                case 82731:                                 // Flame Orb Dummy
+                {
+                    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        Player *mage = ((Player *) m_caster);
+                        mage->CastSpell(m_caster, 84765, true);                  // Flame Orb summon spell
+                        Unit *orb = mage->GetSummonUnit(84765);
+                        if (orb)
+                            mage->CastSpell(orb, 82690, true);                   // Flame Orb Periodic Trigger Aura
+                    }
+                    return;
+                }
                 case 31687:                                 // Summon Water Elemental
                 {
                     if (m_caster->HasAura(70937))           // Glyph of Eternal Water (permanent limited by known spells version)
