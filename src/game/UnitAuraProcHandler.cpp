@@ -1279,10 +1279,11 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         if (itr->first->Id == 80240)
                         {
                             target = GetMap()->GetUnit(itr->second);
+                            basepoints[0] = int32(damage * itr->first->CalculateSimpleValue(EFFECT_INDEX_0) / 100.0f);
                             break;
                         }
                     }
-                    if (!target)
+                    if (!target || target == pVictim)
                         return SPELL_AURA_PROC_FAILED;
                     break;
                 }
