@@ -3942,6 +3942,16 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
         {
             switch(m_spellInfo->Id)
             {
+                /// Adonai, bug #34 spell 3
+                case 55342:                                 // Mirror Image
+                {
+                    m_caster->CastSpell(m_caster, 58831, true); // Image 1
+                    m_caster->CastSpell(m_caster, 58833, true); // Image 2
+                    m_caster->CastSpell(m_caster, 58834, true); // Image 3
+
+                    // TODO: Glyph of Mirror Image, 65047 - Image 4
+                    return;
+                }
                 case 11958:                                 // Cold Snap
                 {
                     if (m_caster->GetTypeId()!=TYPEID_PLAYER)
