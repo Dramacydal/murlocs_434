@@ -46,3 +46,6 @@ INSERT INTO `spell_proc_event` (`entry`, `SpellFamilyName`, `procFlags`, `procEx
 DELETE FROM `spell_bonus_data` WHERE `entry` = 71757;
 INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `ap_dot_bonus`, `comments`) VALUE
 (71757, 2.143, 0, 0, 0, 'Deep Freeze');
+
+-- Flaming Orb
+UPDATE `creature_template` SET `minlevel` = 85, `maxlevel` = 85 WHERE `entry` = 44214;
