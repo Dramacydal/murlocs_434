@@ -1719,17 +1719,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     triggered_spell_id = 37378;
                     break;
                 }
-                // Siphon Life
-                case 63108:
-                {
-                    // Glyph of Siphon Life
-                    if (Aura *aur = GetAura(56216, EFFECT_INDEX_0))
-                        triggerAmount += triggerAmount * aur->GetModifier()->m_amount / 100;
-
-                    basepoints[0] = int32(damage * triggerAmount / 100);
-                    triggered_spell_id = 63106;
-                    break;
-                }
                 // Glyph of Succubus
                 // done in other way
                 /*case 56250:
