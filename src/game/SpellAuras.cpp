@@ -1211,14 +1211,7 @@ void Aura::HandleAddModifier(bool apply, bool Real)
                 break;
         }
 
-        // Everlasting Affliction, overwrite wrong data, if will need more better restore support of spell_affect table
-        /*if (spellProto->SpellFamilyName == SPELLFAMILY_WARLOCK && spellProto->SpellIconID == 3169)
-        {
-            // Corruption and Unstable Affliction
-            // TODO: drop when override will be possible
-            SpellEntry *entry = const_cast<SpellEntry*>(spellProto);
-            entry->EffectSpellClassMask[GetEffIndex()].Flags = UI64LIT(0x0000010000000002);
-        }
+        /*
         // Improved Flametongue Weapon, overwrite wrong data, maybe time re-add table
         else if (spellProto->Id == 37212)
         {
@@ -9959,6 +9952,16 @@ void Aura::PeriodicDummyTick()
         case SPELLFAMILY_WARLOCK:
             switch (spell->Id)
             {
+                // Curse of the Elements
+                case 1490:
+                {
+                    if (Unit* caster = GetCaster())
+                        if (caster->HasAura(18179))         // Jinx (Rank 1)
+                            caster->CastSpell(target, 85547, true);
+                        else if (caster->HasAura(85479))    // Jinx (Rank 2)
+                            caster->CastSpell(target, 86105, true);
+                    return;
+                }
                 // Demonic Circle: Summon
                 case 48018:
                 {
@@ -11584,7 +11587,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                             {
                                 // Rank 1
                                 case 0: spellId1 = 60946; break;
-                                // Rank 1
+                                // Rank 2
                                 case 1: spellId1 = 60947; break;
                             }
                             break;
@@ -11638,6 +11641,19 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     spellId1 = 60955;
                     spellId2 = 60956;
                 }
+            }
+            // Curse of Weakness
+            else if (m_spellProto->Id == 702)
+            {
+                if (!apply)
+                {
+                    spellId1 = 85539;
+                    spellId2 = 85540;
+                    spellId3 = 85541;
+                    spellId4 = 85542;
+                }
+                else
+                    return;
             }
             // Bane of Havoc
             else if (m_spellProto->Id == 80240)

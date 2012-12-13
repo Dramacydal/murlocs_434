@@ -7264,12 +7264,18 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
         {
             case 4920: // Molten Fury
             case 4919:
+            case 12368:
+            {
+                if (pVictim->HasAuraState(AURA_STATE_HEALTHLESS_35_PERCENT))
+                    DoneTotalMod *= (100.0f+(*i)->GetModifier()->m_amount)/100.0f;
+                break;
+            }
             case 6917: // Death's Embrace
             case 6926:
             case 6928:
             {
-                if(pVictim->HasAuraState(AURA_STATE_HEALTHLESS_35_PERCENT))
-                    DoneTotalMod *= (100.0f+(*i)->GetModifier()->m_amount)/100.0f;
+                if (pVictim->GetHealthPercent() < 25.0f)
+                    DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount) / 100.0f;
                 break;
             }
             // Soul Siphon
@@ -7287,8 +7293,9 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
                 {
                     SpellEntry const* m_spell = itr->second->GetSpellProto();
                     SpellClassOptionsEntry const* itrClassOptions = m_spell->GetSpellClassOptions();
-                    if (itrClassOptions && (itrClassOptions->SpellFamilyName != SPELLFAMILY_WARLOCK || !(itrClassOptions->SpellFamilyFlags & UI64LIT(0x0004071B8044C402))))
+                    if (!itrClassOptions || (itrClassOptions->SpellFamilyName != SPELLFAMILY_WARLOCK || !(itrClassOptions->SpellFamilyFlags & UI64LIT(0x0004071B8044C402))))
                         continue;
+
                     modPercent += stepPercent * itr->second->GetStackAmount();
                     if (modPercent >= maxPercent)
                     {
@@ -7299,12 +7306,6 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
                 DoneTotalMod *= (modPercent+100.0f)/100.0f;
                 break;
             }
-            case 6916: // Death's Embrace
-            case 6925:
-            case 6927:
-                if (HasAuraState(AURA_STATE_HEALTHLESS_20_PERCENT))
-                    DoneTotalMod *= (100.0f+(*i)->GetModifier()->m_amount)/100.0f;
-                break;
             case 5481: // Starfire Bonus
             {
                 if (pVictim->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_DRUID, UI64LIT(0x0000000000200002)))
@@ -7465,6 +7466,21 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
 
             if (spellProto->GetTargetAuraState() == AURA_STATE_CONFLAGRATE)
                 return pdamage;
+
+            // Drain Life
+            if (spellProto->Id == 689 && GetHealthPercent() < 25.0f)
+            {
+                // Search Death's Embrace
+                Unit::AuraList const& dummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                for (Unit::AuraList::const_iterator itr = dummyAuras.begin(); itr != dummyAuras.end(); ++itr)
+                {
+                    if ((*itr)->GetSpellProto()->SpellIconID == 3223 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_WARLOCK)
+                    {
+                        DoneTotal += GetMaxHealth() * (*itr)->GetModifier()->m_amount / 100.0f;
+                        break;
+                    }
+                }
+            }
 
             break;
         }

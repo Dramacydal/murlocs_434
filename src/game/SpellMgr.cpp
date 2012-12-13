@@ -561,6 +561,10 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
             // Unstable Affliction | Immolate
             if (spellInfo->IsFitToFamilyMask(UI64LIT(0x0000010000000004)))
                 return SPELL_UA_IMMOLATE;
+
+            // Jinx: Curse of the Elements
+            if (spellInfo->Id == 85547 || spellInfo->Id == 86105)
+                return SPELL_CURSE;
             break;
         }
         // Need Fix
