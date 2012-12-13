@@ -2287,6 +2287,11 @@ Unit* Player::GetSummonUnit(uint32 spellId) const
     return NULL;
 }
 
+uint32 Player::GetSummonUnitCount() const
+{
+    return m_summonList.size();
+}
+
 void Player::RemoveSummonUnit(Unit* summon)
 {
     MANGOS_ASSERT(summon);
