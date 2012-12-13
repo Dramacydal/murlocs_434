@@ -1211,14 +1211,7 @@ void Aura::HandleAddModifier(bool apply, bool Real)
                 break;
         }
 
-        // Everlasting Affliction, overwrite wrong data, if will need more better restore support of spell_affect table
-        /*if (spellProto->SpellFamilyName == SPELLFAMILY_WARLOCK && spellProto->SpellIconID == 3169)
-        {
-            // Corruption and Unstable Affliction
-            // TODO: drop when override will be possible
-            SpellEntry *entry = const_cast<SpellEntry*>(spellProto);
-            entry->EffectSpellClassMask[GetEffIndex()].Flags = UI64LIT(0x0000010000000002);
-        }
+        /*
         // Improved Flametongue Weapon, overwrite wrong data, maybe time re-add table
         else if (spellProto->Id == 37212)
         {
@@ -11594,7 +11587,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                             {
                                 // Rank 1
                                 case 0: spellId1 = 60946; break;
-                                // Rank 1
+                                // Rank 2
                                 case 1: spellId1 = 60947; break;
                             }
                             break;
