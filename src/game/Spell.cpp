@@ -806,7 +806,7 @@ void Spell::FillTargetMap()
                 default:
                     switch(spellEffect->EffectImplicitTargetB)
                     {
-                        case 0:
+                        case TARGET_NONE:
                         case TARGET_EFFECT_SELECT:
                             SetTargetMap(SpellEffectIndex(i), spellEffect->EffectImplicitTargetA, tmpUnitLists[i /*==effToIndex[i]*/]);
                             break;
@@ -2124,8 +2124,13 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
         }
         case SPELLFAMILY_MAGE:
         {
-            if (m_spellInfo->Id == 38194)                   // Blink
+            switch(m_spellInfo->Id)
+            {
+            case 38194:                   // Blink
+            case 82734:                   // Flame Orb DMG Spell
                 unMaxTargets = 1;
+                break;
+            }
             break;
         }
         case SPELLFAMILY_WARRIOR:
@@ -4251,10 +4256,6 @@ void Spell::cast(bool skipCheck)
 
 void Spell::handle_immediate()
 {
-    SpellEntry const* spellInfo = sSpellStore.LookupEntry(m_spellInfo->Id);
-    if (!spellInfo)
-        return;
-
     // start channeling if applicable
     // process immediate effects (items, ground, etc.) also initialize some variables
     _handle_immediate_phase();

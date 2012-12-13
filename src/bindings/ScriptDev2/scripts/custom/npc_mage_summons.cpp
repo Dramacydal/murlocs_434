@@ -2,6 +2,8 @@
 
 struct MANGOS_DLL_DECL npc_mage_flame_orbAI : public ScriptedAI
 {
+    Unit *mage;
+
     npc_mage_flame_orbAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         Reset();
@@ -11,13 +13,7 @@ struct MANGOS_DLL_DECL npc_mage_flame_orbAI : public ScriptedAI
 
     void Reset()
     {
-        Position destPos;
-        m_creature->GetPosition(destPos.x, destPos.y, destPos.z);
-
-        if(Unit *mage = m_creature->GetCreator())
-            mage->GetNearPoint(mage, destPos.x, destPos.y, destPos.z, mage->GetObjectBoundingRadius(), 50.0f, 0.0f);
-
-        m_creature->GetMotionMaster()->MovePoint(0, destPos.x, destPos.y, destPos.z);
+        mage = NULL;
     }
 
     void Aggro(Unit* pWho)
@@ -26,6 +22,17 @@ struct MANGOS_DLL_DECL npc_mage_flame_orbAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
+        if(!mage)
+            if(mage = m_creature->GetCreator())
+            {
+                Position destPos;
+                m_creature->GetPosition(destPos.x, destPos.y, destPos.z);
+
+                    mage->GetNearPoint(mage, destPos.x, destPos.y, destPos.z, mage->GetObjectBoundingRadius(), 50.0f, 0.0f);
+
+                m_creature->GetMotionMaster()->MovePoint(0, destPos.x, destPos.y, destPos.z);
+            }
+
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 

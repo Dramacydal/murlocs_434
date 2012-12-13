@@ -3994,7 +3994,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 case 82734:                                 // Flame Orb Periodic Trigger Dummy
                 {
                     if(unitTarget)
-                        m_caster->CastSpell(unitTarget, 82739, true, NULL, NULL, m_originalCasterGUID);
+                        m_caster->CastSpell(unitTarget, 82739, true, NULL, NULL, m_originalCasterGUID); // Flame Orb DMG spell
                     return;
                 }
                 case 31687:                                 // Summon Water Elemental
