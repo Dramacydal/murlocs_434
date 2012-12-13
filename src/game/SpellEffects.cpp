@@ -11331,6 +11331,9 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                 }
                 case 47422:                                 // Everlasting Affliction
                 {
+                    if (!unitTarget)
+                        return;
+
                     // Need refresh caster corruption auras on target
                     if (SpellAuraHolder* corruption = unitTarget->GetSpellAuraHolder(172, m_caster->GetObjectGuid()))
                         corruption->RefreshHolder();
@@ -11362,6 +11365,17 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                         holder->SetAuraDuration(newDuration);
                         holder->SendAuraUpdate(false);
                     }
+
+                    return;
+                }
+                case 92931:                                 // Pandemic
+                {
+                    if (!unitTarget)
+                        return;
+
+                    // get Unstable Affliction
+                    if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(30108, m_caster->GetObjectGuid()))
+                        holder->RefreshHolder();
 
                     return;
                 }
