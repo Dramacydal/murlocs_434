@@ -7307,6 +7307,25 @@ SpellCastResult Spell::CheckCast(bool strict)
             }
             break;
         }
+        case 88747:     // Wild Mushroom
+        {
+            if (m_caster->GetTypeId() == TYPEID_PLAYER)
+            {
+                if (((Player*)m_caster)->GetSummonUnitCountBySpell(m_spellInfo->Id) >= 3)
+                    if (Unit* mushroom = ((Player *)m_caster)->GetSummonUnit(m_spellInfo->Id))
+                        ((TemporarySummon*)mushroom)->UnSummon();
+            }
+            break;
+        }
+        case 88751:     // Wild Mushroom : Detonate
+        {
+            if (m_caster->GetTypeId() == TYPEID_PLAYER)
+            {
+                if (!((Player*)m_caster)->GetSummonUnitCountBySpell(88747))
+                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+            }
+            break;
+        }
         case 698:       // Ritual of Summoning
         case 3561:      // Teleport: Stormwind
         case 3562:      // Teleport: Ironforge
