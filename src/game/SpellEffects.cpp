@@ -4166,7 +4166,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     Unit::AuraList const& mod = m_caster->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
                     for (Unit::AuraList::const_iterator itr = mod.begin(); itr != mod.end(); ++itr)
                     {
-                        if ((*itr)->GetSpellProto()->GetSpellFamilyName()==SPELLFAMILY_WARLOCK && (*itr)->GetSpellProto()->SpellIconID == 1982)
+                        if ((*itr)->GetSpellProto()->GetSpellFamilyName()==SPELLFAMILY_WARLOCK && (*itr)->GetSpellProto()->SpellIconID == 1982 && (*itr)->GetEffIndex() == EFFECT_INDEX_0)
                         {
                             manaFeedVal += (*itr)->GetModifier()->m_amount;
                             break;
