@@ -456,6 +456,7 @@ Spell::Spell(Unit* caster, SpellEntry const* info, bool triggered, ObjectGuid or
     m_delayStart = 0;
     m_delayAtDamageCount = 0;
     m_damage = 0;
+    m_customVisual = 0;
 
     m_applyMultiplierMask = 0;
 
@@ -4907,7 +4908,7 @@ void Spell::SendSpellGo()
 
     data << caster->GetPackGUID();
     data << uint8(m_cast_count);                            // pending spell cast?
-    data << uint32(m_spellInfo->Id);                        // spellId
+    data << uint32(m_customVisual ? m_customVisual : m_spellInfo->Id);                        // spellId
     data << uint32(castFlags);                              // cast flags
     data << uint32(m_timer);
     data << uint32(WorldTimer::getMSTime());                // timestamp

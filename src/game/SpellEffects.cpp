@@ -3975,7 +3975,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     return;
                 }
                 /// Adonai, bug #34, spell 2
-                case 92283:                                 // Frostfire Orb Dummy
+                case 92283:                                 // TODO: Frostfire Orb Dummy
                 {
                     return;
                 }
@@ -3994,7 +3994,10 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 case 82734:                                 // Flame Orb Periodic Trigger Dummy
                 {
                     if(unitTarget)
-                        m_caster->CastSpell(unitTarget, 82739, true, NULL, NULL, m_originalCasterGUID); // Flame Orb DMG spell
+                    {
+                        m_caster->CastCustomVisualSpell(unitTarget, 82739, true, NULL, NULL, m_originalCasterGUID, NULL, 59509); // Flame Orb DMG spell
+                        m_caster->StopMoving();                                                                                  // Should look like Sear Beam
+                    }
                     return;
                 }
                 case 31687:                                 // Summon Water Elemental
