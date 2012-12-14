@@ -5925,7 +5925,8 @@ void Aura::HandleModMechanicImmunity(bool apply, bool /*Real*/)
 
         // Demonic Empowerment (Felguard)
         if (GetId() == 54508)
-            mechanicMask = (1<<(MECHANIC_ROOT-1))|(1<<(MECHANIC_SNARE-1))|(1<<(MECHANIC_STUN-1));
+            mechanicMask = (1<<(MECHANIC_ROOT-1))|(1<<(MECHANIC_SNARE-1))|(1<<(MECHANIC_STUN-1))|
+            (1<<(MECHANIC_BANISH-1))|(1<<(MECHANIC_HORROR-1))|(1<<(MECHANIC_FEAR-1));
         // Bestial Wrath and The Beast Within
         else if (GetId() == 19574 || GetId() == 34471)
             mechanicMask = IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK;
