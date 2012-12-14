@@ -1693,6 +1693,8 @@ bool ChatHandler::HandleNpcAddCommand(char* args)
         posO = chr->GetOrientation();
     }
 
+    posO = NormalizeOrientation(posO);
+
     CreatureCreatePos pos(map, posX, posY, posZ, posO, chr->GetPhaseMask());
     Creature* pCreature = new Creature;
     // used guids from specially reserved range (can be 0 if no free values)
