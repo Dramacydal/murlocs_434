@@ -619,8 +619,11 @@ class MANGOS_DLL_SPEC WorldObject : public Object
 
         // ASSERT print helper
         bool PrintCoordinatesError(float x, float y, float z, char const* descr) const;
+
         Creature* GetClosestCreature(uint32 uiEntry, float fMaxSearchRange, bool isAlive = true);
         GameObject* GetClosestGameObject(uint32 uiEntry, float fMaxSearchRange);
+        void GetGameObjectListWithEntryInGrid(std::list<GameObject*>& lList, uint32 uiEntry, float fMaxSearchRange) const;
+        void GetCreatureListWithEntryInGrid(std::list<Creature*>& lList, uint32 uiEntry, float fMaxSearchRange) const;
 
     protected:
         explicit WorldObject();
