@@ -988,7 +988,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
     DEBUG_FILTER_LOG(LOG_FILTER_DAMAGE,"DealDamageStart");
 
     uint32 health = pVictim->GetHealth();
-    DEBUG_FILTER_LOG(LOG_FILTER_DAMAGE,"deal dmg:%d to health:%d ",damage,health);
+    DEBUG_FILTER_LOG(LOG_FILTER_DAMAGE, "deal dmg: %u to health: %u ", damage, health);
 
     // duel ends when player has 1 or less hp
     bool duel_hasEnded = false;
