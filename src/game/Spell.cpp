@@ -7311,7 +7311,7 @@ SpellCastResult Spell::CheckCast(bool strict)
         {
             if (m_caster->GetTypeId() == TYPEID_PLAYER)
             {
-                if (((Player*)m_caster)->GetSummonUnitCountBySpell(m_spellInfo->Id) >= 3)
+                while(((Player*)m_caster)->GetSummonUnitCountBySpell(m_spellInfo->Id) > 3)
                     if (Unit* mushroom = ((Player *)m_caster)->GetSummonUnit(m_spellInfo->Id))
                         ((TemporarySummon*)mushroom)->UnSummon();
             }
