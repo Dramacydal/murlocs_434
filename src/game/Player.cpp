@@ -2301,6 +2301,9 @@ uint32 Player::GetSummonUnitCount() const
 
 uint32 Player::GetSummonUnitCountBySpell(uint32 spellId) const
 {
+    if (m_summonList.empty())
+        return 0;
+
     uint32 numofsummon = 0;
 
     for (SummonUnitList::const_iterator i = m_summonList.begin(); i != m_summonList.end(); ++i)
