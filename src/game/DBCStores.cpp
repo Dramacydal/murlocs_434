@@ -1415,10 +1415,16 @@ void LoadDBCStores(const std::string& dataPath)
                 }
                 break;
             }
-            case 82365:                         // Druid: Skull Bash mana reduce part
+            case 82365:                         // Skull Bash mana reduce part
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
                     eff->EffectBasePoints = 25;
+                break;
+            }
+            case 88747:                         // Wild Mushroom
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectBasePoints = 1;
                 break;
             }
         }
