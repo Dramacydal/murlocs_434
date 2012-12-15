@@ -34,6 +34,10 @@ class TemporarySummon : public Creature
         void SaveToDB();
         ObjectGuid const& GetSummonerGuid() const { return m_summoner ; }
         Unit* GetSummoner() const { return ObjectAccessor::GetUnit(*this, m_summoner); }
+        TempSummonType GetType() const { return m_type; }
+        uint32 GetTimer() const { return m_timer; }
+        uint32 GetLifeTime() const { return m_lifetime; }
+
     private:
         void SaveToDB(uint32, uint8, uint32) override       // overwrited of Creature::SaveToDB     - don't must be called
         {

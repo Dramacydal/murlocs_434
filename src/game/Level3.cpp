@@ -61,6 +61,7 @@
 #include "BattleField/BattleFieldWG.h"
 #include "Spell.h"
 #include "SQLStorages.h"
+#include "TemporarySummon.h"
 
 static uint32 ahbotQualityIds[MAX_AUCTION_QUALITY] =
 {
@@ -4527,6 +4528,12 @@ bool ChatHandler::HandleNpcInfoCommand(char* /*args*/)
     }
 
     ShowNpcOrGoSpawnInformation<Creature>(target->GetGUIDLow());
+
+    if (target->IsTemporarySummon())
+    { 
+        TemporarySummon* ts = (TemporarySummon*)target;
+        PSendSysMessage("Unit is temporary summon: type %u timer %u lifetime %u summoner %s spell %u", ts->GetType(), ts->GetTimer(), ts->GetLifeTime(), ts->GetSummonerGuid().GetString().c_str(), ts->GetUInt32Value(UNIT_CREATED_BY_SPELL));
+    }
 
     PSendSysMessage("Total active events: %u", target->m_Events.GetSize());         // temp monitoring
 
