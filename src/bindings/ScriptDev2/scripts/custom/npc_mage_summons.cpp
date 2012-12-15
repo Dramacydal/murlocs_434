@@ -25,7 +25,7 @@ struct MANGOS_DLL_DECL npc_mage_flame_orbAI : public ScriptedAI
                 m_creature->GetPosition(destPos.x, destPos.y, destPos.z);
                 mage->GetNearPoint(mage, destPos.x, destPos.y, destPos.z, mage->GetObjectBoundingRadius(), 50.0f, mage->GetOrientation());
 
-                m_creature->GetMotionMaster()->MovePoint(0, destPos.x, destPos.y, destPos.z, true);
+                m_creature->GetMotionMaster()->MovePoint(m_creature->GetCreatureInfo()->movementId, destPos.x, destPos.y, destPos.z, true);
             }
     }
 

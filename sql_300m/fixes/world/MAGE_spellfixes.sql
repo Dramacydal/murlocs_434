@@ -48,4 +48,4 @@ INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`
 (71757, 2.143, 0, 0, 0, 'Deep Freeze');
 
 -- Flaming Orb
-UPDATE `creature_template` SET `minlevel` = 85, `maxlevel` = 85 WHERE `entry` = 44214;
+UPDATE `creature_template` SET `minlevel` = 85, `maxlevel` = 85, `speed_run` = 0.714286, `unit_flags` = 33554432 + 2, `unit_flags2` = 2048, type_flags = 0, `InhabitType` = 3, movementId = 90, `ScriptName` = 'npc_mage_flame_orb'  where `entry` = 44214;
