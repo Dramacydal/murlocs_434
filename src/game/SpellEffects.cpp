@@ -4369,8 +4369,6 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     std::list<TemporarySummon*> mushroomList;
                     mushroomList = summonList;
 
-                    ERROR_LOG("fungal = %u", fungal);
-
                     for (std::list<TemporarySummon*>::const_iterator i = mushroomList.begin(); i != mushroomList.end(); ++i)
                     {
                         if (!m_caster->IsWithinDist3d((*i)->GetPositionX(), (*i)->GetPositionY(), (*i)->GetPositionZ(), spellRange))
