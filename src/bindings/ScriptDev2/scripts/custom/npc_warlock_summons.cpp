@@ -57,6 +57,7 @@ struct MANGOS_DLL_DECL npc_hand_of_guldanAI : public ScriptedAI
         {
             if (Unit* owner = m_creature->GetOwner())
             {
+                DEBUG_LOG("hand of guldan inited");
                 init = true;
 
                 m_creature->CastSpell(m_creature, SPELL_HAND_OF_GULDAN_VISUAL, true);
