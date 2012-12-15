@@ -456,6 +456,7 @@ Spell::Spell(Unit* caster, SpellEntry const* info, bool triggered, ObjectGuid or
     m_delayStart = 0;
     m_delayAtDamageCount = 0;
     m_damage = 0;
+    m_customVisual = 0;
 
     m_applyMultiplierMask = 0;
 
@@ -806,7 +807,7 @@ void Spell::FillTargetMap()
                 default:
                     switch(spellEffect->EffectImplicitTargetB)
                     {
-                        case 0:
+                        case TARGET_NONE:
                         case TARGET_EFFECT_SELECT:
                             SetTargetMap(SpellEffectIndex(i), spellEffect->EffectImplicitTargetA, tmpUnitLists[i /*==effToIndex[i]*/]);
                             break;
@@ -2126,8 +2127,13 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
         }
         case SPELLFAMILY_MAGE:
         {
-            if (m_spellInfo->Id == 38194)                   // Blink
+            switch(m_spellInfo->Id)
+            {
+            case 38194:                   // Blink
+            case 82734:                   // Flame Orb DMG Spell
                 unMaxTargets = 1;
+                break;
+            }
             break;
         }
         case SPELLFAMILY_WARRIOR:
@@ -3835,10 +3841,6 @@ void Spell::cancel()
 
 void Spell::cast(bool skipCheck)
 {
-    SpellEntry const* spellInfo = sSpellStore.LookupEntry(m_spellInfo->Id);
-    if (!spellInfo)
-        return;
-
     SetExecutedCurrently(true);
 
     if (!m_caster->CheckAndIncreaseCastCounter())
@@ -3987,7 +3989,7 @@ void Spell::cast(bool skipCheck)
 
             // Polymorph
             if (m_caster->GetTypeId() == TYPEID_PLAYER && m_spellInfo->IsFitToFamilyMask(UI64LIT(0x1000000)) &&
-                spellInfo->GetEffectApplyAuraNameByIndex(EFFECT_INDEX_0) == SPELL_AURA_MOD_CONFUSE && m_spellInfo->SpellIconID == 82)
+                m_spellInfo->GetEffectApplyAuraNameByIndex(EFFECT_INDEX_0) == SPELL_AURA_MOD_CONFUSE && m_spellInfo->SpellIconID == 82)
             {
                 if (m_caster->HasAura(52648))
                     AddTriggeredSpell(61635);
@@ -4260,10 +4262,6 @@ void Spell::cast(bool skipCheck)
 
 void Spell::handle_immediate()
 {
-    SpellEntry const* spellInfo = sSpellStore.LookupEntry(m_spellInfo->Id);
-    if (!spellInfo)
-        return;
-
     // start channeling if applicable
     // process immediate effects (items, ground, etc.) also initialize some variables
     _handle_immediate_phase();
@@ -4915,7 +4913,7 @@ void Spell::SendSpellGo()
 
     data << caster->GetPackGUID();
     data << uint8(m_cast_count);                            // pending spell cast?
-    data << uint32(m_spellInfo->Id);                        // spellId
+    data << uint32(m_customVisual ? m_customVisual : m_spellInfo->Id);                        // spellId
     data << uint32(castFlags);                              // cast flags
     data << uint32(m_timer);
     data << uint32(WorldTimer::getMSTime());                // timestamp
@@ -9205,6 +9203,7 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
     // Resulting effect depends on spell that we want to cast
     switch (m_spellInfo->Id)
     {
+        /// Adonai, bug #34 spell 1
         case 82691: // Ring of Frost trigger spell
         {
             // Need to trigger this only when ring is fully deployed...

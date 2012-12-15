@@ -1261,7 +1261,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         std::string autoReplyMsg;
 
         Visuals* m_vis;
-
         void AddSummonUnit(Unit* summon);
         void RemoveSummonUnit(uint32 spellid);
         void RemoveSummonUnit(Unit* summon); 
