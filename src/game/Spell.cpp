@@ -7321,6 +7321,40 @@ SpellCastResult Spell::CheckCast(bool strict)
             {
                 if (!((Player*)m_caster)->GetSummonUnitCountBySpell(88747))
                     return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
+                std::list<Creature*> list;
+                std::list<TemporarySummon*> summonList;
+                m_caster->GetCreatureListWithEntryInGrid(list, 47649, 500.0f);
+
+                for (std::list<Creature*>::const_iterator i = list.begin(); i != list.end(); ++i)
+                {
+                    if ((*i)->IsTemporarySummon() && (*i)->GetCreator() == m_caster)
+                    {
+                        summonList.push_back((TemporarySummon*)(*i));
+                        continue;
+                    }
+                }
+
+                if (summonList.empty())
+                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
+                std::list<TemporarySummon*> mushroomList;
+                mushroomList = summonList;
+
+                float spellRange = GetSpellMaxRange(sSpellRangeStore.LookupEntry(m_spellInfo->rangeIndex), true);
+                bool inRange = false;
+
+                for (std::list<TemporarySummon*>::const_iterator i = mushroomList.begin(); i != mushroomList.end(); ++i)
+                {
+                    if (m_caster->IsWithinDist3d((*i)->GetPositionX(), (*i)->GetPositionY(), (*i)->GetPositionZ(), spellRange)) // Must have at least one mushroom within 40 yards
+                    {
+                        inRange = true;
+                        break;
+                    }
+                }
+
+                if (!inRange)
+                    return SPELL_FAILED_OUT_OF_RANGE;
             }
             break;
         }
