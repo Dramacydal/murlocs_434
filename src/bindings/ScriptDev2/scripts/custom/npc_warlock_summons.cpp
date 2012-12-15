@@ -31,6 +31,8 @@ enum
     SPELL_FOREBODING_ROOT_R2    = 93987,
     SPELL_FOREBODING_STUN_R1    = 93975,
     SPELL_FOREBODING_STUN_R2    = 93986,
+    STUN_TIMER                  = 6 * IN_MILLISECONDS,
+    DESPAWN_TIMER               = 15 * IN_MILLISECONDS,
 
 };
 
@@ -42,6 +44,7 @@ struct MANGOS_DLL_DECL npc_hand_of_guldanAI : public ScriptedAI
     uint32 rootSpell;
     uint32 stunSpell;
     int32 stunTimer;
+    int32 despawnTimer;
 
     void Reset()
     {
@@ -49,36 +52,49 @@ struct MANGOS_DLL_DECL npc_hand_of_guldanAI : public ScriptedAI
         stunTimer = 0;
         rootSpell = 0;
         stunSpell = 0;
+        despawnTimer = 0;
     }
 
     void UpdateAI(const uint32 diff)
     {
         if (!init)
         {
-            if (Unit* owner = m_creature->GetOwner())
+            if (Unit* creator = m_creature->GetCreator())
             {
-                DEBUG_LOG("hand of guldan inited");
                 init = true;
 
+                despawnTimer = DESPAWN_TIMER;
                 m_creature->CastSpell(m_creature, SPELL_HAND_OF_GULDAN_VISUAL, true);
                 m_creature->CastSpell(m_creature, SPELL_CURSE_OF_GULDAN, true);
 
-                if (owner->HasAura(89604))      // Aura of Foreboding (Rank 1)
+                if (creator->HasAura(89604))      // Aura of Foreboding (Rank 1)
                 {
                     m_creature->CastSpell(m_creature, SPELL_FOREBODING_ROOT_R1, true);
                     stunSpell = SPELL_FOREBODING_STUN_R1;
-                    stunTimer = 6000;
+                    stunTimer = STUN_TIMER;
                 }
-                else if (owner->HasAura(89605)) // Aura of Foreboding (Rank 2)
+                else if (creator->HasAura(89605)) // Aura of Foreboding (Rank 2)
                 {
                     m_creature->CastSpell(m_creature, SPELL_FOREBODING_ROOT_R2, true);
                     stunSpell = SPELL_FOREBODING_STUN_R2;
-                    stunTimer = 6000;
+                    stunTimer = STUN_TIMER;
                 }
+
             }
         }
         else
         {
+            if (despawnTimer)
+            {
+                if (despawnTimer <= diff)
+                {
+                    despawnTimer = 0;
+                    m_creature->ForcedDespawn();
+                }
+                else
+                    despawnTimer -= diff;
+            }
+
             if (stunTimer)
             {
                 if (stunTimer <= diff)
