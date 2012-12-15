@@ -595,7 +595,7 @@ class MANGOS_DLL_SPEC WorldObject : public Object
         void RemoveFromClientUpdateList() override;
         void BuildUpdateData(UpdateDataMapType &) override;
 
-        Creature* SummonCreature(uint32 id, float x, float y, float z, float ang,TempSummonType spwtype,uint32 despwtime, bool asActiveObject = false);
+        Creature* SummonCreature(uint32 id, float x, float y, float z, float ang,TempSummonType spwtype,uint32 despwtime, bool asActiveObject = false, uint32 forceLevel = 0);
         GameObject* SummonGameobject(uint32 id, float x, float y, float z, float angle, uint32 despwtime);
 
         void StartGroupLoot(Group* group, uint32 timer);

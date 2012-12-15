@@ -7293,7 +7293,7 @@ void Spell::DoSummonWild(SpellEffectEntry const * effect, uint32 forceFaction)
             }
         }
 
-        if (Creature* summon = m_caster->SummonCreature(creature_entry, px, py, pz, m_caster->GetOrientation(), summonType, m_duration))
+        if (Creature* summon = m_caster->SummonCreature(creature_entry, px, py, pz, m_caster->GetOrientation(), summonType, m_duration, false, level))
         {
             summon->SetUInt32Value(UNIT_CREATED_BY_SPELL, m_spellInfo->Id);
 
