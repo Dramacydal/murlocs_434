@@ -502,11 +502,11 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                     chn->Say(_player->GetObjectGuid(), msg.c_str(), lang);
                     sChatLogger.logChannelMessage(GetPlayer(), chn, msg);
 
-                    // duplicate all messages in all other lfg channels channels
+                    // duplicate all messages in all other lfg channels
                     if (chn->IsLFG())
                     {
                         if (ChatChannelsEntry const* ch = GetChannelEntryFor(chn->GetChannelId()))
-                            for (int i = 0; i < 16; ++i)
+                            for (int i = 0; i < MAX_LOCALE; ++i)
                                 if (Channel* chn2 = cMgr->GetChannel(ch->pattern[i], _player))
                                     if (!chn2->IsOn(_player->GetObjectGuid()))
                                         chn2->Say(_player->GetObjectGuid(), msg.c_str(), lang, true);
