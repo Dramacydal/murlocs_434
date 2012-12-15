@@ -63,7 +63,6 @@ struct MANGOS_DLL_DECL npc_hand_of_guldanAI : public ScriptedAI
             {
                 init = true;
 
-                m_creature->SetLevel(creator->getLevel());
                 despawnTimer = DESPAWN_TIMER;
                 m_creature->CastSpell(m_creature, SPELL_HAND_OF_GULDAN_VISUAL, true);
                 m_creature->CastSpell(m_creature, SPELL_CURSE_OF_GULDAN, true);
