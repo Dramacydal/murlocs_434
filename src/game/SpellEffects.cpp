@@ -11453,6 +11453,17 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
 
                     return;
                 }
+                case 89603:                                 // Cremation
+                {
+                    if (!unitTarget)
+                        return;
+
+                    // get Immolate
+                    if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(348, m_caster->GetObjectGuid()))
+                        holder->RefreshHolder();
+
+                    return;
+                }
                 case 92931:                                 // Pandemic
                 {
                     if (!unitTarget)
