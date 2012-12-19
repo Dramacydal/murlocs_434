@@ -6526,7 +6526,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                     if (m_caster->GetTypeId() == TYPEID_PLAYER)
                     {
                         if (!((Player*)m_caster)->m_soulSwapData.swapTarget ||
-                            !((Player*)m_caster)->m_soulSwapData.swapTarget == target->GetObjectGuid())
+                            ((Player*)m_caster)->m_soulSwapData.swapTarget == target->GetObjectGuid())
                             return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
                     }
                 }
