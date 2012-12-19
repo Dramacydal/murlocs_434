@@ -5884,7 +5884,8 @@ SpellCastResult Spell::CheckCast(bool strict)
         return SPELL_FAILED_CASTER_AURASTATE;
 
     // Caster aura req check if need
-    if (auraRestrictions && auraRestrictions->casterAuraSpell && !m_caster->HasAura(auraRestrictions->casterAuraSpell))
+    if (auraRestrictions && auraRestrictions->casterAuraSpell && !m_caster->HasAura(auraRestrictions->casterAuraSpell) &&
+        sSpellStore.LookupEntry(auraRestrictions->casterAuraSpell))
         return SPELL_FAILED_CASTER_AURASTATE;
 
     if (auraRestrictions && auraRestrictions->excludeCasterAuraSpell)
@@ -5948,7 +5949,8 @@ SpellCastResult Spell::CheckCast(bool strict)
             return SPELL_FAILED_TARGET_NOT_DEAD;
 
         // Target aura req check if need
-        if(auraRestrictions && auraRestrictions->targetAuraSpell && !target->HasAura(auraRestrictions->targetAuraSpell))
+        if (auraRestrictions && auraRestrictions->targetAuraSpell && !target->HasAura(auraRestrictions->targetAuraSpell) &&
+            sSpellStore.LookupEntry(auraRestrictions->targetAuraSpell))
             return SPELL_FAILED_CASTER_AURASTATE;
 
         if(auraRestrictions && auraRestrictions->excludeTargetAuraSpell)
@@ -7307,21 +7309,24 @@ SpellCastResult Spell::CheckCast(bool strict)
         }
         case 48020:     // Demonic Circle: Teleport
         {
+            GameObject* obj = m_caster->GetGameObject(48018);
+            if (!obj)
+                return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
             if (m_caster->GetTypeId() == TYPEID_PLAYER)
             {
                 if (BattleGround* bg = ((Player*)m_caster)->GetBattleGround())
                     if (bg->GetTypeID(true) == BATTLEGROUND_DS && ((BattleGroundDS*)bg)->IsCollisionSpawned())
-                        if (GameObject* obj = m_caster->GetGameObject(48018))
-                        {
-                            float x = obj->GetPositionX();
-                            float y = obj->GetPositionY();
-                            float z = obj->GetPositionZ();
-                            float x1 = 1291.56f;
-                            float y1 = 790.837f;
-                            float z1 = 7.1f;
-                            if (sqrtf((x-x1)*(x-x1)+(y-y1)*(y-y1)+(z-z1)*(z-z1)) < 6.15f)
-                                return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
-                        }
+                    {
+                        float x = obj->GetPositionX();
+                        float y = obj->GetPositionY();
+                        float z = obj->GetPositionZ();
+                        float x1 = 1291.56f;
+                        float y1 = 790.837f;
+                        float z1 = 7.1f;
+                        if (sqrtf((x-x1)*(x-x1)+(y-y1)*(y-y1)+(z-z1)*(z-z1)) < 6.15f)
+                            return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+                    }
             }
             break;
         }
