@@ -1552,9 +1552,9 @@ MovementStatusElements MovementStopAscendSequence[] =
 
 MovementStatusElements MovementStopPitchSequence[] =
 {
-    MSEPositionY,
     MSEPositionX,
     MSEPositionZ,
+    MSEPositionY,
     MSEGuidBit0,
     MSEGuidBit5,
     MSEGuidBit3,
