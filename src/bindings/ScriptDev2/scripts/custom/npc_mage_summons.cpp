@@ -36,7 +36,7 @@ CreatureAI* GetAI_mage_flame_orb(Creature* pCreature)
     return new npc_mage_flame_orbAI(pCreature);
 }
 
-void AddSC_npc_flame_orb()
+void AddSC_npc_mage_summons()
 {
     Script *pNewScript;
     pNewScript = new Script;

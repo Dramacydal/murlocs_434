@@ -1872,6 +1872,9 @@
     <ClCompile Include="..\scripts\custom\npc_warlock_summons.cpp">
       <Filter>scripts\custom</Filter>
     </ClCompile>
+    <ClCompile Include="..\scripts\custom\npc_druid_summons.cpp">
+      <Filter>scripts\custom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\base\BSW_ai.h">

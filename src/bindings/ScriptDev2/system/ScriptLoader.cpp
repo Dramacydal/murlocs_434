@@ -12,7 +12,9 @@ extern void AddSC_battlegroundIC();
 // custom
 extern void AddSC_mob_teleguy();
 extern void AddSC_npc_arena_honor();
-extern void AddSC_npc_flame_orb();
+extern void AddSC_npc_warlock_summons();
+extern void AddSC_npc_mage_summons();
+extern void AddSC_npc_druid_summons();
 
 // examples
 extern void AddSC_example_creature();
@@ -31,7 +33,6 @@ extern void AddSC_npc_professions();
 extern void AddSC_npcs_special();
 extern void AddSC_spell_scripts();
 extern void AddSC_pet_scripts();
-extern void AddSC_npc_warlock_summons();
 
 extern void AddSC_world_map_scripts();
 
@@ -545,7 +546,9 @@ void AddScripts()
     // custom
     AddSC_mob_teleguy();
     AddSC_npc_arena_honor();
-    AddSC_npc_flame_orb();
+    AddSC_npc_warlock_summons();
+    AddSC_npc_mage_summons();
+    AddSC_npc_druid_summons();
 
     // examples
     AddSC_example_creature();
@@ -562,7 +565,6 @@ void AddScripts()
     AddSC_item_scripts();
     AddSC_npc_professions();
     AddSC_npcs_special();
-    AddSC_npc_warlock_summons();
     AddSC_spell_scripts();
     AddSC_pet_scripts();
     AddSC_world_map_scripts();

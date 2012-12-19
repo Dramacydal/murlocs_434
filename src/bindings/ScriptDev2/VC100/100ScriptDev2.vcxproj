@@ -230,6 +230,7 @@
     <ClCompile Include="..\scripts\battlegrounds\battlegroundSA.cpp" />
     <ClCompile Include="..\scripts\battlegrounds\battlegroundIC.cpp" />
     <ClCompile Include="..\scripts\custom\npc_arena_honor.cpp" />
+    <ClCompile Include="..\scripts\custom\npc_druid_summons.cpp" />
     <ClCompile Include="..\scripts\custom\npc_mage_summons.cpp" />
     <ClCompile Include="..\scripts\custom\npc_warlock_summons.cpp" />
     <ClCompile Include="..\scripts\custom\teleguy.cpp" />
