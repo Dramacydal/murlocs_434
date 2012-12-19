@@ -298,7 +298,7 @@ void Spell::DoSummonSpecialPets(SpellEffectEntry const * effect)
         CreatureCreatePos pos (map, x, y, z, -m_caster->GetOrientation(), m_caster->GetPhaseMask());
         if (!spawnCreature->Create(map->GenerateLocalLowGuid(HIGHGUID_PET), pos, cinfo, pet_number))
         {
-            sLog.outErrorDb("Spell::DoSummonSpecialPets:: can't creature creature entry %u for spell", pet_entry, m_spellInfo->Id);
+            sLog.outErrorDb("Spell::DoSummonSpecialPets:: can't creature creature entry %u for spell %u", pet_entry, m_spellInfo->Id);
             delete spawnCreature;
             return;
         }
