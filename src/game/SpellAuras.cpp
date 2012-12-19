@@ -1203,6 +1203,7 @@ void Aura::HandleAddModifier(bool apply, bool Real)
             case 57531:                                     // Arcane Potency (Rank 2)
             case 63165:                                     // Decimation (Rank 1)
             case 63167:                                     // Decimation (Rank 2)
+            case 74434:                                     // Soulburn
             case 88688:                                     // Surge of Light
             case 88819:                                     // Daybreak
             case 89485:                                     // Inner Focus

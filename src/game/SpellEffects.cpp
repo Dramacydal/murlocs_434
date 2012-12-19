@@ -5929,6 +5929,9 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
 
         int32 addhealth = damage;
 
+        // Healthstone
+        if (m_spellInfo->Id == 6262)
+            addhealth = int32(m_caster->GetCreateHealth() * m_spellInfo->CalculateSimpleValue(EFFECT_INDEX_0) / 100.0f);
         // Seal of Light proc
         if (m_spellInfo->Id == 20167)
         {

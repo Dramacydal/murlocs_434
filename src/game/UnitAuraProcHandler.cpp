@@ -5218,6 +5218,28 @@ SpellAuraProcResult Unit::HandleAddPctModifierAuraProc(Unit* /*pVictim*/, uint32
             }
             break;
         }
+        case SPELLFAMILY_WARLOCK:
+        {
+            // Soulburn
+            if (spellInfo->Id == 74434)
+            {
+                if (!procSpell)
+                    return SPELL_AURA_PROC_FAILED;
+
+                // Searing Pain
+                if (procSpell->Id == 5676)
+                    CastSpell(this, 79440, true);
+                // Healthstone
+                else if (procSpell->Id == 6262)
+                    CastSpell(this, 79437, true);
+                // Demonic Circle: Teleport
+                else if (procSpell->Id == 48020)
+                    CastSpell(this, 79438, true);
+                else
+                    return SPELL_AURA_PROC_FAILED;
+            }
+            break;
+        }
         case SPELLFAMILY_PRIEST:
         {
             // Chakra
