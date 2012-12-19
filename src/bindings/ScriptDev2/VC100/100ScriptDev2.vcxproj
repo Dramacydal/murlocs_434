@@ -230,6 +230,8 @@
     <ClCompile Include="..\scripts\battlegrounds\battlegroundSA.cpp" />
     <ClCompile Include="..\scripts\battlegrounds\battlegroundIC.cpp" />
     <ClCompile Include="..\scripts\custom\npc_arena_honor.cpp" />
+    <ClCompile Include="..\scripts\custom\npc_mage_summons.cpp" />
+    <ClCompile Include="..\scripts\custom\npc_warlock_summons.cpp" />
     <ClCompile Include="..\scripts\custom\teleguy.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\alterac_mountains.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\arathi_highlands.cpp" />
@@ -755,13 +757,6 @@
     <ClInclude Include="..\base\follower_ai.h" />
     <ClInclude Include="..\base\guard_ai.h" />
     <ClInclude Include="..\base\pet_ai.h" />
-    <ClInclude Include="..\config.h" />
-    <ClInclude Include="..\include\precompiled.h" />
-    <ClInclude Include="..\include\sc_creature.h" />
-    <ClInclude Include="..\include\sc_utility.h" />
-    <ClInclude Include="..\include\sc_gossip.h" />
-    <ClInclude Include="..\include\sc_grid_searchers.h" />
-    <ClInclude Include="..\include\sc_instance.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\blackrock_depths\blackrock_depths.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\blackrock_spire\blackrock_spire.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\blackwing_lair\blackwing_lair.h" />
@@ -829,10 +824,15 @@
     <ClInclude Include="..\scripts\outland\tempest_keep\arcatraz\arcatraz.h" />
     <ClInclude Include="..\scripts\outland\tempest_keep\the_eye\the_eye.h" />
     <ClInclude Include="..\scripts\outland\tempest_keep\the_mechanar\mechanar.h" />
-    <ClInclude Include="..\sd2_revision_nr.h" />
-    <ClInclude Include="..\sd2_revision_sql.h" />
+    <ClInclude Include="..\include\precompiled.h" />
+    <ClInclude Include="..\include\sc_creature.h" />
+    <ClInclude Include="..\include\sc_utility.h" />
+    <ClInclude Include="..\include\sc_gossip.h" />
+    <ClInclude Include="..\include\sc_grid_searchers.h" />
+    <ClInclude Include="..\include\sc_instance.h" />
     <ClInclude Include="..\system\ScriptLoader.h" />
     <ClInclude Include="..\system\system.h" />
+    <ClInclude Include="..\config.h" />
     <CustomBuild Include="..\revision.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Extracting revision</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd "$(SolutionDir)"
@@ -859,6 +859,8 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.svn/entries;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">revision.h;%(Outputs)</Outputs>
     </CustomBuild>
+    <ClInclude Include="..\sd2_revision_nr.h" />
+    <ClInclude Include="..\sd2_revision_sql.h" />
     <ClInclude Include="..\ScriptMgr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

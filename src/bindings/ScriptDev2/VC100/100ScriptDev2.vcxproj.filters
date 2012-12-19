@@ -1866,6 +1866,12 @@
     <ClCompile Include="..\scripts\northrend\wintergrasp.cpp">
       <Filter>scripts\northrend</Filter>
     </ClCompile>
+    <ClCompile Include="..\scripts\custom\npc_mage_summons.cpp">
+      <Filter>scripts\custom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripts\custom\npc_warlock_summons.cpp">
+      <Filter>scripts\custom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\base\BSW_ai.h">
