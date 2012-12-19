@@ -84,7 +84,7 @@ void WorldSession::SendGroupInvite(Player* player, bool alreadyInGroup /*= false
     data.append(player->GetName(), strlen(player->GetName()));
     data << uint32(0);
 
-    player->GetSession()->SendPacket(&data);
+    SendPacket(&data);
 }
 
 void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
@@ -176,7 +176,7 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
         SendPartyResult(PARTY_OP_INVITE, membername, ERR_ALREADY_IN_GROUP_S);
 
         // tell the player that they were invited but it failed as they were already in a group
-        SendGroupInvite(player, true);
+        player->GetSession()->SendGroupInvite(_player, true);
 
         return;
     }
@@ -225,7 +225,7 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
     }
 
     // ok, we do it
-    SendGroupInvite(player);
+    player->GetSession()->SendGroupInvite(_player);
 
     SendPartyResult(PARTY_OP_INVITE, membername, ERR_PARTY_RESULT_OK);
 }
