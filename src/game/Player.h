@@ -2705,6 +2705,12 @@ class MANGOS_DLL_SPEC Player : public Unit
         void _LoadVoidStorage(QueryResult* result);
         void _SaveVoidStorage();
 
+        struct SoulSwapData
+        {
+            std::vector<uint32> spells;
+            ObjectGuid swapTarget;
+        } m_soulSwapData;
+
     private:
         void CreateOrDeletePremiumItem(bool create);
         void ApplyPremiumSpells(bool apply);

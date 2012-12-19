@@ -4033,6 +4033,12 @@ void Spell::cast(bool skipCheck)
             }
             break;
         }
+        case SPELLFAMILY_WARLOCK:
+        {
+            if (m_spellInfo->Id == 86213)                   // Soul Swap Exhale
+                AddPrecastSpell(92794);
+            break;
+        }
         case SPELLFAMILY_PRIEST:
         {
             // Prayer of Mending (jump animation), we need formal caster instead original for correct animation
@@ -6509,6 +6515,20 @@ SpellCastResult Spell::CheckCast(bool strict)
                 {
                     if (!m_targets.getUnitTarget())
                         return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
+                }
+                // Soul Swap Exhale
+                else if (m_spellInfo->Id == 86213)
+                {
+                    Unit* target = m_targets.getUnitTarget();
+                    if (!target)
+                        return SPELL_FAILED_BAD_TARGETS;
+
+                    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        if (!((Player*)m_caster)->m_soulSwapData.swapTarget ||
+                            !((Player*)m_caster)->m_soulSwapData.swapTarget == target->GetObjectGuid())
+                            return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
+                    }
                 }
                 break;
             }

@@ -825,6 +825,62 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                     int32 mod = int32(m_caster->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_SHADOW) - m_caster->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + SPELL_SCHOOL_SHADOW));
                     damage += mod > 0 ? int32(mod * 0.2143f) : 0;
                 }
+                // Soul Swap
+                else if (m_spellInfo->Id == 86121)
+                {
+                    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        Player* pCaster = (Player*)m_caster;
+                        pCaster->m_soulSwapData.spells.clear();
+                        pCaster->m_soulSwapData.swapTarget = unitTarget->GetObjectGuid();
+
+                        if (SpellEntry const * affecter = sSpellStore.LookupEntry(92794))
+                        {
+                            if (SpellEffectEntry const* effect = affecter->GetSpellEffect(EFFECT_INDEX_0))
+                            {
+                                Unit::SpellAuraHolderMap const& holders = unitTarget->GetSpellAuraHolderMap();
+                                for (Unit::SpellAuraHolderMap::const_iterator itr = holders.begin(); itr != holders.end(); ++itr)
+                                {
+                                    if (itr->second->IsPositive() ||
+                                        itr->second->IsPassive() ||
+                                        itr->second->GetCasterGuid() != m_caster->GetObjectGuid())
+                                        continue;
+
+                                    bool isPeriodic = false;
+                                    for (uint32 i = 0; i < MAX_AURAS; ++i)
+                                    {
+                                        if (Aura* aura = itr->second->GetAuraByEffectIndex(SpellEffectIndex(i)))
+                                        {
+                                            if (aura->IsPeriodic())
+                                            {
+                                                isPeriodic = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (!isPeriodic)
+                                        continue;
+
+                                    if (itr->second->GetSpellProto()->IsFitToFamily(SPELLFAMILY_WARLOCK, effect->EffectSpellClassMask))
+                                        pCaster->m_soulSwapData.spells.push_back(itr->second->GetId());
+                                }
+                            }
+                        }
+                    }
+                }
+                // Soul Swap Exhale
+                else if (m_spellInfo->Id == 86213)
+                {
+                    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        Player* pCaster = (Player*)m_caster;
+                        for (uint32 i = 0; i < pCaster->m_soulSwapData.spells.size(); ++i)
+                            m_caster->CastSpell(unitTarget, pCaster->m_soulSwapData.spells[i], true);
+
+                        m_caster->RemoveAurasDueToSpell(86211);
+                    }
+                }
                 break;
             }
             case SPELLFAMILY_PRIEST:
