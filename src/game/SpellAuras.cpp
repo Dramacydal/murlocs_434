@@ -12463,7 +12463,7 @@ void SpellAuraHolder::SendFakeAuraUpdate(uint32 auraId, bool remove)
         return;
 
     WorldPacket data(SMSG_AURA_UPDATE);
-    data << GetTarget()->GetPackGUID();
+    data << m_target->GetPackGUID();
     data << uint8(MAX_AURAS);
     data << uint32(remove ? 0 : auraId);
 
@@ -12474,34 +12474,29 @@ void SpellAuraHolder::SendFakeAuraUpdate(uint32 auraId, bool remove)
     }
 
     uint8 auraFlags = GetAuraFlags();
-    data << uint8(auraFlags);
+    data << uint16(auraFlags);
     data << uint8(GetAuraLevel());
     data << uint8(GetStackAmount() > 1 ? GetStackAmount() : (GetAuraCharges()) ? GetAuraCharges() : 1);
 
-    if(!(auraFlags & AFLAG_NOT_CASTER))
+    if (!(auraFlags & AFLAG_NOT_CASTER))
     {
         data << GetCasterGuid().WriteAsPacked();
     }
 
-    if(auraFlags & AFLAG_DURATION)
+    if (auraFlags & AFLAG_DURATION)
     {
-        // take highest - to display icon even if stun fades
-        uint32 max_duration = 0;
-        uint32 duration = 0;
-        for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
-        {
-            if (Aura *aura = m_auras[i])
-            {
-                if (uint32(aura->GetAuraMaxDuration()) > max_duration)
-                {
-                    max_duration = aura->GetAuraMaxDuration();
-                    duration = aura->GetAuraDuration();
-                }
-            }
-        }
+        data << uint32(GetAuraMaxDuration());
+        data << uint32(GetAuraDuration());
+    }
 
-        data << uint32(max_duration);
-        data << uint32(duration);
+    if (auraFlags & AFLAG_EFFECT_AMOUNT_SEND)
+    {
+        for (uint8 i = 0; i < MAX_EFFECT_INDEX; ++i)
+            if (auraFlags & (1 << i))
+                if (Aura const* aura = m_auras[i])
+                    data << int32(aura->GetModifier()->m_amount);
+                else
+                    data << int32(0);
     }
 
     GetTarget()->SendMessageToSet(&data, true);
