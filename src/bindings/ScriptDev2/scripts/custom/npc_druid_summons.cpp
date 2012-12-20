@@ -22,10 +22,11 @@ SDCategory:
 EndScriptData */
 
 #include "precompiled.h"
+#include "TemporarySummon.h"
 
 enum
 {
-    WILD_MUSHROOM_INVISIBLE_TIMER  = 6 * IN_MILLISECONDS,
+    WILD_MUSHROOM_INVISIBLE_TIMER    = 6 * IN_MILLISECONDS,
 };
 
 struct MANGOS_DLL_DECL npc_druid_wild_mushroomAI : public ScriptedAI
@@ -52,6 +53,10 @@ struct MANGOS_DLL_DECL npc_druid_wild_mushroomAI : public ScriptedAI
         {
             init = true;
             invisibleTimer = WILD_MUSHROOM_INVISIBLE_TIMER;
+
+            m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+            m_creature->StopMoving();
+            m_creature->addUnitState(UNIT_STAT_STUNNED);
         }
         else
         {
@@ -67,11 +72,77 @@ struct MANGOS_DLL_DECL npc_druid_wild_mushroomAI : public ScriptedAI
             }
         }
     }
+
+    void JustDied(Unit* /*killer*/)
+    {
+        if (m_creature->IsTemporarySummon())
+            ((TemporarySummon*)m_creature)->UnSummon();
+    }
 };
 
 CreatureAI* GetAI_druid_wild_mushroom(Creature* pCreature)
 {
     return new npc_druid_wild_mushroomAI(pCreature);
+}
+
+enum
+{
+    SPELL_FUNGAL_GROWTH_VISUAL      = 94339,
+    SPELL_FUNGAL_GROWTH_SLOW_RANK1  = 81289,
+    SPELL_FUNGAL_GROWTH_SLOW_RANK2  = 81282,
+};
+
+struct MANGOS_DLL_DECL npc_druid_fungal_growthAI : public ScriptedAI
+{
+
+    bool init;
+    uint32 spell_fungal_slow;
+
+    // Ranger: special timer to clear bugged summon
+    uint32 unsummonTimer;
+
+    npc_druid_fungal_growthAI(Creature* pCreature) : ScriptedAI(pCreature)
+    {
+        Reset();
+    }
+
+    void Reset()
+    {
+        init = false;
+        spell_fungal_slow = (m_creature->GetEntry() == 43497 ? SPELL_FUNGAL_GROWTH_SLOW_RANK1 : SPELL_FUNGAL_GROWTH_SLOW_RANK2);
+
+        unsummonTimer = 25 * IN_MILLISECONDS;
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!init)
+        {
+            init = true;
+
+            m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+            m_creature->StopMoving();
+            m_creature->addUnitState(UNIT_STAT_STUNNED);
+
+            m_creature->CastSpell(m_creature, SPELL_FUNGAL_GROWTH_VISUAL, true);
+            m_creature->CastSpell(m_creature, spell_fungal_slow, true);
+        }
+
+        if (unsummonTimer <= diff)
+        {
+            error_log("WARNING! Fungal growth not unsummoning by core, cleanup manually!");
+
+            if (m_creature->IsTemporarySummon())
+                ((TemporarySummon*)m_creature)->UnSummon();
+        }
+        else
+            unsummonTimer -= diff;
+    }
+};
+
+CreatureAI* GetAI_druid_fungal_growth(Creature* pCreature)
+{
+    return new npc_druid_fungal_growthAI(pCreature);
 }
 
 void AddSC_npc_druid_summons()
@@ -80,5 +151,10 @@ void AddSC_npc_druid_summons()
     pNewScript = new Script;
     pNewScript->Name="npc_druid_wild_mushroom";
     pNewScript->GetAI = &GetAI_druid_wild_mushroom;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name="npc_druid_fungal_growth";
+    pNewScript->GetAI = &GetAI_druid_fungal_growth;
     pNewScript->RegisterSelf();
 }

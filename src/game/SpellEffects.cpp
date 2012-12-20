@@ -4407,6 +4407,9 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 case 80964:
                 case 80965:
                 {
+                    if (!unitTarget)
+                        return;
+
                     m_caster->CastSpell(unitTarget, 93983, true);
                     m_caster->CastSpell(unitTarget, 93985, true);
                     m_caster->CastSpell(unitTarget, 82365, true);
@@ -4431,12 +4434,11 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
     
                     for (std::list<Creature*>::const_iterator i = list.begin(); i != list.end(); ++i)
                     {
-                        if ((*i)->IsTemporarySummon() && (*i)->GetCreator() == m_caster)
+                        if ((*i)->IsTemporarySummon() && (*i)->GetCreator() == m_caster && (*i)->isAlive())
                         {
                             summonList.push_back((TemporarySummon*)(*i));
-                            if (summonList.size() == 3) // max 3 mushroom
+                            if (summonList.size() >= 3) // max 3 mushroom (buggers?)
                                 break;
-                            continue;
                         }
                     }
 
@@ -4448,6 +4450,8 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                         if (!m_caster->IsWithinDist3d((*i)->GetPositionX(), (*i)->GetPositionY(), (*i)->GetPositionZ(), spellRange))
                             continue;
 
+                        (*i)->SetVisibility(VISIBILITY_ON);
+                        (*i)->CastSpell((*i), 92701, true); // Detonate Death Visual
                         (*i)->CastSpell((*i), 92853, true); // Explosion visual and suicide
                         m_caster->CastSpell((*i)->GetPositionX(), (*i)->GetPositionY(), (*i)->GetPositionZ(), 78777, true); // damage
 
@@ -6775,6 +6779,14 @@ void Spell::EffectSummonType(SpellEffectEntry const* effect)
 
     DETAIL_LOG("Prop ID: %u, PropGroup: %u, PropTitle: %u", prop_id, summon_prop->Group, summon_prop->Title);
 
+    // Ranger: in 4.3.4 two spells: 81283 & 81291
+    // need research summon metod, DoSummonWild by default?
+    if ((int32)summon_prop->Title == -1)
+    {
+        DoSummonWild(effect, summon_prop->FactionId, true);
+        return;
+    }
+
     switch(summon_prop->Group)
     {
         // faction handled later on, or loaded from template
@@ -7319,7 +7331,7 @@ void Spell::EffectAddFarsight(SpellEffectEntry const* effect)
     ((Player*)m_caster)->GetCamera().SetView(dynObj);
 }
 
-void Spell::DoSummonWild(SpellEffectEntry const * effect, uint32 forceFaction)
+void Spell::DoSummonWild(SpellEffectEntry const * effect, uint32 forceFaction, bool unlimited)
 {
     uint32 creature_entry = effect->EffectMiscValue;
     if (!creature_entry)
@@ -7349,77 +7361,82 @@ void Spell::DoSummonWild(SpellEffectEntry const * effect, uint32 forceFaction)
 
     int32 amount = damage > 0 ? damage : 1;
 
-    //megai2: dont flooooodd ><
-    if (amount > 10)
-        amount = 1;
 
-    for(int32 count = 0; count < amount; ++count)
+    if (!unlimited)
     {
-        float px, py, pz;
-        // If dest location if present
-        if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+        std::list<Creature*> list;
+        std::list<TemporarySummon*> summonList;
+        m_caster->GetCreatureListWithEntryInGrid(list, creature_entry, 500.0f);
+    
+        for (std::list<Creature*>::const_iterator i = list.begin(); i != list.end(); ++i)
         {
-            // Summon 1 unit in dest location
-            if (count == 0)
-            {
-                px = m_targets.m_destX;
-                py = m_targets.m_destY;
-                pz = m_targets.m_destZ;
-            }
-            // Summon in random point all other units if location present
-            else
-                m_caster->GetRandomPoint(center_x, center_y, center_z, radius, px, py, pz);
+            if ((*i)->IsTemporarySummon() && (*i)->GetCreator() == m_caster && (*i)->isAlive())
+                summonList.push_back((TemporarySummon*)(*i));
         }
-        // Summon if dest location not present near caster
-        else
+    
+        while (summonList.size() > amount-1)
         {
-            if (radius > 0.0f)
-            {
-                // not using bounding radius of caster here
-                m_caster->GetClosePoint(px, py, pz, 0.0f, radius);
-            }
-            else
-            {
-                // EffectRadiusIndex 0 or 36
-                px = m_caster->GetPositionX();
-                py = m_caster->GetPositionY();
-                pz = m_caster->GetPositionZ();
-            }
+            ((TemporarySummon*)summonList.front())->UnSummon();
+            summonList.remove(summonList.front());
         }
-
-        if (Creature* summon = m_caster->SummonCreature(creature_entry, px, py, pz, m_caster->GetOrientation(), summonType, m_duration, false, level))
-        {
-            summon->SetUInt32Value(UNIT_CREATED_BY_SPELL, m_spellInfo->Id);
-
-            // UNIT_FIELD_CREATEDBY are not set for these kind of spells.
-            // Does exceptions exist? If so, what are they?
-            // Amaru: unforunately, commenting this break vehicles...
-            summon->SetCreatorGuid(m_caster->GetObjectGuid());
-            
-            if(m_caster->GetTypeId() == TYPEID_PLAYER)
-                ((Player *) m_caster)->AddSummonUnit(summon);
-
-            if(forceFaction)
-                summon->setFaction(forceFaction);
-
-            if (m_spellInfo->Id == 73332)
-                summon->PlayDistanceSound(10896); // Lament of the Highbourne
-
-            // Notify original caster if not done already
-            if (m_originalCaster && m_originalCaster != m_caster && m_originalCaster->GetTypeId() == TYPEID_UNIT && ((Creature*)m_originalCaster)->AI())
-                ((Creature*)m_originalCaster)->AI()->JustSummoned(summon);
-
-            // Ghoul emote
-            if (summon->GetEntry() == 24207 || summon->GetEntry() == 26125 || summon->GetEntry() == 28528)
-                summon->HandleEmote(EMOTE_ONESHOT_EMERGE);
-
-            DEBUG_LOG("DoSummonWild: summoned npc %u from spell %u at %f %f %f map %u summonType %u duration %i",
-                creature_entry, m_spellInfo->Id, px, py, pz, m_caster->GetMapId(), summonType, m_duration);
-        }
-        else
-            sLog.outError("DoSummonWild: failed to summon npc %u from spell %u at %f %f %f map %u summonType %u duration %i",
-                creature_entry, m_spellInfo->Id, px, py, pz, m_caster->GetMapId(), summonType, m_duration);
     }
+
+    float px, py, pz;
+    // If dest location if present
+    if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+    {
+        // Summon in random point all other units if location present
+        m_caster->GetRandomPoint(center_x, center_y, center_z, radius, px, py, pz);
+    }
+    // Summon if dest location not present near caster
+    else
+    {
+        if (radius > 0.0f)
+        {
+            // not using bounding radius of caster here
+            m_caster->GetClosePoint(px, py, pz, 0.0f, radius);
+        }
+        else
+        {
+            // EffectRadiusIndex 0 or 36
+            px = m_caster->GetPositionX();
+            py = m_caster->GetPositionY();
+            pz = m_caster->GetPositionZ();
+        }
+    }
+
+    if (Creature* summon = m_caster->SummonCreature(creature_entry, px, py, pz, m_caster->GetOrientation(), summonType, m_duration, false, level))
+    {
+        summon->SetUInt32Value(UNIT_CREATED_BY_SPELL, m_spellInfo->Id);
+
+        // UNIT_FIELD_CREATEDBY are not set for these kind of spells.
+        // Does exceptions exist? If so, what are they?
+        // Amaru: unforunately, commenting this break vehicles...
+        summon->SetCreatorGuid(m_caster->GetObjectGuid());
+        
+        if(m_caster->GetTypeId() == TYPEID_PLAYER)
+            ((Player *) m_caster)->AddSummonUnit(summon);
+
+        if(forceFaction)
+            summon->setFaction(forceFaction);
+
+        if (m_spellInfo->Id == 73332)
+            summon->PlayDistanceSound(10896); // Lament of the Highbourne
+
+        // Notify original caster if not done already
+        if (m_originalCaster && m_originalCaster != m_caster && m_originalCaster->GetTypeId() == TYPEID_UNIT && ((Creature*)m_originalCaster)->AI())
+            ((Creature*)m_originalCaster)->AI()->JustSummoned(summon);
+
+        // Ghoul emote
+        if (summon->GetEntry() == 24207 || summon->GetEntry() == 26125 || summon->GetEntry() == 28528)
+            summon->HandleEmote(EMOTE_ONESHOT_EMERGE);
+
+        DEBUG_LOG("DoSummonWild: summoned npc %u from spell %u at %f %f %f map %u summonType %u duration %i",
+            creature_entry, m_spellInfo->Id, px, py, pz, m_caster->GetMapId(), summonType, m_duration);
+    }
+    else
+        sLog.outError("DoSummonWild: failed to summon npc %u from spell %u at %f %f %f map %u summonType %u duration %i",
+            creature_entry, m_spellInfo->Id, px, py, pz, m_caster->GetMapId(), summonType, m_duration);
 }
 
 void Spell::DoSummonGuardian(SpellEffectEntry const * effect, uint32 forceFaction)

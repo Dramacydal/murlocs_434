@@ -62,3 +62,15 @@
 -- DELETE FROM `spell_bonus_data` WHERE `entry` = 50294;
 -- INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `comments`) VALUE
 -- (50294, 0.13, 0, 0, 'Druid - Starfall AOE');
+
+-- Wild mushroom damage
+DELETE FROM `spell_bonus_data` WHERE `entry` = 78777;
+INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `comments`) VALUES
+(78777, 0.65, 0, 0, 'Druid: Wild mushroom damage');
+
+-- Wild mushroom
+-- UPDATE `creature_template` SET `unit_flags`=2584, `faction_A`=2203, `faction_H`=2203, `AIName`='', `ScriptName`='' WHERE `entry` = 47649;
+UPDATE `creature_template` SET `unit_flags`=0x2|0x4|0x20000|0x2000000, `faction_A`=24, `faction_H`=24, `AIName`='', `ScriptName`='npc_druid_wild_mushroom' WHERE `entry` = 47649;
+-- Fungal Growth I & II
+-- UPDATE `creature_template` SET `unit_flags`=33556504, `dynamicflags`=0, `modelid_1`=13069, `AIName`='', `ScriptName`='' WHERE `entry` IN (43497, 43484);
+UPDATE `creature_template` SET `unit_flags`=0x2|0x4|0x20000|0x2000000, `dynamicflags`=0x8, `modelid_1`=35760/*13069*/, `AIName`='', `ScriptName`='npc_druid_fungal_growth' WHERE `entry` IN (43497, 43484);
