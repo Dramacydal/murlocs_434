@@ -11428,7 +11428,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     if (!unitTarget)
                         return;
 
-                    uint32 item = 5509;
+                    uint32 item = 5512;
                     DoCreateItem(effect, item);
                     return;
                 }
