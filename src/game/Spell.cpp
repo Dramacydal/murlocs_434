@@ -4035,12 +4035,12 @@ void Spell::cast(bool skipCheck)
         }
         case SPELLFAMILY_WARLOCK:
         {
-            else if (m_spellInfo->Id == 74434)              // Soulburn
+            if (m_spellInfo->Id == 74434)                   // Soulburn
             {
                 if (m_caster->HasAura(86664))               // Soulburn: Seed of Corruption, rank 1
                     AddTriggeredSpell(93313);               // marker
             }
-            if (m_spellInfo->Id == 86213)                   // Soul Swap Exhale
+            else if (m_spellInfo->Id == 86213)              // Soul Swap Exhale
                 AddPrecastSpell(92794);
             break;
         }
