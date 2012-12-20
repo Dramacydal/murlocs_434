@@ -3685,8 +3685,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         if (!target->IsInFeralForm())
                             return;
 
-                        int32 bp0 = int32(target->GetMaxHealth() * m_modifier.m_amount / 100);
-                        target->CastCustomSpell(target, 50322, &bp0, NULL, NULL, true);
+                        target->CastSpell(target, 50322, true);
                     }
                     else
                         target->RemoveAurasDueToSpell(50322);
@@ -7286,7 +7285,6 @@ void Aura::HandleAuraModIncreaseHealth(bool apply, bool Real)
         case 31616:                                         // Nature's Guardian
         case 34511:                                         // Valor (Bulwark of Kings, Bulwark of the Ancient Kings)
         case 44055: case 55915: case 55917: case 67596:     // Tremendous Fortitude (Battlemaster's Alacrity)
-        case 50322:                                         // Survival Instincts
         case 53479:                                         // Hunter pet - Last Stand
         case 54443:                                         // Demonic Empowerment (Voidwalker)
         case 55233:                                         // Vampiric Blood
