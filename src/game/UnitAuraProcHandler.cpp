@@ -5245,7 +5245,7 @@ SpellAuraProcResult Unit::HandleAddPctModifierAuraProc(Unit* pVictim, uint32 /*d
                     case 27243:     // Seed of Corruption
                     {
                         // Soulburn: Seed of Corruption, rank 1
-                        if (!HasAura(87664))
+                        if (!HasSpell(86664))
                             return SPELL_AURA_PROC_FAILED;
 
                         if (pVictim)
