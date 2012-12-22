@@ -838,6 +838,7 @@ void Spell::FillTargetMap()
             }
         }
 
+        DEBUG_LOG("Spell::FillTargetMap: %u targets for spell %u effIdx %u", tmpUnitLists[effToIndex[i]].size(), m_spellInfo->Id, i);
         for (UnitList::iterator itr = tmpUnitLists[effToIndex[i]].begin(); itr != tmpUnitLists[effToIndex[i]].end();)
         {
             if (!CheckTarget (*itr, SpellEffectIndex(i)))
@@ -848,6 +849,7 @@ void Spell::FillTargetMap()
             else
                 ++itr;
         }
+        DEBUG_LOG("After target check: %u", tmpUnitLists[effToIndex[i]].size());
 
         for (UnitList::const_iterator iunit = tmpUnitLists[effToIndex[i]].begin(); iunit != tmpUnitLists[effToIndex[i]].end(); ++iunit)
             AddUnitTarget((*iunit), SpellEffectIndex(i));
