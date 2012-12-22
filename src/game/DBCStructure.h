@@ -2250,7 +2250,7 @@ struct SummonPropertiesEntry
     uint32  Flags;                                          // 5        m_flags (enum SummonPropFlags)
 };
 
-#define MAX_TALENT_RANK 3
+#define MAX_TALENT_RANK 5
 #define MAX_PET_TALENT_RANK 3                               // use in calculations, expected <= MAX_TALENT_RANK
 #define MAX_TALENT_TABS 3
 
