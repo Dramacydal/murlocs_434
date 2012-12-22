@@ -6886,7 +6886,7 @@ void Spell::EffectSummonType(SpellEffectEntry const* effect)
             // FIXME : multiple summons -  not yet supported as pet
             //1562 - force of nature  - sid 33831
             //1161 - feral spirit - sid 51533
-            if(prop_id == 1562) // 3 uncontrolable instead of one controllable :/
+            if(prop_id == 3097) // 3 uncontrolable instead of one controllable :/
                 DoSummonGuardian(effect, summon_prop->FactionId);
             else if(prop_id == 1161)
                 DoSummonSpecialPets(effect);
