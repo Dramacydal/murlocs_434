@@ -6310,23 +6310,23 @@ void Aura::HandlePeriodicEnergize(bool apply, bool Real)
     {
         switch (GetId())
         {
-            case 54833:                                     // Glyph of Innervate (value%/2 of casters base mana)
-            {
-                if (Unit* caster = GetCaster())
-                    ChangeAmount(int32(caster->GetCreateMana() * GetBasePoints() / (200 * GetAuraMaxTicks())));
-                break;
-
-            }
-            case 29166:                                     // Innervate (value% of casters base mana)
+            case 29166:                                     // Innervate (value% of caster max mana)
             {
                 if (Unit* caster = GetCaster())
                 {
-                    // Glyph of Innervate
-                    if (caster->HasAura(54832))
-                        caster->CastSpell(caster,54833,true,NULL,this);
+                    int32 percent = (caster == target ? 15 : (caster->HasAura(54832) ? 10 : 0));
 
-                    ChangeAmount(int32(caster->GetCreateMana() * GetBasePoints() / (100 * GetAuraMaxTicks())));
+                    if (percent)
+                        caster->CastCustomSpell(caster, 54833, &percent, 0, 0, true, NULL, this);
+
+                    ChangeAmount(int32(target->GetMaxPower(POWER_MANA) * GetBasePoints() / 4 / (100 * GetAuraMaxTicks())));
                 }
+                break;
+            }
+            case 54833:                                     // Innervate and Glyph of Innervate (value% of caster max mana)
+            {
+                if (Unit* caster = GetCaster())
+                    ChangeAmount(int32(caster->GetMaxPower(POWER_MANA) * GetBasePoints() / (100 * GetAuraMaxTicks())));
                 break;
             }
             case 31930:                                     // Judgements of the Wise
@@ -7137,7 +7137,7 @@ void Aura::HandleModTotalPercentStat(bool apply, bool /*Real*/)
             case FORM_BEAR:
             {
                 Player* player = (Player*)target;
-                SpellEntry const* spellInfo = player->GetKnownTalentRankById(808);
+                SpellEntry const* spellInfo = player->GetKnownTalentRankById(11715);
                 if (spellInfo)
                     m_modifier.m_amount += spellInfo->CalculateSimpleValue(EFFECT_INDEX_1);
 

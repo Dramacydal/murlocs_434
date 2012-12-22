@@ -1241,6 +1241,12 @@ void LoadDBCStores(const std::string& dataPath)
                     pow->manaCost = 0;
                 break;
             }
+            case 54833:                         // Innervate and Glyph of Innervate
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectApplyAuraName = SPELL_AURA_PERIODIC_ENERGIZE;
+                break;
+            }
             case 54861:                         // Nitro Boosts
             {
                 spell->SpellInterruptsId = 9309; // AURA_INTERRUPT_FLAG_DIRECT_DAMAGE;
