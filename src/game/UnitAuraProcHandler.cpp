@@ -5080,15 +5080,6 @@ SpellAuraProcResult Unit::HandleIgnoreUnitStateAuraProc(Unit* pVictim, uint32 da
     {
         case SPELLFAMILY_WARRIOR:
         {
-            switch (spellProto->Id)
-            {
-                case 52437:     // Sudden Death proc
-                {
-                    if (procSpell && procSpell->Id == 20647)    // triggered Execute
-                        return SPELL_AURA_PROC_FAILED;
-                    break;
-                }
-            }
             break;
         }
     }

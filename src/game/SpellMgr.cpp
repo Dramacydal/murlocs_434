@@ -2564,16 +2564,6 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     (spellInfo_2->SpellIconID == 456 && spellInfo_1->SpellIconID == 2006) )
                     return false;
 
-                // Sudden Death and Taste for Blood
-                if( (spellInfo_1->Id == 60503 && spellInfo_2->Id == 52437) ||
-                    (spellInfo_1->Id == 52437 && spellInfo_2->Id == 60503) )
-                    return false;
-
-                // Sudden Death and Glyph of Overpower proc
-                if( (spellInfo_1->Id == 68051 && spellInfo_2->Id == 52437) ||
-                    (spellInfo_1->Id == 52437 && spellInfo_2->Id == 68051) )
-                    return false;
-
                 // Glyph of Revenge (triggered), and Sword and Board (triggered)
                 if ((spellInfo_1->SpellIconID == 856 && spellInfo_2->SpellIconID == 2780) ||
                     (spellInfo_2->SpellIconID == 856 && spellInfo_1->SpellIconID == 2780))
@@ -5055,10 +5045,10 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
             // Cheap Shot
             else if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x00000000400))
                 return DIMINISHING_CHEAPSHOT_POUNCE;
-            // Crippling poison - Limit to 10 seconds in PvP (No SpellFamilyFlags)
+            // Crippling poison - Limit to 8 seconds in PvP (No SpellFamilyFlags)
             else if (spellproto->SpellIconID == 163)
                 return DIMINISHING_LIMITONLY;
-            // Wound poison - Limit to 10 seconds in PvP (No SpellFamilyFlags)
+            // Wound poison - Limit to 8 seconds in PvP (No SpellFamilyFlags)
             else if (spellproto->SpellIconID == 1496)
                 return DIMINISHING_LIMITONLY;
             break;
@@ -5097,7 +5087,7 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
         }
         case SPELLFAMILY_PALADIN:
         {
-            // Judgement of Justice - Limit to 10 seconds in PvP
+            // Judgement of Justice - Limit to 8 seconds in PvP
             if (spellproto->IsFitToFamilyMask(UI64LIT(0x00000100000)))
             if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x00080000000))
                 return DIMINISHING_LIMITONLY;
@@ -5121,7 +5111,7 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
         }
         case SPELLFAMILY_WARRIOR:
         {
-            // Hamstring - limit duration to 10s in PvP
+            // Hamstring - limit duration to 8s in PvP
             if (spellproto->IsFitToFamilyMask(UI64LIT(0x00000000002)))
                 return DIMINISHING_LIMITONLY;
             // Intimidating Shout

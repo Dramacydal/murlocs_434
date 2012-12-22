@@ -901,8 +901,8 @@ void Spell::prepareDataForTriggerSystem()
             // Whirlwind (Bladestorm)
             else if (m_spellInfo->Id == 50622)
                 m_canTrigger = true;
-            // Bloodsurge and Sudden Death proc
-            else if (m_spellInfo->Id == 46916 || m_spellInfo->Id == 52437)
+            // Bloodsurge
+            else if (m_spellInfo->Id == 46916)
                 m_canTrigger = true;
             break;
         case SPELLFAMILY_WARLOCK:
@@ -4016,8 +4016,8 @@ void Spell::cast(bool skipCheck)
             // Shattering Throw
             else if (m_spellInfo->Id == 64382)
                 AddTriggeredSpell(64380);
-            // Bloodsurge (triggered), Sudden Death (triggered)
-            else if (m_spellInfo->Id == 46916 || m_spellInfo->Id == 52437)
+            // Bloodsurge (triggered)
+            else if (m_spellInfo->Id == 46916)
             {
                 // Item - Warrior T10 Melee 4P Bonus
                 if (Aura *aur = m_caster->GetAura(70847, EFFECT_INDEX_0))
