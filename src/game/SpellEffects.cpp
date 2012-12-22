@@ -4220,6 +4220,12 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     m_caster->CastCustomSpell(unitTarget, 23885, &damage, NULL, NULL, true, NULL);
                     return;
                 }
+                // Rallying Cry
+                case 97462:
+                {
+                    m_caster->CastCustomSpell(unitTarget, 97463, &damage, NULL, NULL, true);
+                    return;
+                }
             }
             break;
         }
