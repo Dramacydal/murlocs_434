@@ -11553,6 +11553,20 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 spellId1 = 30069;                           // Blood Frenzy (Rank 1)
                 spellId2 = 30070;                           // Blood Frenzy (Rank 2)
             }
+            else
+            {
+                // Shield Block
+                if (GetId() == 2565)
+                {
+                    if (m_target->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        float blockValue = m_target->GetFloatValue(PLAYER_BLOCK_PERCENTAGE);
+                        if (blockValue > 100.0f)
+                            if (Aura* aura = GetAuraByEffectIndex(EFFECT_INDEX_2))
+                                aura->ChangeAmount(int32(blockValue - 100.0f));
+                    }
+                }
+            }
             break;
         }
         case SPELLFAMILY_WARLOCK:
