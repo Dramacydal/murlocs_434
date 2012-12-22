@@ -6318,9 +6318,8 @@ void Aura::HandlePeriodicEnergize(bool apply, bool Real)
 
                     if (percent)
                         caster->CastCustomSpell(caster, 54833, &percent, 0, 0, true, NULL, this);
-
-                    ChangeAmount(int32(target->GetMaxPower(POWER_MANA) * GetBasePoints() / 4 / (100 * GetAuraMaxTicks())));
                 }
+                ChangeAmount(int32(target->GetMaxPower(POWER_MANA) * GetBasePoints() / 4 / (100 * GetAuraMaxTicks())));
                 break;
             }
             case 54833:                                     // Innervate and Glyph of Innervate (value% of caster max mana)
