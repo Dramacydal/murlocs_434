@@ -8814,6 +8814,9 @@ void Aura::PeriodicTick()
 
                     pdamage = int32(pdamage) + addition;
                 }
+                // Second Wind
+                else if (spellProto->Id == 29842 || spellProto->Id == 29841)
+                    pdamage = int32(amount * target->GetMaxHealth() / 100.0f);
             }
 
             // Amaru: lifebloom special case
