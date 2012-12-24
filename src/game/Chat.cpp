@@ -2290,7 +2290,7 @@ void ChatHandler::FillMessageData(WorldPacket* data, WorldSession* session, uint
             *data << message;
             *data << uint8(0);
 
-            if (type == CHAT_MSG_RAID_BOSS_WHISPER || type == CHAT_MSG_RAID_BOSS_EMOTE)
+            if (type == CHAT_MSG_RAID_BOSS_EMOTE || type == CHAT_MSG_RAID_BOSS_WHISPER)
             {
                 *data << float(0.0f);                       // Added in 4.2.0, unk
                 *data << uint8(0);                          // Added in 4.2.0, unk

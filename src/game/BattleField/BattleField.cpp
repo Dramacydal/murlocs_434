@@ -649,6 +649,8 @@ void BattleField::SendWarningToAll(int32 entry)
         data << uint32(strlen(text) + 1);
         data << text;
         data << uint8(0);
+        data << float(0.0f);
+        data << uint8(0);
         plr->GetSession()->SendPacket(&data);
     }
 }

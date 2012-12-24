@@ -25525,6 +25525,8 @@ void Player::SendReturnToAreaMessage(uint32 areaid, uint32 timer)
     data << (uint32)(msg.length() + 1);
     data << msg.c_str();
     data << (uint8)0;
+    data << float(0.0f);
+    data << uint8(0);
 
     GetSession()->SendPacket(&data);
 }
