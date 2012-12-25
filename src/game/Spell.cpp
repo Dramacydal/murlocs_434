@@ -7234,6 +7234,16 @@ SpellCastResult Spell::CheckCast(bool strict)
 
                 break;
             }*/
+            case SPELL_AURA_HASTE_ALL:
+            {
+                // Dark Intent
+                if (m_spellInfo->Id == 80398)
+                {
+                    if (m_targets.getUnitTarget() && m_targets.getUnitTarget()->GetTypeId() != TYPEID_PLAYER)
+                        return SPELL_FAILED_BAD_TARGETS;
+                }
+                break;
+            }
             case SPELL_AURA_WORGEN_TRANSFORM:
             {
                 if (!m_caster->HasWorgenForm())
