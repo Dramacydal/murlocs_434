@@ -11693,7 +11693,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 return;
             }
             // Dark Intent
-            else if (m_spellProto->Id == 80398)
+            else if (m_spellProto->Id == 85767)
             {
                 if (!apply)
                 {
