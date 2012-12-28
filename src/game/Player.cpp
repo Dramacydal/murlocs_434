@@ -27080,3 +27080,14 @@ VoidStorageItem* Player::GetVoidStorageItem(uint64 id, uint8& slot) const
 
     return NULL;
 }
+
+void Player::SetMover(Unit* target)
+{
+    m_mover = target ? target : this;
+
+    WorldPacket data(SMSG_MOVE_SET_ACTIVE_MOVER);
+    data.WriteGuidMask<5, 7, 3, 6, 0, 4, 1, 2>(m_mover->GetObjectGuid());
+    data.WriteGuidBytes<6, 2, 3, 0,5, 7, 1, 4>(m_mover->GetObjectGuid());
+
+    SendDirectMessage(&data);
+}
