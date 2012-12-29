@@ -1559,11 +1559,11 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             else if (dummySpell->Id == 12328)
             {
                 // prevent chain of triggered spell from same triggered spell
-                if(procSpell && procSpell->Id == 26654)
+                if (procSpell && procSpell->Id == 26654)
                     return SPELL_AURA_PROC_FAILED;
 
                 target = SelectRandomUnfriendlyTarget(pVictim);
-                if(!target)
+                if (!target)
                     return SPELL_AURA_PROC_FAILED;
 
                 triggered_spell_id = 26654;
@@ -4049,9 +4049,14 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
 
                 uint32 tickcount = GetSpellDuration(triggerspellInfo) / effect->EffectAmplitude;
 
-                basepoints[0] = floor( f_damage / tickcount);
+                basepoints[0] = floor(f_damage / tickcount);
 
                 break;
+            }
+            else if (auraSpellInfo->SpellIconID == 23)      // Improved Hamstring
+            {
+                // done in other way
+                return SPELL_AURA_PROC_FAILED;
             }
             else if (auraSpellInfo->SpellIconID == 2961)    // Taste for Blood
             {
