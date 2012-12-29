@@ -4017,7 +4017,7 @@ void Spell::cast(bool skipCheck)
             }
             else if (m_spellInfo->Id == 1715)               // Hamstring
             {
-                if (m_caster->GetTypeId() == TYPEID_PLAYER && m_caster->HasAura(m_spellInfo->Id))
+                if (m_caster->GetTypeId() == TYPEID_PLAYER && m_targets.getUnitTarget() && m_targets.getUnitTarget()->HasAura(m_spellInfo->Id))
                 {
                     // Search Improved Hamstring
                     Unit::AuraList const& triggerAuras = m_caster->GetAurasByType(SPELL_AURA_PROC_TRIGGER_SPELL);
