@@ -5091,13 +5091,14 @@ SpellAuraProcResult Unit::HandleIgnoreUnitStateAuraProc(Unit* pVictim, uint32 da
                 if (!procSpell)
                     return SPELL_AURA_PROC_FAILED;
 
-                // cast proc
-                CastSpell(this, 65156, true);
-
                 // add cooldowns
                 // procced from Charge
                 if (procSpell->Id == 100)
+                {
                     CastSpell(this, 96216, false);  // Intercept cooldown
+                    // cast proc
+                    CastSpell(this, 65156, true);
+                }
                 else
                     CastSpell(this, 96215, false);  // Charge cooldown
             }
