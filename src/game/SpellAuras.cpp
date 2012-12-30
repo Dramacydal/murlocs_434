@@ -8827,6 +8827,10 @@ void Aura::PeriodicTick()
                     pdamage = int32(amount * target->GetMaxHealth() / 100.0f);
             }
 
+            // Blood Craze
+            if (spellProto->Id == 16488 || spellProto->Id == 16490 || spellProto->Id == 16491)
+                pdamage /= 10;
+
             // Amaru: lifebloom special case
             if (GetSpellProto()->IsFitToFamily(SPELLFAMILY_DRUID, UI64LIT(0x1000000000)))
             {
