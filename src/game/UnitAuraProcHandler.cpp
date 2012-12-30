@@ -5080,13 +5080,27 @@ SpellAuraProcResult Unit::HandleMechanicImmuneResistanceAuraProc(Unit* /*pVictim
 SpellAuraProcResult Unit::HandleIgnoreUnitStateAuraProc(Unit* pVictim, uint32 damage, uint32 absorb, Aura* triggeredByAura, SpellEntry const* procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown)
 {
     SpellEntry const* spellProto = triggeredByAura->GetSpellProto();
-    SpellEffectIndex effIdx = triggeredByAura->GetEffIndex();
-    ObjectGuid caster_guid = triggeredByAura->GetCasterGuid();
 
     switch (spellProto->GetSpellFamilyName())
     {
         case SPELLFAMILY_WARRIOR:
         {
+            // Juggernaut
+            if (spellProto->Id == 64976)
+            {
+                if (!procSpell)
+                    return SPELL_AURA_PROC_FAILED;
+
+                // cast proc
+                CastSpell(this, 65156, true);
+
+                // add cooldowns
+                // procced from Charge
+                if (procSpell->Id == 100)
+                    CastSpell(this, 96216, false);  // Intercept cooldown
+                else
+                    CastSpell(this, 96215, false);  // Charge cooldown
+            }
             break;
         }
     }
