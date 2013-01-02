@@ -2203,25 +2203,28 @@ bool Player::TeleportToBGEntryPoint()
 
 void Player::ProcessDelayedOperations()
 {
-    if(m_DelayedOperations == 0)
+    if (m_DelayedOperations == 0)
         return;
 
-    if(m_DelayedOperations & DELAYED_RESURRECT_PLAYER)
+    if (m_DelayedOperations & DELAYED_RESURRECT_PLAYER)
     {
         ResurrectPlayer(0.0f, false);
 
-        if(GetMaxHealth() > m_resurrectHealth)
-            SetHealth( m_resurrectHealth );
+        if (GetMaxHealth() > m_resurrectHealth)
+            SetHealth(m_resurrectHealth);
         else
-            SetHealth( GetMaxHealth() );
+            SetHealth(GetMaxHealth());
 
-        if(GetMaxPower(POWER_MANA) > m_resurrectMana)
+        if (GetMaxPower(POWER_MANA) > m_resurrectMana)
             SetPower(POWER_MANA, m_resurrectMana );
         else
-            SetPower(POWER_MANA, GetMaxPower(POWER_MANA) );
+            SetPower(POWER_MANA, GetMaxPower(POWER_MANA));
 
-        SetPower(POWER_RAGE, 0 );
-        SetPower(POWER_ENERGY, GetMaxPower(POWER_ENERGY) );
+        SetPower(POWER_RAGE, 0);
+        SetPower(POWER_ENERGY, GetMaxPower(POWER_ENERGY));
+
+        if (m_resurrectAura)
+            CastSpell(this, m_resurrectAura, true);
 
         SpawnCorpseBones();
     }
@@ -22975,29 +22978,32 @@ void Player::ResurectUsingRequestData()
     if (m_resurrectGuid.IsPlayer())
         TeleportTo(m_resurrectMap, m_resurrectX, m_resurrectY, m_resurrectZ, GetOrientation());
 
-    //we cannot resurrect player when we triggered far teleport
-    //player will be resurrected upon teleportation
-    if(IsBeingTeleportedFar())
+    // we cannot resurrect player when we triggered far teleport
+    // player will be resurrected upon teleportation
+    if (IsBeingTeleportedFar())
     {
         ScheduleDelayedOperation(DELAYED_RESURRECT_PLAYER);
         return;
     }
 
-    ResurrectPlayer(0.0f,false);
+    ResurrectPlayer(0.0f, false);
 
     if(GetMaxHealth() > m_resurrectHealth)
-        SetHealth( m_resurrectHealth );
+        SetHealth(m_resurrectHealth);
     else
-        SetHealth( GetMaxHealth() );
+        SetHealth(GetMaxHealth());
 
     if(GetMaxPower(POWER_MANA) > m_resurrectMana)
         SetPower(POWER_MANA, m_resurrectMana );
     else
-        SetPower(POWER_MANA, GetMaxPower(POWER_MANA) );
+        SetPower(POWER_MANA, GetMaxPower(POWER_MANA));
 
-    SetPower(POWER_RAGE, 0 );
+    SetPower(POWER_RAGE, 0);
 
-    SetPower(POWER_ENERGY, GetMaxPower(POWER_ENERGY) );
+    SetPower(POWER_ENERGY, GetMaxPower(POWER_ENERGY));
+
+    if (m_resurrectAura)
+        CastSpell(this, m_resurrectAura, true);
 
     SpawnCorpseBones();
 }

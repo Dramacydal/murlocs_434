@@ -1871,7 +1871,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool HandleChangeSlotModel(uint16 visSlot, uint32 newItem, uint16 pos);
         void HandleAltVisSwitch();
 
-        void setResurrectRequestData(ObjectGuid guid, uint32 mapId, float X, float Y, float Z, uint32 health, uint32 mana)
+        void setResurrectRequestData(ObjectGuid guid, uint32 mapId, float X, float Y, float Z, uint32 health, uint32 mana, uint32 aura)
         {
             m_resurrectGuid = guid;
             m_resurrectMap = mapId;
@@ -1880,8 +1880,9 @@ class MANGOS_DLL_SPEC Player : public Unit
             m_resurrectZ = Z;
             m_resurrectHealth = health;
             m_resurrectMana = mana;
+            m_resurrectAura = aura;
         }
-        void clearResurrectRequestData() { setResurrectRequestData(ObjectGuid(), 0, 0.0f, 0.0f, 0.0f, 0, 0); }
+        void clearResurrectRequestData() { setResurrectRequestData(ObjectGuid(), 0, 0.0f, 0.0f, 0.0f, 0, 0, 0); }
         bool isRessurectRequestedBy(ObjectGuid guid) const { return m_resurrectGuid == guid; }
         bool isRessurectRequested() const { return !m_resurrectGuid.IsEmpty(); }
         void ResurectUsingRequestData();
@@ -2902,7 +2903,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         ObjectGuid m_resurrectGuid;
         uint32 m_resurrectMap;
         float m_resurrectX, m_resurrectY, m_resurrectZ;
-        uint32 m_resurrectHealth, m_resurrectMana;
+        uint32 m_resurrectHealth, m_resurrectMana, m_resurrectAura;
 
         WorldSession *m_session;
 
