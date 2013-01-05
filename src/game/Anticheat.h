@@ -236,6 +236,7 @@ class AntiCheat
         uint32                     m_accountId;
         uint32                     m_currLatency;
         uint32                     m_currMapId;
+        uint32                     m_currLevel;
         uint32                     m_alarmCount;
         uint32                     m_lastDetectTime;
         float                      m_lastPosX;

@@ -100,6 +100,7 @@ AntiCheat::AntiCheat(Player* player)
     m_accountId           = 0;
     m_currLatency         = 0;
     m_currMapId           = 0;
+    m_currLevel           = 0;
     m_alarmCount          = 0;
     m_lastDetectTime      = WorldTimer::getMSTime();
     m_lastPosX            = 0.0f;
@@ -362,6 +363,7 @@ void AntiCheat::DoAntiCheatAction(AntiCheatCheck checkType, std::string reason)
         m_accountId = GetPlayer()->GetSession()->GetAccountId();
         m_currLatency = GetPlayer()->GetSession()->GetLatency();
         m_currMapId = GetPlayer()->GetMapId();
+        m_currLevel = GetPlayer()->getLevel();
         std::stringstream m_lastPosition;
         m_lastPosition << "Last position: " << GetPlayer()->GetPositionX() << " " << GetPlayer()->GetPositionY() << " "
             << GetPlayer()->GetPositionZ() << ". Current latency: " << m_currLatency << " ms.";
@@ -377,10 +379,10 @@ void AntiCheat::DoAntiCheatAction(AntiCheatCheck checkType, std::string reason)
                                    reason.c_str(),
                                    m_currMapId,
                                    m_lastPosition.str().c_str(),
-                                   GetPlayer()->getLevel());
+                                   m_currLevel);
 
         if (m_currentConfig->description == "Speed hack" || m_currentConfig->description == "Fly hack" || m_currentConfig->description == "Teleport hack")
-            if (m_lastDetectTime + 20 * IN_MILLISECONDS >= WorldTimer::getMSTime())
+            if (m_lastDetectTime + 10 * IN_MILLISECONDS >= WorldTimer::getMSTime())
                m_alarmCount = m_alarmCount + 1;
             else if (m_lastDetectTime + 120 * IN_MILLISECONDS <= WorldTimer::getMSTime())
                m_alarmCount = 0;
@@ -398,8 +400,13 @@ void AntiCheat::DoAntiCheatAction(AntiCheatCheck checkType, std::string reason)
         {
             m_alarmCount = 0;
 
-            if (m_currLatency < 500)
-                HelperNeedBan = true;
+            if (m_currLatency < 500 && m_currLatency != 0)
+            {
+                if (m_currLevel == DEFAULT_MAX_LEVEL && !GetPlayer()->GetMap()->IsDungeon())   // Ranger: no ban for max level (only report to GM's)
+                    m_alarmCount = 1;
+                else
+                    HelperNeedBan = true;
+            }
             else
             {
                 GetPlayer()->GetSession()->KickPlayer();
@@ -472,7 +479,7 @@ bool AntiCheat::CheckNeeded(AntiCheatCheck checktype)
             break;
         case CHECK_MOVEMENT:
             if (   GetPlayer()->GetTransport()
-                || !GetPlayer()->GetTransportGuid().IsEmpty()
+                || GetPlayer()->HasMovementFlag(MOVEFLAG_ONTRANSPORT)
                 || GetPlayer()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CONFUSED)
                 || GetPlayer()->IsTaxiFlying()
                 || GetPlayer()->hasUnitState(UNIT_STAT_CONTROLLED)
@@ -778,7 +785,7 @@ bool AntiCheat::CheckFly()
 
 bool AntiCheat::CheckAirJump()
 {
-    if (m_currentOpcode != CMSG_MOVE_JUMP)
+    if (m_currentOpcode != MSG_MOVE_JUMP)
         return true;
     if (!m_currentmovementInfo->HasMovementFlag(MOVEFLAG_FALLING) || !GetMover()->m_movementInfo.HasMovementFlag(MOVEFLAG_FALLING))
         return true;
