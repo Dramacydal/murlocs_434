@@ -5237,7 +5237,7 @@ void Spell::SendLogExecute()
                     break;
                 case SPELL_EFFECT_RESURRECT:
                 case SPELL_EFFECT_RESURRECT_NEW:
-                case SPELL_EFFECT_MASS_RESSURECTION:
+                case SPELL_EFFECT_RESURRECT_WITH_AURA:
                     if (Unit* unit = m_targets.getUnitTarget())
                         data << unit->GetPackGUID();
                     else
