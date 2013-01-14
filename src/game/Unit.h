@@ -1268,6 +1268,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool AttackStop(bool targetSwitch = false);
         void RemoveAllAttackers();
         AttackerSet const& getAttackers() const { return m_attackers; }
+        bool const IsInCombat() const { return GetMap() ? bool(m_attackers.size() > 0) : false; }
         bool isAttackingPlayer() const;
         Unit* getVictim() const { return m_attacking; }
         void CombatStop(bool includingCast = false, bool cancelDelayed = false);
