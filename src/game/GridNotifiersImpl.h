@@ -24,10 +24,10 @@
 #include "Corpse.h"
 #include "Player.h"
 #include "UpdateData.h"
+#include "World.h"
 #include "CreatureAI.h"
 #include "SpellAuras.h"
 #include "DBCEnums.h"
-#include "World.h"
 #include "DBCStores.h"
 
 template<class T>
@@ -48,6 +48,7 @@ inline void MaNGOS::ObjectUpdater::Visit(CreatureMapType &m)
     uint32  visitorsCount = 0;
     uint8   visitCount = 1;
     std::vector<uint32> lastUpdateTimeList;
+    lastUpdateTimeList.clear();
 
     for (CreatureMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
     {
@@ -75,18 +76,18 @@ inline void MaNGOS::ObjectUpdater::Visit(CreatureMapType &m)
     else
         minUpdateTime = lastUpdateTimeList.at(visitorsCount-1);
 
-    /*if (visitorsCount > 50)
+    if (visitorsCount > 500 )
         for (CreatureMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
         {
-            DEBUG_LOG("Entry: %u, GUID: %u, VisitorCount: %u", iter->getSource()->GetEntry(),iter->getSource()->GetGUIDLow(), VisitorCount);
-        }*/
+            sLog.outError("%s, visitorsCount: %u", iter->getSource()->GetGuidStr().c_str(), visitorsCount);
+        }
 
     for (CreatureMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
     {
         lastUpdateTime = iter->getSource()->GetLastUpdateTime();
         diffTime = WorldTimer::getMSTimeDiff(lastUpdateTime, WorldTimer::getMSTime());
 
-        if (diffTime < (!iter->getSource()->getAttackers().empty() ? 
+        if (diffTime < (iter->getSource()->IsInCombat() ? 
             sWorld.getConfig(CONFIG_UINT32_INTERVAL_MAPUPDATE) : 5 * sWorld.getConfig(CONFIG_UINT32_INTERVAL_MAPUPDATE)) || 
             lastUpdateTime > minUpdateTime)
             continue;
@@ -99,6 +100,15 @@ inline void MaNGOS::ObjectUpdater::Visit(CreatureMapType &m)
             break;
     }
 }
+
+/*inline void MaNGOS::ObjectUpdater::Visit(CreatureMapType & m)
+{
+    for (CreatureMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
+    {
+        WorldObject::UpdateHelper helper(iter->getSource());
+        helper.Update(i_timeDiff);
+    }
+}*/
 
 inline void PlayerCreatureRelocationWorker(Player* pl, Creature* c)
 {

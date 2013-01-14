@@ -2334,11 +2334,6 @@ void WorldObject::SetActiveObjectState(bool active)
     m_isActiveObject = active;
 }
 
-void WorldObject::SetLastUpdateTime()
-{
-    m_LastUpdateTime = WorldTimer::getMSTime();
-}
-
 // return closest creature in grid, with range from pSource
 Creature* WorldObject::GetClosestCreature(uint32 uiEntry, float fMaxSearchRange, bool isAlive /*= true*/)
 {

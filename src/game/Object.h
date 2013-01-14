@@ -613,7 +613,7 @@ class MANGOS_DLL_SPEC WorldObject : public Object
         void SetActiveObjectState(bool active);
 
         uint32 GetLastUpdateTime() const { return m_LastUpdateTime; }
-        void SetLastUpdateTime();
+        void SetLastUpdateTime() { m_LastUpdateTime = WorldTimer::getMSTime(); }
 
         ViewPoint& GetViewPoint() { return m_viewPoint; }
 
