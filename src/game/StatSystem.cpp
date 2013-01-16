@@ -324,7 +324,7 @@ void Player::UpdateAttackPowerAndDamage(bool ranged)
     // Heart of the Wild - attack power
     if (!ranged && getClass() == CLASS_DRUID && GetShapeshiftForm() == FORM_CAT)
     {
-        if (SpellEntry const* spellInfo = GetKnownTalentRankById(808))
+        if (SpellEntry const* spellInfo = GetKnownTalentRankById(11715))
             attPowerMultiplier += (float)spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) / 100.0f;
     }
 

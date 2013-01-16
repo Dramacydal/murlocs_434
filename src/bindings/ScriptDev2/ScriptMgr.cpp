@@ -13,6 +13,7 @@
 #include "../system/system.h"
 #include "../../../game/ScriptMgr.h"
 #include "World.h"
+#include "BattleField/BattleFieldWG.h"
 
 typedef std::vector<Script*> SDScriptVec;
 typedef std::map<std::string, Script*> SDScriptMap;
@@ -29,7 +30,9 @@ Config SD2Config;
 #ifdef _WIN32
 template<> bool MaNGOS::Singleton<World>::si_destroyed;
 template<> bool MaNGOS::Singleton<ObjectMgr>::si_destroyed;
+template<> bool MaNGOS::Singleton<OutdoorPvPMgr>::si_destroyed;
 template<> World *MaNGOS::Singleton<World>::si_instance;
+template<> OutdoorPvPMgr *MaNGOS::Singleton<OutdoorPvPMgr>::si_instance;
 World::World()
 {
 }
@@ -37,6 +40,12 @@ World::~World()
 {
 }
 ObjectMgr::~ObjectMgr()
+{
+}
+OutdoorPvPMgr::OutdoorPvPMgr()
+{
+}
+OutdoorPvPMgr::~OutdoorPvPMgr()
 {
 }
 #endif

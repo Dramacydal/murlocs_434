@@ -95,7 +95,7 @@ class Creature;
 class OutdoorPvP;
 class ObjectGuid;
 
-class OutdoorPvPMgr
+class MANGOS_DLL_SPEC OutdoorPvPMgr
 {
     public:
         OutdoorPvPMgr();

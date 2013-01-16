@@ -48,7 +48,7 @@ enum CapturePointAnimations
 
 typedef std::map<ObjectGuid /*playerGuid*/, bool /*isMainZone*/> GuidZoneMap;
 
-class OutdoorPvP
+class MANGOS_DLL_SPEC OutdoorPvP
 {
     friend class OutdoorPvPMgr;
 

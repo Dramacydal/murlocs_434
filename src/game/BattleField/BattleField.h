@@ -92,7 +92,7 @@ class BFPlayerScore
 
 typedef std::map<ObjectGuid, BFPlayerScore*> BFPlayerScoreMap;
 
-class BattleField : public OutdoorPvP
+class MANGOS_DLL_SPEC BattleField : public OutdoorPvP
 {
     public:
         BattleField(uint32 id);

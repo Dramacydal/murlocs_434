@@ -747,7 +747,7 @@ class WGPlayerScore : public BFPlayerScore
         uint32 rank;
 };
 
-class BattleFieldWG : public BattleField
+class MANGOS_DLL_SPEC BattleFieldWG : public BattleField
 {
     public:
         BattleFieldWG(uint32 id);
