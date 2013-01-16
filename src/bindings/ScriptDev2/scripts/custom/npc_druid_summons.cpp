@@ -98,9 +98,6 @@ struct MANGOS_DLL_DECL npc_druid_fungal_growthAI : public ScriptedAI
     bool init;
     uint32 spell_fungal_slow;
 
-    // Ranger: special timer to clear bugged summon
-    uint32 unsummonTimer;
-
     npc_druid_fungal_growthAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         Reset();
@@ -110,8 +107,6 @@ struct MANGOS_DLL_DECL npc_druid_fungal_growthAI : public ScriptedAI
     {
         init = false;
         spell_fungal_slow = (m_creature->GetEntry() == 43497 ? SPELL_FUNGAL_GROWTH_SLOW_RANK1 : SPELL_FUNGAL_GROWTH_SLOW_RANK2);
-
-        unsummonTimer = 25 * IN_MILLISECONDS;
     }
 
     void UpdateAI(const uint32 diff)
@@ -127,16 +122,6 @@ struct MANGOS_DLL_DECL npc_druid_fungal_growthAI : public ScriptedAI
             m_creature->CastSpell(m_creature, SPELL_FUNGAL_GROWTH_VISUAL, true);
             m_creature->CastSpell(m_creature, spell_fungal_slow, true);
         }
-
-        if (unsummonTimer <= diff)
-        {
-            error_log("WARNING! Fungal growth not unsummoning by core, cleanup manually!");
-
-            if (m_creature->IsTemporarySummon())
-                ((TemporarySummon*)m_creature)->UnSummon();
-        }
-        else
-            unsummonTimer -= diff;
     }
 };
 

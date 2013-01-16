@@ -7337,10 +7337,9 @@ void Spell::DoSummonWild(SpellEffectEntry const * effect, uint32 forceFaction, b
     float center_z = m_targets.m_destZ;
 
     float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->GetRadiusIndex()));
-    TempSummonType summonType = (m_duration == 0) ? TEMPSUMMON_DEAD_DESPAWN : TEMPSUMMON_TIMED_OR_DEAD_DESPAWN;
+    TempSummonType summonType = (m_duration == 0) ? TEMPSUMMON_DEAD_DESPAWN : TEMPSUMMON_TIMED_DESPAWN;
 
     int32 amount = damage > 0 ? damage : 1;
-
 
     if (!unlimited)
     {
