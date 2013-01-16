@@ -13350,8 +13350,6 @@ uint32 Unit::GetModelForForm(ShapeshiftForm form)
                 return 21244;
         case FORM_METAMORPHOSIS:
             return 25277;
-        case FORM_TREE:
-            return 864;
         case FORM_SPIRITOFREDEMPTION:
             return 16031;
     }

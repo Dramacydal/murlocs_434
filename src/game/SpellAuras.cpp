@@ -7857,6 +7857,7 @@ void Aura::HandleShapeshiftBoosts(bool apply)
 {
     uint32 spellId1 = 0;
     uint32 spellId2 = 0;
+    uint32 spellId3 = 0;
     uint32 MasterShaperSpellId = 0;
 
     ShapeshiftForm form = ShapeshiftForm(GetModifier()->m_miscvalue);
@@ -7871,7 +7872,8 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             break;
         case FORM_TREE:
             spellId1 = 5420;
-            spellId2 = 34123;
+            spellId2 = 81097;
+            spellId3 = 81098;
             MasterShaperSpellId = 48422;
             break;
         case FORM_TRAVEL:
@@ -7955,6 +7957,13 @@ void Aura::HandleShapeshiftBoosts(bool apply)
 
             target->CastSpell(target, spellId2, true, NULL, this);
         }
+        if (spellId3)
+        {
+            if (target->GetTypeId() == TYPEID_PLAYER && ((Player*)target)->HasSpellCooldown(spellId3))
+                ((Player*)target)->RemoveSpellCooldown(spellId3);
+
+            target->CastSpell(target, spellId3, true, NULL, this);
+        }
 
         if (target->GetTypeId() == TYPEID_PLAYER)
         {
@@ -7962,7 +7971,7 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             for (PlayerSpellMap::const_iterator itr = sp_list.begin(); itr != sp_list.end(); ++itr)
             {
                 if (itr->second.state == PLAYERSPELL_REMOVED) continue;
-                if (itr->first==spellId1 || itr->first==spellId2) continue;
+                if (itr->first==spellId1 || itr->first==spellId2 || itr->first==spellId3) continue;
                 SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
                 if (!spellInfo || !IsNeedCastSpellAtFormApply(spellInfo, form))
                     continue;
@@ -8062,6 +8071,8 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             target->RemoveAurasDueToSpell(spellId1);
         if(spellId2)
             target->RemoveAurasDueToSpell(spellId2);
+        if(spellId3)
+            target->RemoveAurasDueToSpell(spellId3);
         if(MasterShaperSpellId)
             target->RemoveAurasDueToSpell(MasterShaperSpellId);
 
@@ -8072,7 +8083,7 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             for (PlayerSpellMap::const_iterator itr = sp_list.begin(); itr != sp_list.end(); ++itr)
             {
                 if (itr->second.state == PLAYERSPELL_REMOVED) continue;
-                if (itr->first==spellId1 || itr->first==spellId2) continue;
+                if (itr->first==spellId1 || itr->first==spellId2 || itr->first==spellId3) continue;
                 SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
                 if (!spellInfo || !IsPassiveSpell(spellInfo))
                     continue;
