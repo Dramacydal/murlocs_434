@@ -4058,6 +4058,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 // done in other way
                 return SPELL_AURA_PROC_FAILED;
             }
+            // Rude Interruption
+            else if (auraSpellInfo->SpellIconID == 1938)
+            {
+                // done in other way
+                return SPELL_AURA_PROC_FAILED;
+            }
             else if (auraSpellInfo->SpellIconID == 2961)    // Taste for Blood
             {
                 // only at real damage
