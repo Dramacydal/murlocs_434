@@ -984,6 +984,24 @@ void LoadDBCStores(const std::string& dataPath)
                     intr->InterruptFlags = 0x15;
                 break;
             }
+            case 12880:                         // Enrage (Rank 1)
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectBasePoints = 2;
+                break;
+            }
+            case 14201:                         // Enrage (Rank 2)
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectBasePoints = 4;
+                break;
+            }
+            case 14202:                         // Enrage (Rank 3)
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectBasePoints = 6;
+                break;
+            }
             case 15290:                         // Improved Vampiric Embrace heal part
             {
                 spell->SpellClassOptionsId = 859;
