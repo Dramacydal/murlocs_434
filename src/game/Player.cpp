@@ -22112,6 +22112,9 @@ void Player::SendInitialPacketsAfterAddToMap()
     SendItemDurations();                                    // must be after add to map
 
     RemoveBuggedPrimarySkills();
+
+    // fix client movement freeze after teleport?
+    GetMap()->PlayerRelocation(this, GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
 }
 
 void Player::SendUpdateToOutOfRangeGroupMembers()
