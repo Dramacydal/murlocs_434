@@ -4386,7 +4386,11 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 // Mark of the Wild
                 case 1126:
                 {
-                    if (m_caster->GetTypeId() != TYPEID_PLAYER)
+                    Unit* target = unitTarget;
+                    if (!target)
+                        target = m_caster;
+    
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER)
                         return;
 
                     m_caster->CastSpell(unitTarget, ((Player*)m_caster)->GetGroup() != ((Player*)unitTarget)->GetGroup() ? 79060 : 79061, true);
