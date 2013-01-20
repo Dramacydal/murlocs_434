@@ -4063,6 +4063,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 // done in other way
                 return SPELL_AURA_PROC_FAILED;
             }
+            else if (auraSpellInfo->SpellIconID == 2841)    // Incite
+            {
+                if (HasAura(trigger_spell_id))
+                    return SPELL_AURA_PROC_FAILED;
+                break;
+            }
             else if (auraSpellInfo->SpellIconID == 2961)    // Taste for Blood
             {
                 // only at real damage
