@@ -4058,8 +4058,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 // done in other way
                 return SPELL_AURA_PROC_FAILED;
             }
-            // Rude Interruption
-            else if (auraSpellInfo->SpellIconID == 1938)
+            else if (auraSpellInfo->SpellIconID == 1938)    // Rude Interruption
             {
                 // done in other way
                 return SPELL_AURA_PROC_FAILED;
@@ -4069,6 +4068,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 // only at real damage
                 if (!damage)
                     return SPELL_AURA_PROC_FAILED;
+            }
+            else if (auraSpellInfo->SpellIconID == 4660)    // Die by the Sword
+            {
+                if (!HasAuraState(AURA_STATE_HEALTHLESS_20_PERCENT))
+                    return SPELL_AURA_PROC_FAILED;
+                break;
             }
             else if (auraSpellInfo->SpellIconID == 4978)    // Lambs to the Slaughter
             {

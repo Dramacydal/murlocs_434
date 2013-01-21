@@ -2339,7 +2339,7 @@ void Player::RemoveFromWorld()
     Unit::RemoveFromWorld();
 }
 
-void Player::RewardRage( uint32 damage, uint32 weaponSpeedHitFactor, bool attacker )
+void Player::RewardRage(uint32 damage, uint32 weaponSpeedHitFactor, bool attacker, Unit* pVictim)
 {
     float addRage;
 
@@ -2355,6 +2355,11 @@ void Player::RewardRage( uint32 damage, uint32 weaponSpeedHitFactor, bool attack
 
         // talent who gave more rage on attack
         addRage *= 1.0f + GetTotalAuraModifier(SPELL_AURA_MOD_RAGE_FROM_DAMAGE_DEALT) / 100.0f;
+
+        // Sentinel
+        if (pVictim && pVictim->GetTargetGuid() != GetObjectGuid())
+            if (Aura* sentinel = GetAura(29144, EFFECT_INDEX_1))
+                addRage *= 1.0f + sentinel->GetModifier()->m_amount;
     }
     else
     {

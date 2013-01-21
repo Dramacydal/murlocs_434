@@ -1034,7 +1034,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
                 else
                     weaponSpeedHitFactor = uint32(GetAttackTime(cleanDamage->attackType)/1000.0f * 3.5f);
 
-                ((Player*)this)->RewardRage(damage, weaponSpeedHitFactor, true);
+                ((Player*)this)->RewardRage(damage, weaponSpeedHitFactor, true, pVictim);
 
                 break;
             }
@@ -1045,7 +1045,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
                 else
                     weaponSpeedHitFactor = uint32(GetAttackTime(cleanDamage->attackType)/1000.0f * 1.75f);
 
-                ((Player*)this)->RewardRage(damage, weaponSpeedHitFactor, true);
+                ((Player*)this)->RewardRage(damage, weaponSpeedHitFactor, true, pVictim);
 
                 break;
             }
@@ -2194,7 +2194,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
                     else
                         weaponSpeedHitFactor = uint32(GetAttackTime(damageInfo->attackType)/1000.0f * 3.5f);
 
-                    ((Player*)this)->RewardRage(damageInfo->absorb, weaponSpeedHitFactor, true);
+                    ((Player*)this)->RewardRage(damageInfo->absorb, weaponSpeedHitFactor, true, pVictim);
 
                     break;
                 }
@@ -2205,7 +2205,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
                     else
                         weaponSpeedHitFactor = uint32(GetAttackTime(damageInfo->attackType)/1000.0f * 1.75f);
 
-                    ((Player*)this)->RewardRage(damageInfo->absorb, weaponSpeedHitFactor, true);
+                    ((Player*)this)->RewardRage(damageInfo->absorb, weaponSpeedHitFactor, true, pVictim);
 
                     break;
                 }
