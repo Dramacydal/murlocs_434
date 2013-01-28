@@ -3767,6 +3767,14 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 //case 5301:  break;                        // Defensive State (DND)
                 //case 7137:  break:                        // Shadow Charge (Rank 1)
                 //case 7377:  break:                        // Take Immune Periodic Damage <Not Working>
+                case 12298:                                 // Shield Specialization (Rank 1)
+                case 12724:                                 // Shield Specialization (Rank 2)
+                case 12725:                                 // Shield Specialization (Rank 3)
+                {
+                    if (procEx & PROC_EX_REFLECT)
+                        basepoints[0] = triggerAmount * 4;
+                    break;
+                }
                 //case 13358: break;                        // Defensive State (DND)
                 //case 16092: break;                        // Defensive State (DND)
                 //case 18943: break;                        // Double Attack
@@ -4057,12 +4065,6 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             {
                 // done in other way
                 return SPELL_AURA_PROC_FAILED;
-            }
-            else if (auraSpellInfo->SpellIconID == 1463)    // Shield Specialization
-            {
-                if (procEx & PROC_EX_REFLECT)
-                    basepoints[0] = triggerAmount * 4;
-                break;
             }
             else if (auraSpellInfo->SpellIconID == 1938)    // Rude Interruption
             {
