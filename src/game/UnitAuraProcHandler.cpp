@@ -4071,6 +4071,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 // done in other way
                 return SPELL_AURA_PROC_FAILED;
             }
+            else if (auraSpellInfo->SpellIconID == 2053)    // Impending Victory
+            {
+                if (!target->HasAuraState(AURA_STATE_HEALTHLESS_20_PERCENT))
+                    return SPELL_AURA_PROC_FAILED;
+                break;
+            }
             else if (auraSpellInfo->SpellIconID == 2841)    // Incite
             {
                 if (HasAura(trigger_spell_id))
