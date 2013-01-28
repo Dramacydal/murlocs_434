@@ -2359,7 +2359,7 @@ void Player::RewardRage(uint32 damage, uint32 weaponSpeedHitFactor, bool attacke
         // Sentinel
         if (pVictim && pVictim->GetTargetGuid() != GetObjectGuid())
             if (Aura* sentinel = GetAura(29144, EFFECT_INDEX_1))
-                addRage *= 1.0f + sentinel->GetModifier()->m_amount;
+                addRage *= 1.0f + sentinel->GetModifier()->m_amount / 100.0f;
     }
     else
     {
