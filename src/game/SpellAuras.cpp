@@ -7985,8 +7985,24 @@ void Aura::HandleShapeshiftBoosts(bool apply)
                 if (itr->second->IsPassive() && (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_NOT_NEED_SHAPESHIFT)
                     && (spellInfo->GetStancesNot() & (1<<(form-1))))
                 {
-                    target->RemoveAurasDueToSpell(itr->second->GetId());
-                    itr = tAuras.begin();
+                    bool removeHolder = true;
+                    // Bastion of Defense special check
+                    if (spellInfo->Id == 29593 || spellInfo->Id == 29594)
+                    {
+                         if (Aura* aura = itr->second->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                         {
+                             target->RemoveAura(aura);
+                             removeHolder = false;
+                         }
+                    }
+
+                    if (removeHolder)
+                    {
+                        target->RemoveAurasDueToSpell(itr->second->GetId());
+                        itr = tAuras.begin();
+                    }
+                    else
+                        ++itr;
                 }
                 else
                     ++itr;
