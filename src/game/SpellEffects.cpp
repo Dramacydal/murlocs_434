@@ -755,9 +755,6 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                                     sLog.outError("Ok, targets size: %u", m_UniqueTargetInfo.size());
                                     for (TargetList::iterator itr = m_UniqueTargetInfo.begin(); itr != m_UniqueTargetInfo.end(); ++itr)
                                     {
-                                        if (unitTarget->GetObjectGuid() == itr->targetGUID)
-                                            continue;
-
                                         if (Unit* unit = m_caster->GetMap()->GetUnit(itr->targetGUID))
                                             if (unit->GetSpellAuraHolder(772, m_caster->GetObjectGuid()))
                                             {
