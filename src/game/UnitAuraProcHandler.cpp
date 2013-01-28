@@ -4086,7 +4086,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 if (pVictim)
                 {
                     // Refresh Rend on target
-                    if (SpellAuraHolder* rend = pVictim->GetSpellAuraHolder(772, GetObjectGuid()))
+                    if (SpellAuraHolder* rend = pVictim->GetSpellAuraHolder(94009, GetObjectGuid()))
                         rend->RefreshHolder();
                 }
             }
