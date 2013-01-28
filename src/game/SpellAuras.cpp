@@ -7985,24 +7985,8 @@ void Aura::HandleShapeshiftBoosts(bool apply)
                 if (itr->second->IsPassive() && (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_NOT_NEED_SHAPESHIFT)
                     && (spellInfo->GetStancesNot() & (1<<(form-1))))
                 {
-                    bool removeHolder = true;
-                    // Bastion of Defense special check
-                    if (spellInfo->Id == 29593 || spellInfo->Id == 29594)
-                    {
-                         if (Aura* aura = itr->second->GetAuraByEffectIndex(EFFECT_INDEX_0))
-                         {
-                             target->RemoveAura(aura);
-                             removeHolder = false;
-                         }
-                    }
-
-                    if (removeHolder)
-                    {
-                        target->RemoveAurasDueToSpell(itr->second->GetId());
-                        itr = tAuras.begin();
-                    }
-                    else
-                        ++itr;
+                    target->RemoveAurasDueToSpell(itr->second->GetId());
+                    itr = tAuras.begin();
                 }
                 else
                     ++itr;
@@ -8113,8 +8097,24 @@ void Aura::HandleShapeshiftBoosts(bool apply)
         {
             if (itr->second->IsRemovedOnShapeLost())
             {
-                target->RemoveAurasDueToSpell(itr->second->GetId());
-                itr = tAuras.begin();
+                bool remove = true;
+                // Bastion of Defense special check
+                if (itr->second->GetId() == 29593 || itr->second->GetId() == 29594)
+                {
+                    if (Aura* aura = itr->second->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                    {
+                        target->RemoveAura(aura);
+                        remove = false;
+                    }
+                }
+
+                if (remove)
+                {
+                    target->RemoveAurasDueToSpell(itr->second->GetId());
+                    itr = tAuras.begin();
+                }
+                else
+                    ++itr;
             }
             else
                 ++itr;
