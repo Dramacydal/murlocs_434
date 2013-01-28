@@ -758,6 +758,7 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                                         if (Unit* unit = m_caster->GetMap()->GetUnit(itr->targetGUID))
                                             if (unit->GetSpellAuraHolder(772, m_caster->GetObjectGuid()))
                                             {
+                                                sLog.outError("Rend set for cast");
                                                 m_currentBasePoints[EFFECT_INDEX_1] = 1;
                                                 break;
                                             }
