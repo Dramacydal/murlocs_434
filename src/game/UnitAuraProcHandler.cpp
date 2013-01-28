@@ -4058,6 +4058,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 // done in other way
                 return SPELL_AURA_PROC_FAILED;
             }
+            else if (auraSpellInfo->SpellIconID == 1463)    // Shield Specialization
+            {
+                if (procEx & PROC_EX_REFLECT)
+                    basepoints[0] = triggerAmount * 4;
+                break;
+            }
             else if (auraSpellInfo->SpellIconID == 1938)    // Rude Interruption
             {
                 // done in other way
