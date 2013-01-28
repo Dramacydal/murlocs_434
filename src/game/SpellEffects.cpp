@@ -746,36 +746,26 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                             // check if Blood and Thunder chance is already calculated
                             if (!m_currentBasePoints[EFFECT_INDEX_2])
                             {
-                                sLog.outError("Blood and thunder: initial calculation");
                                 m_currentBasePoints[EFFECT_INDEX_2] = 1;
                                 m_currentBasePoints[EFFECT_INDEX_1] = 0;
 
                                 if (roll_chance_i(bat->CalculateSimpleValue(EFFECT_INDEX_0)))
                                 {
-                                    sLog.outError("Ok, targets size: %u", m_UniqueTargetInfo.size());
                                     for (TargetList::iterator itr = m_UniqueTargetInfo.begin(); itr != m_UniqueTargetInfo.end(); ++itr)
                                     {
                                         if (Unit* unit = m_caster->GetMap()->GetUnit(itr->targetGUID))
                                             if (unit->GetSpellAuraHolder(94009, m_caster->GetObjectGuid()))
                                             {
-                                                sLog.outError("Rend set for cast");
                                                 m_currentBasePoints[EFFECT_INDEX_1] = 1;
                                                 break;
                                             }
                                     }
                                 }
-                                else
-                                    sLog.outError("Roll failed");
                             }
 
                             // check if we should cast rend
                             if (m_currentBasePoints[EFFECT_INDEX_1])
-                            {
-                                sLog.outError("Cast rend at %s", unitTarget->GetGuidStr().c_str());
                                 m_caster->CastSpell(unitTarget, 94009, true);
-                            }
-                            else
-                                sLog.outError("No rend for %s", unitTarget->GetGuidStr().c_str());
                         }
                     }
                 }
