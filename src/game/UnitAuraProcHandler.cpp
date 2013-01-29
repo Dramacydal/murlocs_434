@@ -2542,22 +2542,33 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             // Vengeance
             else if (dummySpell->Id == 84839)
             {
-                if (int32 bp = damage + absorb)
+                if (!pVictim || pVictim->GetCharmerOrOwnerPlayerOrPlayerItself())
+                    return SPELL_AURA_PROC_FAILED;
+
+                if (int32 basebp = damage)
                 {
-                    bp = int32(bp * triggerAmount / 100);
+                    int32 bp = 0;
                     triggered_spell_id = 76691;
                     // stack with old buff
                     if (SpellAuraHolder* oldHolder = GetSpellAuraHolder(triggered_spell_id, GetObjectGuid()))
+                    {
+                        basebp = int32(basebp * triggerAmount / 100);
                         if (Aura* oldAura = oldHolder->GetAuraByEffectIndex(EFFECT_INDEX_0))
                             bp += oldAura->GetModifier()->m_amount;
+                    }
+                    else
+                        basebp = int32(basebp * 33 / 100);
 
-                    // not more than pct of health
-                    int32 maxVal = int32(GetMaxHealth() / 10);
+                    bp += basebp;
+
+                    // not more than pct of stamina
+                    int32 maxVal = int32(GetCreateHealth() + GetTotalStatValue(STAT_STAMINA) / 10);
                     if (bp > maxVal)
                         bp = maxVal;
 
                     basepoints[0] = bp;
                     basepoints[1] = bp;
+                    basepoints[2] = basebp;
                 }
                 break;
             }

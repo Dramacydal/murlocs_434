@@ -9840,7 +9840,7 @@ void Aura::PeriodicDummyTick()
                     target->CastSpell(target, 68873, true);
                     return;
                 }
-                case 71340:                                // Pact of darkfallen remove effect
+                case 71340:                                 // Pact of darkfallen remove effect
                 {
                     int32 radius = m_modifier.m_amount  / 1000;
                     bool inRadius = true;
@@ -9854,6 +9854,24 @@ void Aura::PeriodicDummyTick()
                     if (inRadius)
                         target->RemoveAurasDueToSpell(spell->Id);
                     return;
+                }
+                case 76691:                                 // Vengeance
+                {
+                    int32 bp0 = 0, bp1 = 0, bp3 = GetModifier()->m_amount;
+                    SpellAuraHolder* holder = GetHolder();
+                    if (!holder)
+                        return;
+
+                    // Remove damage from last 'stack' from aura amounts
+                    if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                        bp0 = aura->GetModifier()->m_amount - bp3;
+                    if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_1))
+                        bp1 = aura->GetModifier()->m_amount - bp3;
+
+                    // If exist expired aura - remove buff
+                    if (bp0 <=0 || bp1 <= 0)
+                        target->RemoveAurasDueToSpell(spell->Id);
+                    break;
                 }
                 // Exist more after, need add later
                 default:
@@ -10830,8 +10848,8 @@ void SpellAuraHolder::_AddSpellAuraHolder()
         if (m_spellProto->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0x0000000000010000)))
             m_target->ModifyAuraState(AURA_STATE_DEADLY_POISON, true);
 
-        // Enrage aura state
-        if (m_spellProto->GetDispel() == DISPEL_ENRAGE)
+        // Enrage aura state (Excluding Vengeance)
+        if (m_spellProto->GetDispel() == DISPEL_ENRAGE && m_spellProto->Id != 76691)
             m_target->ModifyAuraState(AURA_STATE_ENRAGE, true);
 
         // Bleeding aura state
@@ -10890,8 +10908,8 @@ void SpellAuraHolder::_RemoveSpellAuraHolder()
         //*****************************************************
         // Update target aura state flag (at last aura remove)
         //*****************************************************
-        // Enrage aura state
-        if(m_spellProto->GetDispel() == DISPEL_ENRAGE)
+        // Enrage aura state (Excluding Vengeance)
+        if (m_spellProto->GetDispel() == DISPEL_ENRAGE && m_spellProto->Id != 76691)
             m_target->ModifyAuraState(AURA_STATE_ENRAGE, false);
 
         // Bleeding aura state
