@@ -4058,7 +4058,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             }
             else if (auraSpellInfo->SpellIconID == 2053)    // Impending Victory
             {
-                if (!target->HasAuraState(AURA_STATE_HEALTHLESS_20_PERCENT))
+                if (!pVictim ||!pVictim->HasAuraState(AURA_STATE_HEALTHLESS_20_PERCENT))
                     return SPELL_AURA_PROC_FAILED;
                 break;
             }
