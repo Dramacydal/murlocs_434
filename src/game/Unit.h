@@ -1956,6 +1956,8 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
             return SPELL_AURA_PROC_CANT_TRIGGER;
         }
 
+        SpellAuraProcResult HandleVengeanceProc(Unit* pVictim, int32 damage, int32 triggerAmount);
+
         uint32 GetRegenTimer() const { return m_regenTimer; }
 
         void SetContestedPvP(Player *attackedPlayer = NULL);
