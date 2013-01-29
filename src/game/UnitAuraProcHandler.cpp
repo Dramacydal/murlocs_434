@@ -1094,6 +1094,14 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     }
                     return SPELL_AURA_PROC_FAILED;
                 }
+                // Vigilance
+                case 50720:
+                {
+                    // proc Vengeance for caster
+                    if (Unit* caster = triggeredByAura->GetCaster())
+                        return caster->HandleVengeanceProc(pVictim, damage * triggerAmount / 100, 5);
+                    break;
+                }
                 // Vampiric Touch (generic, used by some boss)
                 case 52723:
                 case 60501:

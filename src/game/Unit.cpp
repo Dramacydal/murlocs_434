@@ -7701,10 +7701,6 @@ uint32 Unit::SpellDamageBonusTaken(Unit *pCaster, SpellEntry const *spellProto, 
         }
     }
 
-    //megai2: Vigilance -3% damage taken
-    if (HasAura(50720))
-        TakenTotalMod *= 0.97f;
-
     // From caster spells
     AuraList const& mOwnerTaken = GetAurasByType(SPELL_AURA_MOD_DAMAGE_FROM_CASTER);
     for(AuraList::const_iterator i = mOwnerTaken.begin(); i != mOwnerTaken.end(); ++i)
@@ -8914,10 +8910,6 @@ uint32 Unit::MeleeDamageBonusTaken(Unit *pCaster, uint32 pdamage,WeaponAttackTyp
                 break;
         }
     }
-
-    //megai2: Vigilance -3% damage taken
-    if (HasAura(50720))
-        TakenPercent *= 0.97f;
 
     // final calculation
     // =================
