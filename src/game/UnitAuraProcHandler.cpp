@@ -3756,7 +3756,8 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 case 12725:                                 // Shield Specialization (Rank 3)
                 {
                     if (procEx & PROC_EX_REFLECT)
-                        basepoints[0] = triggerAmount * 4;
+                        if (SpellEntry const * spellInfo = sSpellStore.LookupEntry(trigger_spell_id))
+                            basepoints[0] = spellInfo->CalculateSimpleValue(EFFECT_INDEX_0) * 4;
                     break;
                 }
                 //case 13358: break;                        // Defensive State (DND)
