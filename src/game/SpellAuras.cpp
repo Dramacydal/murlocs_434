@@ -9848,20 +9848,34 @@ void Aura::PeriodicDummyTick()
                 }
                 case 76691:                                 // Vengeance
                 {
-                    int32 bp0 = 0, bp1 = 0, bp3 = GetModifier()->m_amount;
+                    if (target->IsInCombat())
+                        return;
+
+                    int32 bp0 = 0, bp1 = 0, bp2 = GetModifier()->m_amount;
                     SpellAuraHolder* holder = GetHolder();
                     if (!holder)
                         return;
 
                     // Remove damage from last 'stack' from aura amounts
-                    if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
-                        bp0 = aura->GetModifier()->m_amount - bp3;
-                    if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_1))
-                        bp1 = aura->GetModifier()->m_amount - bp3;
+                    Aura* aura0 = holder->GetAuraByEffectIndex(EFFECT_INDEX_0);
+                    if (aura0)
+                        bp0 = aura0->GetModifier()->m_amount - bp2;
+
+                    Aura* aura1 = holder->GetAuraByEffectIndex(EFFECT_INDEX_1);
+                    if (aura1)
+                        bp1 = aura1->GetModifier()->m_amount - bp2;
 
                     // If exist expired aura - remove buff
                     if (bp0 <=0 || bp1 <= 0)
                         target->RemoveAurasDueToSpell(spell->Id);
+                    else
+                    {
+                        if (aura0)
+                            aura0->ChangeAmount(bp0, true);
+                        if (aura1)
+                            aura1->ChangeAmount(bp0, true);
+                        holder->SendAuraUpdate(false);
+                    }
                     break;
                 }
                 // Exist more after, need add later

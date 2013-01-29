@@ -5722,7 +5722,7 @@ SpellAuraProcResult Unit::HandleVengeanceProc(Unit* pVictim, int32 damage, int32
         bp += basebp;
 
         // not more than pct of stamina
-        int32 maxVal = int32(GetCreateHealth() + GetTotalStatValue(STAT_STAMINA) / 10);
+        int32 maxVal = int32((GetCreateHealth() + GetTotalStatValue(STAT_STAMINA)) / 10);
         if (bp > maxVal)
             bp = maxVal;
 
