@@ -8843,6 +8843,9 @@ void Aura::PeriodicTick()
                 // Second Wind
                 else if (spellProto->Id == 29842 || spellProto->Id == 29841)
                     pdamage = int32(amount * target->GetMaxHealth() / 100.0f);
+                // Recuperate
+                else if (spellProto->Id == 73651)
+                    pdamage = int32(amount * target->GetMaxHealth() / 100.0f);
             }
 
             // Blood Craze
