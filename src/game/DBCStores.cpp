@@ -1222,6 +1222,11 @@ void LoadDBCStores(const std::string& dataPath)
                     opt->procCharges = 1;
                 break;
             }
+            case 51698:                         // Honor Among Thieves (Rank 1)
+            {
+                spell->SpellClassOptionsId = 12892;
+                break;
+            }
             case 51804:                         // Power Siphon disable
             {
                 for (int i = 0; i < MAX_EFFECT_INDEX; ++i)

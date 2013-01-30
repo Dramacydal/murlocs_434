@@ -2364,8 +2364,18 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     break;
                 }
             }
+            // Honor Among Thieves
+            if (dummySpell->SpellIconID == 2903)
+            {
+                if (Unit* caster = triggeredByAura->GetCaster())
+                {
+                    caster->CastSpell(caster, 51699, true);
+                    return SPELL_AURA_PROC_OK;
+                }
+                return SPELL_AURA_PROC_FAILED;
+            }
             // Cut to the Chase
-            if (dummySpell->SpellIconID == 2909)
+            else if (dummySpell->SpellIconID == 2909)
             {
                 // "refresh your Slice and Dice duration to its 5 combo point maximum"
                 // lookup Slice and Dice
@@ -4821,34 +4831,6 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
         case 62606:
         {
             basepoints[0] = int32(GetTotalAttackPowerValue(BASE_ATTACK) * triggerAmount / 100);
-            break;
-        }
-        //Rogue - Honor among thieves
-        case 52916: 
-        {
-            if(triggeredByAura->GetCaster() && triggeredByAura->GetCaster()->GetTypeId() == TYPEID_PLAYER)
-            {
-                Unit *target_unit = NULL;
-                // adding combo points to CURRENT caster's target (if exists)
-                if (!((Player*)triggeredByAura->GetCaster())->GetSelectionGuid().IsEmpty())
-                    target_unit = ObjectAccessor::GetUnit(*triggeredByAura->GetCaster(), ((Player*)triggeredByAura->GetCaster())->GetSelectionGuid());
-
-                // you can gain 2 combo points per second maximum. 1 combo point from your own crit, and 1 from any member of your party critting.
-                if(target_unit)
-                {
-                    Unit::AuraList const& mDummyAuras = target_unit->GetAurasByType(SPELL_AURA_DUMMY);
-                    bool found = false;
-                    for(Unit::AuraList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
-                        if ((*i)->GetSpellProto()->Id == 51699 && (*i)->GetCaster() == triggeredByAura->GetCaster())
-                        {
-                            found = true; //has your mighty aura
-                            break;
-                        }
-
-                    if(!found || triggeredByAura->GetCaster() == this)
-                        triggeredByAura->GetCaster()->CastSpell(target_unit, 51699, true);
-                }
-            }
             break;
         }
     }
