@@ -7279,7 +7279,7 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
     AuraList const &mDamageDoneVersusAurastate = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE);
     for (AuraList::const_iterator i = mDamageDoneVersusAurastate.begin(); i != mDamageDoneVersusAurastate.end(); ++i)
         if (pVictim->HasAuraState(AuraState((*i)->GetMiscValue())))
-            DoneTotalMod *= ((*i)->GetModifier()->m_amount+100.0f)/100.0f;
+            DoneTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
 
     // Amaru: DK debuffs should do effect on all casts
     Aura* cryptFeverDisease = pVictim->GetAura(SPELL_AURA_LINKED, SPELLFAMILY_DEATHKNIGHT, UI64LIT(0x0), 0x10);
@@ -8654,7 +8654,7 @@ uint32 Unit::MeleeDamageBonusDone(Unit *pVictim, uint32 pdamage,WeaponAttackType
     AuraList const &mDamageDoneVersusAurastate = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE);
     for (AuraList::const_iterator i = mDamageDoneVersusAurastate.begin(); i != mDamageDoneVersusAurastate.end(); ++i)
         if (pVictim->HasAuraState(AuraState((*i)->GetMiscValue())))
-            DonePercent *= ((*i)->GetModifier()->m_amount+100.0f)/100.0f;
+            DonePercent *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
 
     // special dummys/class scripts and other effects
     // =============================================

@@ -359,7 +359,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNULL,                                      //300 21 spells (share damage?)
     &Aura::HandleNULL,                                      //301 SPELL_AURA_HEAL_ABSORB 31 spells
     &Aura::HandleUnused,                                    //302 unused (3.2.2a-4.3.4)
-    &Aura::HandleNoImmediateEffect,                         //303 35 spells increases damage done vs. creature type
+    &Aura::HandleNoImmediateEffect,                         //303 AURA_STATE_BLEEDING 35 spells increases damage done vs. aurastate
     &Aura::HandleAuraFakeInebriation,                       //304 SPELL_AURA_FAKE_INEBRIATE
     &Aura::HandleAuraModIncreaseSpeed,                      //305 SPELL_AURA_MOD_MINIMUM_SPEED
     &Aura::HandleUnused,                                    //306 0 spells in 4.3.4
