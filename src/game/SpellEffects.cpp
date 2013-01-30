@@ -4525,26 +4525,34 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 }
                 case 14185:                                 // Preparation
                 {
-                    if (m_caster->GetTypeId()!=TYPEID_PLAYER)
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER)
                         return;
 
                     // Glyph of Preparation
                     Aura* glyph = m_caster->GetDummyAura(56819);
 
-                    //immediately finishes the cooldown on certain Rogue abilities
+                    // immediately finishes the cooldown on certain Rogue abilities
                     const SpellCooldowns& cm = ((Player *)m_caster)->GetSpellCooldownMap();
-                    for (SpellCooldowns::const_iterator itr = cm.begin(); itr != cm.end();)
+                    for (SpellCooldowns::const_iterator itr = cm.begin(); itr != cm.end(); )
                     {
-                        SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
-                        SpellClassOptionsEntry const* prepClassOptions = spellInfo->GetSpellClassOptions();
-
-                        if (prepClassOptions && prepClassOptions->SpellFamilyName == SPELLFAMILY_ROGUE && (prepClassOptions->SpellFamilyFlags & UI64LIT(0x0000024000000860)))
-                            ((Player*)m_caster)->RemoveSpellCooldown((itr++)->first,true);
-                        else if (prepClassOptions && glyph && prepClassOptions->SpellFamilyName == SPELLFAMILY_ROGUE &&
-                            (spellInfo->SpellIconID == 1477 || (prepClassOptions->SpellFamilyFlags & UI64LIT(0x10000000000010))))
-                            ((Player*)m_caster)->RemoveSpellCooldown((itr++)->first,true);
-                        else
-                            ++itr;
+                        switch (itr->first)
+                        {
+                            case 1856:  // Vanish
+                            case 2983:  // Sprint
+                            case 36554: // Shadowstep
+                                ((Player*)m_caster)->RemoveSpellCooldown((itr++)->first, true);
+                                break;
+                            case 1766:  // Kick
+                            case 51722: // Dismantle
+                            case 76577: // Smoke Bomb
+                                if (glyph)
+                                    ((Player*)m_caster)->RemoveSpellCooldown((itr++)->first, true);
+                                else
+                                    ++itr;
+                                break;
+                            default:
+                                ++itr;
+                        }
                     }
                     return;
                 }
