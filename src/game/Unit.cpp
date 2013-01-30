@@ -3012,16 +3012,15 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
     {
         switch(preventDeathSpell->GetSpellFamilyName())
         {
-            // Cheat Death
             case SPELLFAMILY_ROGUE:
             {
                 // Cheat Death
                 if (preventDeathSpell->SpellIconID == 2109)
                 {
-                    CastSpell(this,31231,true);
-                    ((Player*)this)->AddSpellCooldown(31231,0,time(NULL)+60);
+                    CastSpell(this, 31231, true);
+                    ((Player*)this)->AddSpellCooldown(31231, 0, time(NULL) + 90);
                     // with health > 10% lost health until health==10%, in other case no losses
-                    uint32 health10 = GetMaxHealth()/10;
+                    uint32 health10 = GetMaxHealth() / 10;
                     RemainingDamage = GetHealth() > health10 ? GetHealth() - health10 : 0;
                 }
                 break;
