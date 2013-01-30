@@ -8845,7 +8845,16 @@ void Aura::PeriodicTick()
                     pdamage = int32(amount * target->GetMaxHealth() / 100.0f);
                 // Recuperate
                 else if (spellProto->Id == 73651)
-                    pdamage = int32(amount * target->GetMaxHealth() / 100.0f);
+                {
+                    float healthPct = amount;
+                    if (target->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        // Improved Recuperate
+                        if (SpellEntry const * spellInfo = ((Player*)target)->GetKnownTalentRankById(6395))
+                            healthPct += spellInfo->CalculateSimpleValue(EFFECT_INDEX_0) / 1000.0f;
+                    }
+                    pdamage = int32(healthPct * target->GetMaxHealth() / 100.0f);
+                }
             }
 
             // Blood Craze
