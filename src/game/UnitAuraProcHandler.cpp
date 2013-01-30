@@ -1094,14 +1094,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     }
                     return SPELL_AURA_PROC_FAILED;
                 }
-                // Vigilance
-                case 50720:
-                {
-                    // proc Vengeance for caster
-                    if (Unit* caster = triggeredByAura->GetCaster())
-                        return caster->HandleVengeanceProc(pVictim, damage * triggerAmount / 100, 5);
-                    break;
-                }
                 // Vampiric Touch (generic, used by some boss)
                 case 52723:
                 case 60501:
@@ -3876,6 +3868,13 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 //case 49059: break;                        // Horde, Hate Monster (Spar Buddy) (>30% Health)
                 //case 50051: break;                        // Ethereal Pet Aura
                 //case 50689: break;                        // Blood Presence (Rank 1)
+                case 50720:                                 // Vigilance
+                {
+                    // proc Vengeance for caster
+                    if (Unit* caster = triggeredByAura->GetCaster())
+                        caster->HandleVengeanceProc(pVictim, damage * auraSpellInfo->CalculateSimpleValue(EFFECT_INDEX_1) / 100, 5);
+                    break;
+                }
                 //case 50844: break;                        // Blood Mirror
                 //case 52856: break;                        // Charge
                 //case 54072: break;                        // Knockback Ball Passive
