@@ -5556,9 +5556,16 @@ SpellAuraProcResult Unit::HandleRemoveByDamageProc(Unit* pVictim, uint32 damage,
         if (procSpell && (GetAllSpellMechanicMask(procSpell) & (1 << (MECHANIC_INFECTED-1))))
             return SPELL_AURA_PROC_FAILED;
     }
-
+    // Gouge vs. bleed effects
+    else if (triggeredByAura->GetId() == 1776 && pVictim && pVictim->GetTypeId() == TYPEID_PLAYER && procSpell && (GetAllSpellMechanicMask(procSpell) & (1 << (MECHANIC_BLEED - 1))))
+    {
+        // search Sanguinary Vein
+        if (SpellEntry const * spellInfo = ((Player*)pVictim)->GetKnownTalentRankById(6520))
+            if (roll_chance_i(spellInfo->CalculateSimpleValue(EFFECT_INDEX_1)))
+                return SPELL_AURA_PROC_FAILED;
+    }
     // Repentance vs. Censure
-    if (triggeredByAura->GetId() == 20066 && procSpell && procSpell->Id == 31803)
+    else if (triggeredByAura->GetId() == 20066 && procSpell && procSpell->Id == 31803)
         return SPELL_AURA_PROC_FAILED;
 
     if (triggeredByAura->GetModifier()->m_amount < (int32)fullDamage)
