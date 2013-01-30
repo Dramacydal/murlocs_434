@@ -1131,8 +1131,8 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                             damage += int32(((Player*)m_caster)->GetTotalAttackPowerValue(BASE_ATTACK) * 0.09f * doses);
                         }
                         // Eviscerate and Envenom Bonus Damage (item set effect)
-                        if (m_caster->GetDummyAura(37169))
-                            damage += m_caster->GetComboPoints()*40;
+                        if (Aura* aura = m_caster->GetDummyAura(37169))
+                            damage += combo * aura->GetModifier()->m_amount;
 
                         float pctBonus = 1.0f;
                         // Dirty deeds
@@ -1177,14 +1177,28 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                 // Eviscerate
                 else if ((classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x00020000)) && m_caster->GetTypeId()==TYPEID_PLAYER)
                 {
-                    if(uint32 combo = m_caster->GetComboPoints())
+                    if (uint32 combo = m_caster->GetComboPoints())
                     {
                         float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
                         damage += irand(int32(ap * combo * 0.03f), int32(ap * combo * 0.07f));
 
                         // Eviscerate and Envenom Bonus Damage (item set effect)
-                        if(m_caster->GetDummyAura(37169))
-                            damage += combo*40;
+                        if (Aura* aura = m_caster->GetDummyAura(37169))
+                            damage += combo * aura->GetModifier()->m_amount;
+
+                        Unit::AuraList const& dummyAuras = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
+                        for (Unit::AuraList::const_iterator itr = dummyAuras.begin(); itr != dummyAuras.end(); ++itr)
+                        {
+                            // Serrated Blades
+                            if ((*itr)->GetSpellProto()->SpellIconID == 2004 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_ROGUE)
+                            {
+                                if (roll_chance_i((*itr)->GetModifier()->m_amount * combo))
+                                    if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(1943, m_caster->GetObjectGuid()))
+                                        holder->RefreshHolder();
+                                break;
+                            }
+                        }
+
                         // Apply spell mods
                         if (Player* modOwner = m_caster->GetSpellModOwner())
                             modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_DAMAGE, damage);
