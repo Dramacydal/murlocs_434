@@ -2425,21 +2425,23 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 84748;
 
                 // Insight buffs
-                uint32 buffs[4] = { 84745, 84746, 84747 };
+                uint32 buffs[4] = { 84745, 84746, 84747, 84745 };
 
                 if (pVictim->HasAura(triggered_spell_id))
                 {
                     int i = 0;
+                    bool found = false;
                     for (; i < 3; ++i)
                     {
                         if (SpellAuraHolder* holder = GetSpellAuraHolder(buffs[i]))
                         {
+                            found = true;
                             RemoveSpellAuraHolder(holder);
                             break;
                         }
                     }
 
-                    if (i != 3)
+                    if (i != 3 || !found)
                     {
                         if (SpellEntry const * spell = sSpellStore.LookupEntry(buffs[i]))
                         {
