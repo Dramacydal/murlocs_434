@@ -2439,7 +2439,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         }
                     }
 
-                    if (SpellEntry const * spell = sSpellStore.LookupEntry(++i))
+                    if (SpellEntry const * spell = sSpellStore.LookupEntry(buffs[++i]))
                     {
                         CastSpell(this, spell, true);
                         basepoints[0] = spell->CalculateSimpleValue(EFFECT_INDEX_0);
