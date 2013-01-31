@@ -2413,13 +2413,40 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 return SPELL_AURA_PROC_FAILED;
             }
             // Deadly Brew
-            if (dummySpell->SpellIconID == 2963)
+            else if (dummySpell->SpellIconID == 2963)
             {
                 triggered_spell_id = 44289;
                 break;
             }
+            // Bandit's Guile
+            else if (dummySpell->SpellIconID == 2983)
+            {
+                basepoints[0] = 0;
+                triggered_spell_id = 84748;
+                if (pVictim->HasAura(triggered_spell_id))
+                {
+                    // Insight buffs
+                    uint32 buffs[4] = { 84745, 84746, 84747, 84745 };
+                    int i = 0;
+                    for (; i < 3; ++i)
+                    {
+                        if (SpellAuraHolder* holder = GetSpellAuraHolder(buffs[i]))
+                        {
+                            pVictim->RemoveSpellAuraHolder(holder);
+                            break;
+                        }
+                    }
+
+                    if (SpellEntry const * spell = sSpellStore.LookupEntry(++i))
+                    {
+                        CastSpell(this, spell, true);
+                        basepoints[0] = spell->CalculateSimpleValue(EFFECT_INDEX_0);
+                    }
+                }
+                break;
+            }
             // Quick Recovery
-            if (dummySpell->SpellIconID == 2116)
+            else if (dummySpell->SpellIconID == 2116)
             {
                 if(!procSpell)
                     return SPELL_AURA_PROC_FAILED;
