@@ -7300,6 +7300,14 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
         }
     }
 
+    if (NeedsComboPoints(spellProto))
+    {
+        // Revealing Strike
+        if (SpellAuraHolder* holder = pVictim->GetSpellAuraHolder(84617, GetObjectGuid()))
+            if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_2))
+                DoneTotalMod *= (aura->GetModifier()->m_amount + 100.0f) / 100.0f;
+    }
+
     if (getPowerType() == POWER_MANA)
     {
         Unit::AuraList const& doneFromManaPctAuras = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE_FROM_PCT_POWER);
@@ -7556,7 +7564,7 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
                     // Glyph of Smite
                     if (Aura *aur = GetAura(55692, EFFECT_INDEX_0))
                         DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
-            }            
+            }
             // Shadow word: Death
             else if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000000200000000)))
             {
@@ -8780,6 +8788,14 @@ uint32 Unit::MeleeDamageBonusDone(Unit *pVictim, uint32 pdamage,WeaponAttackType
                 // check for Serpent Sting
                 if (Aura *serpentSting = pVictim->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_HUNTER, UI64LIT(0x0000000000004000)))
                     DonePercent *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
+        }
+
+        if (NeedsComboPoints(spellProto))
+        {
+            // Revealing Strike
+            if (SpellAuraHolder* holder = pVictim->GetSpellAuraHolder(84617, GetObjectGuid()))
+                if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_2))
+                    DonePercent *= (aura->GetModifier()->m_amount + 100.0f) / 100.0f;
         }
     }
 
@@ -10733,6 +10749,15 @@ int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMas
             default:
                 break;
         }
+    }
+
+    // Kidney Shot and Expose Armor
+    if (spellProto->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0x280000)))
+    {
+        // Revealig Strike
+        if (SpellAuraHolder* holder = GetSpellAuraHolder(84617, caster->GetObjectGuid()))
+            if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_2))
+                duration = int32(duration * (aura->GetModifier()->m_amount + 100.0f) / 100.0f);
     }
 
     return duration;

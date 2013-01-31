@@ -2363,6 +2363,13 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     CastSpell(this, 59628, true);           // Tricks of the Trade (caster timer)
                     break;
                 }
+                case 84617:                                 // Revealing Strike
+                {
+                    // Check procSpell for Eviscerate, Envenom, Expose Armor, Kidney Shot and Rupture
+                    if (!procSpell || !procSpell->IsFitToFamily(SPELLFAMILY_ROGUE, 0xBA0000))
+                        return SPELL_AURA_PROC_FAILED;
+                    break;
+                }
             }
             // Honor Among Thieves
             if (dummySpell->SpellIconID == 2903)
