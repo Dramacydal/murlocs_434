@@ -4380,7 +4380,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             if (auraSpellInfo->SpellIconID == 2260)         // Combat Potency
             {
                 // proc from offhand hits and Main Gauche
-                if (!(procFlags & PROC_FLAG_SUCCESSFUL_OFFHAND_HIT) && procSpell->Id != 86392)
+                if (!(procFlags & PROC_FLAG_SUCCESSFUL_OFFHAND_HIT) && (!procSpell || procSpell->Id != 86392))
                     return SPELL_AURA_PROC_FAILED;
             }
             // Item - Rogue T10 4P Bonus
