@@ -2363,6 +2363,14 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     CastSpell(this, 59628, true);           // Tricks of the Trade (caster timer)
                     break;
                 }
+                case 76806:                                 // Main Gauche
+                {
+                    if (effIndex != EFFECT_INDEX_0 || !roll_chance_i(triggerAmount))
+                        return SPELL_AURA_PROC_FAILED;
+
+                    triggered_spell_id = 86392;
+                    break;
+                }
                 case 84617:                                 // Revealing Strike
                 {
                     // Check procSpell for Eviscerate, Envenom, Expose Armor, Kidney Shot and Rupture
