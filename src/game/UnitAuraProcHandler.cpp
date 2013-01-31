@@ -2423,16 +2423,18 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             {
                 basepoints[0] = 0;
                 triggered_spell_id = 84748;
+
+                // Insight buffs
+                uint32 buffs[4] = { 84745, 84746, 84747, 84745 };
+
                 if (pVictim->HasAura(triggered_spell_id))
                 {
-                    // Insight buffs
-                    uint32 buffs[4] = { 84745, 84746, 84747, 84745 };
                     int i = 0;
                     for (; i < 3; ++i)
                     {
                         if (SpellAuraHolder* holder = GetSpellAuraHolder(buffs[i]))
                         {
-                            pVictim->RemoveSpellAuraHolder(holder);
+                            RemoveSpellAuraHolder(holder);
                             break;
                         }
                     }
@@ -2442,6 +2444,11 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         CastSpell(this, spell, true);
                         basepoints[0] = spell->CalculateSimpleValue(EFFECT_INDEX_0);
                     }
+                }
+                else
+                {
+                    for (int i = 0; i < 3; ++i)
+                        RemoveAurasDueToSpell(buffs[i]);
                 }
                 break;
             }

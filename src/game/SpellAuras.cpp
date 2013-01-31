@@ -11907,7 +11907,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             // Bandit's Guile
             else if (GetId() == 84748)
             {
-                if (!apply && m_removeMode != AURA_REMOVE_BY_STACK)
+                if (!apply && m_removeMode != AURA_REMOVE_BY_EXPIRE)
                 {
                     if (Unit* caster = GetCaster())
                     {
