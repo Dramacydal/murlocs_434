@@ -7300,7 +7300,7 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
         }
     }
 
-    if (NeedsComboPoints(spellProto))
+    if (spellProto->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0xB20000)))
     {
         // Revealing Strike
         if (SpellAuraHolder* holder = pVictim->GetSpellAuraHolder(84617, GetObjectGuid()))
@@ -8790,7 +8790,7 @@ uint32 Unit::MeleeDamageBonusDone(Unit *pVictim, uint32 pdamage,WeaponAttackType
                     DonePercent *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
         }
 
-        if (NeedsComboPoints(spellProto))
+        if (spellProto->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0xB20000)))
         {
             // Revealing Strike
             if (SpellAuraHolder* holder = pVictim->GetSpellAuraHolder(84617, GetObjectGuid()))

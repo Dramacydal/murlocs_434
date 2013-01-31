@@ -2374,7 +2374,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 case 84617:                                 // Revealing Strike
                 {
                     // Check procSpell for Eviscerate, Envenom, Expose Armor, Kidney Shot and Rupture
-                    if (!procSpell || !procSpell->IsFitToFamily(SPELLFAMILY_ROGUE, 0xBA0000))
+                    if (!procSpell || !procSpell->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0xBA0000)))
                         return SPELL_AURA_PROC_FAILED;
                     break;
                 }
@@ -4352,7 +4352,8 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
         {
             if (auraSpellInfo->SpellIconID == 2260)         // Combat Potency
             {
-                if (!(procFlags & PROC_FLAG_SUCCESSFUL_OFFHAND_HIT))
+                // proc from offhand hits and Main Gauche
+                if (!(procFlags & PROC_FLAG_SUCCESSFUL_OFFHAND_HIT) && procSpell->Id != 86392)
                     return SPELL_AURA_PROC_FAILED;
             }
             // Item - Rogue T10 4P Bonus
