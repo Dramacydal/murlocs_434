@@ -2425,7 +2425,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 84748;
 
                 // Insight buffs
-                uint32 buffs[4] = { 84745, 84746, 84747, 84745 };
+                uint32 buffs[4] = { 84745, 84746, 84747, 0 };
 
                 if (pVictim->HasAura(triggered_spell_id))
                 {
@@ -2441,13 +2441,15 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         }
                     }
 
-                    if (i != 3 || !found)
+                    if (found)
+                        ++i;
+                    else
+                        i = 0;
+
+                    if (SpellEntry const * spell = sSpellStore.LookupEntry(buffs[i]))
                     {
-                        if (SpellEntry const * spell = sSpellStore.LookupEntry(buffs[i]))
-                        {
-                            CastSpell(this, spell, true);
-                            basepoints[0] = spell->CalculateSimpleValue(EFFECT_INDEX_0);
-                        }
+                        CastSpell(this, spell, true);
+                        basepoints[0] = spell->CalculateSimpleValue(EFFECT_INDEX_0);
                     }
                 }
                 else
