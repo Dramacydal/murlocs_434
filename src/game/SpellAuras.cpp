@@ -10261,11 +10261,8 @@ void Aura::PeriodicDummyTick()
             // Holy Word: Sanctuary
             if (spell->Id == 88685)
             {
-                if (Unit* caster = GetCaster())
-                {
-                    if (DynamicObject* dynObj = caster->GetDynObject(spell->Id))
+                    if (DynamicObject* dynObj = target->GetDynObject(spell->Id))
                         target->CastSpell(dynObj->GetPositionX(), dynObj->GetPositionY(), dynObj->GetPositionZ(), 88686, true, NULL, this, GetCasterGuid());
-                }
                 return;
             }
             break;
@@ -11509,6 +11506,12 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                         return;
                     break;
                 }
+                case 74002:                                 // Combat Readiness
+                {
+                    if (!apply && m_removeMode == AURA_REMOVE_BY_EXPIRE)
+                        m_target->RemoveAurasDueToSpell(74001);
+                    return;
+                }
                 case 85768:                                 // Dark Intent
                 {
                     if (!apply)
@@ -11904,13 +11907,6 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     spellId1 = 61922;                       // Sprint (waterwalk)
                 else
                    return;
-            }
-            // Combat Readiness
-            else if (GetId() == 74002)
-            {
-                if (!apply && m_removeMode == AURA_REMOVE_BY_EXPIRE)
-                    m_target->RemoveAurasDueToSpell(74001);
-                return;
             }
             // Bandit's Guile
             else if (GetId() == 84748)
