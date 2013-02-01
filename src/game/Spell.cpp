@@ -7076,7 +7076,8 @@ SpellCastResult Spell::CheckCast(bool strict)
             case SPELL_EFFECT_ADD_COMBO_POINTS:
             {
                 // Redirect
-                if (m_spellInfo->Id == 73981 && !m_caster->GetComboPoints())
+                if (m_spellInfo->Id == 73981 && (!m_caster->GetComboPoints() ||
+                    m_targets.getUnitTarget() && m_targets.getUnitTarget()->GetObjectGuid() == m_caster->GetComboTargetGuid()))
                     return SPELL_FAILED_NO_COMBO_POINTS;
                 break;
             }
@@ -7088,7 +7089,7 @@ SpellCastResult Spell::CheckCast(bool strict)
     for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
         SpellEffectEntry const* spellEffect = m_spellInfo->GetSpellEffect(SpellEffectIndex(i));
-        if(!spellEffect)
+        if (!spellEffect)
             continue;
 
         switch(spellEffect->EffectApplyAuraName)
