@@ -7073,6 +7073,13 @@ SpellCastResult Spell::CheckCast(bool strict)
                     return SPELL_FAILED_TARGET_CANNOT_BE_RESURRECTED;
                 break;
             }
+            case SPELL_EFFECT_ADD_COMBO_POINTS:
+            {
+                // Redirect
+                if (m_spellInfo->Id == 73981 && !m_caster->GetComboPoints())
+                    return SPELL_FAILED_NO_COMBO_POINTS;
+                break;
+            }
             default:
                 break;
         }

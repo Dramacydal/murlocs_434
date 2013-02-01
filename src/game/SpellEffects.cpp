@@ -12086,10 +12086,13 @@ void Spell::EffectSanctuary(SpellEffectEntry const* /*effect*/)
 
 void Spell::EffectAddComboPoints(SpellEffectEntry const* effect /*effect*/)
 {
-    if(!unitTarget)
+    if (!unitTarget)
         return;
 
-    if(damage <= 0)
+    if (m_spellInfo->Id == 73981)   // Redirect
+        damage = m_caster->GetComboPoints();
+
+    if (damage <= 0)
         return;
 
     m_caster->AddComboPoints(unitTarget, damage);
