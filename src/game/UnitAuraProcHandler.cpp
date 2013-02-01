@@ -2374,7 +2374,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 case 84617:                                 // Revealing Strike
                 {
                     // Check procSpell for Eviscerate, Envenom, Expose Armor, Kidney Shot and Rupture
-                    if (!procSpell || !procSpell->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0xBA0000)))
+                    if (!procSpell || !NeedsComboPoints(procSpell))
                         return SPELL_AURA_PROC_FAILED;
                     break;
                 }
@@ -2477,6 +2477,20 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 target = this;
                 triggered_spell_id = 31663;
                 break;
+            }
+            // Restless Blades
+            else if (dummySpell->SpellIconID == 4897)
+            {
+                if (!procSpell || GetTypeId() != TYPEID_PLAYER || !NeedsComboPoints(procSpell))
+                    return SPELL_AURA_PROC_FAILED;
+
+                int32 amt = GetComboPoints() * triggerAmount;
+                ((Player*)this)->SendModifyCooldown(2983, -amt);    // Sprint
+                ((Player*)this)->SendModifyCooldown(13750, -amt);   // Adrenaline Rush
+                ((Player*)this)->SendModifyCooldown(51690, -amt);   // Shadowstep
+                ((Player*)this)->SendModifyCooldown(73981, -amt);   // Redirect
+
+                return SPELL_AURA_PROC_OK;
             }
             break;
         }
@@ -5613,7 +5627,7 @@ SpellAuraProcResult Unit::HandleRemoveByDamageProc(Unit* pVictim, uint32 damage,
         if (procSpell && (GetAllSpellMechanicMask(procSpell) & (1 << (MECHANIC_INFECTED-1))))
             return SPELL_AURA_PROC_FAILED;
     }
-    // Gouge vs. bleed effects
+    // Gouge
     else if (triggeredByAura->GetId() == 1776)
     {
         if (procSpell && procSpell->Id == triggeredByAura->GetId())
