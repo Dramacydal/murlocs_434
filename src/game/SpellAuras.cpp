@@ -11904,6 +11904,13 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 else
                    return;
             }
+            // Combat Readiness
+            else if (GetId() == 74002)
+            {
+                if (!apply && m_removeMode == AURA_REMOVE_BY_EXPIRE)
+                    m_target->RemoveAurasDueToSpell(74001);
+                return;
+            }
             // Bandit's Guile
             else if (GetId() == 84748)
             {
