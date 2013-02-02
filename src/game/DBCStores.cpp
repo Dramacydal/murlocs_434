@@ -1450,6 +1450,15 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectBasePoints = 25;
                 break;
             }
+            case 88611:                         // Smoke Bomb
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                {
+                    eff->EffectImplicitTargetA = TARGET_AREAEFFECT_CUSTOM;
+                    eff->EffectImplicitTargetB = TARGET_NONE;
+                }
+                break;
+            }
          }
 
         //megai2: set 8 sec update to dk death rune auras
