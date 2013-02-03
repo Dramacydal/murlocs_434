@@ -943,6 +943,11 @@ void LoadDBCStores(const std::string& dataPath)
 
         switch (spell->Id)
         {
+            case 1776:                          // Gouge
+            {
+                spell->Attributes &= ~SPELL_ATTR_UNK11;
+                break;
+            }
             case 2654:                          // Summon Tamed (TEST) -> Premium NPC Summoner
             {
                 spell->Attributes = 0x10000110;
@@ -1452,6 +1457,7 @@ void LoadDBCStores(const std::string& dataPath)
             }
             case 88611:                         // Smoke Bomb
             {
+                spell->Attributes |= SPELL_ATTR_CANT_CANCEL;
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
                 {
                     eff->EffectImplicitTargetA = TARGET_AREAEFFECT_CUSTOM;
