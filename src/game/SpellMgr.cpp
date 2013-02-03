@@ -2429,6 +2429,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     // Killing Spree
                     if (spellInfo_1->SpellIconID == 2907 && spellInfo_2->SpellIconID == 2907)
                         return false;
+
+                    // Smoke Bomb
+                    if (spellInfo_1->SpellIconID == 4884 && spellInfo_2->SpellIconID == 4884)
+                        return false;
                     break;
                 }
                 case SPELLFAMILY_HUNTER:
@@ -2742,6 +2746,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
 
             // Killing Spree
             if (spellInfo_1->SpellIconID == 2907 && spellInfo_2->SpellIconID == 2907)
+                return false;
+
+            // Smoke Bomb
+            if (spellInfo_1->SpellIconID == 4884 && spellInfo_2->SpellIconID == 4884)
                 return false;
             break;
         case SPELLFAMILY_HUNTER:
