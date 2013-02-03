@@ -2645,6 +2645,8 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 break;
             }
 
+            DEBUG_LOG("SetTargetMap for TARGET_AREAEFFECT_CUSTOM spell %u eff %u x: %f y: %f z: %f",
+                m_spellInfo->Id, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
             UnitList tempTargetUnitMap;
             SpellScriptTargetBounds bounds = sSpellMgr.GetSpellScriptTargetBounds(m_spellInfo->Id);
             // fill real target list if no spell script target defined
