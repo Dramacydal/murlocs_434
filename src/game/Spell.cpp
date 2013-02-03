@@ -838,7 +838,7 @@ void Spell::FillTargetMap()
             }
         }
 
-        DEBUG_LOG("Spell::FillTargetMap: %u targets for spell %u effIdx %u", tmpUnitLists[effToIndex[i]].size(), m_spellInfo->Id, i);
+        DEBUG_LOG("Spell::FillTargetMap: %u targets for spell %u effIdx %u targetpair", tmpUnitLists[effToIndex[i]].size(), m_spellInfo->Id, i);
         for (UnitList::iterator itr = tmpUnitLists[effToIndex[i]].begin(); itr != tmpUnitLists[effToIndex[i]].end();)
         {
             if (!CheckTarget (*itr, SpellEffectIndex(i)))
@@ -1945,6 +1945,9 @@ struct TargetDistanceOrderFarAway : public std::binary_function<const Unit, cons
 
 void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList& targetUnitMap)
 {
+    DEBUG_LOG("Spell::SetTargetMap for spell %u eff %u targetMode %u",
+        m_spellInfo->Id, effIndex, targetMode);
+
     SpellEffectEntry const* spellEffect = m_spellInfo->GetSpellEffect(effIndex);
     SpellClassOptionsEntry const* classOpt = m_spellInfo->GetSpellClassOptions();
 
