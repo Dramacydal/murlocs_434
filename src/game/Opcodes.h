@@ -1462,8 +1462,7 @@ enum Opcodes
     SMSG_MOVE_SET_ACTIVE_MOVER                            = 0x11B3, // 4.3.4 15595
 };
 
-#define MAX_OPCODE_TABLE_SIZE (0xFFFF + 1)
-#define NUM_OPCODE_HANDLERS (0x7FFF + 1)
+#define MAX_OPCODE_TABLE_SIZE 0xFFFF
 
 extern void InitializeOpcodes();
 
@@ -1490,7 +1489,6 @@ class WorldPacket;
 struct OpcodeHandler
 {
     char const* name;
-    char const* compressedName;
     SessionStatus status;
     PacketProcessing packetProcessing;
     void (WorldSession::*handler)(WorldPacket& recvPacket);
@@ -1501,7 +1499,7 @@ extern OpcodeHandler opcodeTable[MAX_OPCODE_TABLE_SIZE];
 /// Lookup opcode name for human understandable logging
 inline const char* LookupOpcodeName(uint16 id)
 {
-    return id & COMPRESSED_OPCODE_MASK ? opcodeTable[id & 0x7FFF].compressedName : opcodeTable[id & 0x7FFF].name;
+    return opcodeTable[id].name;
 }
 #endif
 /// @}

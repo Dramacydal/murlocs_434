@@ -44,7 +44,6 @@
 #include "zlib/zlib.h"
 #include "WardenWin.h"
 #include "WardenMac.h"
-#include <zlib/zlib.h>
 
 // select opcodes appropriate for processing in Map::Update context for current session state
 static bool MapSessionFilterHelper(WorldSession* session, OpcodeHandler const& opHandle)
@@ -103,19 +102,6 @@ m_latency(0), m_tutorialState(TUTORIALDATA_UNCHANGED), m_Warden(NULL)
         m_Address = sock->GetRemoteAddress ();
         sock->AddReference ();
     }
-
-    _compressionStream = new z_stream();
-    _compressionStream->zalloc = (alloc_func)NULL;
-    _compressionStream->zfree = (free_func)NULL;
-    _compressionStream->opaque = (voidpf)NULL;
-    _compressionStream->avail_in = 0;
-    _compressionStream->next_in = NULL;
-    int32 z_res = deflateInit(_compressionStream, sWorld.getConfig(CONFIG_UINT32_COMPRESSION));
-    if (z_res != Z_OK)
-    {
-        sLog.outError("Can't initialize packet compression (zlib: deflateInit) Error code: %i (%s)", z_res, zError(z_res));
-        return;
-    }
 }
 
 /// WorldSession destructor
@@ -140,15 +126,6 @@ WorldSession::~WorldSession()
     WorldPacket* packet = NULL;
     while(_recvQueue.next(packet))
         delete packet;
-
-    int32 z_res = deflateEnd(_compressionStream);
-    if (z_res != Z_OK && z_res != Z_DATA_ERROR) // Z_DATA_ERROR signals that internal state was BUSY
-    {
-        sLog.outError("Can't close packet compression stream (zlib: deflateEnd) Error code: %i (%s)", z_res, zError(z_res));
-        return;
-    }
-
-    delete _compressionStream;
 }
 
 void WorldSession::SizeError(WorldPacket const& packet, uint32 size) const
