@@ -163,20 +163,29 @@ int WorldSocket::SendPacket (const WorldPacket& pct)
     if (closing_)
         return -1;
 
-    // Dump outgoing packet.
-    DUMP_WORLD_PACK(uint32(get_handle()), pct.GetOpcode(), LookupOpcodeName(pct.GetOpcode()), &pct, false);
+    WorldPacket const* pkt = &pct;
+    // Empty buffer used in case packet should be compressed
+    WorldPacket buff;
+    if (m_Session && pkt->size() > 0x400)
+    {
+        buff.Compress(m_Session->GetCompressionStream(), pkt);
+        pkt = &buff;
+    }
 
-    ServerPktHeader header(pct.size()+2, pct.GetOpcode());
+    // Dump outgoing packet - uncompressed, easier to parse
+    DUMP_WORLD_PACK(uint32(get_handle()), pkt->GetOpcode(), LookupOpcodeName(pkt->GetOpcode()), pkt, false);
+
+    ServerPktHeader header(pkt->size()+2, pkt->GetOpcode());
     m_Crypt.EncryptSend ((uint8*)header.header, header.getHeaderLength());
 
-    if (m_OutBuffer->space () >= pct.size () + header.getHeaderLength() && msg_queue()->is_empty())
+    if (m_OutBuffer->space () >= pkt->size () + header.getHeaderLength() && msg_queue()->is_empty())
     {
         // Put the packet on the buffer.
         if (m_OutBuffer->copy ((char*) header.header, header.getHeaderLength()) == -1)
             MANGOS_ASSERT (false);
 
-        if (!pct.empty ())
-            if (m_OutBuffer->copy ((char*) pct.contents (), pct.size ()) == -1)
+        if (!pkt->empty ())
+            if (m_OutBuffer->copy ((char*) pkt->contents (), pkt->size ()) == -1)
                 MANGOS_ASSERT (false);
     }
     else
@@ -184,12 +193,12 @@ int WorldSocket::SendPacket (const WorldPacket& pct)
         // Enqueue the packet.
         ACE_Message_Block* mb;
 
-        ACE_NEW_RETURN(mb, ACE_Message_Block(pct.size () + header.getHeaderLength()), -1);
+        ACE_NEW_RETURN(mb, ACE_Message_Block(pkt->size () + header.getHeaderLength()), -1);
 
         mb->copy((char*) header.header, header.getHeaderLength());
 
-        if (!pct.empty ())
-            mb->copy((const char*)pct.contents(), pct.size ());
+        if (!pkt->empty ())
+            mb->copy((const char*)pkt->contents(), pkt->size ());
 
         if(msg_queue()->enqueue_tail(mb,(ACE_Time_Value*)&ACE_Time_Value::zero) == -1)
         {

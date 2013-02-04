@@ -54,6 +54,7 @@ class WorldSession;
 class Quest;
 
 struct OpcodeHandler;
+struct z_stream_s;
 
 enum AccountDataType
 {
@@ -950,6 +951,8 @@ class MANGOS_DLL_SPEC WorldSession
 
         void HandleObjectUpdateFailedOpcode(WorldPacket& recv_data);
 
+        z_stream_s* GetCompressionStream() { return _compressionStream; }
+
     private:
         // private trade methods
         void moveItems(Item* myItems[], Item* hisItems[]);
@@ -994,6 +997,8 @@ class MANGOS_DLL_SPEC WorldSession
         AccountPremiumType      m_premiumType;
         AccountPremiumRateType  m_premiumRateType;
         time_t                  m_PremiumTimeEnd;
+
+        z_stream_s* _compressionStream;
 };
 #endif
 /// @}

@@ -256,4 +256,8 @@ inline char * mangos_strdup(const char * source)
 #define countof(array) (sizeof(array) / sizeof((array)[0]))
 #endif
 
+#ifndef COMPRESSED_OPCODE_MASK
+#  define COMPRESSED_OPCODE_MASK 0x8000
+#endif
+
 #endif

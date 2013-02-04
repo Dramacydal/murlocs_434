@@ -23,15 +23,17 @@
 #include "Opcodes.h"
 #include "WorldSession.h"
 
-static void DefineOpcode(uint16 opcode, const char* name, SessionStatus status, PacketProcessing packetProcessing, void (WorldSession::*handler)(WorldPacket& recvPacket))
+static void DefineOpcode(uint16 opcode, const char* name, const char* compressedName, SessionStatus status, PacketProcessing packetProcessing, void (WorldSession::*handler)(WorldPacket& recvPacket))
 {
     opcodeTable[opcode].name = name;
+    opcodeTable[opcode].compressedName = compressedName;
     opcodeTable[opcode].status = status;
     opcodeTable[opcode].packetProcessing = packetProcessing;
     opcodeTable[opcode].handler = handler;
 }
 
-#define OPCODE( name, status, packetProcessing, handler ) DefineOpcode( name, #name, status, packetProcessing, handler )
+#define OPCODE(name, status, packetProcessing, handler) \
+    DefineOpcode(name, #name, #name##"_COMPRESSED", status, packetProcessing, handler)
 
 /// Correspondence between opcodes and their names
 OpcodeHandler opcodeTable[MAX_OPCODE_TABLE_SIZE];
@@ -39,7 +41,7 @@ OpcodeHandler opcodeTable[MAX_OPCODE_TABLE_SIZE];
 void InitializeOpcodes()
 {
     for(uint16 i = 0; i < MAX_OPCODE_TABLE_SIZE; ++i)
-        DefineOpcode(i, "UNKNOWN", STATUS_UNHANDLED, PROCESS_INPLACE, &WorldSession::Handle_NULL);
+        DefineOpcode(i, "UNKNOWN", "UNKNOWN", STATUS_UNHANDLED, PROCESS_INPLACE, &WorldSession::Handle_NULL);
 
     OPCODE(MSG_WOW_CONNECTION,                             STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_EarlyProccess            );
     OPCODE(SMSG_AUTH_CHALLENGE,                            STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );

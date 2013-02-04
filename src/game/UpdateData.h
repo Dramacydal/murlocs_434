@@ -73,7 +73,5 @@ class UpdateData
         uint32 m_blockCount;
         GuidSet m_outOfRangeGUIDs;
         ByteBuffer m_data;
-
-        void Compress(void* dst, uint32 *dst_size, void* src, int src_size);
 };
 #endif
