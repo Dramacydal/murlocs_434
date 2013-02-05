@@ -83,11 +83,11 @@ namespace VMAP
             ~GroupModel() { delete iLiquid; }
 
             //! pass mesh data to object and create BIH. Passed vectors get get swapped with old geometry!
-            void setMeshData(std::vector<Vector3> &vert, std::vector<MeshTriangle> &tri);
-            void setLiquidData(WmoLiquid *liquid) { iLiquid = liquid; }
-            bool IntersectRay(const G3D::Ray &ray, float &distance, bool stopAtFirstHit) const;
-            bool IsInsideObject(const Vector3 &pos, const Vector3 &down, float &z_dist) const;
-            bool GetLiquidLevel(const Vector3 &pos, float &liqHeight) const;
+            void setMeshData(std::vector<Vector3>& vert, std::vector<MeshTriangle>& tri);
+            void setLiquidData(WmoLiquid*& liquid) { iLiquid = liquid; liquid = NULL; }
+            bool IntersectRay(const G3D::Ray& ray, float& distance, bool stopAtFirstHit) const;
+            bool IsInsideObject(const Vector3& pos, const Vector3& down, float& z_dist) const;
+            bool GetLiquidLevel(const Vector3& pos, float& liqHeight) const;
             uint32 GetLiquidType() const;
             bool writeToFile(FILE *wf);
             bool readFromFile(FILE *rf);
