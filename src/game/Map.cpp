@@ -466,6 +466,8 @@ void Map::Update(const uint32 &t_diff)
     uint32 proc_startTime = WorldTimer::getMSTime();
 #endif
 
+    m_dyn_tree.update(t_diff);
+
     /// update worldsessions for existing players
     for(m_mapRefIter = m_mapRefManager.begin(); m_mapRefIter != m_mapRefManager.end(); ++m_mapRefIter)
     {
@@ -2146,4 +2148,19 @@ float Map::GetVisibilityDistance() const
 void Map::SetVisibilityDistance(float distance)
 {
     m_VisibleDistance = distance;
+}
+
+void Map::InsertGameObjectModel(const GameObjectModel& mdl)
+{
+    m_dyn_tree.insert(mdl);
+}
+
+void Map::RemoveGameObjectModel(const GameObjectModel& mdl)
+{
+    m_dyn_tree.remove(mdl);
+}
+
+bool Map::ContainsGameObjectModel(const GameObjectModel& mdl) const
+{
+    return m_dyn_tree.contains(mdl);
 }

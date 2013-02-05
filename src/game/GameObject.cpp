@@ -80,6 +80,9 @@ void GameObject::AddToWorld()
     if(!IsInWorld())
         GetMap()->GetObjectsStore().insert<GameObject>(GetObjectGuid(), (GameObject*)this);
 
+    if (m_model)
+        GetMap()->InsertGameObjectModel(*m_model);
+
     Object::AddToWorld();
 
     // After Object::AddToWorld so that for initial state the GO is added to the world (and hence handled correctly)
@@ -106,6 +109,9 @@ void GameObject::RemoveFromWorld()
                     GetGuidStr().c_str(), m_spellId, GetGOInfo()->GetLinkedGameObjectEntry(), owner_guid.GetString().c_str());
             }
         }
+
+        if (m_model && GetMap()->ContainsGameObjectModel(*m_model))
+            GetMap()->RemoveGameObjectModel(*m_model);
 
         GetMap()->GetObjectsStore().erase<GameObject>(GetObjectGuid(), (GameObject*)NULL);
     }
@@ -2076,9 +2082,13 @@ void GameObject::UpdateCollisionState() const
 
 void GameObject::UpdateModel()
 {
+    if (m_model && IsInWorld() && GetMap()->ContainsGameObjectModel(*m_model))
+        GetMap()->RemoveGameObjectModel(*m_model);
     delete m_model;
 
     m_model = GameObjectModel::construct(this);
+    if (m_model)
+        GetMap()->InsertGameObjectModel(*m_model);
 }
 
 uint32 GameObject::CalculateAnimDuration(GOState oldState, GOState newState) const
