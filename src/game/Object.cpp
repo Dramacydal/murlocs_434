@@ -1403,13 +1403,15 @@ bool WorldObject::IsWithinLOS(float ox, float oy, float oz) const
     float x,y,z;
     GetPosition(x,y,z);
 
-    if (GetMap() && GetMap()->IsBattleGroundOrArena())
+    if (GetMap()->IsBattleGroundOrArena())
     {
         if (!((BattleGroundMap*)GetMap())->GetBG()->IsWithinLOSInBG(x, y, z, ox, oy, oz))
             return false;
     }
 
-    return GetMap()->IsInLineOfSight(x, y, z+2.0f, ox, oy, oz+2.0f);
+    float x, y, z;
+    GetPosition(x, y, z);
+    return GetMap()->IsInLineOfSight(x, y, z + 2.0f, ox, oy, oz + 2.0f, GetPhaseMask());
 }
 
 bool WorldObject::GetDistanceOrder(WorldObject const* obj1, WorldObject const* obj2, bool is3D /* = true */) const
@@ -1615,10 +1617,10 @@ void WorldObject::UpdateGroundPositionZ(float x, float y, float &z, float maxDif
 {
     maxDiff = maxDiff >= 100.0f ? 10.0f : sqrtf(maxDiff);
     bool useVmaps = false;
-    if( GetTerrain()->GetHeightStatic(x, y, z, false) <  GetTerrain()->GetHeight(x, y, z, true) ) // check use of vmaps
+    if(GetMap()->GetHeight(x, y, z, false) <  (GetMap()->GetHeight(x, y, z, true) ) // check use of vmaps
         useVmaps = true;
 
-    float normalizedZ = GetTerrain()->GetHeightStatic(x, y, z, useVmaps);
+    float normalizedZ = (GetMap()->GetHeight(x, y, z, useVmaps);
     // check if its reacheable
     if(normalizedZ <= INVALID_HEIGHT || fabs(normalizedZ-z) > maxDiff)
     {
@@ -1644,7 +1646,7 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
                 float ground_z = z;
                 float max_z = canSwim
                               ? GetTerrain()->GetWaterOrGroundLevel(x, y, z, &ground_z, !((Unit const*)this)->HasAuraType(SPELL_AURA_WATER_WALK))
-                              : ((ground_z = GetTerrain()->GetHeightStatic(x, y, z, true)));
+                              : ((ground_z = GetMap()->GetHeight(GetPhaseMask(), x, y, z, true)));
                 if (max_z > INVALID_HEIGHT)
                 {
                     if (z > max_z)
@@ -1655,7 +1657,7 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
             }
             else
             {
-                float ground_z = GetTerrain()->GetHeightStatic(x, y, z, true);
+                float ground_z = GetMap()->GetHeight(GetPhaseMask(), x, y, z, true);
                 if (z < ground_z)
                     z = ground_z;
             }
@@ -1678,7 +1680,7 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
             }
             else
             {
-                float ground_z = GetTerrain()->GetHeightStatic(x, y, z, true);
+                float ground_z = GetMap()->GetHeight(GetPhaseMask(), x, y, z, true);
                 if (z < ground_z)
                     z = ground_z;
             }
@@ -1686,7 +1688,7 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
         }
         default:
         {
-            float ground_z = GetTerrain()->GetHeightStatic(x, y, z, true);
+            float ground_z = GetMap()->GetHeight(GetPhaseMask(), x, y, z, true);
             if (ground_z > INVALID_HEIGHT)
                 z = ground_z;
             break;
