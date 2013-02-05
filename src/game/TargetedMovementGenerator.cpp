@@ -166,7 +166,7 @@ void ChaseMovementGenerator<T>::_reachTarget(T &owner)
 template<>
 void ChaseMovementGenerator<Player>::Initialize(Player &owner)
 {
-    owner.addUnitState(UNIT_STAT_CHASE | UNIT_STAT_CHASE_MOVE);
+    owner.addUnitState(UNIT_STAT_CHASE);                    // _MOVE set in _SetTargetLocation after required checks
     _setTargetLocation(owner, true);
 }
 
@@ -174,7 +174,7 @@ template<>
 void ChaseMovementGenerator<Creature>::Initialize(Creature &owner)
 {
     owner.SetWalk(false, false);                            // Chase movement is running
-    owner.addUnitState(UNIT_STAT_CHASE | UNIT_STAT_CHASE_MOVE);
+    owner.addUnitState(UNIT_STAT_CHASE);                    // _MOVE set in _SetTargetLocation after required checks
     _setTargetLocation(owner, true);
 }
 
@@ -230,7 +230,7 @@ void FollowMovementGenerator<Creature>::_updateSpeed(Creature &u)
 template<>
 void FollowMovementGenerator<Player>::Initialize(Player &owner)
 {
-    owner.addUnitState(UNIT_STAT_FOLLOW|UNIT_STAT_FOLLOW_MOVE);
+    owner.addUnitState(UNIT_STAT_FOLLOW);                   // _MOVE set in _SetTargetLocation after required checks
     _updateSpeed(owner);
     _setTargetLocation(owner, true);
 }
@@ -238,7 +238,7 @@ void FollowMovementGenerator<Player>::Initialize(Player &owner)
 template<>
 void FollowMovementGenerator<Creature>::Initialize(Creature &owner)
 {
-    owner.addUnitState(UNIT_STAT_FOLLOW|UNIT_STAT_FOLLOW_MOVE);
+    owner.addUnitState(UNIT_STAT_FOLLOW);                   // _MOVE set in _SetTargetLocation after required checks
     _updateSpeed(owner);
     _setTargetLocation(owner, true);
 }
