@@ -886,6 +886,9 @@ bool IsPositiveAura(SpellEntry const * spellproto, SpellEffectIndex effIndex)
                 case SPELL_AURA_MOD_INCREASE_ENERGY:
                     if (spellEffect->CalculateSimpleValue() > 0)
                         return true;                        // some expected positive spells have SPELL_ATTR_EX_NEGATIVE or unclear target modes
+                    // Groggy
+                    if (spellproto->Id == 79124 || spellproto->Id == 79126)
+                        return false;
                     break;
                 case SPELL_AURA_ADD_TARGET_TRIGGER:
                 case SPELL_AURA_INITIALIZE_IMAGES:
