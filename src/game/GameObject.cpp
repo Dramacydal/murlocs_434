@@ -40,12 +40,14 @@
 #include "OutdoorPvP/OutdoorPvP.h"
 #include "Util.h"
 #include "ScriptMgr.h"
+#include "vmap/GameObjectModel.h"
 #include "SQLStorages.h"
 #include <G3D/Quat.h>
 
 GameObject::GameObject() : WorldObject(),
     m_goInfo(NULL),
-    m_displayInfo(NULL)
+    m_displayInfo(NULL),
+    m_model(NULL)
 {
     m_objectType |= TYPEMASK_GAMEOBJECT;
     m_objectTypeId = TYPEID_GAMEOBJECT;
@@ -69,6 +71,7 @@ GameObject::GameObject() : WorldObject(),
 
 GameObject::~GameObject()
 {
+    delete m_model;
 }
 
 void GameObject::AddToWorld()
@@ -78,6 +81,9 @@ void GameObject::AddToWorld()
         GetMap()->GetObjectsStore().insert<GameObject>(GetObjectGuid(), (GameObject*)this);
 
     Object::AddToWorld();
+
+    // After Object::AddToWorld so that for initial state the GO is added to the world (and hence handled correctly)
+    UpdateCollisionState();
 }
 
 void GameObject::RemoveFromWorld()
@@ -2039,12 +2045,40 @@ bool GameObject::IsFriendlyTo(Unit const* unit) const
     return tester_faction->IsFriendlyTo(*target_faction);
 }
 
+void GameObject::SetLootState(LootState state)
+{
+    m_lootState = state;
+    UpdateCollisionState();
+}
+
 void GameObject::SetGoState(GOState state)
 {
     GOState oldState = GetGoState();
     SetByteValue(GAMEOBJECT_BYTES_1, 0, state);
     if (oldState != state && (m_updateFlag & UPDATEFLAG_TRANSPORT_ARR))
         SetUInt32Value(GAMEOBJECT_LEVEL, WorldTimer::getMSTime() + CalculateAnimDuration(oldState, state));
+    UpdateCollisionState();
+}
+
+void GameObject::SetPhaseMask(uint32 newPhaseMask, bool update)
+{
+    WorldObject::SetPhaseMask(newPhaseMask, update);
+    UpdateCollisionState();
+}
+
+void GameObject::UpdateCollisionState() const
+{
+    if (!m_model || !IsInWorld())
+        return;
+
+    m_model->enable(IsCollisionEnabled() ? GetPhaseMask() : 0);
+}
+
+void GameObject::UpdateModel()
+{
+    delete m_model;
+
+    m_model = GameObjectModel::construct(this);
 }
 
 uint32 GameObject::CalculateAnimDuration(GOState oldState, GOState newState) const
@@ -2070,6 +2104,7 @@ void GameObject::SetDisplayId(uint32 modelId)
 {
     SetUInt32Value(GAMEOBJECT_DISPLAYID, modelId);
     m_displayInfo = sGameObjectDisplayInfoStore.LookupEntry(modelId);
+    UpdateModel();
 }
 
 float GameObject::GetObjectBoundingRadius() const
