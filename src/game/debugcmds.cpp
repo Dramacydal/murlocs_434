@@ -1453,7 +1453,7 @@ bool ChatHandler::HandleDebugPositivenessCommand(char* args)
             if (eff->EffectApplyAuraName)
             {
                 bool positiveAura = IsPositiveAura(spellInfo, SpellEffectIndex(i));
-                PSendSysMessage("%u effect: %u bp %i Positive: %s Positive aura: %s", i, eff->Effect, eff->EffectBasePoints, positive ? "true" : "false", positiveAura ? "true" : "false");
+                PSendSysMessage("%u effect: %u aura: %u bp %i Positive: %s Positive aura: %s", i, eff->Effect, eff->EffectApplyAuraName, eff->EffectBasePoints, positive ? "true" : "false", positiveAura ? "true" : "false");
             }
             else
                 PSendSysMessage("%u effect: %u bp %i Positive: %s", i, eff->Effect, eff->EffectBasePoints, positive ? "true" : "false");
