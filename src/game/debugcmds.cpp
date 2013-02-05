@@ -1430,3 +1430,37 @@ bool ChatHandler::HandleGetDynobjectsInfoCommand(char* args)
 
     return true;
 }
+
+bool ChatHandler::HandleDebugPositivenessCommand(char* args)
+{
+    if (!*args)
+        return false;
+
+    uint32 spellId;
+    if (!ExtractUInt32(&args, spellId))
+        return false;
+
+    SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellId);
+    if (!spellInfo)
+        return false;
+
+    PSendSysMessage("Spell %u is %s.", spellId, IsPositiveSpell(spellInfo) ? "positive" : "negative");
+    for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+    {
+        if (SpellEffectEntry const* eff = spellInfo->GetSpellEffect(SpellEffectIndex(i)))
+        {
+            bool positive = IsPositiveEffect(spellInfo, SpellEffectIndex(i));
+            if (eff->EffectApplyAuraName)
+            {
+                bool positiveAura = IsPositiveAura(spellInfo, SpellEffectIndex(i));
+                PSendSysMessage("%u effect: %u bp %i Positive: %s Positive aura: %s", i, eff->Effect, eff->EffectBasePoints, positive ? "true" : "false", positiveAura ? "true" : "false");
+            }
+            else
+                PSendSysMessage("%u effect: %u bp %i Positive: %s", i, eff->Effect, eff->EffectBasePoints, positive ? "true" : "false");
+        }
+        else
+            PSendSysMessage("%u effect: -", i);
+    }
+
+    return true;
+}

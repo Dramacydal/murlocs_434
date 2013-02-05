@@ -295,6 +295,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "moditemvalue",   SEC_ADMINISTRATOR,  false, &ChatHandler::HandleDebugModItemValueCommand,        "", NULL },
         { "modvalue",       SEC_ADMINISTRATOR,  false, &ChatHandler::HandleDebugModValueCommand,            "", NULL },
         { "play",           SEC_MODERATOR,      false, NULL,                                                "", debugPlayCommandTable },
+        { "positiveness",   SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleDebugPositivenessCommand,        "", NULL },
         { "resistance",     SEC_GAMEMASTER,     false, &ChatHandler::HandleDebugResistanceCommand,          "", NULL },
         { "send",           SEC_ADMINISTRATOR,  false, NULL,                                                "", debugSendCommandTable },
         { "setaurastate",   SEC_ADMINISTRATOR,  false, &ChatHandler::HandleDebugSetAuraStateCommand,        "", NULL },
