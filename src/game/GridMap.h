@@ -216,78 +216,76 @@ typedef ACE_Atomic_Op<ACE_Thread_Mutex, long> AtomicLong;
 //class for sharing and managin GridMap objects
 class MANGOS_DLL_SPEC TerrainInfo : public Referencable<AtomicLong>
 {
-public:
-    TerrainInfo(uint32 mapid);
-    ~TerrainInfo();
+    public:
+        TerrainInfo(uint32 mapid);
+        ~TerrainInfo();
 
-    uint32 GetMapId() const { return m_mapId; }
+        uint32 GetMapId() const { return m_mapId; }
 
-    //TODO: move all terrain/vmaps data info query functions
-    //from 'Map' class into this class
-    float GetHeight(float x, float y, float z, bool pCheckVMap=true, float maxSearchDist=DEFAULT_HEIGHT_SEARCH) const;
-    float GetWaterLevel(float x, float y, float z, float* pGround = NULL) const;
-    float GetWaterOrGroundLevel(float x, float y, float z, float* pGround = NULL, bool swim = false) const;
-    bool IsInWater(float x, float y, float z, GridMapLiquidData *data = 0) const;
-    bool IsUnderWater(float x, float y, float z) const;
+        // TODO: move all terrain/vmaps data info query functions
+        // from 'Map' class into this class
+        float GetHeightStatic(float x, float y, float z, bool pCheckVMap = true, float maxSearchDist = DEFAULT_HEIGHT_SEARCH) const;
+        float GetWaterLevel(float x, float y, float z, float* pGround = NULL) const;
+        float GetWaterOrGroundLevel(float x, float y, float z, float* pGround = NULL, bool swim = false) const;
+        bool IsInWater(float x, float y, float z, GridMapLiquidData* data = 0) const;
+        bool IsUnderWater(float x, float y, float z) const;
 
-    GridMapLiquidStatus getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, GridMapLiquidData *data = 0) const;
+        GridMapLiquidStatus getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, GridMapLiquidData* data = 0) const;
 
-    uint16 GetAreaFlag(float x, float y, float z, bool *isOutdoors=0) const;
-    uint8 GetTerrainType(float x, float y ) const;
+        uint16 GetAreaFlag(float x, float y, float z, bool* isOutdoors = 0) const;
+        uint8 GetTerrainType(float x, float y) const;
 
-    uint32 GetAreaId(float x, float y, float z) const;
-    uint32 GetZoneId(float x, float y, float z) const;
-    void GetZoneAndAreaId(uint32& zoneid, uint32& areaid, float x, float y, float z) const;
+        uint32 GetAreaId(float x, float y, float z) const;
+        uint32 GetZoneId(float x, float y, float z) const;
+        void GetZoneAndAreaId(uint32& zoneid, uint32& areaid, float x, float y, float z) const;
 
-    bool GetAreaInfo(float x, float y, float z, uint32 &mogpflags, int32 &adtId, int32 &rootId, int32 &groupId) const;
-    bool IsOutdoors(float x, float y, float z) const;
-    bool IsNextZcoordOK(float x, float y, float oldZ, float maxDiff = 5.0f) const;
+        bool GetAreaInfo(float x, float y, float z, uint32& mogpflags, int32& adtId, int32& rootId, int32& groupId) const;
+        bool IsOutdoors(float x, float y, float z) const;
+        bool IsNextZcoordOK(float x, float y, float oldZ, float maxDiff = 5.0f) const;
 
+        // this method should be used only by TerrainManager
+        // to cleanup unreferenced GridMap objects - they are too heavy
+        // to destroy them dynamically, especially on highly populated servers
+        // THIS METHOD IS NOT THREAD-SAFE!!!! AND IT SHOULDN'T BE THREAD-SAFE!!!!
+        void CleanUpGrids(const uint32 diff);
 
-    //this method should be used only by TerrainManager
-    //to cleanup unreferenced GridMap objects - they are too heavy
-    //to destroy them dynamically, especially on highly populated servers
-    //THIS METHOD IS NOT THREAD-SAFE!!!! AND IT SHOULDN'T BE THREAD-SAFE!!!!
-    void CleanUpGrids(const uint32 diff);
+        uint32 GetTotalGridsSize()
+        {
+            uint32 ret = 0;
+            for (uint32 x=0; x<MAX_NUMBER_OF_GRIDS; x++)
+                for (uint32 y=0; y<MAX_NUMBER_OF_GRIDS; y++)
+                    if (m_GridMaps[x][y]) 
+                        ret += m_GridMaps[x][y]->GetMemUsage();
+            return ret;
+        }
+    protected:
+        friend class Map;
+        // load/unload terrain data
+        GridMap* Load(const uint32 x, const uint32 y);
+        void Unload(const uint32 x, const uint32 y);
 
-    uint32 GetTotalGridsSize()
-    {
-        uint32 ret = 0;
-        for (uint32 x=0; x<MAX_NUMBER_OF_GRIDS; x++)
-            for (uint32 y=0; y<MAX_NUMBER_OF_GRIDS; y++)
-                if (m_GridMaps[x][y]) 
-                    ret += m_GridMaps[x][y]->GetMemUsage();
-        return ret;
-    }
+    private:
+        TerrainInfo(const TerrainInfo&);
+        TerrainInfo& operator=(const TerrainInfo&);
 
-protected:
-    friend class Map;
-    //load/unload terrain data
-    GridMap * Load(const uint32 x, const uint32 y);
-    void Unload(const uint32 x, const uint32 y);
+        GridMap* GetGrid(const float x, const float y);
+        GridMap* LoadMapAndVMap(const uint32 x, const uint32 y);
 
-private:
-    TerrainInfo(const TerrainInfo&);
-    TerrainInfo& operator=(const TerrainInfo&);
+        int RefGrid(const uint32& x, const uint32& y);
+        int UnrefGrid(const uint32& x, const uint32& y);
 
-    GridMap * GetGrid( const float x, const float y );
-    GridMap * LoadMapAndVMap(const uint32 x, const uint32 y );
+        const uint32 m_mapId;
 
-    int RefGrid(const uint32& x, const uint32& y);
-    int UnrefGrid(const uint32& x, const uint32& y);
+        GridMap* m_GridMaps[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
+        int16 m_GridRef[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
 
-    const uint32 m_mapId;
+        // global garbage collection timer
+        ShortIntervalTimer i_timer;
 
-    GridMap *m_GridMaps[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
-    int16 m_GridRef[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
-
-    //global garbage collection timer
-    ShortIntervalTimer i_timer;
-
-    typedef ACE_Thread_Mutex LOCK_TYPE;
-    typedef ACE_Guard<LOCK_TYPE> LOCK_GUARD;
-    LOCK_TYPE m_mutex;
-    LOCK_TYPE m_refMutex;
+        typedef ACE_Thread_Mutex LOCK_TYPE;
+        typedef ACE_Guard<LOCK_TYPE> LOCK_GUARD;
+        LOCK_TYPE m_mutex;
+        LOCK_TYPE m_refMutex;
 };
 
 //class for managing TerrainData object and all sort of geometry querying operations

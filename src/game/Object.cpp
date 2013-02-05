@@ -1615,15 +1615,15 @@ void WorldObject::UpdateGroundPositionZ(float x, float y, float &z, float maxDif
 {
     maxDiff = maxDiff >= 100.0f ? 10.0f : sqrtf(maxDiff);
     bool useVmaps = false;
-    if( GetTerrain()->GetHeight(x, y, z, false) <  GetTerrain()->GetHeight(x, y, z, true) ) // check use of vmaps
+    if( GetTerrain()->GetHeightStatic(x, y, z, false) <  GetTerrain()->GetHeight(x, y, z, true) ) // check use of vmaps
         useVmaps = true;
 
-    float normalizedZ = GetTerrain()->GetHeight(x, y, z, useVmaps);
+    float normalizedZ = GetTerrain()->GetHeightStatic(x, y, z, useVmaps);
     // check if its reacheable
     if(normalizedZ <= INVALID_HEIGHT || fabs(normalizedZ-z) > maxDiff)
     {
         useVmaps = !useVmaps;                                // try change vmap use
-        normalizedZ = GetTerrain()->GetHeight(x, y, z, useVmaps);
+        normalizedZ = GetTerrain()->GetHeightStatic(x, y, z, useVmaps);
         if(normalizedZ <= INVALID_HEIGHT || fabs(normalizedZ-z) > maxDiff)
             return;                                        // Do nothing in case of another bad result 
     }
@@ -1643,8 +1643,8 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
                 bool canSwim = ((Creature const*)this)->CanSwim();
                 float ground_z = z;
                 float max_z = canSwim
-                    ? GetTerrain()->GetWaterOrGroundLevel(x, y, z, &ground_z, !((Unit const*)this)->HasAuraType(SPELL_AURA_WATER_WALK))
-                    : ((ground_z = GetTerrain()->GetHeight(x, y, z, true)));
+                              ? GetTerrain()->GetWaterOrGroundLevel(x, y, z, &ground_z, !((Unit const*)this)->HasAuraType(SPELL_AURA_WATER_WALK))
+                              : ((ground_z = GetTerrain()->GetHeightStatic(x, y, z, true)));
                 if (max_z > INVALID_HEIGHT)
                 {
                     if (z > max_z)
@@ -1655,7 +1655,7 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
             }
             else
             {
-                float ground_z = GetTerrain()->GetHeight(x, y, z, true);
+                float ground_z = GetTerrain()->GetHeightStatic(x, y, z, true);
                 if (z < ground_z)
                     z = ground_z;
             }
@@ -1678,7 +1678,7 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
             }
             else
             {
-                float ground_z = GetTerrain()->GetHeight(x, y, z, true);
+                float ground_z = GetTerrain()->GetHeightStatic(x, y, z, true);
                 if (z < ground_z)
                     z = ground_z;
             }
@@ -1686,8 +1686,8 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
         }
         default:
         {
-            float ground_z = GetTerrain()->GetHeight(x, y, z, true);
-            if(ground_z > INVALID_HEIGHT)
+            float ground_z = GetTerrain()->GetHeightStatic(x, y, z, true);
+            if (ground_z > INVALID_HEIGHT)
                 z = ground_z;
             break;
         }
