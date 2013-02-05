@@ -1200,10 +1200,11 @@ void Aura::HandleAuraInitializeImages( bool Apply, bool Real) //same. All copyri
 
 void Aura::HandleAddModifier(bool apply, bool Real)
 {
-    if(GetTarget()->GetTypeId() != TYPEID_PLAYER || !Real)
+    Unit* target = GetTarget();
+    if (target->GetTypeId() != TYPEID_PLAYER || !Real)
         return;
 
-    if(m_modifier.m_miscvalue >= MAX_SPELLMOD)
+    if (m_modifier.m_miscvalue >= MAX_SPELLMOD)
         return;
 
     if (apply)
@@ -1255,26 +1256,32 @@ void Aura::HandleAddModifier(bool apply, bool Real)
 
     switch (GetId())
     {
-        case SPELLFAMILY_PRIEST:
+        case 81661:     // Evangelism
+        case 87118:     // Dark Evangelism
         {
-            // Evangelism
-            case 81661:
-            // Dark Evangelism
-            case 87118:
+            if (GetEffIndex() == EFFECT_INDEX_0 && !apply)
+                target->RemoveAurasByCasterSpell(87154, GetCasterGuid());
+            break;
+        }
+        case 84590:     // Deadly Momentum
+        {
+            if (apply)
             {
-                if (GetEffIndex() == EFFECT_INDEX_0)
-                {
-                    Unit* target = GetTarget();
-                    if (!apply)
-                        target->RemoveAurasByCasterSpell(87154, GetCasterGuid());
-                }
-                break;
+                // Slice and Dice
+                if (SpellAuraHolder* holder = target->GetSpellAuraHolder(5171))
+                    holder->RefreshHolder();
+
+                // Recuperate
+                if (SpellAuraHolder* holder = target->GetSpellAuraHolder(73651))
+                    holder->RefreshHolder();
             }
+            break;
         }
         default:
             break;
     }
-    ((Player*)GetTarget())->AddSpellMod(this, apply);
+
+    ((Player*)target)->AddSpellMod(this, apply);
 
     ReapplyAffectedPassiveAuras();
 }

@@ -5252,6 +5252,17 @@ SpellAuraProcResult Unit::HandleAddFlatModifierAuraProc(Unit* pVictim, uint32 /*
                 CastSpell(this, 81208, true);
             break;
         }
+        case SPELLFAMILY_ROGUE:
+        {
+            // Deadly Momentum
+            if (spellInfo->Id == 84590)
+            {
+                if (GetTypeId() != TYPEID_PLAYER || ((Player*)this)->HasSpellCooldown(spellInfo->Id))
+                    return SPELL_AURA_PROC_FAILED;
+                return SPELL_AURA_PROC_OK;
+            }
+            break;
+        }
         case SPELLFAMILY_PALADIN:
         {
             if (spellInfo->Id == 53695 || spellInfo->Id == 53696)  // Judgements of the Just
