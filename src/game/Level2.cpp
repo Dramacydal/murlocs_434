@@ -967,8 +967,13 @@ bool ChatHandler::HandleGameObjectTargetCommand(char* args)
 
         ShowNpcOrGoSpawnInformation<GameObject>(target->GetGUIDLow());
 
-        PSendSysMessage("LootState: %u, AutocloseCooldown: "SI64FMTD, target->getLootState(), target->GetCooldownTime() ? target->GetCooldownTime() - time(NULL) : 0);
+        PSendSysMessage("AutocloseCooldown: "SI64FMTD, target->GetCooldownTime() ? target->GetCooldownTime() - time(NULL) : 0);
         PSendSysMessage("isSpawned: %s, isSpawnedByDefault: %s, RespawnDelay: %u", target->isSpawned() ? "true" : "false", target->isSpawnedByDefault() ? "true" : "false", target->GetRespawnDelay());
+
+        if (target->GetGoType() == GAMEOBJECT_TYPE_DOOR)
+            PSendSysMessage(LANG_COMMAND_GO_STATUS_DOOR, target->GetGoState(), target->getLootState(), GetOnOffStr(target->IsCollisionEnabled()), goI->door.startOpen ? "open" : "closed");
+        else
+            PSendSysMessage(LANG_COMMAND_GO_STATUS, target->GetGoState(), target->getLootState(), GetOnOffStr(target->IsCollisionEnabled()));
     }
     return true;
 }
