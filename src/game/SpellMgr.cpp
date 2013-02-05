@@ -809,8 +809,8 @@ bool IsPositiveAura(SpellEntry const * spellproto)
 bool IsPositiveAura(SpellEntry const * spellproto, SpellEffectIndex effIndex)
 {
     SpellEffectEntry const* spellEffect = spellproto->GetSpellEffect(effIndex);
-    DEBUG_LOG(">>>IsPositiveAura 7 spell %u", spellproto->Id);
-    switch (spellproto->GetEffectApplyAuraNameByIndex(effIndex))
+
+    switch (spellproto->GetSpellEffectIdByIndex(effIndex))
     {
         case SPELL_EFFECT_APPLY_AURA:
         case SPELL_EFFECT_APPLY_AREA_AURA_FRIEND:
@@ -885,17 +885,10 @@ bool IsPositiveAura(SpellEntry const * spellproto, SpellEffectIndex effIndex)
                 case SPELL_AURA_MOD_DAMAGE_PERCENT_DONE:
                 case SPELL_AURA_MOD_INCREASE_ENERGY:
                     if (spellEffect->CalculateSimpleValue() > 0)
-                    {
-                        DEBUG_LOG(">>>IsPositiveAura 6 spell %u", spellproto->Id);
                         return true;                        // some expected positive spells have SPELL_ATTR_EX_NEGATIVE or unclear target modes
-                    }
                     // Groggy
                     if (spellproto->Id == 79124 || spellproto->Id == 79126)
-                    {
-                        DEBUG_LOG(">>>IsPositiveAura 5 spell %u", spellproto->Id);
                         return false;
-                    }
-                    DEBUG_LOG(">>>IsPositiveAura 4 spell %u", spellproto->Id);
                     break;
                 case SPELL_AURA_ADD_TARGET_TRIGGER:
                 case SPELL_AURA_INITIALIZE_IMAGES:
@@ -1084,20 +1077,13 @@ bool IsPositiveAura(SpellEntry const * spellproto, SpellEffectIndex effIndex)
     }
 
     // non-positive targets
-    if(spellEffect && !IsPositiveTarget(spellEffect->EffectImplicitTargetA, spellEffect->EffectImplicitTargetB))
-    {
-        DEBUG_LOG(">>>IsPositiveAura 3 spell %u", spellproto->Id);
+    if (spellEffect && !IsPositiveTarget(spellEffect->EffectImplicitTargetA, spellEffect->EffectImplicitTargetB))
         return false;
-    }
 
     // AttributesEx check
     if (spellproto->HasAttribute(SPELL_ATTR_EX_NEGATIVE))
-    {
-        DEBUG_LOG(">>>IsPositiveAura 2 spell %u", spellproto->Id);
         return false;
-    }
 
-    DEBUG_LOG(">>>IsPositiveAura 1 spell %u", spellproto->Id);
     // ok, positive
     return true;
 

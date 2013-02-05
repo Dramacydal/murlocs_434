@@ -1004,9 +1004,6 @@ bool Aura::isAffectedOnSpell(SpellEntry const *spell) const
 
 bool Aura::CanProcFrom(SpellEntry const *spell, uint32 /*procFlag*/, uint32 EventProcEx, uint32 procEx, bool active, bool useClassMask) const
 {
-    DEBUG_LOG(">>>>>Aura::CanProcFrom aura %u eff %u spell %u eventProcEx %u procEx %u active %u useClassMask %u",
-        GetId(), GetEffIndex(), spell ? spell->Id : 0, EventProcEx, procEx, active, useClassMask);
-
     // Check EffectClassMask
     ClassFamilyMask const& mask  = GetAuraSpellClassMask();
 
@@ -1016,17 +1013,11 @@ bool Aura::CanProcFrom(SpellEntry const *spell, uint32 /*procFlag*/, uint32 Even
         if (GetHolder()->GetAuraCharges() > 0)
         {
             if (procEx != PROC_EX_CAST_END && EventProcEx == PROC_EX_NONE)
-            {
-                DEBUG_LOG(">>>>>Aura::CanProcFrom EXIT 1");
                 return false;
-            }
         }
     }
     else if (EventProcEx == PROC_EX_NONE && procEx == PROC_EX_CAST_END)
-    {
-        DEBUG_LOG(">>>>>Aura::CanProcFrom EXIT 2");
         return false;
-    }
 
     // if no class mask defined, or spell_proc_event has SpellFamilyName=0 - allow proc
     if (!useClassMask || !mask)
@@ -1037,28 +1028,16 @@ bool Aura::CanProcFrom(SpellEntry const *spell, uint32 /*procFlag*/, uint32 Even
             if (EventProcEx == PROC_EX_NONE)
             {
                 // No extra req, so can trigger only for active (damage/healing present) and hit/crit
-                if(((procEx & (PROC_EX_NORMAL_HIT|PROC_EX_CRITICAL_HIT)) && active) || procEx == PROC_EX_CAST_END)
-                {
-                    DEBUG_LOG(">>>>>Aura::CanProcFrom EXIT 3");
-                    return true;
-                }
-                else
-                {
-                    DEBUG_LOG(">>>>>Aura::CanProcFrom EXIT 4");
-                    return false;
-                }
+                return (procEx & (PROC_EX_NORMAL_HIT | PROC_EX_CRITICAL_HIT)) && active || procEx == PROC_EX_CAST_END;
             }
             else // Passive spells hits here only if resist/reflect/immune/evade
             {
                 // Passive spells can`t trigger if need hit (exclude cases when procExtra include non-active flags)
                 if ((EventProcEx & (PROC_EX_NORMAL_HIT|PROC_EX_CRITICAL_HIT) & procEx) && !active)
-                {
-                    DEBUG_LOG(">>>>>Aura::CanProcFrom EXIT 5");
                     return false;
-                }
             }
         }
-        DEBUG_LOG(">>>>>Aura::CanProcFrom EXIT 6");
+
         return true;
     }
     else
@@ -1066,13 +1045,9 @@ bool Aura::CanProcFrom(SpellEntry const *spell, uint32 /*procFlag*/, uint32 Even
         // SpellFamilyName check is performed in SpellMgr::IsSpellProcEventCanTriggeredBy and it is done once for whole holder
         // note: SpellFamilyName is not checked if no spell_proc_event is defined
         SpellClassOptionsEntry const* classOpt = spell->GetSpellClassOptions();
-        if(!classOpt)
-        {
-            DEBUG_LOG(">>>>>Aura::CanProcFrom EXIT 7");
+        if (!classOpt)
             return true;
-        }
 
-        DEBUG_LOG(">>>>>Aura::CanProcFrom EXIT 8");
         return mask.IsFitToFamilyMask(classOpt->SpellFamilyFlags);
     }
 }
