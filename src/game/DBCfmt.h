@@ -21,7 +21,7 @@
 
 const char Achievementfmt[]="niiissiiiiisii";
 const char AchievementCriteriafmt[]="niiiiiiiixsiiiiixxxxxxx";
-const char AreaTableEntryfmt[]="iiinixxxxxisixxxxfxxxxxxxx";
+const char AreaTableEntryfmt[]="iiinixxxxxisiiiiifxxxxxxxx";
 const char AreaGroupEntryfmt[]="niiiiiii";
 const char AreaTriggerEntryfmt[]="nifffxxxfffff";
 const char ArmorLocationfmt[]="nfffff";
@@ -88,6 +88,7 @@ const char ItemReforgefmt[]="nifif";
 const char ItemSetEntryfmt[]="dsxxxxxxxxxxxxxxxxxiiiiiiiiiiiiiiiiii";
 const char LFGDungeonEntryfmt[]="nxiiiiiiiiiixiiixxxxx";
 const char LFGDungeonExpansionEntryfmt[]="niiiiiii";
+const char LiquidTypefmt[] = "nxxixixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 const char LockEntryfmt[]="niiiiiiiiiiiiiiiiiiiiiiiixxxxxxxx";
 const char MailTemplateEntryfmt[]="nxs";
 const char MapEntryfmt[]="nsiiiisissififfiiiii";
