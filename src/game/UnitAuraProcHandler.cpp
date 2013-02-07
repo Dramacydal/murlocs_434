@@ -2410,22 +2410,17 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             {
                 // "refresh your Slice and Dice duration to its 5 combo point maximum"
                 // lookup Slice and Dice
-                AuraList const& sd = GetAurasByType(SPELL_AURA_MOD_MELEE_HASTE);
-                for(AuraList::const_iterator itr = sd.begin(); itr != sd.end(); ++itr)
+                if (SpellAuraHolder* holder = GetSpellAuraHolder(5171))
                 {
-                    SpellEntry const *spellProto = (*itr)->GetSpellProto();
-                    SpellClassOptionsEntry const* itrClassOptions = spellProto->GetSpellClassOptions();
-                    if (itrClassOptions && itrClassOptions->SpellFamilyName == SPELLFAMILY_ROGUE &&
-                        (itrClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000040000)))
-                    {
-                        int32 duration = GetSpellMaxDuration(spellProto);
-                        if(GetTypeId() == TYPEID_PLAYER)
-                            ((Player*)this)->ApplySpellMod(spellProto->Id, SPELLMOD_DURATION, duration);
-                        (*itr)->GetHolder()->SetAuraMaxDuration(duration);
-                        (*itr)->GetHolder()->RefreshHolder();
-                        return SPELL_AURA_PROC_OK;
-                    }
+                    int32 duration = GetSpellMaxDuration(holder->GetSpellProto());
+                    if (GetTypeId() == TYPEID_PLAYER)
+                        ((Player*)this)->ApplySpellMod(holder->GetId(), SPELLMOD_DURATION, duration);
+
+                    holder->SetAuraMaxDuration(duration);
+                    holder->RefreshHolder();
+                    return SPELL_AURA_PROC_OK;
                 }
+
                 return SPELL_AURA_PROC_FAILED;
             }
             // Deadly Brew
@@ -4421,7 +4416,8 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
         }
         case SPELLFAMILY_ROGUE:
         {
-            if (auraSpellInfo->SpellIconID == 2260)         // Combat Potency
+            // Combat Potency
+            if (auraSpellInfo->SpellIconID == 2260)
             {
                 // proc from offhand hits and Main Gauche
                 if (!(procFlags & PROC_FLAG_SUCCESSFUL_OFFHAND_HIT) && (!procSpell || procSpell->Id != 86392))
@@ -4431,6 +4427,13 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             else if (auraSpellInfo->SpellIconID == 2984)
             {
                 if (!procSpell || !IsSpellHaveEffect(procSpell, SPELL_EFFECT_ADD_COMBO_POINTS))
+                    return SPELL_AURA_PROC_FAILED;
+                break;
+            }
+            // Master Poisoner
+            else if (auraSpellInfo->Id == 58410)
+            {
+                if (!procSpell || procSpell->GetDispel() != DISPEL_POISON)
                     return SPELL_AURA_PROC_FAILED;
                 break;
             }

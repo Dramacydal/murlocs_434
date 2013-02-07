@@ -8723,29 +8723,10 @@ uint32 Unit::MeleeDamageBonusDone(Unit *pVictim, uint32 pdamage,WeaponAttackType
     }
 
     // .. done (class scripts)
-    AuraList const& mclassScritAuras = GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
-    for(AuraList::const_iterator i = mclassScritAuras.begin(); i != mclassScritAuras.end(); ++i)
-    {
-        switch((*i)->GetMiscValue())
-        {
-            // Dirty Deeds
-            case 6427:
-            case 6428:
-                if(pVictim->HasAuraState(AURA_STATE_HEALTHLESS_35_PERCENT))
-                {
-                    Aura* eff0 = GetAura((*i)->GetId(), EFFECT_INDEX_0);
-                    if (!eff0 || (*i)->GetEffIndex() != EFFECT_INDEX_1)
-                    {
-                        ERROR_LOG("Spell structure of DD (%u) changed.",(*i)->GetId());
-                        continue;
-                    }
-
-                    // effect 0 have expected value but in negative state
-                    DonePercent *= (-eff0->GetModifier()->m_amount + 100.0f) / 100.0f;
-                }
-                break;
-        }
-    }
+    //AuraList const& mclassScritAuras = GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
+    //for(AuraList::const_iterator i = mclassScritAuras.begin(); i != mclassScritAuras.end(); ++i)
+    //{
+    //}
 
     if (spellProto)
     {
@@ -10489,6 +10470,7 @@ int32 Unit::CalculateSpellDamage(Unit const* target, SpellEntry const* spellProt
                 case 79107: // Shadow Protection
                     return amount;
                 case 79060: // Mark of the Wild
+                case 79061: // Mark of the Wild
                 case 79062: // Blessing of Kings
                 case 79063: // Blessing of Kings
                     return amount / 2;
