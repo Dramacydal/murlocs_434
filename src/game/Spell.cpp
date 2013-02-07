@@ -4698,11 +4698,12 @@ void Spell::finish(bool ok)
                     }
                 }
 
+                ObjectGuid comboTargetGuid = m_caster->GetComboTargetGuid();
                 m_caster->ClearComboPoints();
 
                 // Restore combo points
                 if (cpAmount)
-                    if (Unit* target = m_caster->GetMap()->GetUnit(m_caster->GetComboTargetGuid()))
+                    if (Unit* target = m_caster->GetMap()->GetUnit(comboTargetGuid))
                         m_caster->CastCustomSpell(target, 79128, &cpAmount, NULL, NULL, true);
             }
             else
