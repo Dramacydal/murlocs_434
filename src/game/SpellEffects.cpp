@@ -1122,36 +1122,11 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                             damage += combo * aura->GetModifier()->m_amount;
 
                         float pctBonus = 1.0f;
-                        // Dirty deeds
-                        if (unitTarget->HasAuraState(AURA_STATE_HEALTHLESS_35_PERCENT))
-                        {
-                            Unit::AuraList const& mClassScritAuras = m_caster->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
-                            for(Unit::AuraList::const_iterator i = mClassScritAuras.begin(); i != mClassScritAuras.end(); ++i)
-                            {
-                                if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_ROGUE && (*i)->GetSpellProto()->SpellIconID == 216 && (*i)->GetEffIndex() == EFFECT_INDEX_1)
-                                {
-                                    pctBonus *= (100.0f - (*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0)) / 100;
-                                    break;
-                                }
-                            }
-                        }
-
                         // Vile Poisons
                         Unit::AuraList const& mPctModifierAuras = m_caster->GetAurasByType(SPELL_AURA_ADD_PCT_MODIFIER);
                         for (Unit::AuraList::const_iterator i = mPctModifierAuras.begin(); i != mPctModifierAuras.end(); ++i)
                         {
                             if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_ROGUE && (*i)->GetSpellProto()->SpellIconID == 857 && (*i)->GetEffIndex() == EFFECT_INDEX_0)
-                            {
-                                pctBonus *= (100.0f + (*i)->GetModifier()->m_amount) / 100;
-                                break;
-                            }
-                        }
-
-                        // Murder
-                        Unit::AuraList const& mDamageDonePercentAuras = m_caster->GetAurasByType(SPELL_AURA_MOD_DAMAGE_PERCENT_DONE);
-                        for (Unit::AuraList::const_iterator i = mDamageDonePercentAuras.begin(); i != mDamageDonePercentAuras.end(); ++i)
-                        {
-                            if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_ROGUE && (*i)->GetSpellProto()->SpellIconID == 134)
                             {
                                 pctBonus *= (100.0f + (*i)->GetModifier()->m_amount) / 100;
                                 break;
