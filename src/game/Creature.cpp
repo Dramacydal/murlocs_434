@@ -1662,7 +1662,6 @@ void Creature::ForcedDespawn(uint32 timeMSToDespawn)
     if (isAlive())
         SetDeathState(JUST_DIED);
 
-    RemoveCorpse();
     //DisableSpline();
     m_corpseDecayTimer = 1;                                 // Properly remove corpse on next tick (also pool system requires Creature::Update call with CORPSE state
     SetHealth(0);                                           // just for nice GM-mode view
