@@ -6911,15 +6911,6 @@ void Player::RewardReputation(Unit *pVictim, float rate)
     if(!pVictim || pVictim->GetTypeId() == TYPEID_PLAYER)
         return;
 
-
-    // Get Map to check if the tabard is active
-    Map* rewardMap = NULL;
-    if (isAlive())
-        rewardMap = GetMap();
-    else if (Corpse* corpse = GetCorpse())
-        rewardMap = corpse->GetMap();
-    MANGOS_ASSERT(rewardMap);
-
     // used current difficulty creature entry instead normal version (GetEntry())
     ReputationOnKillEntry const* Rep = sObjectMgr.GetReputationOnKillEntry(((Creature*)pVictim)->GetCreatureInfo()->Entry);
 
@@ -6930,7 +6921,7 @@ void Player::RewardReputation(Unit *pVictim, float rate)
     uint32 repFaction2 = Rep->repfaction2;
 
     // Championning tabard reputation system
-    if (Rep->championingAura && rewardMap->IsNonRaidDungeon() && HasAura(Rep->championingAura))
+    if (Rep->championingAura && pVictim->GetMap()->IsNonRaidDungeon() && HasAura(Rep->championingAura))
     {
         MapEntry const* storedMap = sMapStore.LookupEntry(GetMapId());
         InstanceTemplate const* instance = ObjectMgr::GetInstanceTemplate(GetMapId());
