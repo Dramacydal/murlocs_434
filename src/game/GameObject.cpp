@@ -179,24 +179,24 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
     SetGoArtKit(0);                                         // unknown what this is
     SetGoAnimProgress(animprogress);
 
-    // Initialize Traps and Fishingnode delayed in ::Update
-    if (GetGoType() == GAMEOBJECT_TYPE_TRAP || GAMEOBJECT_TYPE_TRAP == GAMEOBJECT_TYPE_FISHINGNODE)
-        m_lootState = GO_NOT_READY;
-
-    if (goinfo->type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+    switch (GetGoType())
     {
-        m_health = GetMaxHealth();
-        // destructible GO's show their "HP" as their animprogress
-        SetGoAnimProgress(255);
-        SetUInt32Value(GAMEOBJECT_PARENTROTATION, m_goInfo->destructibleBuilding.destructibleData);
-    }
-
-    if (goinfo->type == GAMEOBJECT_TYPE_TRANSPORT)
-    {
-        //SetUInt32Value(GAMEOBJECT_LEVEL, goinfo->transport.pause);
-        SetUInt32Value(GAMEOBJECT_LEVEL, WorldTimer::getMSTime());
-        if (goinfo->transport.startOpen)
-            SetGoState(GO_STATE_ACTIVE);
+        case GAMEOBJECT_TYPE_TRAP:
+        case GAMEOBJECT_TYPE_FISHINGNODE:
+            m_lootState = GO_NOT_READY;                     // Initialize Traps and Fishingnode delayed in ::Update
+            break;
+        case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:
+            m_health = GetMaxHealth();
+            // destructible GO's show their "HP" as their animprogress
+            SetGoAnimProgress(255);
+            SetUInt32Value(GAMEOBJECT_PARENTROTATION, m_goInfo->destructibleBuilding.destructibleData);
+            break;
+        case GAMEOBJECT_TYPE_TRANSPORT:
+            //SetUInt32Value(GAMEOBJECT_LEVEL, goinfo->transport.pause);
+            SetUInt32Value(GAMEOBJECT_LEVEL, WorldTimer::getMSTime());
+            if (goinfo->transport.startOpen)
+                SetGoState(GO_STATE_ACTIVE);
+            break;
     }
 
     // Notify the battleground or outdoor pvp script
