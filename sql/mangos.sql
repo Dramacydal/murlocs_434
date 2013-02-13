@@ -24,7 +24,7 @@ CREATE TABLE `db_version` (
   `version` varchar(120) default NULL,
   `creature_ai_version` varchar(120) default NULL,
   `cache_id` int(10) default '0',
-  `required_12361_01_mangos_mangos_string` bit(1) default NULL
+  `required_12377_01_mangos_dbscripts` bit(1) default NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Used DB version notes';
 
 --
@@ -746,8 +746,8 @@ INSERT INTO `command` VALUES
 ('reload all_loot',3,'Syntax: .reload all_loot\r\n\r\nReload all `*_loot_template` tables. This can be slow operation with lags for server run.'),
 ('reload all_npc',3,'Syntax: .reload all_npc\r\n\r\nReload `points_of_interest` and `npc_*` tables if reload support added for these tables and these tables can be _safe_ reloaded.'),
 ('reload all_quest',3,'Syntax: .reload all_quest\r\n\r\nReload all quest related tables if reload support added for this table and this table can be _safe_ reloaded.'),
+('reload all_scripts',3,'Syntax: .reload all_scripts\r\n\r\nReload `dbscripts_on_*` tables.'),
 ('reload all_spell',3,'Syntax: .reload all_spell\r\n\r\nReload all `spell_*` tables with reload support added and that can be _safe_ reloaded.'),
-('reload all_scripts',3,'Syntax: .reload all_scripts\r\n\r\nReload `*_scripts` tables.'),
 ('reload config',3,'Syntax: .reload config\r\n\r\nReload config settings (by default stored in mangosd.conf). Not all settings can be change at reload: some new setting values will be ignored until restart, some values will applied with delay or only to new objects/maps, some values will explicitly rejected to change at reload.'),
 ('repairitems',2,'Syntax: .repairitems\r\n\r\nRepair all selected player''s items.'),
 ('reset achievements',3,'Syntax: .reset achievements [$playername]\r\n\r\nReset achievements data for selected or named (online or offline) character. Achievements for persistance progress data like completed quests/etc re-filled at reset. Achievements for events like kills/casts/etc will lost.'),
@@ -1151,40 +1151,6 @@ LOCK TABLES `creature_movement` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `creature_movement_scripts`
---
-
-DROP TABLE IF EXISTS `creature_movement_scripts`;
-CREATE TABLE `creature_movement_scripts` (
-  `id` mediumint(8) unsigned NOT NULL default '0',
-  `delay` int(10) unsigned NOT NULL default '0',
-  `command` mediumint(8) unsigned NOT NULL default '0',
-  `datalong` mediumint(8) unsigned NOT NULL default '0',
-  `datalong2` int(10) unsigned NOT NULL default '0',
-  `buddy_entry` int(10) unsigned NOT NULL default '0',
-  `search_radius` int(10) unsigned NOT NULL default '0',
-  `data_flags` tinyint(3) unsigned NOT NULL default '0',
-  `dataint` int(11) NOT NULL default '0',
-  `dataint2` int(11) NOT NULL default '0',
-  `dataint3` int(11) NOT NULL default '0',
-  `dataint4` int(11) NOT NULL default '0',
-  `x` float NOT NULL default '0',
-  `y` float NOT NULL default '0',
-  `z` float NOT NULL default '0',
-  `o` float NOT NULL default '0',
-  `comments` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `creature_movement_scripts`
---
-
-LOCK TABLES `creature_movement_scripts` WRITE;
-/*!40000 ALTER TABLE `creature_movement_scripts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `creature_movement_scripts` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `creature_movement_template`
 --
 
@@ -1448,6 +1414,65 @@ CREATE TABLE `disenchant_loot_template` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Loot System';
 
 --
+-- Table structure for table `dbscripts_on_creature_movement`
+--
+
+DROP TABLE IF EXISTS `dbscripts_on_creature_movement`;
+CREATE TABLE `dbscripts_on_creature_movement` (
+  `id` mediumint(8) unsigned NOT NULL default '0',
+  `delay` int(10) unsigned NOT NULL default '0',
+  `command` mediumint(8) unsigned NOT NULL default '0',
+  `datalong` mediumint(8) unsigned NOT NULL default '0',
+  `datalong2` int(10) unsigned NOT NULL default '0',
+  `buddy_entry` int(10) unsigned NOT NULL default '0',
+  `search_radius` int(10) unsigned NOT NULL default '0',
+  `data_flags` tinyint(3) unsigned NOT NULL default '0',
+  `dataint` int(11) NOT NULL default '0',
+  `dataint2` int(11) NOT NULL default '0',
+  `dataint3` int(11) NOT NULL default '0',
+  `dataint4` int(11) NOT NULL default '0',
+  `x` float NOT NULL default '0',
+  `y` float NOT NULL default '0',
+  `z` float NOT NULL default '0',
+  `o` float NOT NULL default '0',
+  `comments` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Table structure of `dbscripts_on_event`, `dbscripts_on_go_use`, `dbscripts_on_go_template_use`,
+--                    `dbscripts_on_gossip`, `dbscripts_on_quest_end`, `dbscripts_on_quest_start`,
+--                    `dbscripts_on_spell`
+DROP TABLE IF EXISTS dbscripts_on_event;
+CREATE TABLE dbscripts_on_event LIKE dbscripts_on_creature_movement;
+DROP TABLE IF EXISTS dbscripts_on_go_use;
+CREATE TABLE dbscripts_on_go_use LIKE dbscripts_on_creature_movement;
+DROP TABLE IF EXISTS dbscripts_on_go_template_use;
+CREATE TABLE dbscripts_on_go_template_use LIKE dbscripts_on_creature_movement;
+DROP TABLE IF EXISTS dbscripts_on_gossip;
+CREATE TABLE dbscripts_on_gossip LIKE dbscripts_on_creature_movement;
+DROP TABLE IF EXISTS dbscripts_on_quest_end;
+CREATE TABLE dbscripts_on_quest_end LIKE dbscripts_on_creature_movement;
+DROP TABLE IF EXISTS dbscripts_on_quest_start;
+CREATE TABLE dbscripts_on_quest_start LIKE dbscripts_on_creature_movement;
+DROP TABLE IF EXISTS dbscripts_on_spell;
+CREATE TABLE dbscripts_on_spell LIKE dbscripts_on_creature_movement;
+
+--
+-- Table structure for table `db_version`
+--
+
+DROP TABLE IF EXISTS `db_version`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `db_version` (
+  `version` varchar(120) DEFAULT NULL,
+  `creature_ai_version` varchar(120) DEFAULT NULL,
+  `cache_id` int(10) DEFAULT '0',
+  `required_12377_01_mangos_dbscripts` bit(1) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Used DB version notes';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `disenchant_loot_template`
 --
 
@@ -1553,42 +1578,6 @@ CREATE TABLE `creature_ai_texts` (
 LOCK TABLES `creature_ai_texts` WRITE;
 /*!40000 ALTER TABLE `creature_ai_texts` DISABLE KEYS */;
 /*!40000 ALTER TABLE `creature_ai_texts` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `event_scripts`
---
-
-DROP TABLE IF EXISTS `event_scripts`;
-CREATE TABLE `event_scripts` (
-  `id` mediumint(8) unsigned NOT NULL default '0',
-  `delay` int(10) unsigned NOT NULL default '0',
-  `command` mediumint(8) unsigned NOT NULL default '0',
-  `datalong` mediumint(8) unsigned NOT NULL default '0',
-  `datalong2` int(10) unsigned NOT NULL default '0',
-  `datalong3` int(10) unsigned NOT NULL default '0',
-  `datalong4` int(10) unsigned NOT NULL default '0',
-  `data_flags` tinyint(3) unsigned NOT NULL default '0',
-  `dataint` int(11) NOT NULL default '0',
-  `dataint2` int(11) NOT NULL default '0',
-  `dataint3` int(11) NOT NULL default '0',
-  `dataint4` int(11) NOT NULL default '0',
-  `buddy_entry` int(11) NOT NULL default '0',
-  `search_radius` int(11) NOT NULL default '0',
-  `x` float NOT NULL default '0',
-  `y` float NOT NULL default '0',
-  `z` float NOT NULL default '0',
-  `o` float NOT NULL default '0',
-  `comments` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `event_scripts`
---
-
-LOCK TABLES `event_scripts` WRITE;
-/*!40000 ALTER TABLE `event_scripts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `event_scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2070,40 +2059,6 @@ LOCK TABLES `gameobject_questrelation` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `gameobject_scripts`
---
-
-DROP TABLE IF EXISTS `gameobject_scripts`;
-CREATE TABLE `gameobject_scripts` (
-  `id` mediumint(8) unsigned NOT NULL default '0',
-  `delay` int(10) unsigned NOT NULL default '0',
-  `command` mediumint(8) unsigned NOT NULL default '0',
-  `datalong` mediumint(8) unsigned NOT NULL default '0',
-  `datalong2` int(10) unsigned NOT NULL default '0',
-  `buddy_entry` int(10) unsigned NOT NULL default '0',
-  `search_radius` int(10) unsigned NOT NULL default '0',
-  `data_flags` tinyint(3) unsigned NOT NULL default '0',
-  `dataint` int(11) NOT NULL default '0',
-  `dataint2` int(11) NOT NULL default '0',
-  `dataint3` int(11) NOT NULL default '0',
-  `dataint4` int(11) NOT NULL default '0',
-  `x` float NOT NULL default '0',
-  `y` float NOT NULL default '0',
-  `z` float NOT NULL default '0',
-  `o` float NOT NULL default '0',
-  `comments` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `gameobject_scripts`
---
-
-LOCK TABLES `gameobject_scripts` WRITE;
-/*!40000 ALTER TABLE `gameobject_scripts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `gameobject_scripts` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `gameobject_template`
 --
 
@@ -2171,40 +2126,6 @@ CREATE TABLE `gameobject_template` (
 LOCK TABLES `gameobject_template` WRITE;
 /*!40000 ALTER TABLE `gameobject_template` DISABLE KEYS */;
 /*!40000 ALTER TABLE `gameobject_template` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `gameobject_template_scripts`
---
-
-DROP TABLE IF EXISTS `gameobject_template_scripts`;
-CREATE TABLE `gameobject_template_scripts` (
-  `id` mediumint(8) unsigned NOT NULL default '0',
-  `delay` int(10) unsigned NOT NULL default '0',
-  `command` mediumint(8) unsigned NOT NULL default '0',
-  `datalong` mediumint(8) unsigned NOT NULL default '0',
-  `datalong2` int(10) unsigned NOT NULL default '0',
-  `buddy_entry` int(10) unsigned NOT NULL default '0',
-  `search_radius` int(10) unsigned NOT NULL default '0',
-  `data_flags` tinyint(3) unsigned NOT NULL default '0',
-  `dataint` int(11) NOT NULL default '0',
-  `dataint2` int(11) NOT NULL default '0',
-  `dataint3` int(11) NOT NULL default '0',
-  `dataint4` int(11) NOT NULL default '0',
-  `x` float NOT NULL default '0',
-  `y` float NOT NULL default '0',
-  `z` float NOT NULL default '0',
-  `o` float NOT NULL default '0',
-  `comments` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `gameobject_template_scripts`
---
-
-LOCK TABLES `gameobject_template_scripts` WRITE;
-/*!40000 ALTER TABLE `gameobject_template_scripts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `gameobject_template_scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2290,40 +2211,6 @@ INSERT INTO gossip_menu_option VALUES
 (0,14,0,'GOSSIP_OPTION_UNLEARNTALENTS',  16,0x000010,0,0,0,0,0,NULL,0,0,0,0,0,0,0,0,0,0),
 (0,15,2,'GOSSIP_OPTION_UNLEARNPETSKILLS',17,0x000010,0,0,0,0,0,NULL,0,0,0,0,0,0,0,0,0,0);
 /*!40000 ALTER TABLE `gossip_menu_option` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `gossip_scripts`
---
-
-DROP TABLE IF EXISTS `gossip_scripts`;
-CREATE TABLE `gossip_scripts` (
-  `id` mediumint(8) unsigned NOT NULL default '0',
-  `delay` int(10) unsigned NOT NULL default '0',
-  `command` mediumint(8) unsigned NOT NULL default '0',
-  `datalong` mediumint(8) unsigned NOT NULL default '0',
-  `datalong2` int(10) unsigned NOT NULL default '0',
-  `buddy_entry` mediumint(8) unsigned NOT NULL default '0',
-  `search_radius` mediumint(8) unsigned NOT NULL default '0',
-  `data_flags` tinyint(3) unsigned NOT NULL default '0',
-  `dataint` int(11) NOT NULL default '0',
-  `dataint2` int(11) NOT NULL default '0',
-  `dataint3` int(11) NOT NULL default '0',
-  `dataint4` int(11) NOT NULL default '0',
-  `x` float NOT NULL default '0',
-  `y` float NOT NULL default '0',
-  `z` float NOT NULL default '0',
-  `o` float NOT NULL default '0',
-  `comments` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `gossip_scripts`
---
-
-LOCK TABLES `gossip_scripts` WRITE;
-/*!40000 ALTER TABLE `gossip_scripts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `gossip_scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -20472,40 +20359,6 @@ LOCK TABLES `prospecting_loot_template` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `quest_end_scripts`
---
-
-DROP TABLE IF EXISTS `quest_end_scripts`;
-CREATE TABLE `quest_end_scripts` (
-  `id` mediumint(8) unsigned NOT NULL default '0',
-  `delay` int(10) unsigned NOT NULL default '0',
-  `command` mediumint(8) unsigned NOT NULL default '0',
-  `datalong` mediumint(8) unsigned NOT NULL default '0',
-  `datalong2` int(10) unsigned NOT NULL default '0',
-  `buddy_entry` int(10) unsigned NOT NULL default '0',
-  `search_radius` int(10) unsigned NOT NULL default '0',
-  `data_flags` tinyint(3) unsigned NOT NULL default '0',
-  `dataint` int(11) NOT NULL default '0',
-  `dataint2` int(11) NOT NULL default '0',
-  `dataint3` int(11) NOT NULL default '0',
-  `dataint4` int(11) NOT NULL default '0',
-  `x` float NOT NULL default '0',
-  `y` float NOT NULL default '0',
-  `z` float NOT NULL default '0',
-  `o` float NOT NULL default '0',
-  `comments` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `quest_end_scripts`
---
-
-LOCK TABLES `quest_end_scripts` WRITE;
-/*!40000 ALTER TABLE `quest_end_scripts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `quest_end_scripts` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `quest_phase_maps`
 --
 
@@ -20571,42 +20424,6 @@ CREATE TABLE `quest_poi_points` (
 LOCK TABLES `quest_poi_points` WRITE;
 /*!40000 ALTER TABLE `quest_poi_points` DISABLE KEYS */;
 /*!40000 ALTER TABLE `quest_poi_points` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `quest_start_scripts`
---
-
-DROP TABLE IF EXISTS `quest_start_scripts`;
-CREATE TABLE `quest_start_scripts` (
-  `id` mediumint(8) unsigned NOT NULL default '0',
-  `delay` int(10) unsigned NOT NULL default '0',
-  `command` mediumint(8) unsigned NOT NULL default '0',
-  `datalong` mediumint(8) unsigned NOT NULL default '0',
-  `datalong2` int(10) unsigned NOT NULL default '0',
-  `datalong3` int(10) unsigned NOT NULL default '0',
-  `datalong4` int(10) unsigned NOT NULL default '0',
-  `data_flags` tinyint(3) unsigned NOT NULL default '0',
-  `dataint` int(11) NOT NULL default '0',
-  `dataint2` int(11) NOT NULL default '0',
-  `dataint3` int(11) NOT NULL default '0',
-  `dataint4` int(11) NOT NULL default '0',
-  `buddy_entry` int(11) NOT NULL default '0',
-  `search_radius` int(11) NOT NULL default '0',
-  `x` float NOT NULL default '0',
-  `y` float NOT NULL default '0',
-  `z` float NOT NULL default '0',
-  `o` float NOT NULL default '0',
-  `comments` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `quest_start_scripts`
---
-
-LOCK TABLES `quest_start_scripts` WRITE;
-/*!40000 ALTER TABLE `quest_start_scripts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `quest_start_scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -24311,42 +24128,6 @@ CREATE TABLE `spell_script_target` (
 LOCK TABLES `spell_script_target` WRITE;
 /*!40000 ALTER TABLE `spell_script_target` DISABLE KEYS */;
 /*!40000 ALTER TABLE `spell_script_target` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `spell_scripts`
---
-
-DROP TABLE IF EXISTS `spell_scripts`;
-CREATE TABLE `spell_scripts` (
-  `id` mediumint(8) unsigned NOT NULL default '0',
-  `delay` int(10) unsigned NOT NULL default '0',
-  `command` mediumint(8) unsigned NOT NULL default '0',
-  `datalong` mediumint(8) unsigned NOT NULL default '0',
-  `datalong2` int(10) unsigned NOT NULL default '0',
-  `datalong3` int(10) unsigned NOT NULL default '0',
-  `datalong4` int(10) unsigned NOT NULL default '0',
-  `data_flags` tinyint(3) unsigned NOT NULL default '0',
-  `dataint` int(11) NOT NULL default '0',
-  `dataint2` int(11) NOT NULL default '0',
-  `dataint3` int(11) NOT NULL default '0',
-  `dataint4` int(11) NOT NULL default '0',
-  `buddy_entry` int(11) NOT NULL default '0',
-  `search_radius` int(11) NOT NULL default '0',
-  `x` float NOT NULL default '0',
-  `y` float NOT NULL default '0',
-  `z` float NOT NULL default '0',
-  `o` float NOT NULL default '0',
-  `comments` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `spell_scripts`
---
-
-LOCK TABLES `spell_scripts` WRITE;
-/*!40000 ALTER TABLE `spell_scripts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `spell_scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

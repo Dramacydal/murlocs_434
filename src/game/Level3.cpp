@@ -309,13 +309,13 @@ bool ChatHandler::HandleReloadAllScriptsCommand(char* /*args*/)
         return false;
     }
 
-    sLog.outString( "Re-Loading Scripts..." );
-    HandleReloadGameObjectScriptsCommand((char*)"a");
-    HandleReloadGossipScriptsCommand((char*)"a");
-    HandleReloadEventScriptsCommand((char*)"a");
-    HandleReloadQuestEndScriptsCommand((char*)"a");
-    HandleReloadQuestStartScriptsCommand((char*)"a");
-    HandleReloadSpellScriptsCommand((char*)"a");
+    sLog.outString("Re-Loading Scripts...");
+    HandleReloadDBScriptsOnGoUseCommand((char*)"a");
+    HandleReloadDBScriptsOnGossipCommand((char*)"a");
+    HandleReloadDBScriptsOnEventCommand((char*)"a");
+    HandleReloadDBScriptsOnQuestEndCommand((char*)"a");
+    HandleReloadDBScriptsOnQuestStartCommand((char*)"a");
+    HandleReloadDBScriptsOnSpellCommand((char*)"a");
     sWorld.SendGMGlobalText("DB tables `*_scripts` reloaded.");
     HandleReloadDbScriptStringCommand((char*)"a");
     return true;
@@ -357,8 +357,8 @@ bool ChatHandler::HandleReloadAutobroadcasts(char* /*args*/)
 
 bool ChatHandler::HandleReloadAllGossipsCommand(char* args)
 {
-    if (*args!='a')                                         // already reload from all_scripts
-        HandleReloadGossipScriptsCommand((char*)"a");
+    if (*args != 'a')                                       // already reload from all_scripts
+        HandleReloadDBScriptsOnGossipCommand((char*)"a");
     HandleReloadGossipMenuCommand((char*)"a");
     HandleReloadNpcGossipCommand((char*)"a");
     HandleReloadPointsOfInterestCommand((char*)"a");
@@ -480,26 +480,6 @@ bool ChatHandler::HandleReloadGossipMenuCommand(char* /*args*/)
 {
     sObjectMgr.LoadGossipMenus();
     sWorld.SendGMGlobalText("DB table `gossip_menu` and `gossip_menu_option` reloaded.");
-    return true;
-}
-
-bool ChatHandler::HandleReloadGossipScriptsCommand(char* args)
-{
-    if (sScriptMgr.IsScriptScheduled())
-    {
-        SendSysMessage("DB scripts used currently, please attempt reload later.");
-        SetSentErrorMessage(true);
-        return false;
-    }
-
-    if (*args!='a')
-        sLog.outString( "Re-Loading Scripts from `gossip_scripts`...");
-
-    sScriptMgr.LoadGossipScripts();
-
-    if (*args!='a')
-        sWorld.SendGMGlobalText("DB table `gossip_scripts` reloaded.");
-
     return true;
 }
 
@@ -928,137 +908,157 @@ bool ChatHandler::HandleReloadBattleEventCommand(char* /*args*/)
     return true;
 }
 
-bool ChatHandler::HandleReloadGameObjectScriptsCommand(char* args)
-{
-    if (sScriptMgr.IsScriptScheduled())
-    {
-        SendSysMessage("DB scripts used currently, please attempt reload later.");
-        SetSentErrorMessage(true);
-        return false;
-    }
-
-    if (*args!='a')
-        sLog.outString( "Re-Loading Scripts from `gameobject_[template]_scripts`...");
-
-    sScriptMgr.LoadGameObjectScripts();
-    sScriptMgr.LoadGameObjectTemplateScripts();
-
-    if (*args!='a')
-        SendGlobalSysMessage("DB table `gameobject_[template]_scripts` reloaded.");
-
-    return true;
-}
-
-bool ChatHandler::HandleReloadEventScriptsCommand(char* args)
-{
-    if (sScriptMgr.IsScriptScheduled())
-    {
-        SendSysMessage("DB scripts used currently, please attempt reload later.");
-        SetSentErrorMessage(true);
-        return false;
-    }
-
-    if (*args!='a')
-        sLog.outString( "Re-Loading Scripts from `event_scripts`...");
-
-    sScriptMgr.LoadEventScripts();
-
-    if (*args!='a')
-        sWorld.SendGMGlobalText("DB table `event_scripts` reloaded.");
-
-    return true;
-}
-
 bool ChatHandler::HandleReloadEventAITextsCommand(char* /*args*/)
 {
 
-    sLog.outString( "Re-Loading Texts from `creature_ai_texts`...");
+    sLog.outString("Re-Loading Texts from `creature_ai_texts`...");
     sEventAIMgr.LoadCreatureEventAI_Texts(true);
-    sWorld.SendGMGlobalText("DB table `creature_ai_texts` reloaded.");
+    SendGlobalSysMessage("DB table `creature_ai_texts` reloaded.");
     return true;
 }
 
 bool ChatHandler::HandleReloadEventAISummonsCommand(char* /*args*/)
 {
-    sLog.outString( "Re-Loading Summons from `creature_ai_summons`...");
+    sLog.outString("Re-Loading Summons from `creature_ai_summons`...");
     sEventAIMgr.LoadCreatureEventAI_Summons(true);
-    sWorld.SendGMGlobalText("DB table `creature_ai_summons` reloaded.");
+    SendGlobalSysMessage("DB table `creature_ai_summons` reloaded.");
     return true;
 }
 
 bool ChatHandler::HandleReloadEventAIScriptsCommand(char* /*args*/)
 {
-    sLog.outString( "Re-Loading Scripts from `creature_ai_scripts`...");
+    sLog.outString("Re-Loading Scripts from `creature_ai_scripts`...");
     sEventAIMgr.LoadCreatureEventAI_Scripts();
-    sWorld.SendGMGlobalText("DB table `creature_ai_scripts` reloaded.");
-    return true;
-}
-
-bool ChatHandler::HandleReloadQuestEndScriptsCommand(char* args)
-{
-    if (sScriptMgr.IsScriptScheduled())
-    {
-        SendSysMessage("DB scripts used currently, please attempt reload later.");
-        SetSentErrorMessage(true);
-        return false;
-    }
-
-    if (*args != 'a')
-        sLog.outString( "Re-Loading Scripts from `quest_end_scripts`...");
-
-    sScriptMgr.LoadQuestEndScripts();
-
-    if (*args != 'a')
-        sWorld.SendGMGlobalText("DB table `quest_end_scripts` reloaded.");
-
-    return true;
-}
-
-bool ChatHandler::HandleReloadQuestStartScriptsCommand(char* args)
-{
-    if (sScriptMgr.IsScriptScheduled())
-    {
-        SendSysMessage("DB scripts used currently, please attempt reload later.");
-        SetSentErrorMessage(true);
-        return false;
-    }
-
-    if (*args != 'a')
-        sLog.outString( "Re-Loading Scripts from `quest_start_scripts`...");
-
-    sScriptMgr.LoadQuestStartScripts();
-
-    if (*args != 'a')
-        sWorld.SendGMGlobalText("DB table `quest_start_scripts` reloaded.");
-
-    return true;
-}
-
-bool ChatHandler::HandleReloadSpellScriptsCommand(char* args)
-{
-    if (sScriptMgr.IsScriptScheduled())
-    {
-        SendSysMessage("DB scripts used currently, please attempt reload later.");
-        SetSentErrorMessage(true);
-        return false;
-    }
-
-    if (*args != 'a')
-        sLog.outString( "Re-Loading Scripts from `spell_scripts`...");
-
-    sScriptMgr.LoadSpellScripts();
-
-    if (*args != 'a')
-        sWorld.SendGMGlobalText("DB table `spell_scripts` reloaded.");
-
+    SendGlobalSysMessage("DB table `creature_ai_scripts` reloaded.");
     return true;
 }
 
 bool ChatHandler::HandleReloadDbScriptStringCommand(char* /*args*/)
 {
-    sLog.outString( "Re-Loading Script strings from `db_script_string`...");
+    sLog.outString("Re-Loading Script strings from `db_script_string`...");
     sScriptMgr.LoadDbScriptStrings();
-    sWorld.SendGMGlobalText("DB table `db_script_string` reloaded.");
+    SendGlobalSysMessage("DB table `db_script_string` reloaded.");
+    return true;
+}
+
+bool ChatHandler::HandleReloadDBScriptsOnGossipCommand(char* args)
+{
+    if (sScriptMgr.IsScriptScheduled())
+    {
+        SendSysMessage("DB scripts used currently, please attempt reload later.");
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    if (*args != 'a')
+        sLog.outString("Re-Loading Scripts from `dbscripts_on_gossip`...");
+
+    sScriptMgr.LoadGossipScripts();
+
+    if (*args != 'a')
+        SendGlobalSysMessage("DB table `dbscripts_on_gossip` reloaded.");
+
+    return true;
+}
+
+bool ChatHandler::HandleReloadDBScriptsOnSpellCommand(char* args)
+{
+    if (sScriptMgr.IsScriptScheduled())
+    {
+        SendSysMessage("DB scripts used currently, please attempt reload later.");
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    if (*args != 'a')
+        sLog.outString("Re-Loading Scripts from `dbscripts_on_spell`...");
+
+    sScriptMgr.LoadSpellScripts();
+
+    if (*args != 'a')
+        SendGlobalSysMessage("DB table `dbscripts_on_spell` reloaded.");
+
+    return true;
+}
+
+bool ChatHandler::HandleReloadDBScriptsOnQuestStartCommand(char* args)
+{
+    if (sScriptMgr.IsScriptScheduled())
+    {
+        SendSysMessage("DB scripts used currently, please attempt reload later.");
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    if (*args != 'a')
+        sLog.outString("Re-Loading Scripts from `dbscripts_on_quest_start`...");
+
+    sScriptMgr.LoadQuestStartScripts();
+
+    if (*args != 'a')
+        SendGlobalSysMessage("DB table `dbscripts_on_quest_start` reloaded.");
+
+    return true;
+}
+
+bool ChatHandler::HandleReloadDBScriptsOnQuestEndCommand(char* args)
+{
+    if (sScriptMgr.IsScriptScheduled())
+    {
+        SendSysMessage("DB scripts used currently, please attempt reload later.");
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    if (*args != 'a')
+        sLog.outString("Re-Loading Scripts from `dbscripts_on_quest_end`...");
+
+    sScriptMgr.LoadQuestEndScripts();
+
+    if (*args != 'a')
+        SendGlobalSysMessage("DB table `dbscripts_on_quest_end` reloaded.");
+
+    return true;
+}
+
+bool ChatHandler::HandleReloadDBScriptsOnEventCommand(char* args)
+{
+    if (sScriptMgr.IsScriptScheduled())
+    {
+        SendSysMessage("DB scripts used currently, please attempt reload later.");
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    if (*args != 'a')
+        sLog.outString("Re-Loading Scripts from `dbscripts_on_event`...");
+
+    sScriptMgr.LoadEventScripts();
+
+    if (*args != 'a')
+        SendGlobalSysMessage("DB table `dbscripts_on_event` reloaded.");
+
+    return true;
+}
+
+bool ChatHandler::HandleReloadDBScriptsOnGoUseCommand(char* args)
+{
+    if (sScriptMgr.IsScriptScheduled())
+    {
+        SendSysMessage("DB scripts used currently, please attempt reload later.");
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    if (*args != 'a')
+        sLog.outString("Re-Loading Scripts from `dbscripts_on_go[_template]_use`...");
+
+    sScriptMgr.LoadGameObjectScripts();
+    sScriptMgr.LoadGameObjectTemplateScripts();
+
+    if (*args != 'a')
+        SendGlobalSysMessage("DB table `dbscripts_on_go[_template]_use` reloaded.");
+
     return true;
 }
 
