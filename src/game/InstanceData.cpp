@@ -46,9 +46,9 @@ bool InstanceData::CheckAchievementCriteriaMeet( uint32 criteria_id, Player cons
     return false;
 }
 
-bool InstanceData::CheckConditionCriteriaMeet(Player const* /*source*/, uint32 map_id, uint32 instance_condition_id)
+bool InstanceData::CheckConditionCriteriaMeet(Player const* /*source*/, uint32 instance_condition_id, WorldObject const* /*conditionSource*/, ConditionSource conditionSourceType)
 {
-    ERROR_LOG("Condition system call InstanceData::CheckConditionCriteriaMeet but instance script for map %u not have implementation for player condition criteria with internal id %u for map %u",
-        instance->GetId(), instance_condition_id, map_id);
+    sLog.outError("Condition system call InstanceData::CheckConditionCriteriaMeet but instance script for map %u not have implementation for player condition criteria with internal id %u (called from %u)",
+                  instance->GetId(), instance_condition_id, uint32(conditionSourceType));
     return false;
 }
