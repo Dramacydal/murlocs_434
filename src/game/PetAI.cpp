@@ -81,8 +81,8 @@ void PetAI::AttackStart(Unit *u)
         // TMGs call CreatureRelocation which via MoveInLineOfSight can call this function
         // thus with the following clear the original TMG gets invalidated and crash, doh
         // hope it doesn't start to leak memory without this :-/
-        //i_pet->Clear();
-        m_creature->GetMotionMaster()->MoveChase(u);
+        // i_pet->Clear();
+        HandleMovementOnAttackStart(u);
         inCombat = true;
     }
 }
