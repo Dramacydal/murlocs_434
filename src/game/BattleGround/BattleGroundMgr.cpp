@@ -2364,8 +2364,8 @@ void BattleGroundMgr::LoadBattleMastersEntry()
         }
 
         mBattleMastersMap[entry] = BattleGroundTypeId(bgTypeId);
-
-    } while(result->NextRow());
+    }
+    while (result->NextRow());
 
     delete result;
 
@@ -2516,8 +2516,8 @@ void BattleGroundMgr::LoadBattleEventIndexes()
             m_CreatureBattleEventIndexMap[dbTableGuidLow] = events;
 
         ++count;
-
-    } while(result->NextRow());
+    }
+    while (result->NextRow());
 
     sLog.outString();
     sLog.outString( ">> Loaded %u battleground eventindexes", count);

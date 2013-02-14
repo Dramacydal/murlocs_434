@@ -142,7 +142,6 @@ void CreatureEventAIMgr::CheckUnusedAITexts()
                     }
                     default: break;
                 }
-
             }
         }
     }
@@ -232,7 +231,6 @@ void CreatureEventAIMgr::CheckUnusedAISummons()
                     }
                     default: break;
                 }
-
             }
         }
     }

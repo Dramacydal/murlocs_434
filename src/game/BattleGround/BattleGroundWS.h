@@ -95,7 +95,6 @@ class BattleGroundWGScore : public BattleGroundScore
         uint32 FlagReturns;
 };
 
-
 enum BG_WS_Events
 {
     WS_EVENT_FLAG_A               = 0,

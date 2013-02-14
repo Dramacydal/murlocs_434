@@ -103,7 +103,6 @@ int ThreadPriority::getPriority(Priority p) const
 
 Thread::Thread() : m_task(0), m_iThreadId(0), m_hThreadHandle(0)
 {
-
 }
 
 Thread::Thread(Runnable* instance) : m_task(instance), m_iThreadId(0), m_hThreadHandle(0)

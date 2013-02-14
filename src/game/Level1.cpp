@@ -535,7 +535,6 @@ bool ChatHandler::HandleGonameCommand(char* args)
         return false;
     }
 
-
     if (target)
     {
         // check online security
@@ -2232,9 +2231,7 @@ bool ChatHandler::HandleGoCommand(char* args)
     return HandleGoHelper(_player, mapid, x, y, &z);
 }
 
-
-
-//teleport at coordinates
+// teleport at coordinates
 bool ChatHandler::HandleGoXYCommand(char* args)
 {
     Player* _player = m_session->GetPlayer();

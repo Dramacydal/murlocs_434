@@ -162,7 +162,7 @@ class MANGOS_DLL_DECL MapManager : public MaNGOS::Singleton<MapManager, MaNGOS::
             return ret;
         }
 
-        //get list of all maps
+        // get list of all maps
         const MapMapType& Maps() const { return i_maps; }
 
         template<typename Do>

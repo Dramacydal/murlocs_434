@@ -2336,8 +2336,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
             damageInfo->procEx|=PROC_EX_ABSORB;
         }
         if (damageInfo->resist)
-            damageInfo->HitInfo|=HITINFO_RESIST;
-
+            damageInfo->HitInfo |= HITINFO_RESIST;
     }
     else // Umpossible get negative result but....
         damageInfo->damage = 0;
@@ -2489,7 +2488,6 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
         }
     }
 }
-
 
 void Unit::HandleEmoteCommand(uint32 emote_id)
 {
@@ -7932,7 +7930,6 @@ int32 Unit::SpellBaseDamageBonusDone(SpellSchoolMask schoolMask)
 
         // pct spell power modifier
         DoneAdvertisedBenefit = int32(DoneAdvertisedBenefit * GetTotalAuraMultiplier(SPELL_AURA_MOD_INCREASE_SPELL_POWER_PCT));
-
     }
     return DoneAdvertisedBenefit;
 }
@@ -12098,7 +12095,6 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit * pTarget, uint32 procFlag,
                         }
                         else if (spellProcEvent->procEx == PROC_EX_NONE && procExtra == PROC_EX_CAST_END)
                             continue;
-
                     }
                     // don't check dbc FamilyFlags if schoolMask exists
                     else if (!triggeredByAura->CanProcFrom(procSpell, procFlag, spellProcEvent->procEx, procExtra, damage + absorb != 0, !spellProcEvent->schoolMask))
@@ -12423,7 +12419,6 @@ void Unit::SetFeignDeath(bool apply, ObjectGuid casterGuid, uint32 /*spellID*/)
             else
                 GetMotionMaster()->Initialize();
         }
-
     }
 }
 

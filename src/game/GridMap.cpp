@@ -715,8 +715,7 @@ void TerrainInfo::Unload(const uint32 x, const uint32 y)
         //decrease grid reference count...
         if(UnrefGrid(x, y) == 0)
         {
-            //TODO: add your additional logic here
-
+            // TODO: add your additional logic here
         }
     }
 }
@@ -1226,8 +1225,7 @@ void TerrainInfo::GetZoneAndAreaId(uint32& zoneid, uint32& areaid, float x, floa
     TerrainManager::GetZoneAndAreaIdByAreaFlag(zoneid,areaid,GetAreaFlag(x,y,z),m_mapId);
 }
 
-
-GridMapLiquidStatus TerrainInfo::getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, GridMapLiquidData *data) const
+GridMapLiquidStatus TerrainInfo::getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, GridMapLiquidData* data) const
 {
     GridMapLiquidStatus result = LIQUID_MAP_NO_WATER;
     VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();

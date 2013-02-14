@@ -4905,7 +4905,6 @@ void Aura::HandleModPossess(bool apply, bool Real)
         {
             ((Player*)target)->SetClientControl(target, 0);
         }
-
     }
     else
     {
@@ -8204,7 +8203,6 @@ void Aura::HandleShapeshiftBoosts(bool apply)
                 else
                     ++itr;
             }
-
 
             // Master Shapeshifter
             if (MasterShaperSpellId)

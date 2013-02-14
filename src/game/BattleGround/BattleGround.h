@@ -34,7 +34,6 @@
 // cause this buff apears 90sec after start in every bg i implement it here
 #define ARENA_BUFF_EVENT 253
 
-
 class Creature;
 class GameObject;
 class Group;

@@ -6214,7 +6214,6 @@ SpellCastResult Spell::CheckCast(bool strict)
                 // Forbearance
                 if (target->HasAura(25771))
                     return SPELL_FAILED_CASTER_AURASTATE;
-
             }
             else if (target->HasAura(auraRestrictions->excludeTargetAuraSpell))
                 return SPELL_FAILED_CASTER_AURASTATE;

@@ -1686,7 +1686,6 @@ void AchievementMgr<T>::UpdateAchievementCriteria(AchievementCriteriaTypes type,
                 change = 1;
                 progressType = PROGRESS_ACCUMULATE;
                 break;
-
             }
             case ACHIEVEMENT_CRITERIA_TYPE_KILLED_BY_CREATURE:
                 // AchievementMgr::UpdateAchievementCriteria might also be called on login - skip in this case
@@ -4193,8 +4192,8 @@ void AchievementGlobalMgr::LoadRewards()
 
         m_achievementRewards.insert(AchievementRewardsMap::value_type(entry, reward));
         ++count;
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
 
     delete result;
 
@@ -4286,8 +4285,8 @@ void AchievementGlobalMgr::LoadRewardLocales()
         }
 
         m_achievementRewardLocales.insert(AchievementRewardLocalesMap::value_type(entry, data));
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
 
     delete result;
 

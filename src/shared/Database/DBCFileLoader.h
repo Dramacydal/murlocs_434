@@ -85,7 +85,6 @@ class DBCFileLoader
                 DBCFileLoader &file;
 
                 friend class DBCFileLoader;
-
         };
 
         // Get record by id

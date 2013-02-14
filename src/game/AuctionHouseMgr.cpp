@@ -464,8 +464,8 @@ void AuctionHouseMgr::LoadAuctions()
         }
 
         GetAuctionsMap(auction->auctionHouseEntry)->AddAuction(auction);
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
     delete result;
 
     sLog.outString();

@@ -158,9 +158,7 @@ void BattleGroundBE::UpdatePlayerScore(Player* Source, uint32 type, uint32 value
     if(itr == m_PlayerScores.end())                         // player not found...
         return;
 
-    //there is nothing special in this score
     BattleGround::UpdatePlayerScore(Source, type, value);
-
 }
 
 /*

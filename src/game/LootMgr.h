@@ -76,8 +76,6 @@ enum LootSlotType
     MAX_LOOT_SLOT_TYPE                                      // custom, use for mark skipped from show items
 };
 
-
-
 class Player;
 class LootStore;
 

@@ -71,8 +71,7 @@ int RASocket::open(void* )
         return -1;
     }
 
-
-    sLog.outRALog("Incoming connection from %s.",remote_addr.get_host_addr());
+    sLog.outRALog("Incoming connection from %s.", remote_addr.get_host_addr());
 
     ///- print Motd
     sendf(sWorld.GetMotd());
@@ -279,7 +278,6 @@ int RASocket::handle_input(ACE_HANDLE)
                 break;
             ///</ul>
         };
-
     }
     // no enter yet? wait for next input...
     return 0;

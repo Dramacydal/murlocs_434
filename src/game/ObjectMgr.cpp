@@ -1167,7 +1167,6 @@ void ObjectMgr::LoadCreatureModelInfo()
         }
         else
             sLog.outErrorDb("Table `creature_model_info` expect have data for character race %u male model id %u", race, raceEntry->model_m);
-
     }
 
     sLog.outString(">> Loaded %u creature model based info", sCreatureModelStorage.GetRecordCount());
@@ -1474,8 +1473,8 @@ void ObjectMgr::LoadCreatures()
             AddCreatureToGrid(guid, &data);
 
         ++count;
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
 
     delete result;
 
@@ -1723,8 +1722,8 @@ void ObjectMgr::LoadGameObjects()
         if (gameEvent==0 && GuidPoolId==0 && EntryPoolId==0)// if not this is to be managed by GameEvent System or Pool system
             AddGameobjectToGrid(guid, &data);
         ++count;
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
 
     delete result;
 
@@ -5287,8 +5286,8 @@ void ObjectMgr::LoadPageTextLocales()
                 data.Text[idx] = str;
             }
         }
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
 
     delete result;
 
@@ -5360,8 +5359,8 @@ void ObjectMgr::LoadInstanceEncounters()
         uint32 lastEncounterDungeon = fields[3].GetUInt32();
 
         m_DungeonEncounters.insert(DungeonEncounterMap::value_type(creditEntry, new DungeonEncounter(dungeonEncounter, EncounterCreditType(creditType), creditEntry, lastEncounterDungeon)));
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
 
     delete result;
 
@@ -5806,8 +5805,8 @@ void ObjectMgr::LoadQuestAreaTriggers()
         }
 
         mQuestAreaTriggerMap[trigger_ID] = quest_ID;
-
-    } while( result->NextRow() );
+    }
+    while (result->NextRow());
 
     delete result;
 
@@ -6447,9 +6446,8 @@ void ObjectMgr::LoadAreaTriggerTeleports()
         }
 
         mAreaTriggers[Trigger_ID] = at;
-
-    } while( result->NextRow() );
-
+    }
+    while (result->NextRow());
     delete result;
 
     sLog.outString();
@@ -6816,8 +6814,8 @@ void ObjectMgr::LoadGameObjectLocales()
                 }
             }
         }
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
 
     delete result;
 
@@ -7772,7 +7770,6 @@ void ObjectMgr::LoadNPCSpellClickSpells()
                 sLog.outErrorDb("Table npc_spellclick_spells references unknown start quest %u. Skipping entry.", quest_start);
                 continue;
             }
-
         }
 
         bool quest_start_active = fields[3].GetBool();
@@ -7786,7 +7783,6 @@ void ObjectMgr::LoadNPCSpellClickSpells()
                 sLog.outErrorDb("Table npc_spellclick_spells references unknown end quest %u. Skipping entry.", quest_end);
                 continue;
             }
-
         }
 
         uint8 castFlags = fields[5].GetUInt8();
@@ -9540,8 +9536,9 @@ void ObjectMgr::LoadTrainers(char const* tableName, bool isTemplates)
         }
         */
         ++count;
+    }
+    while (result->NextRow());
 
-    } while (result->NextRow());
     delete result;
 
     sLog.outString();
@@ -9623,14 +9620,14 @@ void ObjectMgr::LoadVendors(char const* tableName, bool isTemplates)
 
         vList.AddItem(item_id, type, maxcount, incrtime, ExtendedCost);
         ++count;
+    }
+    while (result->NextRow());
 
-    } while (result->NextRow());
     delete result;
 
     sLog.outString();
     sLog.outString( ">> Loaded %u vendor %sitems", count, isTemplates ? "template " : "");
 }
-
 
 void ObjectMgr::LoadVendorTemplates()
 {
@@ -9703,8 +9700,9 @@ void ObjectMgr::LoadNpcGossips()
 
         m_mCacheNpcTextIdMap[guid] = textid ;
         ++count;
+    }
+    while (result->NextRow());
 
-    } while (result->NextRow());
     delete result;
 
     sLog.outString();
@@ -9958,7 +9956,6 @@ void ObjectMgr::LoadGossipMenuItems(std::set<uint32>& gossipScriptSet)
         m_mGossipMenuItemsMap.insert(GossipMenuItemsMap::value_type(gMenuItem.menu_id, gMenuItem));
 
         ++count;
-
     }
     while(result->NextRow());
 

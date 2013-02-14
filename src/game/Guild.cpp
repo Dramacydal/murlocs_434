@@ -488,8 +488,8 @@ bool Guild::LoadMembersFromDB(QueryResult *guildMembersResult)
         }
 
         members[lowguid]      = newmember;
-
-    } while (guildMembersResult->NextRow());
+    }
+    while (guildMembersResult->NextRow());
 
     if (members.empty())
         return false;
@@ -1076,8 +1076,8 @@ void Guild::LoadGuildEventLogFromDB()
 
         // Add entry to list
         m_GuildEventLog.push_front(NewEvent);
-
-    } while( result->NextRow() );
+    }
+    while (result->NextRow());
     delete result;
 }
 
@@ -1653,8 +1653,8 @@ bool Guild::LoadBankRightsFromDB(QueryResult *guildBankTabRightsResult)
         uint16 SlotPerDay  = fields[4].GetUInt16();
 
         SetBankRightsAndSlots(rankId, TabId, right, SlotPerDay, false);
-
-    } while (guildBankTabRightsResult->NextRow());
+    }
+    while (guildBankTabRightsResult->NextRow());
 
     return true;
 }
@@ -1743,8 +1743,8 @@ void Guild::LoadGuildBankEventLogFromDB()
             // add event to list
             // events are ordered from oldest (in beginning) to latest (in the end)
             m_GuildBankEventLog_Money.push_front(NewEvent);
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
     delete result;
 }
 
@@ -2255,8 +2255,7 @@ void Guild::SwapItems(Player * pl, uint8 BankTab, uint8 BankTabSlot, uint8 BankT
         DisplayGuildBankContentUpdate(BankTabDst, BankTabSlotDst);
 }
 
-
-void Guild::MoveFromBankToChar( Player * pl, uint8 BankTab, uint8 BankTabSlot, uint8 PlayerBag, uint8 PlayerSlot, uint32 SplitedAmount)
+void Guild::MoveFromBankToChar(Player* pl, uint8 BankTab, uint8 BankTabSlot, uint8 PlayerBag, uint8 PlayerSlot, uint32 SplitedAmount)
 {
     Item *pItemBank = GetItem(BankTab, BankTabSlot);
     Item *pItemChar = pl->GetItemByPos(PlayerBag, PlayerSlot);
@@ -2403,8 +2402,7 @@ void Guild::MoveFromBankToChar( Player * pl, uint8 BankTab, uint8 BankTabSlot, u
     DisplayGuildBankContentUpdate(BankTab, BankTabSlot);
 }
 
-
-void Guild::MoveFromCharToBank( Player * pl, uint8 PlayerBag, uint8 PlayerSlot, uint8 BankTab, uint8 BankTabSlot, uint32 SplitedAmount )
+void Guild::MoveFromCharToBank(Player* pl, uint8 PlayerBag, uint8 PlayerSlot, uint8 BankTab, uint8 BankTabSlot, uint32 SplitedAmount)
 {
     Item *pItemBank = GetItem(BankTab, BankTabSlot);
     Item *pItemChar = pl->GetItemByPos(PlayerBag, PlayerSlot);

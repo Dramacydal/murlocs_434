@@ -1420,8 +1420,8 @@ void SpellMgr::LoadSpellTargetPositions()
 
         mSpellTargetPositions[Spell_ID] = st;
         ++count;
-
-    } while( result->NextRow() );
+    }
+    while (result->NextRow());
 
     delete result;
 
@@ -1655,8 +1655,8 @@ void SpellMgr::LoadSpellProcEvents()
         spe.cooldown        = fields[16].GetUInt32();
 
         rankHelper.RecordRank(spe, entry);
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
 
     rankHelper.FillHigherRanks();
 
@@ -1944,8 +1944,8 @@ void SpellMgr::LoadSpellBonuses()
         doForHighRanks(entry,worker);
 
         ++count;
-
-    } while( result->NextRow() );
+    }
+    while (result->NextRow());
 
     delete result;
 
@@ -2153,8 +2153,8 @@ void SpellMgr::LoadSpellThreats()
         ste.ap_bonus = fields[3].GetFloat();
 
         rankHelper.RecordRank(ste, entry);
-
-    } while( result->NextRow() );
+    }
+    while (result->NextRow());
 
     rankHelper.FillHigherRanks();
 
@@ -3063,7 +3063,6 @@ uint32 SpellMgr::GetProfessionSpellMinLevel(uint32 spellId)
     }
 }
 
-
 bool SpellMgr::IsPrimaryProfessionFirstRankSpell(uint32 spellId) const
 {
     return IsPrimaryProfessionSpell(spellId) && GetSpellRank(spellId)==1;
@@ -3554,7 +3553,6 @@ void SpellMgr::LoadSpellChains()
                     continue;
                 }*/
             }
-
         }
 
         // removed ranks often still listed as forward in skill abilities but not listed as spell in it
@@ -4265,7 +4263,6 @@ bool SpellMgr::IsSpellValid(SpellEntry const* spellInfo, Player* pl, bool msg)
                         }
                         return false;
                     }
-
                 }
                 // also possible IsLootCraftingSpell case but fake item must exist anyway
                 else if (!ObjectMgr::GetItemPrototype( spellEffect->EffectItemType ))
@@ -4405,7 +4402,6 @@ void SpellMgr::LoadSpellAreas()
                 sLog.outErrorDb("Spell %u listed in `spell_area` already listed with similar requirements.", spell);
                 continue;
             }
-
         }
 
         if (spellArea.areaId && !GetAreaEntryByAreaID(spellArea.areaId))
@@ -5066,8 +5062,8 @@ void SpellMgr::CheckUsedSpells(char const* table)
                 continue;
             }
         }
-
-    } while( result->NextRow() );
+    }
+    while (result->NextRow());
 
     delete result;
 

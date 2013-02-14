@@ -622,7 +622,6 @@ void CliRunnable::run()
                 break;
             }
 
-
             if (!*command_str)
             {
                 printf("mangos>");

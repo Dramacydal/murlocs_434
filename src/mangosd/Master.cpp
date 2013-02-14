@@ -121,7 +121,6 @@ public:
         m_Reactor = new ACE_Reactor (imp, 1 /* 1= delete implementation so we don't have to care */);
 
         m_Acceptor = new RASocket::Acceptor;
-
     }
 
     ~RARunnable()

@@ -1093,7 +1093,6 @@ struct BGData
 
     Team bgTeam;                                            ///< What side the player will be added to, saved
 
-
     uint32 mountSpell;                                      ///< Mount used before join to bg, saved
     uint32 taxiPath[2];                                     ///< Current taxi active path start/end nodes, saved
 
@@ -1324,7 +1323,6 @@ class MANGOS_DLL_SPEC Player : public Unit
                 m_ExtraFlags |= PLAYER_EXTRA_AUCTION_NEUTRAL;
         }
 
-
         void GiveXP(uint32 xp, Unit* victim);
         void GiveLevel(uint32 level);
 
@@ -1411,8 +1409,7 @@ class MANGOS_DLL_SPEC Player : public Unit
             if(!pItem)
                 return EQUIP_ERR_ITEM_NOT_FOUND;
             uint32 count = pItem->GetCount();
-            return _CanStoreItem( bag, slot, dest, pItem->GetEntry(), count, pItem, swap, NULL );
-
+            return _CanStoreItem(bag, slot, dest, pItem->GetEntry(), count, pItem, swap, NULL);
         }
         InventoryResult CanStoreItems(Item** pItem, int count) const;
         InventoryResult CanEquipNewItem(uint8 slot, uint16& dest, uint32 item, bool swap) const;
@@ -2632,9 +2629,9 @@ class MANGOS_DLL_SPEC Player : public Unit
         void UpdateAchievementCriteria(AchievementCriteriaTypes type, uint32 miscvalue1=0, uint32 miscvalue2=0, Unit *unit=NULL, uint32 time=0);
         void StartTimedAchievementCriteria(AchievementCriteriaTypes type, uint32 timedRequirementId, time_t startTime = 0);
 
-
         void CompletedAchievement(AchievementEntry const* entry);
         void CompletedAchievement(uint32 uiAchievementID);
+
         bool HasTitle(uint32 bitIndex) const;
         bool HasTitle(CharTitlesEntry const* title) const { return HasTitle(title->bit_index); }        void SetTitle(CharTitlesEntry const* title, bool lost = false);
 

@@ -581,8 +581,7 @@ bool bWriteVariables, HANDLE pThreadHandle)                 // true if local/par
             &symDisplacement,                               // Address of the variable that will receive the displacement
                     &sip.si))                               // Address of the SYMBOL_INFO structure (inside "sip" object)
         {
-            _tprintf( _T("%hs+%I64X"), sip.si.Name, symDisplacement );
-
+            _tprintf(_T("%hs+%I64X"), sip.si.Name, symDisplacement);
         }
         else                                                // No symbol found.  Print out the logical address instead.
         {
@@ -625,7 +624,6 @@ bool bWriteVariables, HANDLE pThreadHandle)                 // true if local/par
             _tprintf( _T("\r\n") );
         }
     }
-
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -683,8 +683,8 @@ bool ChatHandler::HandleGoCreatureCommand(char* args)
                         continue;
 
                     worker(*cr_data);
-
-                } while (result->NextRow());
+                }
+                while (result->NextRow());
 
                 delete result;
 
@@ -830,8 +830,8 @@ bool ChatHandler::HandleGoObjectCommand(char* args)
                         continue;
 
                     worker(*go_data);
-
-                } while (result->NextRow());
+                }
+                while (result->NextRow());
 
                 delete result;
 
@@ -2707,7 +2707,6 @@ bool ChatHandler::HandleDeMorphCommand(char* /*args*/)
     if (!target)
         target = m_session->GetPlayer();
 
-
     // check online security
     else if (target->GetTypeId() == TYPEID_PLAYER && HasLowerSecurity((Player*)target))
         return false;
@@ -4004,10 +4003,10 @@ bool ChatHandler::HandleWpShowCommand(char* args)
             PSendSysMessage(LANG_WAYPOINT_INFO_MODEL, 2, model2);
             PSendSysMessage(LANG_WAYPOINT_INFO_EMOTE, emote);
             PSendSysMessage(LANG_WAYPOINT_INFO_SPELL, spell);
-            for(int i = 0;  i < MAX_WAYPOINT_TEXT; ++i)
-                PSendSysMessage(LANG_WAYPOINT_INFO_TEXT, i+1, textid[i], (textid[i] ? GetMangosString(textid[i]) : ""));
-
-        } while (result->NextRow());
+            for (int i = 0;  i < MAX_WAYPOINT_TEXT; ++i)
+                PSendSysMessage(LANG_WAYPOINT_INFO_TEXT, i + 1, textid[i], (textid[i] ? GetMangosString(textid[i]) : ""));
+        }
+        while (result->NextRow());
         // Cleanup memory
         delete result;
         return true;
@@ -4046,8 +4045,8 @@ bool ChatHandler::HandleWpShowCommand(char* args)
                     pCreature->DeleteFromDB();
                     pCreature->AddObjectToRemoveList();
                 }
-
-            } while (result2->NextRow());
+            }
+            while (result2->NextRow());
             delete result2;
             if (hasError)
             {
@@ -4335,8 +4334,8 @@ bool ChatHandler::HandleWpExportCommand(char *args)
         outfile << ", ";
         outfile << fields[14].GetUInt32();                  // textid5
         outfile << ");\n ";
-
-    } while (result->NextRow());
+    }
+    while (result->NextRow());
     delete result;
 
     PSendSysMessage(LANG_WAYPOINT_EXPORTED);
@@ -5059,8 +5058,8 @@ bool ChatHandler::ShowAccountListHelper(QueryResult* result, uint32* limit, bool
             PSendSysMessage(LANG_ACCOUNT_LIST_LINE_CONSOLE,
             account,fields[1].GetString(),char_name,fields[2].GetString(),fields[3].GetUInt32(),fields[4].GetUInt32());
 
-    }while(result->NextRow());
-
+    }
+    while(result->NextRow());
     delete result;
 
     if (!m_session)                                         // not output header for online case

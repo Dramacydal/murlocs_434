@@ -56,9 +56,8 @@ namespace VMAP
             // temp?
             const G3D::AABox& getBounds() const { return iBound; }
 
-
-            static bool readFromFile(FILE *rf, ModelSpawn &spawn);
-            static bool writeToFile(FILE *rw, const ModelSpawn &spawn);
+            static bool readFromFile(FILE* rf, ModelSpawn& spawn);
+            static bool writeToFile(FILE* rw, const ModelSpawn& spawn);
     };
 
     class ModelInstance: public ModelSpawn

@@ -71,7 +71,6 @@ ArenaTeam::ArenaTeam()
 
 ArenaTeam::~ArenaTeam()
 {
-
 }
 
 bool ArenaTeam::Create(ObjectGuid captainGuid, ArenaType type, std::string arenaTeamName)

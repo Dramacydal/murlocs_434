@@ -139,7 +139,6 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
         return false;
     }
 
-
     uint32 summon_spell_id = fields[16].GetUInt32();
     SpellEntry const* spellInfo = sSpellStore.LookupEntry(summon_spell_id);
 
@@ -1986,7 +1985,6 @@ void Pet::UpdateFreeTalentPoints(bool resetIfNeed)
     else
         SetFreeTalentPoints(talentPointsForLevel - m_usedTalentCount);
 }
-
 
 void Pet::InitTalentForLevel()
 {
