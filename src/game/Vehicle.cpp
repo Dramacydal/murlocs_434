@@ -324,6 +324,8 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
 
     if (m_pBase->GetTypeId() == TYPEID_UNIT)
     {
+        if (((Creature*)passenger)->AI())
+            ((Creature*)passenger)->AI()->SetCombatMovement(false);
         if (((Creature*)m_pBase)->AI())
             ((Creature*)m_pBase)->AI()->PassengerBoarded(passenger, seat->first, true);
     }
@@ -409,6 +411,8 @@ void VehicleKit::RemovePassenger(Unit *passenger)
         passenger->SetRoot(false);
 
         ((Player*)passenger)->ResummonPetTemporaryUnSummonedIfAny();
+
+        ((Player*)passenger)->SetFallInformation(0, pz + 0.5f);
     }
 
     passenger->UpdateAllowedPositionZ(px, py, pz);
@@ -421,10 +425,13 @@ void VehicleKit::RemovePassenger(Unit *passenger)
 
     if (m_pBase->GetTypeId() == TYPEID_UNIT)
     {
-        if (passenger->GetTypeId() == TYPEID_PLAYER)
-            ((Player*)passenger)->SetFallInformation(0, pz + 0.5f);
         if (((Creature*)m_pBase)->AI())
             ((Creature*)m_pBase)->AI()->PassengerBoarded(passenger, seat->first, false);
+
+        if (((Creature*)passenger)->AI())
+            ((Creature*)passenger)->AI()->SetCombatMovement(true, true);
+        if (!passenger->getVictim())
+            passenger->GetMotionMaster()->Initialize();
     }
 }
 
