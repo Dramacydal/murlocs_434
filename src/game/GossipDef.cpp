@@ -189,8 +189,8 @@ void PlayerMenu::SendGossipMenu(uint32 TitleTextId, ObjectGuid objectGuid)
         data << title;                                      // max 0x200
     }
 
-    GetMenuSession()->SendPacket( &data );
-    //DEBUG_LOG( "WORLD: Sent SMSG_GOSSIP_MESSAGE NPCGuid=%u",GUID_LOPART(npcGUID) );
+    GetMenuSession()->SendPacket(&data);
+    DEBUG_LOG("WORLD: Sent SMSG_GOSSIP_MESSAGE from %s", objectGuid.GetString().c_str());
 }
 
 void PlayerMenu::CloseGossip()
@@ -198,7 +198,7 @@ void PlayerMenu::CloseGossip()
     WorldPacket data( SMSG_GOSSIP_COMPLETE, 0 );
     GetMenuSession()->SendPacket( &data );
 
-    //DEBUG_LOG( "WORLD: Sent SMSG_GOSSIP_COMPLETE" );
+    // DEBUG_LOG("WORLD: Sent SMSG_GOSSIP_COMPLETE");
 }
 
 // Outdated
