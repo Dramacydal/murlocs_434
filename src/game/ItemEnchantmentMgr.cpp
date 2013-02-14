@@ -50,13 +50,8 @@ void LoadRandomEnchantmentsTable()
     RandomItemPropEnch.clear();                             // for reload case
     RandomItemSuffixEnch.clear();                           // for reload case
 
-    EnchantmentStore::const_iterator tab;
-    int32 entry, ench;
-    float chance;
     uint32 count = 0;
-
-    QueryResult *result = WorldDatabase.Query("SELECT entry, ench, chance FROM item_enchantment_template");
-
+    QueryResult* result = WorldDatabase.Query("SELECT entry, ench, chance FROM item_enchantment_template");
     if (result)
     {
         BarGoLink bar(result->GetRowCount());
@@ -66,9 +61,9 @@ void LoadRandomEnchantmentsTable()
             Field* fields = result->Fetch();
             bar.step();
 
-            entry = fields[0].GetInt32();
-            ench = fields[1].GetUInt32();
-            chance = fields[2].GetFloat();
+            int32 entry = fields[0].GetInt32();
+            uint32 ench = fields[1].GetUInt32();
+            float chance = fields[2].GetFloat();
 
             if (chance > 0.000001f && chance <= 100.0f)
             {
