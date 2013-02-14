@@ -727,7 +727,7 @@ void Transport::UpdateCreaturePosition(Creature* npc)
     float xOffset = (npc->GetTransOffsetX() * cos(transO) - npc->GetTransOffsetY() * sin(transO));
     float yOffset = (npc->GetTransOffsetY() * cos(transO) + npc->GetTransOffsetX() * sin(transO));
     CreatureCreatePos pos(GetMap(), transX + xOffset, transY + yOffset, transZ + npc->GetTransOffsetZ(), transO + npc->GetTransOffsetO(), GetPhaseMask());
-    npc->SetSummonPoint(pos);
+    npc->SetRespawnCoord(pos);
     npc->SetPosition(pos.m_pos.x, pos.m_pos.y, pos.m_pos.z, pos.m_pos.o);
 }
 

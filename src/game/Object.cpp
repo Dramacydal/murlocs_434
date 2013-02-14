@@ -1914,7 +1914,7 @@ Creature* WorldObject::SummonCreature(uint32 id, float x, float y, float z, floa
         return NULL;
     }
 
-    pCreature->SetSummonPoint(pos);
+    pCreature->SetRespawnCoord(pos);
 
     if (forceLevel)
         pCreature->SetLevel(forceLevel);

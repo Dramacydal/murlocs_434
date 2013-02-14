@@ -1359,6 +1359,7 @@ bool Creature::LoadFromDB(uint32 guidlow, Map *map)
     if (!Create(guidlow, pos, cinfo, TEAM_NONE, data, eventData))
         return false;
 
+    SetRespawnCoord(pos);
     m_respawnradius = data->spawndist;
 
     m_respawnDelay = data->spawntimesecs;
@@ -2296,51 +2297,31 @@ time_t Creature::GetRespawnTimeEx() const
         return now;
 }
 
-void Creature::SetRespawnCoord(float x, float y, float z, float o)
+void Creature::GetRespawnCoord(float& x, float& y, float& z, float* ori, float* dist) const
 {
-    m_bHasCustomRespawn = true;
-    m_respawnPos.x = x;
-    m_respawnPos.y = y;
-    m_respawnPos.z = z;
-    m_respawnPos.o = o;
+    x = m_respawnPos.x;
+    y = m_respawnPos.y;
+    z = m_respawnPos.z;
+
+    if (ori)
+        *ori = m_respawnPos.o;
+
+    if (dist)
+        *dist = GetRespawnRadius();
+
+    // lets check if our creatures have valid spawn coordinates
+    MANGOS_ASSERT(MaNGOS::IsValidMapCoord(x, y, z) || PrintCoordinatesError(x, y, z, "respawn"));
 }
 
-void Creature::GetRespawnCoord( float &x, float &y, float &z, float* ori, float* dist ) const
+void Creature::ResetRespawnCoord()
 {
-    if (m_bHasCustomRespawn)
+    if (CreatureData const* data = sObjectMgr.GetCreatureData(GetGUIDLow()))
     {
-        x = m_respawnPos.x;
-        y = m_respawnPos.y;
-        z = m_respawnPos.z;
-        if (ori)
-            *ori = m_respawnPos.o;
-        if (dist)
-            *dist = GetRespawnRadius();
+        m_respawnPos.x = data->posX;
+        m_respawnPos.y = data->posY;
+        m_respawnPos.z = data->posZ;
+        m_respawnPos.o = data->orientation;
     }
-    else if (CreatureData const* data = sObjectMgr.GetCreatureData(GetGUIDLow()))
-    {
-        x = data->posX;
-        y = data->posY;
-        z = data->posZ;
-        if (ori)
-            *ori = data->orientation;
-        if (dist)
-            *dist = GetRespawnRadius();
-    }
-    else
-    {
-        float orient;
-
-        GetSummonPoint(x, y, z, orient);
-
-        if (ori)
-            *ori = orient;
-        if (dist)
-            *dist = GetRespawnRadius();
-    }
-
-    //lets check if our creatures have valid spawn coordinates
-    MANGOS_ASSERT(MaNGOS::IsValidMapCoord(x, y, z) || PrintCoordinatesError(x, y, z, "respawn"));
 }
 
 void Creature::AllLootRemovedFromCorpse()

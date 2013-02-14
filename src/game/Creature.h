@@ -699,8 +699,9 @@ class MANGOS_DLL_SPEC Creature : public Unit
         void SetCombatStartPosition(float x, float y, float z) { m_combatStartX = x; m_combatStartY = y; m_combatStartZ = z; }
         void GetCombatStartPosition(float &x, float &y, float &z) { x = m_combatStartX; y = m_combatStartY; z = m_combatStartZ; }
 
-        void SetSummonPoint(CreatureCreatePos const& pos) { m_summonPos = pos.m_pos; }
-        void GetSummonPoint(float &fX, float &fY, float &fZ, float &fOrient) const { fX = m_summonPos.x; fY = m_summonPos.y; fZ = m_summonPos.z; fOrient = m_summonPos.o; }
+        void SetRespawnCoord(CreatureCreatePos const& pos) { m_respawnPos = pos.m_pos; }
+        void GetRespawnCoord(float& x, float& y, float& z, float* ori = NULL, float* dist = NULL) const;
+        void ResetRespawnCoord();
 
         void SetDeadByDefault (bool death_state) { m_isDeadByDefault = death_state; }
 
@@ -761,9 +762,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
         float m_combatStartY;
         float m_combatStartZ;
 
-        Position m_summonPos;
         Position m_respawnPos;
-        bool m_bHasCustomRespawn;
 
     private:
         GridReference<Creature> m_gridRef;
