@@ -1000,12 +1000,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 
         ((Creature*)pVictim)->SetLootRecipient(this);
 
-        pVictim->m_deathState = DEAD;                       // so that isAlive, isDead return expected results in the called hooks of JustKilledCreature
-                                                            // must be used only shortly before SetDeathState(JUST_DIED) and only for Creatures or Pets
-
-        JustKilledCreature((Creature*)pVictim);
-
-        pVictim->SetDeathState(JUST_DIED);
+        JustKilledCreature((Creature*)pVictim, NULL);
         pVictim->SetHealth(0);
 
         return damage;
@@ -1298,25 +1293,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             }
         }
         else                                                // Killed creature
-        {
-            pVictim->m_deathState = DEAD;                   // so that isAlive, isDead return expected results in the called hooks of JustKilledCreature
-                                                            // must be used only shortly before SetDeathState(JUST_DIED) and only for Creatures or Pets
-            JustKilledCreature((Creature*)pVictim);
-
-            DEBUG_FILTER_LOG(LOG_FILTER_DAMAGE, "SET JUST_DIED");
-            pVictim->SetDeathState(JUST_DIED);              // if !spiritOfRedemtionTalentReady always true for unit
-
-            if (player_tap)                                 // killedby Player
-            {
-                if (BattleGround* bg = player_tap->GetBattleGround())
-                    bg->HandleKillUnit((Creature*)pVictim, player_tap);
-
-                // selfkills are not handled in outdoor pvp scripts
-                if (pVictim->GetObjectGuid() != GetObjectGuid())
-                    if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(player_tap->GetCachedZoneId()))
-                        outdoorPvP->HandlePlayerKill(player_tap, pVictim);
-            }
-        }
+            JustKilledCreature((Creature*)pVictim, player_tap);
     }
     else                                                    // if (health <= damage)
     {
@@ -1527,16 +1504,10 @@ struct PetOwnerKilledUnitHelper
     Unit* m_victim;
 };
 
-void Unit::JustKilledCreature(Creature* victim)
+void Unit::JustKilledCreature(Creature* victim, Player* responsiblePlayer)
 {
-    if (!victim->IsPet())                                   // Prepare loot if can
-    {
-        victim->DeleteThreatList();
-        // only lootable if it has loot or can drop gold
-        victim->PrepareBodyLootState();
-        // may have no loot, so update death timer if allowed
-        victim->AllLootRemovedFromCorpse();
-    }
+    victim->m_deathState = DEAD;                            // so that isAlive, isDead return expected results in the called hooks of JustKilledCreature
+                                                            // must be used only shortly before SetDeathState(JUST_DIED) and only for Creatures or Pets
 
     // some critters required for quests (need normal entry instead possible heroic in any cases)
     if (victim->GetCreatureType() == CREATURE_TYPE_CRITTER && GetTypeId() == TYPEID_PLAYER)
@@ -1607,8 +1578,19 @@ void Unit::JustKilledCreature(Creature* victim)
     if (InstanceData* mapInstance = victim->GetInstanceData())
         mapInstance->OnCreatureDeath(victim);
 
+    if (responsiblePlayer)                                  // killedby Player, inform BG
+    {
+        if (BattleGround* bg = responsiblePlayer->GetBattleGround())
+            bg->HandleKillUnit(victim, responsiblePlayer);
+
+        // selfkills are not handled in outdoor pvp scripts
+        if (victim->GetObjectGuid() != responsiblePlayer->GetObjectGuid())
+            if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(responsiblePlayer->GetCachedZoneId()))
+                outdoorPvP->HandlePlayerKill(responsiblePlayer, victim);
+    }
+
     // Notify the outdoor pvp script
-    if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(GetZoneId()))
+    if (OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(responsiblePlayer ? responsiblePlayer->GetCachedZoneId() : GetZoneId()))
         outdoorPvP->HandleCreatureDeath(victim);
 
     if (victim->IsLinkingEventTrigger())
@@ -1647,6 +1629,22 @@ void Unit::JustKilledCreature(Creature* victim)
         if (Guild* guild = sGuildMgr.GetGuildByGuid(plr->GetGuildGuid()))
             if (GetMap()->HasGuildGroup(guild->GetObjectGuid()))
                 guild->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, victim->GetEntry(), 1, victim, 0, (Player*)this);
+
+    bool isPet = victim->IsPet();
+
+    /* ********************************* Set Death finally ************************************* */
+    DEBUG_FILTER_LOG(LOG_FILTER_DAMAGE, "SET JUST_DIED");
+    victim->SetDeathState(JUST_DIED);                       // if !spiritOfRedemtionTalentReady always true for unit
+
+    if (isPet)
+        return;                                             // Pets might have been unsummoned at this place, do not handle them further!
+
+    /* ******************************** Prepare loot if can ************************************ */
+    victim->DeleteThreatList();
+    // only lootable if it has loot or can drop gold
+    victim->PrepareBodyLootState();
+    // may have no loot, so update death timer if allowed, must be after SetDeathState(JUST_DIED)
+    victim->AllLootRemovedFromCorpse();
 }
 
 void Unit::PetOwnerKilledUnit(Unit* pVictim)
