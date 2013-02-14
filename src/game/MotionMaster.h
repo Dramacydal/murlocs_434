@@ -61,11 +61,11 @@ enum MMCleanFlag
 class MANGOS_DLL_SPEC MotionMaster : private std::stack<MovementGenerator *>
 {
     private:
-        typedef std::stack<MovementGenerator *> Impl;
-        typedef std::vector<MovementGenerator *> ExpireList;
-    public:
+        typedef std::stack<MovementGenerator*> Impl;
+        typedef std::vector<MovementGenerator*> ExpireList;
 
-        explicit MotionMaster(Unit *unit) : m_owner(unit), m_expList(NULL), m_cleanFlag(MMCF_NONE) {}
+    public:
+        explicit MotionMaster(Unit* unit) : m_owner(unit), m_expList(NULL), m_cleanFlag(MMCF_NONE) {}
         ~MotionMaster();
 
         void Initialize();
@@ -115,6 +115,7 @@ class MANGOS_DLL_SPEC MotionMaster : private std::stack<MovementGenerator *>
         MovementGeneratorType GetCurrentMovementGeneratorType() const;
 
         void propagateSpeedChange();
+        uint32 getLastReachedWaypoint() const;
 
         bool GetDestination(float& x, float& y, float& z);
 
