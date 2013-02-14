@@ -1433,7 +1433,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void AddRefundReference(ObjectGuid guid);
         void DeleteRefundReference(ObjectGuid guid);
 
-        void AutoStoreLoot(uint32 loot_id, LootStore const& store, bool broadcast = false, uint8 bag = NULL_BAG, uint8 slot = NULL_SLOT);
+        void AutoStoreLoot(WorldObject const* lootTarget, uint32 loot_id, LootStore const& store, bool broadcast = false, uint8 bag = NULL_BAG, uint8 slot = NULL_SLOT);
         void AutoStoreLoot(Loot& loot, bool broadcast = false, uint8 bag = NULL_BAG, uint8 slot = NULL_SLOT);
 
         Item* ConvertItem(Item* item, uint32 newItemId);

@@ -713,7 +713,6 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
         static void AddToRemoveListInMaps(uint32 db_guid, GameObjectData const* data);
         static void SpawnInMaps(uint32 db_guid, GameObjectData const* data);
 
-        void getFishLoot(Loot *loot, Player* loot_owner);
         GameobjectTypes GetGoType() const { return GameobjectTypes(GetByteValue(GAMEOBJECT_BYTES_1, 1)); }
         void SetGoType(GameobjectTypes type) { SetByteValue(GAMEOBJECT_BYTES_1, 1, type); }
         GOState GetGoState() const { return GOState(GetByteValue(GAMEOBJECT_BYTES_1, 0)); }

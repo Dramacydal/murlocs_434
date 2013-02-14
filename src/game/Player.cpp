@@ -8623,63 +8623,76 @@ void Player::SendLoot(ObjectGuid guid, LootType loot_type)
             {
                 uint32 lootid =  go->GetGOInfo()->GetLootId();
                 if ((go->GetEntry() == BG_AV_OBJECTID_MINE_N || go->GetEntry() == BG_AV_OBJECTID_MINE_S))
-                    if (BattleGround *bg = GetBattleGround())
-                        if (bg->GetTypeID(true) == BATTLEGROUND_AV)
+                {
+                    if (BattleGround* bg = GetBattleGround())
+                        if (bg->GetTypeID() == BATTLEGROUND_AV)
                             if (!(((BattleGroundAV*)bg)->PlayerCanDoMineQuest(go->GetEntry(), GetTeam())))
                             {
                                 SendLootRelease(guid);
                                 return;
                             }
-
-                // Entry 0 in fishing loot template used for store junk fish loot at fishing fail it junk allowed by config option
-                // this is overwrite fishinghole loot for example
-                if (loot_type == LOOT_FISHING_FAIL)
-                    loot->FillLoot(0, LootTemplates_Fishing, this, true);
-                else if (lootid)
-                {
-                    DEBUG_LOG("       if(lootid)");
-                    loot->clear();
-                    loot->FillLoot(lootid, LootTemplates_Gameobject, this, false);
-                    float moneyMod = 1.0f;
-                    if (IsPremiumActive())
-                        moneyMod = GetPremiumMoneyModifier();
-
-                    loot->generateMoneyLoot(go->GetGOInfo()->MinMoneyLoot * moneyMod, go->GetGOInfo()->MaxMoneyLoot * moneyMod);
-
-                    if (Group* group = go->GetGroupLootRecipient())
-                    {
-                        if (go->GetGoType() == GAMEOBJECT_TYPE_CHEST && go->GetMap()->IsDungeon())
-                        {
-                            if (go->GetGOInfo()->chest.groupLootRules == 1  || sWorld.getConfig(CONFIG_BOOL_LOOT_CHESTS_IGNORE_DB))
-                            {
-                                group->UpdateLooterGuid(go,true);
-                                switch (group->GetLootMethod())
-                                {
-                                    case GROUP_LOOT:
-                                    // GroupLoot delete items over threshold (threshold even not implemented), and roll them. Items with quality<threshold, round robin
-                                         group->GroupLoot(go, loot);
-                                         permission = GROUP_PERMISSION;
-                                         break;
-                                    case NEED_BEFORE_GREED:
-                                         group->NeedBeforeGreed(go, loot);
-                                         permission = GROUP_PERMISSION;
-                                         break;
-                                    case MASTER_LOOT:
-                                         group->MasterLoot(go, loot);
-                                         permission = MASTER_PERMISSION;
-                                         break;
-                                    default:
-                                         break;
-                                }
-                            }
-                            else
-                                permission = GROUP_PERMISSION;
-                        }
-                    }
                 }
-                else if (loot_type == LOOT_FISHING)
-                    go->getFishLoot(loot,this);
 
+                loot->clear();
+                switch (loot_type)
+                {
+                    // Entry 0 in fishing loot template used for store junk fish loot at fishing fail it junk allowed by config option
+                    // this is overwrite fishinghole loot for example
+                    case LOOT_FISHING_FAIL:
+                        loot->FillLoot(0, LootTemplates_Fishing, this, true);
+                        break;
+                    case LOOT_FISHING:
+                    {
+                        uint32 zone, subzone;
+                        go->GetZoneAndAreaId(zone, subzone);
+                        // if subzone loot exist use it
+                        if (!loot->FillLoot(subzone, LootTemplates_Fishing, this, true, (subzone != zone)) && subzone != zone)
+                            // else use zone loot (if zone diff. from subzone, must exist in like case)
+                            loot->FillLoot(zone, LootTemplates_Fishing, this, true);
+                        break;
+                    }
+                    default:
+                        if (!lootid)
+                            break;
+                        DEBUG_LOG("       if(lootid)");
+
+                        loot->FillLoot(lootid, LootTemplates_Gameobject, this, false);
+                        float moneyMod = 1.0f;
+                        if (IsPremiumActive())
+                            moneyMod = GetPremiumMoneyModifier();
+                        loot->generateMoneyLoot(go->GetGOInfo()->MinMoneyLoot * moneyMod, go->GetGOInfo()->MaxMoneyLoot * moneyMod);
+
+                        if (Group* group = go->GetGroupLootRecipient())
+                        {
+                            if (go->GetGoType() == GAMEOBJECT_TYPE_CHEST && go->GetMap()->IsDungeon())
+                            {
+                                if (go->GetGOInfo()->chest.groupLootRules == 1  || sWorld.getConfig(CONFIG_BOOL_LOOT_CHESTS_IGNORE_DB))
+                                {
+                                    group->UpdateLooterGuid(go,true);
+                                    switch (group->GetLootMethod())
+                                    {
+                                        case GROUP_LOOT:
+                                        // GroupLoot delete items over threshold (threshold even not implemented), and roll them. Items with quality<threshold, round robin
+                                             group->GroupLoot(go, loot);
+                                             permission = GROUP_PERMISSION;
+                                             break;
+                                        case NEED_BEFORE_GREED:
+                                             group->NeedBeforeGreed(go, loot);
+                                             permission = GROUP_PERMISSION;
+                                             break;
+                                        case MASTER_LOOT:
+                                             group->MasterLoot(go, loot);
+                                             permission = MASTER_PERMISSION;
+                                             break;
+                                        default:
+                                             break;
+                                    }
+                                }
+                                else
+                                    permission = GROUP_PERMISSION;
+                            }
+                        }
+                }
                 go->SetLootState(GO_ACTIVATED);
 
                 if (!go->GetMap()->Instanceable())
@@ -23835,9 +23848,9 @@ bool Player::IsBaseRuneSlotsOnCooldown(RuneType runeType) const
     return true;
 }
 
-void Player::AutoStoreLoot(uint32 loot_id, LootStore const& store, bool broadcast, uint8 bag, uint8 slot)
+void Player::AutoStoreLoot(WorldObject const* lootTarget, uint32 loot_id, LootStore const& store, bool broadcast, uint8 bag, uint8 slot)
 {
-    Loot loot;
+    Loot loot(lootTarget);
 
     if(store.GetName() == LootTemplates_Spell.GetName())
         loot.loot_type = LOOT_SPELL; // group hackfix
