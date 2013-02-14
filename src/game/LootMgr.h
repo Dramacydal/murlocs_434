@@ -27,7 +27,13 @@
 #include <map>
 #include <vector>
 
+
 #define MAX_NR_LOOT_ITEMS 255
+
+class Player;
+class LootStore;
+class WorldObject;
+
 // note: the client cannot show more than 16 items total
 #define MAX_NR_QUEST_ITEMS 32
 // unrelated to the number of quest items shown, just for reserve
@@ -75,9 +81,6 @@ enum LootSlotType
     LOOT_SLOT_OWNER   = 4,                                  // ignore binding confirmation and etc, for single player looting
     MAX_LOOT_SLOT_TYPE                                      // custom, use for mark skipped from show items
 };
-
-class Player;
-class LootStore;
 
 struct LootStoreItem
 {
