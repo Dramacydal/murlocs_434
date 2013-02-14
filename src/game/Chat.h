@@ -490,6 +490,7 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleReloadCreatureQuestInvRelationsCommand(char* args);
         bool HandleReloadCustomAreaFlagsCommand(char* args);
         bool HandleReloadDbScriptStringCommand(char* args);
+        bool HandleReloadDBScriptsOnCreatureDeathCommand(char* args);
         bool HandleReloadDBScriptsOnEventCommand(char* args);
         bool HandleReloadDBScriptsOnGossipCommand(char* args);
         bool HandleReloadDBScriptsOnGoUseCommand(char* args);
