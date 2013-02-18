@@ -27,8 +27,8 @@ const char GameObjectInfoAddonInfofmt[] = "iffff";
 const char EquipmentInfofmt[] = "iiii";
 const char GameObjectInfosrcfmt[] = "iiissssiifiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiis";
 const char GameObjectInfodstfmt[] = "iiissssiifiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii";
-const char ItemPrototypesrcfmt[]= "iiiisiiiiffiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiifiiifiiiiiifiiiiiifiiiiiifiiiiiifiiiisiiiiiiiiiiiiiiiiiiiiiiiifiiisiifiiiii";
-const char ItemPrototypedstfmt[]= "iiiisiiiiffiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiifiiifiiiiiifiiiiiifiiiiiifiiiiiifiiiisiiiiiiiiiiiiiiiiiiiiiiiifiiiiiifiiiii";
+const char ItemPrototypesrcfmt[] = "iiiisiiiiffiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiifiiifiiiiiifiiiiiifiiiiiifiiiiiifiiiisiiiiiiiiiiiiiiiiiiiiiiiifiiisiifiiiii";
+const char ItemPrototypedstfmt[] = "iiiisiiiiffiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiifiiifiiiiiifiiiiiifiiiiiifiiiiiifiiiisiiiiiiiiiiiiiiiiiiiiiiiifiiiiiifiiiii";
 const char PageTextfmt[] = "isi";
 const char InstanceTemplatesrcfmt[] = "iiiis";
 const char InstanceTemplatedstfmt[] = "iiiii";
@@ -36,6 +36,8 @@ const char WorldTemplatesrcfmt[] = "is";
 const char WorldTemplatedstfmt[] = "ii";
 const char ConditionsSrcFmt[] = "iiii";
 const char ConditionsDstFmt[] = "iiii";
+const char SpellScriptTargetFmt[] = "iii";
+
 SQLStorage sCreatureStorage(CreatureInfosrcfmt, CreatureInfodstfmt, "entry", "creature_template");
 SQLStorage sCreatureDataAddonStorage(CreatureDataAddonInfofmt, "guid", "creature_addon");
 SQLStorage sCreatureModelStorage(CreatureModelfmt, "modelid", "creature_model_info");
@@ -50,4 +52,4 @@ SQLStorage sConditionStorage(ConditionsSrcFmt, ConditionsDstFmt, "condition_entr
 SQLHashStorage sGameObjectDataAddonStorage(GameObjectInfoAddonInfofmt, "guid", "gameobject_addon");
 SQLHashStorage sGOStorage(GameObjectInfosrcfmt, GameObjectInfodstfmt, "entry", "gameobject_template");
 
-
+SQLMultiStorage sSpellScriptTargetStorage(SpellScriptTargetFmt, "entry", "spell_script_target");

@@ -35,5 +35,6 @@ extern SQLStorage sConditionStorage;
 
 extern SQLHashStorage sGOStorage;
 extern SQLHashStorage sGameObjectDataAddonStorage;
+extern SQLMultiStorage sSpellScriptTargetStorage;
 
 #endif
