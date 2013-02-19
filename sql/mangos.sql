@@ -24,7 +24,7 @@ CREATE TABLE `db_version` (
   `version` varchar(120) default NULL,
   `creature_ai_version` varchar(120) default NULL,
   `cache_id` int(10) default '0',
-  `required_12377_01_mangos_dbscripts` bit(1) default NULL
+  `required_c12472_02_mangos_npc_vendor_template` bit(1) default NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Used DB version notes';
 
 --
@@ -1522,17 +1522,16 @@ UNLOCK TABLES;
 -- Table structure for table `creature_ai_summons`
 --
 
-DROP TABLE IF EXISTS `creature_ai_summons`;
-CREATE TABLE `creature_ai_summons` (
-  `id` int(11) unsigned NOT NULL COMMENT 'Location Identifier' AUTO_INCREMENT,
-  `position_x` float NOT NULL default '0',
-  `position_y` float NOT NULL default '0',
-  `position_z` float NOT NULL default '0',
-  `orientation` float NOT NULL default '0',
-  `spawntimesecs` int(11) unsigned NOT NULL default '120',
-  `comment` varchar(255) NOT NULL default '' COMMENT 'Summon Comment',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='EventAI Summoning Locations';
+DROP TABLE IF EXISTS `db_version`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `db_version` (
+  `version` varchar(120) DEFAULT NULL,
+  `creature_ai_version` varchar(120) DEFAULT NULL,
+  `cache_id` int(10) DEFAULT '0',
+  `required_c12472_02_mangos_npc_vendor_template` bit(1) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Used DB version notes';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `creature_ai_summons`
@@ -4340,12 +4339,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `npc_vendor`;
 CREATE TABLE `npc_vendor` (
-  `entry` mediumint(8) unsigned NOT NULL default '0',
-  `item` mediumint(8) NOT NULL default '0',
-  `maxcount` smallint(5) unsigned NOT NULL default '0',
-  `incrtime` int(10) unsigned NOT NULL default '0',
-  `ExtendedCost` mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`entry`,`item`,`ExtendedCost`)
+  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `item` mediumint(8) NOT NULL DEFAULT '0',
+  `maxcount` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `incrtime` int(10) unsigned NOT NULL DEFAULT '0',
+  `ExtendedCost` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `condition_id` mediumint(8) unsigned NOT NULL default '0',
+  PRIMARY KEY (`entry`,`item`,`ExtendedCost`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Npc System';
 
 --
@@ -4363,12 +4363,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `npc_vendor_template`;
 CREATE TABLE `npc_vendor_template` (
-  `entry` mediumint(8) unsigned NOT NULL default '0',
-  `item` mediumint(8) NOT NULL default '0',
-  `maxcount` smallint(3) unsigned NOT NULL default '0',
-  `incrtime` int(10) unsigned NOT NULL default '0',
-  `ExtendedCost` mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`entry`,`item`,`ExtendedCost`)
+  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `item` mediumint(8) NOT NULL DEFAULT '0',
+  `maxcount` smallint(3) unsigned NOT NULL DEFAULT '0',
+  `incrtime` int(10) unsigned NOT NULL DEFAULT '0',
+  `ExtendedCost` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `condition_id` mediumint(8) unsigned NOT NULL default '0',
+  PRIMARY KEY (`entry`,`item`,`ExtendedCost`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Npc System';
 
 --
