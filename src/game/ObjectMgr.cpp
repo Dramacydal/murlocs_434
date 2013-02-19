@@ -8553,6 +8553,7 @@ char const* conditionSourceToStr[] =
     "gossip menu",
     "gossip menu option",
     "event AI",
+    "hardcoded"
     "phase mgr"
 };
 
