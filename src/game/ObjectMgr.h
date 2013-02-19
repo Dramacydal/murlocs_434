@@ -458,7 +458,8 @@ enum ConditionSource                                        // From where was th
     CONDITION_FROM_GOSSIP_MENU      = 2,                    // Used to check a gossip menu menu-text
     CONDITION_FROM_GOSSIP_OPTION    = 3,                    // Used to check a gossip menu option-item
     CONDITION_FROM_EVENTAI          = 4,                    // Used to check EventAI Event "On Receive Emote"
-    CONDITION_FROM_PHASEMGR         = 5,                    // called from phase manager
+    CONDITION_FROM_HARDCODED        = 5,                    // Used to check a hardcoded event - not actually a condition
+    CONDITION_FROM_PHASEMGR         = 6,                    // called from phase manager
 };
 
 class PlayerCondition
