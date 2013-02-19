@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL npc_belnistraszAI : public npc_escortAI
     {
         if (m_uiRitualPhase > 7)
         {
-            pSummoner->SummonCreature(NPC_PLAGUEMAW_THE_ROTTING, pSummoner->GetPositionX(), pSummoner->GetPositionY(), pSummoner->GetPositionZ(), pSummoner->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 60000);
+            pSummoner->SummonCreature(NPC_PLAGUEMAW_THE_ROTTING, pSummoner->GetPositionX(), pSummoner->GetPositionY(), pSummoner->GetPositionZ(), pSummoner->GetOrientation(), EMPSUMMON_TIMED_OOC_DESPAWN, 60000);
             return;
         }
 
@@ -189,7 +189,7 @@ struct MANGOS_DLL_DECL npc_belnistraszAI : public npc_escortAI
                     break;
             }
 
-            pSummoner->SummonCreature(uiEntry, fX, fZ, fY, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 60000);
+            pSummoner->SummonCreature(uiEntry, fX, fZ, fY, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 60000);
         }
     }
 

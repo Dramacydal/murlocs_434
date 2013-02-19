@@ -135,8 +135,8 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
                 DoScriptText(SAY_FEAST_PANTHER, m_creature, pPlayer);
         }
 
-        m_creature->SummonCreature(NPC_ZULIAN_PROWLER, -11532.7998f, -1649.6734f, 41.4800f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 15000);
-        m_creature->SummonCreature(NPC_ZULIAN_PROWLER, -11532.9970f, -1606.4840f, 41.2979f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 15000);
+        m_creature->SummonCreature(NPC_ZULIAN_PROWLER, -11532.7998f, -1649.6734f, 41.4800f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 15000);
+        m_creature->SummonCreature(NPC_ZULIAN_PROWLER, -11532.9970f, -1606.4840f, 41.2979f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 15000);
     }
 
     void JustSummoned(Creature* pSummoned)

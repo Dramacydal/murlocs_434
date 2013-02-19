@@ -92,7 +92,7 @@ void SummonCroneIfReady(ScriptedInstance* pInstance, Creature* pCreature)
 
     if (pInstance->GetData(DATA_OPERA_OZ_DEATHCOUNT) == 4)
     {
-        if (Creature* pCrone = pCreature->SummonCreature(CREATURE_CRONE, -10891.96f, -1755.95f, pCreature->GetPositionZ(), 4.64f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS))
+        if (Creature* pCrone = pCreature->SummonCreature(CREATURE_CRONE, -10891.96f, -1755.95f, pCreature->GetPositionZ(), 4.64f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS))
         {
             if (pCreature->getVictim())
                 pCrone->AI()->AttackStart(pCreature->getVictim());
@@ -253,7 +253,7 @@ struct MANGOS_DLL_DECL mob_titoAI : public ScriptedAI
 
 void boss_dorotheeAI::SummonTito()
 {
-    if (Creature* pTito = m_creature->SummonCreature(CREATURE_TITO, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
+    if (Creature* pTito = m_creature->SummonCreature(CREATURE_TITO, 0.0f, 0.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 30000))
     {
         DoScriptText(SAY_DOROTHEE_SUMMON, m_creature);
 
@@ -737,7 +737,7 @@ bool GossipSelect_npc_grandmother(Player* pPlayer, Creature* pCreature, uint32 u
 {
     if (uiAction == GOSSIP_ACTION_INFO_DEF)
     {
-        if (Creature* pBigBadWolf = pCreature->SummonCreature(CREATURE_BIG_BAD_WOLF, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS))
+        if (Creature* pBigBadWolf = pCreature->SummonCreature(CREATURE_BIG_BAD_WOLF, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS))
             pBigBadWolf->AI()->AttackStart(pPlayer);
 
         pCreature->ForcedDespawn();
@@ -1290,7 +1290,7 @@ void boss_julianneAI::UpdateAI(const uint32 diff)
     {
         if (SummonRomuloTimer < diff)
         {
-            if (Creature* pRomulo = m_creature->SummonCreature(CREATURE_ROMULO, ROMULO_X, ROMULO_Y, m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS))
+            if (Creature* pRomulo = m_creature->SummonCreature(CREATURE_ROMULO, ROMULO_X, ROMULO_Y, m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS))
             {
                 m_romuloGuid = pRomulo->GetObjectGuid();
 

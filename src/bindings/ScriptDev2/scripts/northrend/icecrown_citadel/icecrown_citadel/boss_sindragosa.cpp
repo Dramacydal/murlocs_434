@@ -633,7 +633,7 @@ struct MANGOS_DLL_DECL mob_rimefangAI : public BSWScriptedAI
 
         if (pBrother && !pBrother->isAlive())
         {
-            if (Creature* pSindr = m_creature->SummonCreature(NPC_SINDRAGOSA, SpawnLoc[0].x, SpawnLoc[0].y, SpawnLoc[0].z, 3.17f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, HOUR*IN_MILLISECONDS, true))
+            if (Creature* pSindr = m_creature->SummonCreature(NPC_SINDRAGOSA, SpawnLoc[0].x, SpawnLoc[0].y, SpawnLoc[0].z, 3.17f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, HOUR*IN_MILLISECONDS, true))
                 pSindr->SetCreatorGuid(ObjectGuid());
         }
     }
@@ -733,7 +733,7 @@ struct MANGOS_DLL_DECL mob_spinestalkerAI : public BSWScriptedAI
 
         if (pBrother && !pBrother->isAlive())
         {
-            if (Creature* pSindr = m_creature->SummonCreature(NPC_SINDRAGOSA, SpawnLoc[0].x, SpawnLoc[0].y, SpawnLoc[0].z, 3.17f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, HOUR*IN_MILLISECONDS, true))
+            if (Creature* pSindr = m_creature->SummonCreature(NPC_SINDRAGOSA, SpawnLoc[0].x, SpawnLoc[0].y, SpawnLoc[0].z, 3.17f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, HOUR*IN_MILLISECONDS, true))
                 pSindr->SetCreatorGuid(ObjectGuid());
         }
     }

@@ -268,7 +268,7 @@ struct MANGOS_DLL_DECL boss_valithria_dreamwalkerAI : public BSWScriptedAI
                 default: randommob = NPC_RISEN_ARCHMAGE;       break;
             }
 
-            if (Unit* pTemp = doSummon(randommob, SpawnLoc[door].x, SpawnLoc[door].y, SpawnLoc[door].z, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 300000))
+            if (Unit* pTemp = doSummon(randommob, SpawnLoc[door].x, SpawnLoc[door].y, SpawnLoc[door].z, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 300000))
                 mobsGUIDList.push_back(pTemp->GetGUID());
         }
 
@@ -559,13 +559,13 @@ struct MANGOS_DLL_DECL boss_valithria_dreamwalkerAI : public BSWScriptedAI
                 {
                     for (uint8 k = 0; k < 4; ++k)
                     {
-                        if (Unit* pTemp = doSummon(MobsData[i].mob, SpawnLoc[urand(1, 4)].x + frand(1.0f, 10.0f), SpawnLoc[urand(1, 4)].y + frand(1.0f, 10.0f), SpawnLoc[urand(1, 4)].z, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 300000))
+                        if (Unit* pTemp = doSummon(MobsData[i].mob, SpawnLoc[urand(1, 4)].x + frand(1.0f, 10.0f), SpawnLoc[urand(1, 4)].y + frand(1.0f, 10.0f), SpawnLoc[urand(1, 4)].z, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 300000))
                             mobsGUIDList.push_back(pTemp->GetGUID());
                     }
                 }
                 else if (MobsData[i].mob != NULL)
                 {
-                    if (Unit* pTemp = doSummon(MobsData[i].mob, SpawnLoc[urand(1, 4)].x, SpawnLoc[urand(1, 4)].y, SpawnLoc[urand(1, 4)].z, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 300000))
+                    if (Unit* pTemp = doSummon(MobsData[i].mob, SpawnLoc[urand(1, 4)].x, SpawnLoc[urand(1, 4)].y, SpawnLoc[urand(1, 4)].z, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 300000))
                         mobsGUIDList.push_back(pTemp->GetGUID());
                 } 
 

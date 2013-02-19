@@ -221,7 +221,7 @@ Creature* instance_dark_portal::SummonedPortalBoss(Creature* pSource)
 
     debug_log("SD2: Instance Dark Portal: Summoning rift boss uiEntry %u.", uiEntry);
 
-    if (Creature* pSummoned = pSource->SummonCreature(uiEntry, x, y, z, pSource->GetOrientation(), TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000))
+    if (Creature* pSummoned = pSource->SummonCreature(uiEntry, x, y, z, pSource->GetOrientation(), TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 600000))
         return pSummoned;
 
     debug_log("SD2: Instance Dark Portal: what just happened there? No boss, no loot, no fun...");

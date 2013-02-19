@@ -234,7 +234,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
         float x = Coords[random].x;
         float y = Coords[random].y;
 
-        Creature* Soul = m_creature->SummonCreature(CREATURE_ENSLAVED_SOUL, x, y, m_creature->GetPositionZ(), m_creature->GetOrientation(), TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 45000);
+        Creature* Soul = m_creature->SummonCreature(CREATURE_ENSLAVED_SOUL, x, y, m_creature->GetPositionZ(), m_creature->GetOrientation(), TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 45000);
         Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0);
         if (target && Soul)
         {
@@ -294,7 +294,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
                 // Ribs: open
                 m_creature->HandleEmote(EMOTE_STATE_SUBMERGED);
 
-                Creature* EssenceSuffering = m_creature->SummonCreature(23418, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 1.57f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 10000);
+                Creature* EssenceSuffering = m_creature->SummonCreature(23418, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 1.57f, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 10000);
 
                 if (EssenceSuffering)
                 {
@@ -397,7 +397,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
                     // Ribs: open
                     m_creature->HandleEmote(EMOTE_STATE_SUBMERGED);
 
-                    Creature* EssenceDesire = m_creature->SummonCreature(23419, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 1.57f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 10000);
+                    Creature* EssenceDesire = m_creature->SummonCreature(23419, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 1.57f, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 10000);
 
                     if (EssenceDesire)
                     {
@@ -504,7 +504,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
                     // Ribs: open
                     m_creature->HandleEmote(EMOTE_STATE_SUBMERGED);
 
-                    Creature* EssenceAnger = m_creature->SummonCreature(23420, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 1.57f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 45000);
+                    Creature* EssenceAnger = m_creature->SummonCreature(23420, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 1.57f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 45000);
 
                     if (EssenceAnger)
                     {

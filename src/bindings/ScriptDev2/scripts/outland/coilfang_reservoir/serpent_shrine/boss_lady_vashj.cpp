@@ -354,7 +354,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                 {
                     m_creature->SummonCreature(NPC_TOXIC_SPOREBAT,
                         afSporebatPos[0], afSporebatPos[1], afSporebatPos[2], afSporebatPos[3],
-                        TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                        EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
 
                     //summon sporebats faster and faster
                     if (m_uiSummonSporebat_StaticTimer > 1000)
@@ -397,7 +397,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
             //NPC_ENCHANTED_ELEMENTAL
             if (m_uiEnchantedElemental_Timer < uiDiff)
             {
-                if (Creature* pElemental = m_creature->SummonCreature(NPC_ENCHANTED_ELEMENTAL, afElementPos[m_uiEnchantedElemental_Pos][0], afElementPos[m_uiEnchantedElemental_Pos][1], afElementPos[m_uiEnchantedElemental_Pos][2], afElementPos[m_uiEnchantedElemental_Pos][3], TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 60000))
+                if (Creature* pElemental = m_creature->SummonCreature(NPC_ENCHANTED_ELEMENTAL, afElementPos[m_uiEnchantedElemental_Pos][0], afElementPos[m_uiEnchantedElemental_Pos][1], afElementPos[m_uiEnchantedElemental_Pos][2], afElementPos[m_uiEnchantedElemental_Pos][3], TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 60000))
                     pElemental->GetMotionMaster()->MoveFollow(m_creature, 0.0f, 0.0f);
 
                 if (m_uiEnchantedElemental_Pos == 7)
@@ -415,7 +415,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
 
                 m_creature->SummonCreature(NPC_TAINTED_ELEMENTAL,
                     afElementPos[uiPos][0], afElementPos[uiPos][1], afElementPos[uiPos][2], afElementPos[uiPos][3],
-                    TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 15000);
+                    TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 15000);
 
                 m_uiTaintedElemental_Timer = 120000;
             }else m_uiTaintedElemental_Timer -= uiDiff;
@@ -427,7 +427,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
 
                 m_creature->SummonCreature(NPC_COILFANG_ELITE,
                     afCoilfangElitePos[uiPos][0], afCoilfangElitePos[uiPos][1], afCoilfangElitePos[uiPos][2], afCoilfangElitePos[uiPos][3],
-                    TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 45000);
+                    TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 45000);
 
                 //wowwiki says 50 seconds, bosskillers says 45
                 m_uiCoilfangElite_Timer = urand(45000, 50000);
@@ -440,7 +440,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
 
                 m_creature->SummonCreature(NPC_COILFANG_STRIDER,
                     afCoilfangStriderPos[uiPos][0], afCoilfangStriderPos[uiPos][1], afCoilfangStriderPos[uiPos][2], afCoilfangStriderPos[uiPos][3],
-                    TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                    EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
 
                 //wowwiki says 60 seconds, bosskillers says 60-70
                 m_uiCoilfangStrider_Timer = urand(60000, 70000);

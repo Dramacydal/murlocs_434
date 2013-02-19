@@ -299,7 +299,7 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
         // uncomment the following if something doesn't work correctly, otherwise just delete
         // m_creature->UpdateAllowedPositionZ(x, y, z);
 
-        if (Unit* pSummon = m_creature->SummonCreature(creature_entry, x, y, z, m_creature->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
+        if (Unit* pSummon = m_creature->SummonCreature(creature_entry, x, y, z, m_creature->GetOrientation(), EMPSUMMON_TIMED_OOC_DESPAWN, 30000))
         {
             if (Creature* pMedivh = m_pInstance->GetSingleCreatureFromStorage(NPC_MEDIVH))
                 pSummon->AddThreat(pMedivh);

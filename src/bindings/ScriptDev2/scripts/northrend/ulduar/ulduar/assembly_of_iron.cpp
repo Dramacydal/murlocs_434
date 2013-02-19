@@ -226,7 +226,7 @@ struct MANGOS_DLL_DECL mob_rune_of_summoningAI : public ScriptedAI
     {
         if (m_uiSummon_Timer < diff)
         {
-            if (/*Creature* pTemp = */m_creature->SummonCreature(MOB_LIGHTNING_ELEMENTAL, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000))
+            if (/*Creature* pTemp = */m_creature->SummonCreature(MOB_LIGHTNING_ELEMENTAL, 0.0f, 0.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 10000))
                 ++m_uiSummonNum;
 
             if (m_uiSummonNum > 9)

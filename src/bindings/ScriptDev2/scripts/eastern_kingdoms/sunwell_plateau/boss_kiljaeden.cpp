@@ -580,7 +580,7 @@ struct MANGOS_DLL_DECL boss_kiljaedenAI : public Scripted_NoMovementAI, private 
             float fX = 1698.61f + fRadius * cos(fDegrees);
             float fY = 628.414f + fRadius * sin(fDegrees);
 
-            m_creature->SummonCreature(NPC_ARMAGEDDON, fX, fY, 28.051f, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 15000);
+            m_creature->SummonCreature(NPC_ARMAGEDDON, fX, fY, 28.051f, 0, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 15000);
         }
     }
 
@@ -595,7 +595,7 @@ struct MANGOS_DLL_DECL boss_kiljaedenAI : public Scripted_NoMovementAI, private 
             if ((bAllBlueOrbs || uSelectedOrb > 3) && (*iter))
             {
                 (*iter)->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
-                if (Creature* pBlueOrbTarget = (*iter)->SummonCreature(NPC_BLUE_ORB_TARGET, (*iter)->GetPositionX(), (*iter)->GetPositionY(), (*iter)->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 60000))
+                if (Creature* pBlueOrbTarget = (*iter)->SummonCreature(NPC_BLUE_ORB_TARGET, (*iter)->GetPositionX(), (*iter)->GetPositionY(), (*iter)->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 60000))
                 {
                     pBlueOrbTarget->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     pBlueOrbTarget->CastSpell(pBlueOrbTarget, SPELL_RING_BLUE_FLAME, true);
@@ -775,7 +775,7 @@ CreatureAI* GetAI_npc_kiljaeden_controller(Creature *pCreature)
 
 bool GOUse_go_orb_of_the_blue_flight(Player* pPlayer, GameObject* pGo)
 {
-    if (Creature* pPowerOfTheBlueFlight = pGo->SummonCreature(NPC_POWER_OF_THE_BLUE_FLIGHT, pGo->GetPositionX(), pGo->GetPositionY(), pGo->GetPositionZ(), pGo->GetOrientation(), TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 120000))
+    if (Creature* pPowerOfTheBlueFlight = pGo->SummonCreature(NPC_POWER_OF_THE_BLUE_FLIGHT, pGo->GetPositionX(), pGo->GetPositionY(), pGo->GetPositionZ(), pGo->GetOrientation(), TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 120000))
     {
         pPlayer->CastSpell(pPowerOfTheBlueFlight, SPELL_VENGEANCE_OF_THE_BLUE_FLIGHT, true);
         pGo->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);

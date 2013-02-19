@@ -524,7 +524,7 @@ struct MANGOS_DLL_DECL boss_xt_002AI : public ScriptedAI
                 default:addentry = NPC_SCRAPBOT;
             }
             uint8 i = urand(0, 3);
-            if (Creature* pTemp = m_creature->SummonCreature(addentry, SummonLoc[i].x + urand(0, 10), SummonLoc[i].y + urand(0, 10), SummonLoc[i].z, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 180000))
+            if (Creature* pTemp = m_creature->SummonCreature(addentry, SummonLoc[i].x + urand(0, 10), SummonLoc[i].y + urand(0, 10), SummonLoc[i].z, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 180000))
             {
                 DoCast(pTemp, SPELL_ENERGY_ORB, true);
                 pTemp->SetInCombatWithZone();

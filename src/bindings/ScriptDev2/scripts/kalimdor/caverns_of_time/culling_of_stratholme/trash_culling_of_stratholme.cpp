@@ -1009,11 +1009,11 @@ struct MANGOS_DLL_DECL npc_time_riftCSAI : public ScriptedAI
            case 1:
               if (Creature* pArthas = m_pInstance->GetSingleCreatureFromStorage(NPC_ARTHAS))
               {
-                 Drakonian01 = m_creature->SummonCreature(NPC_INFINITE_ADVERSARY,(m_creature->GetPositionX()-2)+rand()%4, (m_creature->GetPositionY()-2)+rand()%4, m_creature->GetPositionZ(),3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000);
+                 Drakonian01 = m_creature->SummonCreature(NPC_INFINITE_ADVERSARY,(m_creature->GetPositionX()-2)+rand()%4, (m_creature->GetPositionY()-2)+rand()%4, m_creature->GetPositionZ(),3.229f,TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN,900000);
                  Drakonian01->GetMotionMaster()->MovePoint(0, pArthas->GetPositionX(), pArthas->GetPositionY(), pArthas->GetPositionZ());
-                 Drakonian02 = m_creature->SummonCreature(NPC_INFINITE_HUNTER,(m_creature->GetPositionX()-2)+rand()%4, (m_creature->GetPositionY()-2)+rand()%4, m_creature->GetPositionZ(),3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000);
+                 Drakonian02 = m_creature->SummonCreature(NPC_INFINITE_HUNTER,(m_creature->GetPositionX()-2)+rand()%4, (m_creature->GetPositionY()-2)+rand()%4, m_creature->GetPositionZ(),3.229f,TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN,900000);
                  Drakonian02->GetMotionMaster()->MovePoint(0, pArthas->GetPositionX(), pArthas->GetPositionY(), pArthas->GetPositionZ());
-                 Drakonian03 = m_creature->SummonCreature(NPC_INFINITE_AGENT,(m_creature->GetPositionX()-2)+rand()%4, (m_creature->GetPositionY()-2)+rand()%4, m_creature->GetPositionZ(),3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000);
+                 Drakonian03 = m_creature->SummonCreature(NPC_INFINITE_AGENT,(m_creature->GetPositionX()-2)+rand()%4, (m_creature->GetPositionY()-2)+rand()%4, m_creature->GetPositionZ(),3.229f,TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN,900000);
                  Drakonian03->GetMotionMaster()->MovePoint(0, pArthas->GetPositionX(), pArthas->GetPositionY(), pArthas->GetPositionZ());
               }
               m_uiStepTimer = 3000;

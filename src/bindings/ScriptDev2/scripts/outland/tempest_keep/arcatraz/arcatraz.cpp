@@ -406,22 +406,22 @@ struct MANGOS_DLL_DECL npc_warden_mellicharAI : public ScriptedAI
                 switch (m_uiPhase)
                 {
                     case 2:
-                        m_creature->SummonCreature(urand(0, 1) ? ENTRY_TRICKSTER : ENTRY_PH_HUNTER, aSummonPosition[0][0], aSummonPosition[0][1], aSummonPosition[0][2], aSummonPosition[0][3], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
+                        m_creature->SummonCreature(urand(0, 1) ? ENTRY_TRICKSTER : ENTRY_PH_HUNTER, aSummonPosition[0][0], aSummonPosition[0][1], aSummonPosition[0][2], aSummonPosition[0][3], TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 600000);
                         break;
                     case 3:
-                        m_creature->SummonCreature(ENTRY_MILLHOUSE, aSummonPosition[1][0], aSummonPosition[1][1], aSummonPosition[1][2], aSummonPosition[1][3], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
+                        m_creature->SummonCreature(ENTRY_MILLHOUSE, aSummonPosition[1][0], aSummonPosition[1][1], aSummonPosition[1][2], aSummonPosition[1][3], TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 600000);
                         break;
                     case 4:
                         DoScriptText(YELL_RELEASE2B, m_creature);
                         break;
                     case 5:
-                        m_creature->SummonCreature(urand(0, 1) ? ENTRY_AKKIRIS : ENTRY_SULFURON, aSummonPosition[2][0], aSummonPosition[2][1], aSummonPosition[2][2], aSummonPosition[2][3], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
+                        m_creature->SummonCreature(urand(0, 1) ? ENTRY_AKKIRIS : ENTRY_SULFURON, aSummonPosition[2][0], aSummonPosition[2][1], aSummonPosition[2][2], aSummonPosition[2][3], TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 600000);
                         break;
                     case 6:
-                        m_creature->SummonCreature(urand(0, 1) ? ENTRY_TW_DRAK : ENTRY_BL_DRAK, aSummonPosition[3][0], aSummonPosition[3][1], aSummonPosition[3][2], aSummonPosition[3][3], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
+                        m_creature->SummonCreature(urand(0, 1) ? ENTRY_TW_DRAK : ENTRY_BL_DRAK, aSummonPosition[3][0], aSummonPosition[3][1], aSummonPosition[3][2], aSummonPosition[3][3], TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 600000);
                         break;
                     case 7:
-                        m_creature->SummonCreature(ENTRY_SKYRISS, aSummonPosition[4][0], aSummonPosition[4][1], aSummonPosition[4][2], aSummonPosition[4][3], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
+                        m_creature->SummonCreature(ENTRY_SKYRISS, aSummonPosition[4][0], aSummonPosition[4][1], aSummonPosition[4][2], aSummonPosition[4][3], TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 600000);
                         DoScriptText(YELL_WELCOME, m_creature);
                         break;
                 }

@@ -183,7 +183,7 @@ struct MANGOS_DLL_DECL boss_ormorokAI : public ScriptedAI
 
         if (!m_bIsRegularMode && (m_uiSummonTanglerTimer < uiDiff))
         {
-            Creature* CrystallineTangler = m_creature->SummonCreature(MOB_CRYSTALLINE_TANGLER, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), m_creature->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
+            Creature* CrystallineTangler = m_creature->SummonCreature(MOB_CRYSTALLINE_TANGLER, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), m_creature->GetOrientation(), EMPSUMMON_TIMED_OOC_DESPAWN, 10000);
             if (CrystallineTangler)
                 if(Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                     CrystallineTangler->AI()->AttackStart(target);

@@ -158,10 +158,10 @@ struct MANGOS_DLL_DECL boss_nadoxAI : public ScriptedAI
             if (Creature* pSwarmerEgg = SelectRandomCreatureOfEntryInRange(NPC_AHNKAHAR_SWARM_EGG, 120.0))
             {
                 // pSwarmerEgg->CastSpell(pSwarmerEgg, SPELL_SUMMON_SWARMERS, false);
-                if(Creature *pSwarmer = pSwarmerEgg->SummonCreature(NPC_AHNKAHAR_SWARMER, pSwarmerEgg->GetPositionX(), pSwarmerEgg->GetPositionY(), pSwarmerEgg->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 3*MINUTE*IN_MILLISECONDS))
+                if(Creature *pSwarmer = pSwarmerEgg->SummonCreature(NPC_AHNKAHAR_SWARMER, pSwarmerEgg->GetPositionX(), pSwarmerEgg->GetPositionY(), pSwarmerEgg->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 3*MINUTE*IN_MILLISECONDS))
                     pSwarmer->SetInCombatWithZone();
 
-                if(Creature *pSwarmer = pSwarmerEgg->SummonCreature(NPC_AHNKAHAR_SWARMER, pSwarmerEgg->GetPositionX(), pSwarmerEgg->GetPositionY(), pSwarmerEgg->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 3*MINUTE*IN_MILLISECONDS))
+                if(Creature *pSwarmer = pSwarmerEgg->SummonCreature(NPC_AHNKAHAR_SWARMER, pSwarmerEgg->GetPositionX(), pSwarmerEgg->GetPositionY(), pSwarmerEgg->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 3*MINUTE*IN_MILLISECONDS))
                     pSwarmer->SetInCombatWithZone();
             }
             m_uiSwarmerSummonTimer = 10000;
@@ -176,7 +176,7 @@ struct MANGOS_DLL_DECL boss_nadoxAI : public ScriptedAI
             if (Creature* pGuardEgg = SelectRandomCreatureOfEntryInRange(NPC_AHNKAHAR_GUARDIAN_EGG, 120.0))
             {
                 // pSwarmerEgg->CastSpell(pSwarmerEgg, SPELL_SUMMON_SWARMERS, false);
-                if (Creature *pGuard = pGuardEgg->SummonCreature(NPC_AHNKAHAR_GUARDIAN, pGuardEgg->GetPositionX(), pGuardEgg->GetPositionY(), pGuardEgg->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 3*MINUTE*IN_MILLISECONDS))
+                if (Creature *pGuard = pGuardEgg->SummonCreature(NPC_AHNKAHAR_GUARDIAN, pGuardEgg->GetPositionX(), pGuardEgg->GetPositionY(), pGuardEgg->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 3*MINUTE*IN_MILLISECONDS))
                     pGuard->SetInCombatWithZone();
             }
             m_uiGuardianSummonTimer = 25000;

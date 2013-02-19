@@ -208,7 +208,7 @@ CanCastResult BSWScriptedAI::_BSWSpellSelector(uint8 m_uiSpellIdx, Unit* pTarget
                    break;
 
             case SUMMON_TEMP:
-                   pSummon = _doSummon(m_uiSpellIdx, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,
+                   pSummon = _doSummon(m_uiSpellIdx, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN,
                                         urand(pSpell->m_uiSpellTimerMin[currentDifficulty],pSpell->m_uiSpellTimerMax[currentDifficulty]));
                    if(pSummon) result = CAST_OK;
                        else result = CAST_FAIL_OTHER;
@@ -542,7 +542,7 @@ Unit* BSWScriptedAI::_doSummonAtPosition(uint8 m_uiSpellIdx, float fPosX, float 
              break;
 
         case SUMMON_TEMP:
-             return _doSummonAtPosition(pSpell->m_uiSpellEntry[currentDifficulty], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, urand(pSpell->m_uiSpellTimerMin[currentDifficulty],pSpell->m_uiSpellTimerMax[currentDifficulty]), fPosX, fPosY, fPosZ);
+             return _doSummonAtPosition(pSpell->m_uiSpellEntry[currentDifficulty], TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, urand(pSpell->m_uiSpellTimerMin[currentDifficulty],pSpell->m_uiSpellTimerMax[currentDifficulty]), fPosX, fPosY, fPosZ);
              break;
 
         case SUMMON_INSTANT:

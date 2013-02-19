@@ -112,7 +112,7 @@ bool GOUse_go_ethereum_prison(Player* pPlayer, GameObject* pGo)
 
     if (Creature* pCreature = pPlayer->SummonCreature(uiNpcPrisonEntry[uiRandom],
         pGo->GetPositionX(), pGo->GetPositionY(), pGo->GetPositionZ(), pGo->GetAngle(pPlayer),
-        TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
+        EMPSUMMON_TIMED_OOC_DESPAWN, 30000))
     {
         if (!pCreature->IsHostileTo(pPlayer))
         {
@@ -156,7 +156,7 @@ bool GOUse_go_ethereum_stasis(Player* pPlayer, GameObject* pGo)
 
     pPlayer->SummonCreature(uiNpcStasisEntry[uiRandom],
         pGo->GetPositionX(), pGo->GetPositionY(), pGo->GetPositionZ(), pGo->GetAngle(pPlayer),
-        TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+        EMPSUMMON_TIMED_OOC_DESPAWN, 30000);
 
     return false;
 }
@@ -174,7 +174,7 @@ bool GOUse_go_gilded_brazier(Player* pPlayer, GameObject* pGO)
 {
     if (pGO->GetGoType() == GAMEOBJECT_TYPE_GOOBER)
     {
-        if (Creature* pCreature = pPlayer->SummonCreature(NPC_STILLBLADE, 8087.632f, -7542.740f, 151.568f, 0.122f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
+        if (Creature* pCreature = pPlayer->SummonCreature(NPC_STILLBLADE, 8087.632f, -7542.740f, 151.568f, 0.122f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000))
             pCreature->AI()->AttackStart(pPlayer);
     }
 
@@ -241,7 +241,7 @@ enum
 bool GOUse_go_resonite_cask(Player* pPlayer, GameObject* pGO)
 {
     if (pGO->GetGoType() == GAMEOBJECT_TYPE_GOOBER)
-        pGO->SummonCreature(NPC_GOGGEROC, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 300000);
+        pGO->SummonCreature(NPC_GOGGEROC, 0.0f, 0.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 300000);
 
     return false;
 }
@@ -258,7 +258,7 @@ enum
 bool GOUse_go_sacred_fire_of_life(Player* pPlayer, GameObject* pGO)
 {
     if (pGO->GetGoType() == GAMEOBJECT_TYPE_GOOBER)
-        pPlayer->SummonCreature(NPC_ARIKARA, -5008.338f, -2118.894f, 83.657f, 0.874f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+        pPlayer->SummonCreature(NPC_ARIKARA, -5008.338f, -2118.894f, 83.657f, 0.874f, EMPSUMMON_TIMED_OOC_DESPAWN, 30000);
 
     return true;
 }
@@ -298,7 +298,7 @@ bool GOUse_go_shrine_of_the_birds(Player* pPlayer, GameObject* pGo)
     }
 
     if (uiBirdEntry)
-        pPlayer->SummonCreature(uiBirdEntry, fX, fY, fZ, pGo->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 60000);
+        pPlayer->SummonCreature(uiBirdEntry, fX, fY, fZ, pGo->GetOrientation(), EMPSUMMON_TIMED_OOC_DESPAWN, 60000);
 
     return false;
 }
@@ -362,7 +362,7 @@ float Position[4] = {-327.99f, 221.74f, -20.31f, 3.87f};
 
 bool GOUse_go_blood_filled_orb(Player* pPlayer, GameObject* pGo)
 {
-    if (Creature* pZelemar = pGo->SummonCreature(NPC_ZELEMAR_THE_WRATHFULL, Position[0], Position[1], Position[2], Position[3], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
+    if (Creature* pZelemar = pGo->SummonCreature(NPC_ZELEMAR_THE_WRATHFULL, Position[0], Position[1], Position[2], Position[3], EMPSUMMON_TIMED_OOC_DESPAWN, 30000))
     {
         DoScriptText(SAY_AGGRO, pZelemar);
         pZelemar->AI()->AttackStart(pPlayer);
@@ -489,7 +489,7 @@ enum
 
 bool GOUse_go_hand_of_iruxos_crystal(Player* pPlayer, GameObject* pGo)
 {
-    if (Creature* pIruxos = pGo->SummonCreature(NPC_IRUXOS, 0.0f, 0.0f, 0.0f, pPlayer->GetOrientation() + M_PI_F, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 20000))
+    if (Creature* pIruxos = pGo->SummonCreature(NPC_IRUXOS, 0.0f, 0.0f, 0.0f, pPlayer->GetOrientation() + M_PI_F, EMPSUMMON_TIMED_OOC_DESPAWN, 20000))
         pIruxos->AI()->AttackStart(pPlayer);
 
     return false;
@@ -536,7 +536,7 @@ enum
 bool GOUse_go_power_converter(Player* pPlayer, GameObject* pGo)
 {
     if (pPlayer->GetQuestStatus(QUEST_PICKING_UP_SOME_POWER_CONVERTERS) == QUEST_STATUS_INCOMPLETE)
-        if (Creature* pElectromental = pGo->SummonCreature(NPC_ELECTROMENTAL, 0.0f, 0.0f, 0.0f, pPlayer->GetOrientation() + M_PI_F, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 20000))
+        if (Creature* pElectromental = pGo->SummonCreature(NPC_ELECTROMENTAL, 0.0f, 0.0f, 0.0f, pPlayer->GetOrientation() + M_PI_F, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 20000))
             pElectromental->AI()->AttackStart(pPlayer);
 
     return false;
@@ -727,7 +727,7 @@ void SummonNPC(GameObject* pGo, Player* pPlayer, uint32 npc, uint32 spell)
         return;
 
     pPlayer->CastSpell(pPlayer, spell, true);
-    if (Creature* summons = pGo->SummonCreature(npc, pGo->GetPositionX(), pGo->GetPositionY(), pGo->GetPositionZ(), pPlayer->GetOrientation() - M_PI, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10 * 60 * 1000))
+    if (Creature* summons = pGo->SummonCreature(npc, pGo->GetPositionX(), pGo->GetPositionY(), pGo->GetPositionZ(), pPlayer->GetOrientation() - M_PI, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 10 * 60 * 1000))
     {
         summons->CastSpell(summons, SPELL_SPAWN_IN, false);
         switch (summons->GetEntry())

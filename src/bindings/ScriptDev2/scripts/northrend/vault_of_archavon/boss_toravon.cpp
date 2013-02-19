@@ -104,7 +104,7 @@ struct MANGOS_DLL_DECL boss_toravonAI : public ScriptedAI
             for(int i=0; i<orbsNum; ++i)
             {
                 if(Unit *target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                    m_creature->SummonCreature(CR_FROZEN_ORB, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 3000);
+                    m_creature->SummonCreature(CR_FROZEN_ORB, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 3000);
             }
             OrbsTimer = 40000;
         }

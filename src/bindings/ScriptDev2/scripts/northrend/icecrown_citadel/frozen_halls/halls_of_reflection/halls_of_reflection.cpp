@@ -203,7 +203,7 @@ struct MANGOS_DLL_DECL npc_jaina_and_sylvana_HRintroAI : public ScriptedAI
                 m_pInstance->SetNextEvent(5,m_creature->GetEntry(),10000);
                 break;
             case 5:
-                if(Creature* pTarget = m_creature->SummonCreature(NPC_ALTAR_TARGET,5309.374f,2006.788f,711.615f,1.37f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,360000))
+                if(Creature* pTarget = m_creature->SummonCreature(NPC_ALTAR_TARGET,5309.374f,2006.788f,711.615f,1.37f,TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN,360000))
                 {
                     m_creature->SetGuidValue(UNIT_FIELD_TARGET, pTarget->GetObjectGuid());
                     pTarget->SetCreatorGuid(ObjectGuid());
@@ -240,7 +240,7 @@ struct MANGOS_DLL_DECL npc_jaina_and_sylvana_HRintroAI : public ScriptedAI
                     m_pInstance->SetNextEvent(9,m_creature->GetEntry(),8000);
                 break;
             case 9:
-                if(Creature* Uther = m_creature->SummonCreature(NPC_UTHER,5308.228f,2003.641f,709.341f,4.17f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,360000))
+                if(Creature* Uther = m_creature->SummonCreature(NPC_UTHER,5308.228f,2003.641f,709.341f,4.17f,TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN,360000))
                 {
                     pUther = Uther;
                     Uther->SetCreatorGuid(ObjectGuid());

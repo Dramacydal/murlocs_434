@@ -285,9 +285,9 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
         if (Summon_Ghoul < diff && phase1 && !ghoul)
         {
             if (m_pInstance->GetData(DATA_TOC5_ANNOUNCER) == m_pInstance->GetData(DATA_JAEREN))
-                m_creature->SummonCreature(NPC_RISEN_JAEREN, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                m_creature->SummonCreature(NPC_RISEN_JAEREN, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
             else
-                m_creature->SummonCreature(NPC_RISEN_ARELAS, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                m_creature->SummonCreature(NPC_RISEN_ARELAS, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
 
             ghoul = true;
         }

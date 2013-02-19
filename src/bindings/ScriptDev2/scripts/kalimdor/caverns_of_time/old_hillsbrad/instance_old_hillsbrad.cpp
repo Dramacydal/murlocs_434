@@ -113,7 +113,7 @@ void instance_old_hillsbrad::SetData(uint32 uiType, uint32 uiData)
                     UpdateLodgeQuestCredit();
 
                     if (Player* pPlayer = GetPlayerInMap())
-                        pPlayer->SummonCreature(NPC_DRAKE, 2128.43f, 71.01f, 64.42f, 1.74f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 1800000);
+                        pPlayer->SummonCreature(NPC_DRAKE, 2128.43f, 71.01f, 64.42f, 1.74f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 1800000);
                     else
                         debug_log("SD2: Instance Old Hillsbrad: SetData (Type: %u Data %u) cannot find any pPlayer.", uiType, uiData);
 

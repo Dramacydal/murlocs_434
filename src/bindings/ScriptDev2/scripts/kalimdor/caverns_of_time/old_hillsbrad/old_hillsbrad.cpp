@@ -299,7 +299,7 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
         {
             case 8:
                 SetRun(false);
-                m_creature->SummonCreature(NPC_ARMORER, 2181.87f, 112.46f, 89.45f, 0.26f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,5000);
+                m_creature->SummonCreature(NPC_ARMORER, 2181.87f, 112.46f, 89.45f, 0.26f, EMPSUMMON_TIMED_OOC_DESPAWN,5000);
                 break;
             case 9:
                 DoScriptText(SAY_TH_ARMORY, m_creature);
@@ -312,26 +312,26 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
                 SetRun();
                 break;
             case 15:
-                m_creature->SummonCreature(NPC_RIFLE, 2200.28f, 137.37f, 87.93f, 5.07f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_WARDEN, 2197.44f, 131.83f, 87.93f, 0.78f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_VETERAN, 2203.62f, 135.40f, 87.93f, 3.70f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_VETERAN, 2200.75f, 130.13f, 87.93f, 1.48f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                m_creature->SummonCreature(NPC_RIFLE, 2200.28f, 137.37f, 87.93f, 5.07f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_WARDEN, 2197.44f, 131.83f, 87.93f, 0.78f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_VETERAN, 2203.62f, 135.40f, 87.93f, 3.70f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_VETERAN, 2200.75f, 130.13f, 87.93f, 1.48f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                 break;
             case 21:
-                m_creature->SummonCreature(NPC_RIFLE, 2135.80f, 154.01f, 67.45f, 4.98f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_WARDEN, 2144.36f, 151.87f, 67.74f, 4.46f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_VETERAN, 2142.12f, 154.41f, 67.12f, 4.56f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_VETERAN, 2138.08f, 155.38f, 67.24f, 4.60f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                m_creature->SummonCreature(NPC_RIFLE, 2135.80f, 154.01f, 67.45f, 4.98f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_WARDEN, 2144.36f, 151.87f, 67.74f, 4.46f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_VETERAN, 2142.12f, 154.41f, 67.12f, 4.56f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_VETERAN, 2138.08f, 155.38f, 67.24f, 4.60f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                 break;
             case 25:
-                m_creature->SummonCreature(NPC_RIFLE, 2102.98f, 192.17f, 65.24f, 6.02f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_WARDEN, 2108.48f, 198.75f, 65.18f, 5.15f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_VETERAN, 2106.11f, 197.29f, 65.18f, 5.63f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_VETERAN, 2104.18f, 194.82f, 65.18f, 5.75f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                m_creature->SummonCreature(NPC_RIFLE, 2102.98f, 192.17f, 65.24f, 6.02f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_WARDEN, 2108.48f, 198.75f, 65.18f, 5.15f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_VETERAN, 2106.11f, 197.29f, 65.18f, 5.63f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_VETERAN, 2104.18f, 194.82f, 65.18f, 5.75f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                 break;
             case 29:
                 DoScriptText(SAY_TH_SKARLOC_MEET, m_creature);
-                m_creature->SummonCreature(NPC_SCARLOC, 2036.48f, 271.22f, 63.43f, 5.27f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                m_creature->SummonCreature(NPC_SCARLOC, 2036.48f, 271.22f, 63.43f, 5.27f, EMPSUMMON_TIMED_OOC_DESPAWN, 30000);
                 break;
             case 30:
                 SetEscortPaused(true);
@@ -345,9 +345,9 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
                 break;
             case 37:
                 // possibly regular patrollers? If so, remove this and let database handle them
-                m_creature->SummonCreature(NPC_WATCHMAN, 2124.26f, 522.16f, 56.87f, 3.99f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_WATCHMAN, 2121.69f, 525.37f, 57.11f, 4.01f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_SENTRY, 2124.65f, 524.55f, 56.63f, 3.98f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                m_creature->SummonCreature(NPC_WATCHMAN, 2124.26f, 522.16f, 56.87f, 3.99f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_WATCHMAN, 2121.69f, 525.37f, 57.11f, 4.01f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_SENTRY, 2124.65f, 524.55f, 56.63f, 3.98f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                 break;
             case 59:
                 m_creature->SummonCreature(NPC_SKARLOC_MOUNT, 2488.64f, 625.77f, 58.26f, 4.71f, TEMPSUMMON_TIMED_DESPAWN, 10000);
@@ -367,10 +367,10 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
                 SetRun(false);
                 break;
             case 68:
-                m_creature->SummonCreature(NPC_BARN_PROTECTOR, 2500.22f, 692.60f, 55.50f, 2.84f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_BARN_LOOKOUT, 2500.13f, 696.55f, 55.51f, 3.38f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_BARN_GUARDSMAN, 2500.55f, 693.64f, 55.50f, 3.14f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_BARN_GUARDSMAN, 2500.94f, 695.81f, 55.50f, 3.14f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                m_creature->SummonCreature(NPC_BARN_PROTECTOR, 2500.22f, 692.60f, 55.50f, 2.84f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_BARN_LOOKOUT, 2500.13f, 696.55f, 55.51f, 3.38f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_BARN_GUARDSMAN, 2500.55f, 693.64f, 55.50f, 3.14f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_BARN_GUARDSMAN, 2500.94f, 695.81f, 55.50f, 3.14f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                 break;
             case 71:
                 SetRun();
@@ -379,10 +379,10 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
                 SetRun(false);
                 break;
             case 83:
-                m_creature->SummonCreature(NPC_CHURCH_PROTECTOR, 2627.33f, 646.82f, 56.03f, 4.28f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 5000);
-                m_creature->SummonCreature(NPC_CHURCH_LOOKOUT, 2624.14f, 648.03f, 56.03f, 4.50f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 5000);
-                m_creature->SummonCreature(NPC_CHURCH_GUARDSMAN, 2625.32f, 649.60f, 56.03f, 4.38f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 5000);
-                m_creature->SummonCreature(NPC_CHURCH_GUARDSMAN, 2627.22f, 649.00f, 56.03f, 4.34f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_CHURCH_PROTECTOR, 2627.33f, 646.82f, 56.03f, 4.28f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_CHURCH_LOOKOUT, 2624.14f, 648.03f, 56.03f, 4.50f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_CHURCH_GUARDSMAN, 2625.32f, 649.60f, 56.03f, 4.38f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_CHURCH_GUARDSMAN, 2627.22f, 649.00f, 56.03f, 4.34f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 5000);
                 break;
             case 84:
                 DoScriptText(SAY_TH_CHURCH_END, m_creature);
@@ -392,10 +392,10 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
                 SetRun(false);
                 break;
             case 93:
-                m_creature->SummonCreature(NPC_INN_PROTECTOR, 2652.71f, 660.31f, 61.93f, 1.67f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_INN_LOOKOUT, 2648.96f, 662.59f, 61.93f, 0.79f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_INN_GUARDSMAN, 2657.36f, 662.34f, 61.93f, 2.68f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                m_creature->SummonCreature(NPC_INN_GUARDSMAN, 2656.39f, 659.77f, 61.93f, 2.61f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                m_creature->SummonCreature(NPC_INN_PROTECTOR, 2652.71f, 660.31f, 61.93f, 1.67f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_INN_LOOKOUT, 2648.96f, 662.59f, 61.93f, 0.79f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_INN_GUARDSMAN, 2657.36f, 662.34f, 61.93f, 2.68f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                m_creature->SummonCreature(NPC_INN_GUARDSMAN, 2656.39f, 659.77f, 61.93f, 2.61f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                 break;
             case 94:
                 if (Creature* pTaretha = m_pInstance->GetTaretha())
@@ -846,7 +846,7 @@ bool GossipSelect_npc_taretha(Player* pPlayer, Creature* pCreature, uint32 uiSen
         if (pInstance && pInstance->GetData(TYPE_THRALL_EVENT) == IN_PROGRESS)
         {
             pInstance->SetData(TYPE_THRALL_PART4, IN_PROGRESS);
-            pCreature->SummonCreature(NPC_EPOCH, 2639.13f, 698.55f, 65.43f, 4.59f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 120000);
+            pCreature->SummonCreature(NPC_EPOCH, 2639.13f, 698.55f, 65.43f, 4.59f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 120000);
 
             if (Creature* pThrall = pInstance->GetThrall())
             {

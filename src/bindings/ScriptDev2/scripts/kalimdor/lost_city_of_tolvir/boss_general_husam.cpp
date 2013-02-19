@@ -125,23 +125,23 @@ struct MANGOS_DLL_DECL boss_general_husamAI : public ScriptedAI
 
         if(ShockwaveTimer <= diff)
         {
-            Creature* Target1 = m_creature->SummonCreature(44711, m_creature->GetPositionX()+10,m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10000);
-            Creature* Target2 = m_creature->SummonCreature(44711, m_creature->GetPositionX()-10,m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10000);
-            Creature* Target3 = m_creature->SummonCreature(44711, m_creature->GetPositionX(),m_creature->GetPositionY()+10,m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10000);
-            Creature* Target4 = m_creature->SummonCreature(44711, m_creature->GetPositionX(),m_creature->GetPositionY()-10,m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10000);
+            Creature* Target1 = m_creature->SummonCreature(44711, m_creature->GetPositionX()+10,m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 10000);
+            Creature* Target2 = m_creature->SummonCreature(44711, m_creature->GetPositionX()-10,m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 10000);
+            Creature* Target3 = m_creature->SummonCreature(44711, m_creature->GetPositionX(),m_creature->GetPositionY()+10,m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 10000);
+            Creature* Target4 = m_creature->SummonCreature(44711, m_creature->GetPositionX(),m_creature->GetPositionY()-10,m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 10000);
             //DoScriptText(SAY_SHOCKWAVE, m_creature);
             DoCastAOE(SPELL_SHOCKWAVE);
             DoCast(Target1, 83130);
             DoCast(Target2, 83130);
             DoCast(Target3, 83130);
             DoCast(Target4, 83130);
-            if (Creature* Shockwave1 = m_creature->SummonCreature(44712, m_creature->GetPositionX(),m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10000))
+            if (Creature* Shockwave1 = m_creature->SummonCreature(44712, m_creature->GetPositionX(),m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 10000))
                 Shockwave1->GetMotionMaster()->MoveChase(Target1);
-            if (Creature* Shockwave2 = m_creature->SummonCreature(44712, m_creature->GetPositionX(),m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10000))
+            if (Creature* Shockwave2 = m_creature->SummonCreature(44712, m_creature->GetPositionX(),m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 10000))
                 Shockwave2->GetMotionMaster()->MoveChase(Target2);
-            if (Creature* Shockwave3 = m_creature->SummonCreature(44712, m_creature->GetPositionX(),m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10000))
+            if (Creature* Shockwave3 = m_creature->SummonCreature(44712, m_creature->GetPositionX(),m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 10000))
                 Shockwave3->GetMotionMaster()->MoveChase(Target3);
-            if (Creature* Shockwave4 = m_creature->SummonCreature(44712, m_creature->GetPositionX(),m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10000))
+            if (Creature* Shockwave4 = m_creature->SummonCreature(44712, m_creature->GetPositionX(),m_creature->GetPositionY(),m_creature->GetPositionZ(),0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 10000))
                 Shockwave4->GetMotionMaster()->MoveChase(Target4);
             ShockwaveTimer = urand(20000,40000);
         }

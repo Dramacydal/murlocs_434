@@ -330,7 +330,7 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
                 float fX = CalculateRandomLocation(pGhost->GetPositionX(), 10);
                 float fY = CalculateRandomLocation(pGhost->GetPositionY(), 10);
 
-                if (Creature* pConstruct = m_creature->SummonCreature(NPC_SHADOWY_CONSTRUCT, fX, fY, pGhost->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 45000))
+                if (Creature* pConstruct = m_creature->SummonCreature(NPC_SHADOWY_CONSTRUCT, fX, fY, pGhost->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 45000))
                 {
                     pConstruct->CastSpell(pConstruct, SPELL_PASSIVE_SHADOWFORM, true);
 
@@ -382,7 +382,7 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
             {
                 float fX = CalculateRandomLocation(m_creature->GetPositionX(), 10);
 
-                if (Creature* pShadow = m_creature->SummonCreature(NPC_SHADOWY_CONSTRUCT, fX, m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 0))
+                if (Creature* pShadow = m_creature->SummonCreature(NPC_SHADOWY_CONSTRUCT, fX, m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 0))
                 {
                     Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 1);
                     pShadow->AI()->AttackStart(pTarget ? pTarget : m_creature->getVictim());
@@ -400,7 +400,7 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
                 float fX = CalculateRandomLocation(pTarget->GetPositionX(), 20);
                 float fY = CalculateRandomLocation(pTarget->GetPositionY(), 20);
 
-                if (Creature* pDoomBlossom = m_creature->SummonCreature(NPC_DOOM_BLOSSOM, fX, fY, pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 20000))
+                if (Creature* pDoomBlossom = m_creature->SummonCreature(NPC_DOOM_BLOSSOM, fX, fY, pTarget->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 20000))
                 {
                     pDoomBlossom->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     pDoomBlossom->setFaction(m_creature->getFaction());

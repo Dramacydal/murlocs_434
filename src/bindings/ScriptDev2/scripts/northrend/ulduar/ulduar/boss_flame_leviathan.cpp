@@ -467,7 +467,7 @@ struct MANGOS_DLL_DECL boss_flame_leviathan : public ScriptedAI
         it should summon some flyers. needs more research!
         if(m_uiSummonFlyerTimer < uiDiff)
         {
-            m_creature->SummonCreature(MOB_MECHANOLIFT, m_creature->GetPositionX() + rand()%20, m_creature->GetPositionY() + rand()%20, m_creature->GetPositionZ() + 50, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 40000);
+            m_creature->SummonCreature(MOB_MECHANOLIFT, m_creature->GetPositionX() + rand()%20, m_creature->GetPositionY() + rand()%20, m_creature->GetPositionZ() + 50, 0, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 40000);
             m_uiSummonFlyerTimer = 2000;
         }
         else m_uiSummonFlyerTimer -= uiDiff;*/

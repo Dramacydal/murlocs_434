@@ -128,7 +128,7 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
             float fX, fY, fZ;
             m_creature->GetRandomPoint(m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ()+15.0f, 30.0f, fX, fY, fZ);
 
-            m_creature->SummonCreature(NPC_SOARING_EAGLE, fX, fY, fZ, m_creature->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 1000);
+            m_creature->SummonCreature(NPC_SOARING_EAGLE, fX, fY, fZ, m_creature->GetOrientation(), EMPSUMMON_TIMED_OOC_DESPAWN, 1000);
         }
     }
 

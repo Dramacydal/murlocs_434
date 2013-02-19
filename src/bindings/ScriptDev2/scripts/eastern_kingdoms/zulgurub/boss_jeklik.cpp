@@ -153,7 +153,7 @@ struct MANGOS_DLL_DECL boss_jeklikAI : public ScriptedAI
                 {
                     // Get a point a little bit behind Jeklik respawn pos
                     m_creature->GetRandomPoint(fX - 5.0f, fY + 5.0f, fZ, 5.0f, fNewX, fNewY, fNewZ);
-                    m_creature->SummonCreature(NPC_BLOODSEEKER_BAT, fNewX, fNewY, fNewZ, fO, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 15000);
+                    m_creature->SummonCreature(NPC_BLOODSEEKER_BAT, fNewX, fNewY, fNewZ, fO, EMPSUMMON_TIMED_OOC_DESPAWN, 15000);
                 }
 
                 m_uiSpawnBatsTimer = 60000;
@@ -201,7 +201,7 @@ struct MANGOS_DLL_DECL boss_jeklikAI : public ScriptedAI
             if (m_uiSpawnFlyingBatsTimer < uiDiff)
             {
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                    m_creature->SummonCreature(NPC_FRENZIED_BAT, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ() + 15.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 15000);
+                    m_creature->SummonCreature(NPC_FRENZIED_BAT, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ() + 15.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 15000);
 
                 m_uiSpawnFlyingBatsTimer = urand(10000, 15000);
             }

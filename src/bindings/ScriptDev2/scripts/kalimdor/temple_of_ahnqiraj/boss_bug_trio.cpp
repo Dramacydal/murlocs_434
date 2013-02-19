@@ -229,7 +229,7 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
         for(int i = 0; i < 10; ++i)
         {
             Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM,0);
-            Creature* Summoned = m_creature->SummonCreature(15621,m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(),0,TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN,90000);
+            Creature* Summoned = m_creature->SummonCreature(15621,m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(),0,TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN,90000);
             if (Summoned && target)
                 Summoned->AI()->AttackStart(target);
         }

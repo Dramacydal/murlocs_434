@@ -375,7 +375,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
                             {
                                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM,0))
                                 {
-                                    if (Creature* Orb = DoSpawnCreature(NPC_ARCANE_SPHERE, 5, 5, 0, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 30000))
+                                    if (Creature* Orb = DoSpawnCreature(NPC_ARCANE_SPHERE, 5, 5, 0, 0, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 30000))
                                         Orb->AI()->AttackStart(pTarget);
                                 }
                             }
@@ -479,7 +479,7 @@ struct MANGOS_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
 
                 if (m_uiDeathTimer < uiDiff)
                 {
-                    m_creature->SummonCreature(NPC_PHOENIX_EGG, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 45000);
+                    m_creature->SummonCreature(NPC_PHOENIX_EGG, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 45000);
                     m_creature->SetDeathState(JUST_DIED);
                     m_creature->RemoveCorpse();
                     m_bRebirth = false;
@@ -526,7 +526,7 @@ struct MANGOS_DLL_DECL mob_felkael_phoenix_eggAI : public ScriptedAI
     {
         if (m_uiHatchTimer < uiDiff)
         {
-            m_creature->SummonCreature(NPC_PHOENIX, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 60000);
+            m_creature->SummonCreature(NPC_PHOENIX, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 60000);
             m_creature->DealDamage(m_creature, m_creature->GetMaxHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
         }
         else

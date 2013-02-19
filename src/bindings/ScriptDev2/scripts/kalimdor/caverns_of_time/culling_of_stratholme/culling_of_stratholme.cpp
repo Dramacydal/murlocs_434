@@ -824,7 +824,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                 JumpNextStep(2000);
                 break;
             case 1:
-                pEpoch = m_creature->SummonCreature(NPC_EPOCH,2445.629f,1111.500f,148.076f,3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000);
+                pEpoch = m_creature->SummonCreature(NPC_EPOCH,2445.629f,1111.500f,148.076f,3.229f,TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN,900000);
                if (pEpoch)
                {
                    pEpoch->setFaction(35);
@@ -1311,7 +1311,7 @@ bool GossipSelect_npc_arthas(Player* pPlayer, Creature* pCreature, uint32 uiSend
       {
          ((npc_arthasAI*)pCreature->AI())->EnableEscort();
          ((npc_arthasAI*)pCreature->AI())->RemoveGossip();
-         if (Creature* pMalganis = pCreature->SummonCreature(NPC_MALGANIS,2296.665f,1502.362f,128.362f,4.961f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000))
+         if (Creature* pMalganis = pCreature->SummonCreature(NPC_MALGANIS,2296.665f,1502.362f,128.362f,4.961f,TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN,900000))
          {
            pMalganis->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
          }

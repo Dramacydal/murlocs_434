@@ -895,7 +895,7 @@ struct MANGOS_DLL_DECL mob_kinetic_bomb_targetAI : public ScriptedAI
               m_creature->ForcedDespawn();
 
         if (!bomb)
-            bomb = m_creature->SummonCreature(NPC_KINETIC_BOMB,m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ()+50.0f,0,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,60000);
+            bomb = m_creature->SummonCreature(NPC_KINETIC_BOMB,m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ()+50.0f,0,TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN,60000);
 
     }
 };

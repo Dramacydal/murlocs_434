@@ -235,7 +235,7 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
             {
                 DoCastSpellIfCan(pTarget, SPELL_SACRIFICE, CAST_TRIGGERED);
 
-                if (Creature* pChains = m_creature->SummonCreature(NPC_DEMONCHAINS, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 21000))
+                if (Creature* pChains = m_creature->SummonCreature(NPC_DEMONCHAINS, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 21000))
                 {
                     if (mob_demon_chainAI* pDemonAI = dynamic_cast<mob_demon_chainAI*>(pChains->AI()))
                         pDemonAI->m_sacrificeGuid = pTarget->GetObjectGuid();

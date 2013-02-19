@@ -526,7 +526,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
         {
             float x,y,z;
             pGate->GetPosition(x, y, z);
-            Creature* Channel = m_creature->SummonCreature(ILLIDAN_DOOR_TRIGGER, x, y, z+5, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 360000);
+            Creature* Channel = m_creature->SummonCreature(ILLIDAN_DOOR_TRIGGER, x, y, z+5, 0, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 360000);
             if (Channel)
             {
                 m_channelGuid = Channel->GetObjectGuid();
@@ -539,7 +539,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
                 m_creature->GetPosition(PosX, PosY, PosZ);
                 for(uint8 i = 0; i < 2; ++i)
                 {
-                    Creature* Spirit = m_creature->SummonCreature(aSpiritSpawns[i].id, aSpiritSpawns[i].x, aSpiritSpawns[i].y, aSpiritSpawns[i].z, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 360000);
+                    Creature* Spirit = m_creature->SummonCreature(aSpiritSpawns[i].id, aSpiritSpawns[i].x, aSpiritSpawns[i].y, aSpiritSpawns[i].z, 0, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 360000);
                     if (Spirit)
                     {
                         Spirit->SetVisibility(VISIBILITY_OFF);
@@ -837,7 +837,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
             {
                 float x,y,z;
                 m_creature->GetPosition(x,y,z);
-                Creature* Elite = m_creature->SummonCreature(ILLIDARI_ELITE, x+rand()%10, y+rand()%10, z, 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 30000);
+                Creature* Elite = m_creature->SummonCreature(ILLIDARI_ELITE, x+rand()%10, y+rand()%10, z, 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 30000);
                 if (Elite)
                 {
                     Elite->AI()->AttackStart(m_creature);
@@ -1373,7 +1373,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
 
         m_creature->InterruptNonMeleeSpells(false);         // Interrupt any of our spells
         Creature* Maiev = NULL;                             // Summon Maiev near Illidan
-        Maiev = m_creature->SummonCreature(MAIEV_SHADOWSONG, m_creature->GetPositionX() + 10, m_creature->GetPositionY() + 5, m_creature->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 45000);
+        Maiev = m_creature->SummonCreature(MAIEV_SHADOWSONG, m_creature->GetPositionX() + 10, m_creature->GetPositionY() + 5, m_creature->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 45000);
         if (Maiev)
         {
             SetCombatMovement(false);
@@ -1868,7 +1868,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
                 {
                     if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0, uint32(0), SELECT_FLAG_PLAYER))
                     {
-                        if (Creature* ShadowDemon = m_creature->SummonCreature(SHADOW_DEMON, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 25000))
+                        if (Creature* ShadowDemon = m_creature->SummonCreature(SHADOW_DEMON, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 25000))
                         {
                             ShadowDemon->AddThreat(pTarget, 5000000.0f);
                             ShadowDemon->AI()->AttackStart(pTarget);

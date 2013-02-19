@@ -152,12 +152,12 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
             {
                 case 0:
                 {
-                    if (Creature* pRaptor1 = m_creature->SummonCreature(NPC_DRAKKARI_GUTRIPPER, PosSummon1[0], PosSummon1[1], PosSummon1[2], 0 , TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 240000))
+                    if (Creature* pRaptor1 = m_creature->SummonCreature(NPC_DRAKKARI_GUTRIPPER, PosSummon1[0], PosSummon1[1], PosSummon1[2], 0 , TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 240000))
                         pRaptor1->SetInCombatWithZone();
                 }
                 case 1:
                 {
-                    if (Creature* pRaptor2 = m_creature->SummonCreature(NPC_DRAKKARI_SCYTHECLAW, PosSummon1[0], PosSummon1[1], PosSummon1[2], 0 , TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 240000))
+                    if (Creature* pRaptor2 = m_creature->SummonCreature(NPC_DRAKKARI_SCYTHECLAW, PosSummon1[0], PosSummon1[1], PosSummon1[2], 0 , TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 240000))
                         pRaptor2->SetInCombatWithZone();
                 }
             }

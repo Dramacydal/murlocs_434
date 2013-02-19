@@ -355,7 +355,7 @@ struct MANGOS_DLL_DECL npc_twiggy_flatheadAI : public ScriptedAI
     {
         for(uint8 i = 0; i < 6; ++i)
         {
-            Creature* pCreature = m_creature->SummonCreature(NPC_AFFRAY_CHALLENGER, AffrayChallengerLoc[i][0], AffrayChallengerLoc[i][1], AffrayChallengerLoc[i][2], AffrayChallengerLoc[i][3], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
+            Creature* pCreature = m_creature->SummonCreature(NPC_AFFRAY_CHALLENGER, AffrayChallengerLoc[i][0], AffrayChallengerLoc[i][1], AffrayChallengerLoc[i][2], AffrayChallengerLoc[i][3], TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 600000);
             if (!pCreature)
             {
                 debug_log("SD2: npc_twiggy_flathead event cannot summon challenger as expected.");
@@ -427,7 +427,7 @@ struct MANGOS_DLL_DECL npc_twiggy_flatheadAI : public ScriptedAI
                         ++Step;
                     break;
                 case 2:
-                    if (Unit *temp = m_creature->SummonCreature(NPC_BIG_WILL, -1713.79f, -4342.09f, 6.05f, 6.15f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,300000))
+                    if (Unit *temp = m_creature->SummonCreature(NPC_BIG_WILL, -1713.79f, -4342.09f, 6.05f, 6.15f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN,300000))
                     {
                         m_bigWillGuid = temp->GetObjectGuid();
                         temp->setFaction(35);
@@ -551,10 +551,10 @@ struct MANGOS_DLL_DECL npc_wizzlecranks_shredderAI : public npc_escortAI
                 SetRun(false);
                 break;
             case 17:
-                if (Creature* pTemp = m_creature->SummonCreature(NPC_MERCENARY, 1128.489f, -3037.611f, 92.701f, 1.472f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 120000))
+                if (Creature* pTemp = m_creature->SummonCreature(NPC_MERCENARY, 1128.489f, -3037.611f, 92.701f, 1.472f, EMPSUMMON_TIMED_OOC_DESPAWN, 120000))
                 {
                     DoScriptText(SAY_MERCENARY, pTemp);
-                    m_creature->SummonCreature(NPC_MERCENARY, 1160.172f, -2980.168f, 97.313f, 3.690f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 120000);
+                    m_creature->SummonCreature(NPC_MERCENARY, 1160.172f, -2980.168f, 97.313f, 3.690f, EMPSUMMON_TIMED_OOC_DESPAWN, 120000);
                 }
                 break;
             case 24:

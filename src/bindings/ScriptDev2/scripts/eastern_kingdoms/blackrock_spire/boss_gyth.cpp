@@ -105,7 +105,7 @@ struct MANGOS_DLL_DECL boss_gythAI : public ScriptedAI
         float fX, fY, fZ;
         m_creature->GetRandomPoint(m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 2*INTERACTION_DISTANCE, fX, fY, fZ);
         fX = std::min(m_creature->GetPositionX(), fX);      // Halfcircle - suits better the rectangular form
-        if (Creature* pSummoned = m_creature->SummonCreature(uiCreatureId, fX, fY, fZ, 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 240000))
+        if (Creature* pSummoned = m_creature->SummonCreature(uiCreatureId, fX, fY, fZ, 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 240000))
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                 pSummoned->AI()->AttackStart(pTarget);
     }
@@ -216,7 +216,7 @@ struct MANGOS_DLL_DECL boss_gythAI : public ScriptedAI
                 m_creature->InterruptNonMeleeSpells(false);
                 // Gyth model
                 m_creature->SetDisplayId(MODEL_ID_GYTH);
-                m_creature->SummonCreature(NPC_REND_BLACKHAND, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 900000);
+                m_creature->SummonCreature(NPC_REND_BLACKHAND, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 900000);
                 m_bSummonedRend = true;
             }
 

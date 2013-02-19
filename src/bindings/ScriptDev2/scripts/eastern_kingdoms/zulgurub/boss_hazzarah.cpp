@@ -70,7 +70,7 @@ struct MANGOS_DLL_DECL boss_hazzarahAI : public ScriptedAI
             {
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM,0))
                 {
-                    if (Creature* pIllusion = m_creature->SummonCreature(15163, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 30000))
+                    if (Creature* pIllusion = m_creature->SummonCreature(15163, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN, 30000))
                         pIllusion->AI()->AttackStart(pTarget);
                 }
             }

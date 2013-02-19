@@ -175,7 +175,7 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI
 
                 if (Creature* pSpotlight = m_creature->SummonCreature(NPC_SPOTLIGHT,
                     m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 0.0f,
-                    TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60000))
+                    TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 60000))
                 {
                     pSpotlight->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     pSpotlight->CastSpell(pSpotlight, SPELL_SPOTLIGHT, false);
@@ -233,13 +233,13 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI
         {
             case EVENT_OZ:
                 for(int i=0; i < 4; ++i)
-                    m_creature->SummonCreature(aSpawns_OZ[i].uiEntry, aSpawns_OZ[i].fPosX, SPAWN_Y, SPAWN_Z, SPAWN_O, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS);
+                    m_creature->SummonCreature(aSpawns_OZ[i].uiEntry, aSpawns_OZ[i].fPosX, SPAWN_Y, SPAWN_Z, SPAWN_O, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS);
                 break;
             case EVENT_HOOD:
-                m_creature->SummonCreature(Spawn_HOOD.uiEntry, Spawn_HOOD.fPosX, SPAWN_Y, SPAWN_Z, SPAWN_O, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS);
+                m_creature->SummonCreature(Spawn_HOOD.uiEntry, Spawn_HOOD.fPosX, SPAWN_Y, SPAWN_Z, SPAWN_O, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS);
                 break;
             case EVENT_RAJ:
-                m_creature->SummonCreature(Spawn_RAJ.uiEntry, Spawn_RAJ.fPosX, SPAWN_Y, SPAWN_Z, SPAWN_O, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS);
+                m_creature->SummonCreature(Spawn_RAJ.uiEntry, Spawn_RAJ.fPosX, SPAWN_Y, SPAWN_Z, SPAWN_O, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, HOUR*2*IN_MILLISECONDS);
                 break;
             default:
                 error_log("SD2: Barnes Opera Event - Wrong EventId set: %d", m_uiEventId);

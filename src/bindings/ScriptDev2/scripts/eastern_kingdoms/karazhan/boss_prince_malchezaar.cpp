@@ -464,7 +464,7 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
                 Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0);
                 for (uint32 i = 0; i < 2; ++i)
                 {
-                    Creature* pAxe = m_creature->SummonCreature(MALCHEZARS_AXE, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 1000);
+                    Creature* pAxe = m_creature->SummonCreature(MALCHEZARS_AXE, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 1000);
                     if (pAxe)
                     {
                         pAxe->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);

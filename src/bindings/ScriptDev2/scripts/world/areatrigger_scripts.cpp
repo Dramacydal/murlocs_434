@@ -183,7 +183,7 @@ bool AreaTrigger_at_spearborn_encampment(Player* pPlayer, AreaTriggerEntry const
         if (GetClosestCreatureWithEntry(pPlayer, NPC_TARTEK, 50.0f))
             return false;
 
-        pPlayer->SummonCreature(NPC_TARTEK, pAt->x, pAt->y, pAt->z, 0.0f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, MINUTE*IN_MILLISECONDS);
+        pPlayer->SummonCreature(NPC_TARTEK, pAt->x, pAt->y, pAt->z, 0.0f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, MINUTE*IN_MILLISECONDS);
     }
 
     return false;

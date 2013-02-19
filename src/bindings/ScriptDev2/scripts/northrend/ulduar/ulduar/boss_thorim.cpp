@@ -825,7 +825,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
                             break;
                         case 5:
                             DoScriptText(SAY_AGGRO2, m_creature);
-                            if(Creature* pSif = m_creature->SummonCreature(NPC_SIF, m_creature->GetPositionX() + 10, m_creature->GetPositionY(), m_creature->GetPositionZ(), m_creature->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 180000))
+                            if(Creature* pSif = m_creature->SummonCreature(NPC_SIF, m_creature->GetPositionX() + 10, m_creature->GetPositionY(), m_creature->GetPositionZ(), m_creature->GetOrientation(), EMPSUMMON_TIMED_OOC_DESPAWN, 180000))
                             {
                                 pSif->setFaction(35);
                                 m_uiSifGUID = pSif->GetObjectGuid();
@@ -937,7 +937,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
                     {
                         case 0:
                             i = urand(0, 5);
-                            if(Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_CHAMPION, ArenaLoc[i].x, ArenaLoc[i].y, LOC_Z, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 120000))
+                            if(Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_CHAMPION, ArenaLoc[i].x, ArenaLoc[i].y, LOC_Z, 0, EMPSUMMON_TIMED_OOC_DESPAWN_OR_DEAD_DESPAWN, 120000))
                             {
                                 pTemp->GetMotionMaster()->MovePoint(0, 2134.72f, -263.148f, 419.846f);
                                 if(pTemp->IsWithinLOSInMap(m_creature->getVictim()))
@@ -949,7 +949,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
                             break;
                         case 1:
                             i = urand(0, 5);
-                            if(Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_EVOKER, ArenaLoc[i].x, ArenaLoc[i].y, LOC_Z, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 120000))
+                            if(Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_EVOKER, ArenaLoc[i].x, ArenaLoc[i].y, LOC_Z, 0, EMPSUMMON_TIMED_OOC_DESPAWN_OR_DEAD_DESPAWN, 120000))
                             {
                                 pTemp->GetMotionMaster()->MovePoint(0, 2134.72f, -263.148f, 419.846f);
                                 if(pTemp->IsWithinLOSInMap(m_creature->getVictim()))
@@ -963,7 +963,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
                             i = urand(5, 6);
                             for(uint8 j = 0; j < i; j++)
                             {
-                                if(Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_COMMONER, ArenaLoc[j].x, ArenaLoc[j].y, LOC_Z, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 120000))
+                                if(Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_COMMONER, ArenaLoc[j].x, ArenaLoc[j].y, LOC_Z, 0, EMPSUMMON_TIMED_OOC_DESPAWN_OR_DEAD_DESPAWN, 120000))
                                 {
                                     pTemp->GetMotionMaster()->MovePoint(0, 2134.72f, -263.148f, 419.846f);
                                     if(pTemp->IsWithinLOSInMap(m_creature->getVictim()))
@@ -979,7 +979,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
                             i = urand(k + 1, k + 2);
                             for(uint8 j = k; j < i; j++)
                             {
-                                if(Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_WARBRINGER, ArenaLoc[j].x, ArenaLoc[j].y, LOC_Z, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 120000))
+                                if(Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_WARBRINGER, ArenaLoc[j].x, ArenaLoc[j].y, LOC_Z, 0, EMPSUMMON_TIMED_OOC_DESPAWN_OR_DEAD_DESPAWN, 120000))
                                 {
                                     pTemp->GetMotionMaster()->MovePoint(0, 2134.72f, -263.148f, 419.846f);
                                     if(pTemp->IsWithinLOSInMap(m_creature->getVictim()))
@@ -992,7 +992,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
                             break;
                         case 4:
                             i = urand(0, 5);
-                            if(Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_ACOLYTE, ArenaLoc[i].x, ArenaLoc[i].y, LOC_Z, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 120000))
+                            if(Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_ACOLYTE, ArenaLoc[i].x, ArenaLoc[i].y, LOC_Z, 0, EMPSUMMON_TIMED_OOC_DESPAWN_OR_DEAD_DESPAWN, 120000))
                             {
                                 pTemp->GetMotionMaster()->MovePoint(0, 2134.72f, -263.148f, 419.846f);
                                 if(pTemp->IsWithinLOSInMap(m_creature->getVictim()))
@@ -1397,7 +1397,7 @@ struct MANGOS_DLL_DECL boss_ancient_rune_giantAI : public ScriptedAI
             if(m_uiSummonTimer < uiDiff)
             {
                 // honor guard
-                if(Creature* pTemp = m_creature->SummonCreature(MOB_IRON_HONOR_GUARD, OrbLoc[0].x + 30, OrbLoc[0].y, OrbLoc[0].z, 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60000))
+                if(Creature* pTemp = m_creature->SummonCreature(MOB_IRON_HONOR_GUARD, OrbLoc[0].x + 30, OrbLoc[0].y, OrbLoc[0].z, 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 60000))
                 {
                     pTemp->GetMotionMaster()->MovePoint(0, OrbLoc[1].x, OrbLoc[1].y, OrbLoc[1].z);
                     pTemp->SetInCombatWithZone();

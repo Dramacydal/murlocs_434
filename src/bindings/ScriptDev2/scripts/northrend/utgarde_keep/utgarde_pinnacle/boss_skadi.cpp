@@ -395,11 +395,11 @@ struct boss_skadi_graufAI : public ScriptedAI
 
             if (m_uiSummon < uiDiff)
             {
-                if (Creature* pTemp = m_creature->SummonCreature(NPC_YMIRJAR_WARRIOR, 471.0f +irand(-5,5), -506.0f+irand(-5,5), 105.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 120000))
+                if (Creature* pTemp = m_creature->SummonCreature(NPC_YMIRJAR_WARRIOR, 471.0f +irand(-5,5), -506.0f+irand(-5,5), 105.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN_OR_DEAD_DESPAWN, 120000))
                     pTemp->SetInCombatWithZone();
-                if (Creature* pTemp = m_creature->SummonCreature(NPC_YMIRJAR_HARPOONER, 471.0f+irand(-5,5), -506.0f+irand(-5,5), 105.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 120000))
+                if (Creature* pTemp = m_creature->SummonCreature(NPC_YMIRJAR_HARPOONER, 471.0f+irand(-5,5), -506.0f+irand(-5,5), 105.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN_OR_DEAD_DESPAWN, 120000))
                     pTemp->SetInCombatWithZone();
-                if (Creature* pTemp = m_creature->SummonCreature(NPC_YMIRJAR_WITCH_DOCTOR, 471.0f+irand(-5,5), -506.0f+irand(-5,5), 105.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 120000))
+                if (Creature* pTemp = m_creature->SummonCreature(NPC_YMIRJAR_WITCH_DOCTOR, 471.0f+irand(-5,5), -506.0f+irand(-5,5), 105.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN_OR_DEAD_DESPAWN, 120000))
                     pTemp->SetInCombatWithZone();
                 m_uiSummon = m_bIsRegularMode ? 30000 : 25000;
             }

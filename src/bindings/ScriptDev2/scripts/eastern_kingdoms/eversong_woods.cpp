@@ -133,7 +133,7 @@ struct MANGOS_DLL_DECL npc_kelerun_bloodmournAI : public ScriptedAI
             if (Creature* pCreature = m_creature->SummonCreature(uiChallengerId[i],
                 fChallengerLoc[i][0], fChallengerLoc[i][1],
                 fChallengerLoc[i][2], fChallengerLoc[i][3],
-                TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000))
+                TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 600000))
             {
                 m_aChallengerGuids[i] = pCreature->GetObjectGuid();
                 pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -506,7 +506,7 @@ struct MANGOS_DLL_DECL npc_infused_crystalAI : public ScriptedAI
         {
             for (uint8 i = 0; i < 3; ++i)
             {
-                if (Creature* pEnragedWrath = m_creature->SummonCreature(NPC_ENRAGED_WRATH, fEnragedWrathPosition[i][0], fEnragedWrathPosition[i][1], fEnragedWrathPosition[i][2], fEnragedWrathPosition[i][3], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
+                if (Creature* pEnragedWrath = m_creature->SummonCreature(NPC_ENRAGED_WRATH, fEnragedWrathPosition[i][0], fEnragedWrathPosition[i][1], fEnragedWrathPosition[i][2], fEnragedWrathPosition[i][3], EMPSUMMON_TIMED_OOC_DESPAWN, 5000))
                 {
                     pEnragedWrath->AI()->AttackStart(m_creature);
                 }

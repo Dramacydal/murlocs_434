@@ -447,7 +447,7 @@ struct MANGOS_DLL_DECL boss_archimondeAI : public ScriptedAI
 
             if (SummonWispTimer < diff)
             {
-                DoSpawnCreature(CREATURE_ANCIENT_WISP, rand()%40, rand()%40, 0, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 15000);
+                DoSpawnCreature(CREATURE_ANCIENT_WISP, rand()%40, rand()%40, 0, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 15000);
                 SummonWispTimer = 1500;
                 ++WispCount;
             }else SummonWispTimer -= diff;

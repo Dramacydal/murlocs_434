@@ -61,7 +61,7 @@ struct MANGOS_DLL_DECL mob_webbed_creatureAI : public ScriptedAI
         }
 
         if (spawnCreatureID)
-            m_creature->SummonCreature(spawnCreatureID, 0.0f, 0.0f, 0.0f, m_creature->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 25000);
+            m_creature->SummonCreature(spawnCreatureID, 0.0f, 0.0f, 0.0f, m_creature->GetOrientation(), EMPSUMMON_TIMED_OOC_DESPAWN, 25000);
     }
 };
 CreatureAI* GetAI_mob_webbed_creature(Creature* pCreature)

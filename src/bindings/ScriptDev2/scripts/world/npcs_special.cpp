@@ -146,7 +146,7 @@ struct MANGOS_DLL_DECL npc_air_force_botsAI : public ScriptedAI
 
     Creature* SummonGuard()
     {
-        Creature* pSummoned = m_creature->SummonCreature(m_pSpawnAssoc->m_uiSpawnedCreatureEntry, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 300000);
+        Creature* pSummoned = m_creature->SummonCreature(m_pSpawnAssoc->m_uiSpawnedCreatureEntry, 0.0f, 0.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 300000);
 
         if (pSummoned)
             m_spawnedGuid = pSummoned->GetObjectGuid();
@@ -757,7 +757,7 @@ void npc_doctorAI::UpdateAI(const uint32 diff)
 
             Point = *itr;
 
-            Patient = m_creature->SummonCreature(patientEntry, Point->x, Point->y, Point->z, Point->o, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+            Patient = m_creature->SummonCreature(patientEntry, Point->x, Point->y, Point->z, Point->o, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
 
             if (Patient)
             {

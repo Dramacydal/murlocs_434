@@ -183,21 +183,21 @@ struct MANGOS_DLL_DECL boss_maexxnaAI : public ScriptedAI
             switch(i)
             {
                 case 0:
-                    if (Creature* pWrap = m_creature->SummonCreature(NPC_WEB_WRAP, LOC_X1, LOC_Y1, LOC_Z1, 0.0f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60000))
+                    if (Creature* pWrap = m_creature->SummonCreature(NPC_WEB_WRAP, LOC_X1, LOC_Y1, LOC_Z1, 0.0f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 60000))
                     {
                         if (npc_web_wrapAI* pWebAI = dynamic_cast<npc_web_wrapAI*>(pWrap->AI()))
                             pWebAI->SetVictim(*iter);
                     }
                     break;
                 case 1:
-                    if (Creature* pWrap = m_creature->SummonCreature(NPC_WEB_WRAP, LOC_X2, LOC_Y2, LOC_Z2, 0.0f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60000))
+                    if (Creature* pWrap = m_creature->SummonCreature(NPC_WEB_WRAP, LOC_X2, LOC_Y2, LOC_Z2, 0.0f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 60000))
                     {
                         if (npc_web_wrapAI* pWebAI = dynamic_cast<npc_web_wrapAI*>(pWrap->AI()))
                             pWebAI->SetVictim(*iter);
                     }
                     break;
                 case 2:
-                    if (Creature* pWrap = m_creature->SummonCreature(NPC_WEB_WRAP, LOC_X3, LOC_Y3, LOC_Z3, 0.0f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60000))
+                    if (Creature* pWrap = m_creature->SummonCreature(NPC_WEB_WRAP, LOC_X3, LOC_Y3, LOC_Z3, 0.0f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 60000))
                     {
                         if (npc_web_wrapAI* pWebAI = dynamic_cast<npc_web_wrapAI*>(pWrap->AI()))
                             pWebAI->SetVictim(*iter);
@@ -212,7 +212,7 @@ struct MANGOS_DLL_DECL boss_maexxnaAI : public ScriptedAI
     void SummonSpiderlings()
     {
         for(uint8 i = 0; i < 8; ++i)
-            m_creature->SummonCreature(NPC_SPIDERLING, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60000);
+            m_creature->SummonCreature(NPC_SPIDERLING, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 60000);
     }
 
     void UpdateAI(const uint32 uiDiff)

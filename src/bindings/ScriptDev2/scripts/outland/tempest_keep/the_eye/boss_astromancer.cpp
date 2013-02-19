@@ -357,7 +357,7 @@ struct MANGOS_DLL_DECL boss_high_astromancer_solarianAI : public ScriptedAI
                     for (int i = 0; i <= 2; ++i)
                     {
                         for (int j = 1; j <= 4; ++j)
-                            m_creature->SummonCreature(NPC_SOLARIUM_AGENT, m_aPortals[i][0], m_aPortals[i][1], m_aPortals[i][2], 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                            m_creature->SummonCreature(NPC_SOLARIUM_AGENT, m_aPortals[i][0], m_aPortals[i][1], m_aPortals[i][2], 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     }
 
                     DoScriptText(SAY_SUMMON1, m_creature);
@@ -382,7 +382,7 @@ struct MANGOS_DLL_DECL boss_high_astromancer_solarianAI : public ScriptedAI
 
                     for (int j = 0; j <= 2; ++j)
                         if (j != i)
-                            m_creature->SummonCreature(NPC_SOLARIUM_PRIEST, m_aPortals[j][0], m_aPortals[j][1], m_aPortals[j][2], 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
+                            m_creature->SummonCreature(NPC_SOLARIUM_PRIEST, m_aPortals[j][0], m_aPortals[j][1], m_aPortals[j][2], 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
 
                     m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     m_creature->SetVisibility(VISIBILITY_ON);
