@@ -813,7 +813,6 @@ void WorldSession::HandleSetPetSlotOpcode(WorldPacket& recv_data)
     uint32 petNumber;
     uint8 slot;
     ObjectGuid guid;
-    ObjectGuid guid;
 
     recv_data >> petNumber >> slot;
     recv_data.ReadGuidMask<3, 2, 0, 7, 5, 6, 1, 4>(guid);
