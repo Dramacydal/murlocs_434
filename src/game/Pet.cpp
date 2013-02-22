@@ -33,7 +33,7 @@ Pet::Pet(PetType type) :
 Creature(CREATURE_SUBTYPE_PET),
 m_resetTalentsCost(0), m_resetTalentsTime(0), m_usedTalentCount(0),
 m_removed(false), m_petType(type), m_duration(0),
-m_bonusdamage(0), m_auraUpdateMask(0), m_loading(false),
+m_bonusdamage(0), m_auraUpdateMask(0), m_loading(false), m_slot(PET_SAVE_NOT_IN_SLOT),
 m_declinedname(NULL)
 {
     m_name = "Pet";
@@ -77,7 +77,7 @@ void Pet::RemoveFromWorld()
     Unit::RemoveFromWorld();
 }
 
-bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool current)
+bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, PetSaveMode slot)
 {
     m_loading = true;
 
@@ -90,26 +90,36 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
         result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType "
             "FROM character_pet WHERE owner = '%u' AND id = '%u'",
             ownerid, petnumber);
-    else if (current)
+    else if (slot == PET_SAVE_FIRST_AVAILABLE_SLOT)
+    {
+        // current pet (slot 0)                   0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17
+        result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType "
+            "FROM character_pet WHERE owner = '%u' AND slot >= '%u' AND slot < '%u' ORDER BY slot",
+            ownerid, PET_SAVE_AS_CURRENT, PET_SAVE_FIRST_STABLE_SLOT);
+    }
+    else if (slot != PET_SAVE_NOT_IN_SLOT)
         // current pet (slot 0)                   0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17
         result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType "
             "FROM character_pet WHERE owner = '%u' AND slot = '%u'",
-            ownerid, PET_SAVE_AS_CURRENT );
+            ownerid, slot);
     else if (petentry)
         // known petentry entry (unique for summoned pet, but non unique for hunter pet (only from current or not stabled pets)
         //                                        0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17
         result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType "
             "FROM character_pet WHERE owner = '%u' AND entry = '%u' AND (slot = '%u' OR slot > '%u') ",
-            ownerid, petentry,PET_SAVE_AS_CURRENT,PET_SAVE_LAST_STABLE_SLOT);
+            ownerid, petentry, PET_SAVE_AS_CURRENT, PET_SAVE_LAST_STABLE_SLOT);
     else
         // any current or other non-stabled pet (for hunter "call pet")
         //                                        0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17
         result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType "
             "FROM character_pet WHERE owner = '%u' AND (slot = '%u' OR slot > '%u') ",
-            ownerid,PET_SAVE_AS_CURRENT,PET_SAVE_LAST_STABLE_SLOT);
+            ownerid, PET_SAVE_AS_CURRENT, PET_SAVE_LAST_STABLE_SLOT);
 
-    if(!result)
+    if (!result)
+    {
+        m_loading = false;
         return false;
+    }
 
     Field *fields = result->Fetch();
 
@@ -118,6 +128,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     if (!petentry)
     {
         delete result;
+        m_loading = false;
         return false;
     }
 
@@ -126,9 +137,12 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     {
         sLog.outError("Pet entry %u does not exist but used at pet load (owner: %s).", petentry, owner->GetGuidStr().c_str());
         delete result;
+        m_loading = false;
         return false;
     }
 
+    if (slot == PET_SAVE_FIRST_AVAILABLE_SLOT)
+        slot = PetSaveMode(fields[7].GetUInt32());
 
     uint32 summon_spell_id = fields[16].GetUInt32();
     SpellEntry const* spellInfo = sSpellStore.LookupEntry(summon_spell_id);
@@ -136,9 +150,10 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     bool is_temporary_summoned = spellInfo && GetSpellDuration(spellInfo) > 0;
 
     // check temporary summoned pets like mage water elemental
-    if (current && is_temporary_summoned)
+    if (slot >= PET_SAVE_AS_CURRENT && slot < PET_SAVE_FIRST_STABLE_SLOT && is_temporary_summoned)
     {
         delete result;
+        m_loading = false;
         return false;
     }
 
@@ -148,16 +163,18 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
         if (!creatureInfo->isTameable(owner->CanTameExoticPets()))
         {
             delete result;
+            m_loading = false;
             return false;
         }
     }
 
     uint32 pet_number = fields[0].GetUInt32();
 
-    if (current && owner->IsPetNeedBeTemporaryUnsummoned())
+    if (slot >= PET_SAVE_AS_CURRENT && slot < PET_SAVE_FIRST_STABLE_SLOT && owner->IsPetNeedBeTemporaryUnsummoned())
     {
         owner->SetTemporaryUnsummonedPetNumber(pet_number);
         delete result;
+        m_loading = false;
         return false;
     }
 
@@ -169,6 +186,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     if (!Create(guid, pos, creatureInfo, pet_number))
     {
         delete result;
+        m_loading = false;
         return false;
     }
 
@@ -183,6 +201,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
         AIM_Initialize();
         pos.GetMap()->Add((Creature*)this);
         delete result;
+        m_loading = false;
         return true;
     }
 
@@ -232,10 +251,10 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     uint32 savedmana = fields[11].GetUInt32();
 
     // set current pet as current
-    // 0=current
-    // 1..MAX_PET_STABLES in stable slot
+    // 0 .. 4 - current
+    // 5 .. MAX_PET_STABLES + 4 - stable slots
     // PET_SAVE_NOT_IN_SLOT(100) = not stable slot (summoning))
-    if (fields[7].GetUInt32() != 0)
+    if (slot < PET_SAVE_AS_CURRENT || slot >= PET_SAVE_FIRST_STABLE_SLOT)
     {
         CharacterDatabase.BeginTransaction();
 
@@ -243,10 +262,10 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
         static SqlStatementID id_2;
 
         SqlStatement stmt = CharacterDatabase.CreateStatement(id_1, "UPDATE character_pet SET slot = ? WHERE owner = ? AND slot = ? AND id <> ?");
-        stmt.PExecute(uint32(PET_SAVE_NOT_IN_SLOT), ownerid, uint32(PET_SAVE_AS_CURRENT), m_charmInfo->GetPetNumber());
+        stmt.PExecute(uint32(PET_SAVE_NOT_IN_SLOT), ownerid, uint32(slot), m_charmInfo->GetPetNumber());
 
         stmt = CharacterDatabase.CreateStatement(id_2, "UPDATE character_pet SET slot = ? WHERE owner = ? AND id = ?");
-        stmt.PExecute(uint32(PET_SAVE_AS_CURRENT), ownerid, m_charmInfo->GetPetNumber());
+        stmt.PExecute(uint32(slot), ownerid, m_charmInfo->GetPetNumber());
 
         CharacterDatabase.CommitTransaction();
     }
@@ -277,7 +296,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
         LearnPetPassives();
     }
 
-    if (getPetType() == SUMMON_PET && !current)             //all (?) summon pets come with full health when called, but not when they are current
+    if (getPetType() == SUMMON_PET && slot != PET_SAVE_AS_CURRENT)  //all (?) summon pets come with full health when called, but not when they are current
     {
         SetHealth(GetMaxHealth());
         SetPower(getPowerType(), GetMaxPower(getPowerType()));
@@ -333,7 +352,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     SynchronizeLevelWithOwner();
 
     if (!is_temporary_summoned)
-        CastPetAuras(current);
+        CastPetAuras(slot >= PET_SAVE_AS_CURRENT && slot < PET_SAVE_FIRST_STABLE_SLOT);
 
     // Ghoul emote
     if (GetEntry() == 24207 || GetEntry() == 26125 || GetEntry() == 28528 || GetEntry())
@@ -343,6 +362,8 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
         if (BattleGround* bg = owner->GetBattleGround())
             if (bg->isArena() && bg->GetStatus() == STATUS_WAIT_JOIN)
                 RemoveSpellCooldowns();
+
+    m_slot = slot;
 
     return true;
 }
@@ -360,10 +381,34 @@ void Pet::SavePetToDB(PetSaveMode mode)
     if (!GetOwnerGuid().IsPlayer())
         return;
 
+    uint32 ownerLow = GetOwnerGuid().GetCounter();
+
     Player* pOwner = (Player*)GetOwner();
     if (!pOwner)
         return;
 
+    if (mode == PET_SAVE_AS_CURRENT)
+    {
+        if (m_slot >= PET_SAVE_AS_CURRENT && m_slot < PET_SAVE_FIRST_STABLE_SLOT)
+            mode = m_slot;
+    }
+    /*else if (mode == PET_SAVE_FIRST_AVAILABLE_SLOT)
+    {
+        if (QueryResult* result = CharacterDatabase.PQuery("SELECT slot FROM character_pet WHERE owner = %u", ownerLow))
+        {
+            std::vector<uint32> usedSlots;
+            do
+            {
+                Field* fields = result->Fetch();
+                usedSlots.push_back(fields[0].GetUInt32());
+            }
+            while (result->NextRow());
+            delete result;
+
+            for (int i = PET_SAVE_AS_CURRENT; i < PET_SAVE_AS
+        }
+    }
+*/
     // current/stable/not_in_slot
     if (mode >= PET_SAVE_AS_CURRENT)
     {
@@ -375,7 +420,7 @@ void Pet::SavePetToDB(PetSaveMode mode)
             pOwner->GetTemporaryUnsummonedPetNumber() != m_charmInfo->GetPetNumber())
         {
             // pet will lost anyway at restore temporary unsummoned
-            if(getPetType()==HUNTER_PET)
+            if (getPetType()==HUNTER_PET)
                 return;
 
             // for warlock case
@@ -386,7 +431,7 @@ void Pet::SavePetToDB(PetSaveMode mode)
         uint32 curmana = GetPower(POWER_MANA);
 
         // stable and not in slot saves
-        if (mode != PET_SAVE_AS_CURRENT)
+        if (mode < PET_SAVE_AS_CURRENT || mode >= PET_SAVE_FIRST_STABLE_SLOT)
             RemoveAllAuras();
 
         //save pet's data as one single transaction
@@ -395,7 +440,6 @@ void Pet::SavePetToDB(PetSaveMode mode)
         _SaveSpellCooldowns();
         _SaveAuras();
 
-        uint32 ownerLow = GetOwnerGuid().GetCounter();
         // remove current data
         static SqlStatementID delPet ;
         static SqlStatementID insPet ;
@@ -413,16 +457,16 @@ void Pet::SavePetToDB(PetSaveMode mode)
         }
 
         // prevent existence another hunter pet in PET_SAVE_AS_CURRENT and PET_SAVE_NOT_IN_SLOT
-        if (getPetType()==HUNTER_PET && (mode==PET_SAVE_AS_CURRENT||mode > PET_SAVE_LAST_STABLE_SLOT))
+        if (getPetType() == HUNTER_PET && (mode >= PET_SAVE_AS_CURRENT && mode < PET_SAVE_FIRST_STABLE_SLOT || mode > PET_SAVE_LAST_STABLE_SLOT))
         {
             static SqlStatementID del ;
 
             stmt = CharacterDatabase.CreateStatement(del, "DELETE FROM character_pet WHERE owner = ? AND (slot = ? OR slot > ?)");
-            stmt.PExecute(ownerLow, uint32(PET_SAVE_AS_CURRENT), uint32(PET_SAVE_LAST_STABLE_SLOT));
+            stmt.PExecute(ownerLow, uint32(mode), uint32(PET_SAVE_LAST_STABLE_SLOT));
         }
 
         // save pet
-        SqlStatement savePet = CharacterDatabase.CreateStatement(insPet, "INSERT INTO character_pet ( id, entry,  owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, "
+        SqlStatement savePet = CharacterDatabase.CreateStatement(insPet, "INSERT INTO character_pet ( id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, "
             "curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType) "
              "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
@@ -656,6 +700,12 @@ void Pet::Unsummon(PetSaveMode mode, Unit* owner /*= NULL*/)
 
     CombatStop();
 
+    if (mode == PET_SAVE_AS_CURRENT)
+    {
+        if (m_slot >= PET_SAVE_AS_CURRENT && m_slot < PET_SAVE_FIRST_STABLE_SLOT)
+            mode = m_slot;
+    }
+
     if(owner)
     {
         if (GetOwnerGuid() != owner->GetObjectGuid())
@@ -667,7 +717,7 @@ void Pet::Unsummon(PetSaveMode mode, Unit* owner /*= NULL*/)
         {
 
             // not save secondary permanent pet as current
-            if (mode == PET_SAVE_AS_CURRENT && p_owner->GetTemporaryUnsummonedPetNumber() &&
+            if (m_slot >= PET_SAVE_AS_CURRENT && m_slot < PET_SAVE_FIRST_STABLE_SLOT && p_owner->GetTemporaryUnsummonedPetNumber() &&
                 p_owner->GetTemporaryUnsummonedPetNumber() != GetCharmInfo()->GetPetNumber())
                 mode = PET_SAVE_NOT_IN_SLOT;
 
@@ -697,7 +747,7 @@ void Pet::Unsummon(PetSaveMode mode, Unit* owner /*= NULL*/)
                     }
                 }
             }
-            if (mode != PET_SAVE_AS_CURRENT && spellInfo)
+            if ((m_slot < PET_SAVE_AS_CURRENT || m_slot >= PET_SAVE_FIRST_STABLE_SLOT) && spellInfo)
                 // cooldown, only if pet is not death already (corpse)
                 if (spellInfo->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE && getDeathState() != CORPSE)
                 {

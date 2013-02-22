@@ -8080,15 +8080,20 @@ void Spell::EffectTameCreature(SpellEffectEntry const* /*effect*/)
     pet->SetUInt32Value(UNIT_FIELD_LEVEL, level);
 
     // caster have pet now
+    pet->m_slot = PET_SAVE_FIRST_AVAILABLE_SLOT;
     plr->SetPet(pet);
 
-    pet->SavePetToDB(PET_SAVE_AS_CURRENT);
+    pet->SavePetToDB(pet->m_slot);
     plr->PetSpellInitialize();
 }
 
 void Spell::EffectSummonPet(SpellEffectEntry const* effect)
 {
     uint32 petentry = effect->EffectMiscValue;
+    PetSaveMode slot = PET_SAVE_NOT_IN_SLOT;
+
+    if (!petentry)
+        slot = PetSaveMode(effect->EffectBasePoints);
 
     Pet *OldSummon = m_caster->GetPet();
 
@@ -8134,7 +8139,7 @@ void Spell::EffectSummonPet(SpellEffectEntry const* effect)
     Pet* NewSummon = new Pet;
 
     // petentry==0 for hunter "call pet" (current pet summoned if any)
-    if (m_caster->GetTypeId() == TYPEID_PLAYER && NewSummon->LoadPetFromDB((Player*)m_caster, petentry))
+    if (m_caster->GetTypeId() == TYPEID_PLAYER && NewSummon->LoadPetFromDB((Player*)m_caster, petentry, 0, slot))
         return;
 
     // not error in case fail hunter call pet
@@ -8203,6 +8208,7 @@ void Spell::EffectSummonPet(SpellEffectEntry const* effect)
     {
         NewSummon->RemoveByteFlag(UNIT_FIELD_BYTES_2, 2, UNIT_CAN_BE_RENAMED);
         NewSummon->SetByteFlag(UNIT_FIELD_BYTES_2, 2, UNIT_CAN_BE_ABANDONED);
+        NewSummon->m_slot = slot;
     }
 
     NewSummon->AIM_Initialize();

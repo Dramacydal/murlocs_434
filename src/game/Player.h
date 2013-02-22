@@ -1506,8 +1506,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         void LoadCorpse();
         void LoadPet();
 
-        uint32 m_stableSlots;
-
         /*********************************************************/
         /***                    GOSSIP SYSTEM                  ***/
         /*********************************************************/

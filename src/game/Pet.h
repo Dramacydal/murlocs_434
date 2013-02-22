@@ -34,17 +34,18 @@ enum PetType
     MAX_PET_TYPE            = 5
 };
 
-#define MAX_PET_STABLES         4
+#define MAX_PET_STABLES         20
 
 // stored in character_pet.slot
 enum PetSaveMode
 {
-    PET_SAVE_AS_DELETED        = -1,                        // not saved in fact
-    PET_SAVE_AS_CURRENT        =  0,                        // in current slot (with player)
-    PET_SAVE_FIRST_STABLE_SLOT =  1,
-    PET_SAVE_LAST_STABLE_SLOT  =  MAX_PET_STABLES,          // last in DB stable slot index (including), all higher have same meaning as PET_SAVE_NOT_IN_SLOT
-    PET_SAVE_NOT_IN_SLOT       =  100,                      // for avoid conflict with stable size grow will use 100
-    PET_SAVE_REAGENTS          =  101                       // PET_SAVE_NOT_IN_SLOT with reagents return
+    PET_SAVE_AS_DELETED             = -1,                                                   // not saved in fact
+    PET_SAVE_AS_CURRENT             =  0,                                                   // in current slot (with player), also pet first slot
+    PET_SAVE_FIRST_STABLE_SLOT      =  5,
+    PET_SAVE_LAST_STABLE_SLOT       =  MAX_PET_STABLES + PET_SAVE_FIRST_STABLE_SLOT - 1,    // last in DB stable slot index (including), all higher have same meaning as PET_SAVE_NOT_IN_SLOT
+    PET_SAVE_NOT_IN_SLOT            =  100,                                                 // for avoid conflict with stable size grow will use 100
+    PET_SAVE_REAGENTS               =  101,                                                 // PET_SAVE_NOT_IN_SLOT with reagents return
+    PET_SAVE_FIRST_AVAILABLE_SLOT   =  102,
 };
 
 // There might be a lot more
@@ -145,7 +146,7 @@ class MANGOS_DLL_SPEC Pet : public Creature
 
         bool Create (uint32 guidlow, CreatureCreatePos& cPos, CreatureInfo const* cinfo, uint32 pet_number);
         bool CreateBaseAtCreature(Creature* creature);
-        bool LoadPetFromDB(Player* owner,uint32 petentry = 0,uint32 petnumber = 0, bool current = false);
+        bool LoadPetFromDB(Player* owner,uint32 petentry = 0,uint32 petnumber = 0, PetSaveMode slot = PET_SAVE_NOT_IN_SLOT);
         void SavePetToDB(PetSaveMode mode);
         void Unsummon(PetSaveMode mode, Unit* owner = NULL);
         static void DeleteFromDB(uint32 guidlow, bool separate_transaction = true);
@@ -230,6 +231,7 @@ class MANGOS_DLL_SPEC Pet : public Creature
         uint32  m_resetTalentsCost;
         time_t  m_resetTalentsTime;
         uint32  m_usedTalentCount;
+        PetSaveMode m_slot;
 
         const uint64& GetAuraUpdateMask() const { return m_auraUpdateMask; }
         void SetAuraUpdateMask(uint8 slot) { m_auraUpdateMask |= (uint64(1) << slot); }
