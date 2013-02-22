@@ -48,6 +48,8 @@ enum PetSaveMode
     PET_SAVE_FIRST_AVAILABLE_SLOT   =  102,
 };
 
+inline bool IsActiveSlot(PetSaveMode slot) { return slot >= PET_SAVE_AS_CURRENT && slot < PET_SAVE_FIRST_STABLE_SLOT; }
+
 // There might be a lot more
 enum PetModeFlags
 {
