@@ -28,7 +28,7 @@
 #include "BattleGround/BattleGroundMgr.h"
 #include "MassMailMgr.h"
 #include "SpellMgr.h"
-#include "Policies/SingletonImp.h"
+#include "Policies/Singleton.h"
 #include "World.h"
 
 INSTANTIATE_SINGLETON_1(GameEventMgr);
