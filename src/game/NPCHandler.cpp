@@ -594,14 +594,14 @@ void WorldSession::SendStablePet( ObjectGuid guid )
     size_t wpos = data.wpos();
     data << uint8(0);                                       // place holder for slot show number
 
-    data << uint8(MAX_PET_STABLES);
+    data << uint8(GetPlayer()->m_stableSlots);
 
     uint8 num = 0;                                          // counter for place holder
 
     // not let move dead pet in slot
     if(pet && pet->isAlive() && pet->getPetType()==HUNTER_PET)
     {
-        data << uint32(pet->m_slot);
+        data << uint32(0);
         data << uint32(pet->GetCharmInfo()->GetPetNumber());
         data << uint32(pet->GetEntry());
         data << uint32(pet->getLevel());
@@ -611,8 +611,8 @@ void WorldSession::SendStablePet( ObjectGuid guid )
     }
 
     //                                                     0      1   2      3      4     5
-    QueryResult* result = CharacterDatabase.PQuery("SELECT owner, id, entry, level, name, slot FROM character_pet WHERE owner = '%u' AND slot >= '%u' AND slot <= '%u' AND slot <> '%u' ORDER BY slot",
-        _player->GetGUIDLow(), PET_SAVE_AS_CURRENT, PET_SAVE_LAST_STABLE_SLOT, pet ? uint32(pet->m_slot) : uint32(PET_SAVE_FIRST_AVAILABLE_SLOT));
+    QueryResult* result = CharacterDatabase.PQuery("SELECT owner, id, entry, level, name, slot FROM character_pet WHERE owner = '%u' AND slot >= '%u' AND slot <= '%u' ORDER BY slot",
+        _player->GetGUIDLow(),PET_SAVE_FIRST_STABLE_SLOT,PET_SAVE_LAST_STABLE_SLOT);
 
     if(result)
     {
@@ -625,7 +625,7 @@ void WorldSession::SendStablePet( ObjectGuid guid )
             data << uint32(fields[2].GetUInt32());          // creature entry
             data << uint32(fields[3].GetUInt32());          // level
             data << fields[4].GetString();                  // name
-            data << uint8(fields[5].GetUInt32() < PET_SAVE_FIRST_STABLE_SLOT ? 1 : 3);  // 1 = current, 2/3 = in stable (any from 4,5,... create problems with proper show)
+            data << uint8(2);                               // 1 = current, 2/3 = in stable (any from 4,5,... create problems with proper show)
 
             ++num;
         }while( result->NextRow() );
@@ -725,7 +725,7 @@ void WorldSession::HandleStablePet( WorldPacket & recv_data )
         delete result;
     }
 
-    if( free_slot > 0 && free_slot <= MAX_PET_STABLES)
+    if( free_slot > 0 && free_slot <= GetPlayer()->m_stableSlots)
     {
         pet->Unsummon(PetSaveMode(free_slot), _player);
         SendStableResult(STABLE_SUCCESS_STABLE);
@@ -804,6 +804,26 @@ void WorldSession::HandleUnstablePet( WorldPacket & recv_data )
     }
 
     SendStableResult(STABLE_SUCCESS_UNSTABLE);
+}
+
+void WorldSession::HandleBuyStableSlot( WorldPacket & recv_data )
+{
+    DEBUG_LOG("WORLD: Recv CMSG_BUY_STABLE_SLOT.");
+    ObjectGuid npcGUID;
+
+    recv_data >> npcGUID;
+
+    if (!CheckStableMaster(npcGUID))
+    {
+        SendStableResult(STABLE_ERR_STABLE);
+        return;
+    }
+
+    GetPlayer()->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_TALK);
+    // remove fake death
+
+    //if(GetPlayer()->hasUnitState(UNIT_STAT_DIED))
+    //    GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
 }
 
 void WorldSession::HandleStableRevivePet( WorldPacket &/* recv_data */)
