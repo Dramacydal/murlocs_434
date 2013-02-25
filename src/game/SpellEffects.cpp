@@ -4234,6 +4234,14 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     target->GetSession()->SendPacket(&data);
                     return;
                 }
+                case 74452:                                 // Conflagration
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    m_caster->CastSpell(unitTarget, 74453, true);
+                    return;
+                }
             }
             break;
         }
@@ -11943,6 +11951,14 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     for (uint32 triggeredSpell = effect->CalculateSimpleValue(); triggeredSpell < m_spellInfo->Id; ++triggeredSpell)
                         unitTarget->CastSpell(unitTarget, triggeredSpell, true);
 
+                    return;
+                }
+                case 74455:                                 // Conflagration
+                {
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->CastSpell(m_caster, m_spellInfo->CalculateSimpleValue(eff_idx), true);
                     return;
                 }
                 case 80863:                                 // Blood in the Water
