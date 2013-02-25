@@ -150,7 +150,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, PetSav
     bool is_temporary_summoned = spellInfo && GetSpellDuration(spellInfo) > 0;
 
     // check temporary summoned pets like mage water elemental
-    if (IsActiveSlot(slot) && is_temporary_summoned)
+    if (slot >= PET_SAVE_AS_CURRENT && slot < PET_SAVE_FIRST_STABLE_SLOT && is_temporary_summoned)
     {
         delete result;
         m_loading = false;
@@ -170,7 +170,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, PetSav
 
     uint32 pet_number = fields[0].GetUInt32();
 
-    if (IsActiveSlot(slot) && owner->IsPetNeedBeTemporaryUnsummoned())
+    if (slot >= PET_SAVE_AS_CURRENT && slot < PET_SAVE_FIRST_STABLE_SLOT && owner->IsPetNeedBeTemporaryUnsummoned())
     {
         owner->SetTemporaryUnsummonedPetNumber(pet_number);
         delete result;
@@ -352,7 +352,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, PetSav
     SynchronizeLevelWithOwner();
 
     if (!is_temporary_summoned)
-        CastPetAuras(IsActiveSlot(slot));
+        CastPetAuras(slot >= PET_SAVE_AS_CURRENT && slot < PET_SAVE_FIRST_STABLE_SLOT);
 
     // Ghoul emote
     if (GetEntry() == 24207 || GetEntry() == 26125 || GetEntry() == 28528 || GetEntry())
@@ -387,8 +387,11 @@ void Pet::SavePetToDB(PetSaveMode mode)
     if (!pOwner)
         return;
 
-    if (mode == PET_SAVE_AS_CURRENT && IsActiveSlot(m_slot))
-        mode = m_slot;
+    if (mode == PET_SAVE_AS_CURRENT)
+    {
+        if (m_slot >= PET_SAVE_AS_CURRENT && m_slot < PET_SAVE_FIRST_STABLE_SLOT)
+            mode = m_slot;
+    }
     /*else if (mode == PET_SAVE_FIRST_AVAILABLE_SLOT)
     {
         if (QueryResult* result = CharacterDatabase.PQuery("SELECT slot FROM character_pet WHERE owner = %u", ownerLow))
@@ -413,7 +416,7 @@ void Pet::SavePetToDB(PetSaveMode mode)
         if (mode == PET_SAVE_REAGENTS)
             mode = PET_SAVE_NOT_IN_SLOT;
         // not save pet as current if another pet temporary unsummoned
-        else if (IsActiveSlot(mode) && pOwner->GetTemporaryUnsummonedPetNumber() &&
+        else if (mode == PET_SAVE_AS_CURRENT && pOwner->GetTemporaryUnsummonedPetNumber() &&
             pOwner->GetTemporaryUnsummonedPetNumber() != m_charmInfo->GetPetNumber())
         {
             // pet will lost anyway at restore temporary unsummoned
@@ -454,7 +457,7 @@ void Pet::SavePetToDB(PetSaveMode mode)
         }
 
         // prevent existence another hunter pet in PET_SAVE_AS_CURRENT and PET_SAVE_NOT_IN_SLOT
-        if (getPetType() == HUNTER_PET && (IsActiveSlot(mode) || mode > PET_SAVE_LAST_STABLE_SLOT))
+        if (getPetType() == HUNTER_PET && (mode >= PET_SAVE_AS_CURRENT && mode < PET_SAVE_FIRST_STABLE_SLOT || mode > PET_SAVE_LAST_STABLE_SLOT))
         {
             static SqlStatementID del ;
 
@@ -697,10 +700,13 @@ void Pet::Unsummon(PetSaveMode mode, Unit* owner /*= NULL*/)
 
     CombatStop();
 
-    if (mode == PET_SAVE_AS_CURRENT && IsActiveSlot(mode))
-        mode = m_slot;
+    if (mode == PET_SAVE_AS_CURRENT)
+    {
+        if (m_slot >= PET_SAVE_AS_CURRENT && m_slot < PET_SAVE_FIRST_STABLE_SLOT)
+            mode = m_slot;
+    }
 
-    if (owner)
+    if(owner)
     {
         if (GetOwnerGuid() != owner->GetObjectGuid())
             return;
@@ -711,7 +717,7 @@ void Pet::Unsummon(PetSaveMode mode, Unit* owner /*= NULL*/)
         {
 
             // not save secondary permanent pet as current
-            if (IsActiveSlot(m_slot) && p_owner->GetTemporaryUnsummonedPetNumber() &&
+            if (m_slot >= PET_SAVE_AS_CURRENT && m_slot < PET_SAVE_FIRST_STABLE_SLOT && p_owner->GetTemporaryUnsummonedPetNumber() &&
                 p_owner->GetTemporaryUnsummonedPetNumber() != GetCharmInfo()->GetPetNumber())
                 mode = PET_SAVE_NOT_IN_SLOT;
 
