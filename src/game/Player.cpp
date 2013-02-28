@@ -2423,14 +2423,19 @@ void Player::RegenerateAll(uint32 diff)
 void Player::Regenerate(Powers power, uint32 diff)
 {
     uint32 powerIndex = GetPowerIndex(power);
-    if (powerIndex == INVALID_POWER_INDEX)
-        return;
+    uint32 maxValue, curValue;
 
-    uint32 maxValue = GetMaxPowerByIndex(powerIndex);
-    if (!maxValue)
-        return;
+    if (power != POWER_RUNE)
+    {
+        if (powerIndex == INVALID_POWER_INDEX)
+            return;
 
-    uint32 curValue = GetPowerByIndex(powerIndex);
+        maxValue = GetMaxPowerByIndex(powerIndex);
+        if (!maxValue)
+            return;
+
+        curValue = GetPowerByIndex(powerIndex);
+    }
 
     float addvalue = 0.0f;
 
@@ -2504,7 +2509,7 @@ void Player::Regenerate(Powers power, uint32 diff)
                     SetRuneCooldown(rune, (cd < cd_diff) ? 0 : cd - cd_diff, -1);
                 }
             }
-            break;
+            return;
         }
         case POWER_HEALTH:
             break;
@@ -2512,7 +2517,7 @@ void Player::Regenerate(Powers power, uint32 diff)
 
     // Mana regen calculated in Player::UpdateManaRegen()
     // Exist only for POWER_MANA, POWER_ENERGY, POWER_FOCUS auras
-    if(power != POWER_MANA)
+    if (power != POWER_MANA)
     {
         AuraList const& ModPowerRegenPCTAuras = GetAurasByType(SPELL_AURA_MOD_POWER_REGEN_PERCENT);
         for(AuraList::const_iterator i = ModPowerRegenPCTAuras.begin(); i != ModPowerRegenPCTAuras.end(); ++i)
