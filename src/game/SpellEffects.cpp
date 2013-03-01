@@ -8537,10 +8537,12 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
                     {
                         // Effect 3 damage is bonus
                          bonus = count * CalculateDamage(EFFECT_INDEX_2, unitTarget) / 100.0f;
-                         // Blood Strike and Obliterate store bonus*2
-                         if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0002000000400000) ||
-                            m_spellInfo->SpellIconID == 1736)
+                         // Obliterate store bonus * 2
+                         if (m_spellInfo->Id == 49020)
                             bonus /= 2.0f;
+                         // Blood Strike store bonus * 10
+                         else if (m_spellInfo->Id == 45902)
+                             bonus /= 10.0f;
 
                         // Item - Death Knight T8 Melee 4P Bonus
                         if (Aura* dummy = m_caster->GetDummyAura(64736))
