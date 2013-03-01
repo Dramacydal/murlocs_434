@@ -5301,12 +5301,6 @@ void Spell::EffectTriggerSpell(SpellEffectEntry const* effect)
             if (unitTarget->GetTypeId() != TYPEID_PLAYER)
                 return;
 
-            uint32 spellId = 1784;
-            // reset cooldown on it if needed
-            if (((Player*)unitTarget)->HasSpellCooldown(spellId))
-                ((Player*)unitTarget)->RemoveSpellCooldown(spellId);
-
-            m_caster->CastSpell(unitTarget, spellId, true);
             return;
         }
         // just skip
