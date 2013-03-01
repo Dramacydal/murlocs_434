@@ -2734,6 +2734,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     ((spellInfo_1->GetCategory() == 44 && spellInfo_2->GetCategory() == 0) ||
                     (spellInfo_2->GetCategory() == 44 && spellInfo_1->GetCategory() == 0)))
                     return false;
+
+                // Rupture & Deadly Poison
+                if (spellInfo_1->SpellIconID == 500 && spellInfo_2->SpellIconID == 513 ||
+                    spellInfo_2->SpellIconID == 500 && spellInfo_1->SpellIconID == 513)
+                    return false;
             }
 
             //Overkill
