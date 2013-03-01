@@ -5470,7 +5470,7 @@ void Aura::HandleModStealth(bool apply, bool Real)
                 if (((Player*)target)->HasSpellCooldown(1784))
                     ((Player*)target)->RemoveSpellCooldown(1784);
 
-            target->CastSpell(target, 1784, true);
+            target->_AddAura(1784, 0);
         }
 
         // only at real aura remove of _last_ SPELL_AURA_MOD_STEALTH
