@@ -4996,6 +4996,29 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
             SpellClassOptionsEntry const* dkClassOptions = m_spellInfo->GetSpellClassOptions();
             switch(m_spellInfo->Id)
             {
+                case 46584:                                 // Raise Dead
+                {
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER || effect->EffectIndex != EFFECT_INDEX_0)
+                        return;
+
+                    Player* p_caster = (Player*)m_caster;
+
+                    // do nothing if ghoul summon already exsists (in fact not possible, but...)
+                    if (p_caster->GetPet())
+                    {
+                        p_caster->RemoveSpellCooldown(m_spellInfo->Id, true);
+                        SendCastResult(SPELL_FAILED_ALREADY_HAVE_SUMMON);
+                        finish(false);
+                        return;
+                    }
+
+                    // check for "Master of Ghouls", id's stored in basepoints
+                    if (p_caster->HasAura(52143))
+                        p_caster->CastSpell(m_caster,m_currentBasePoints[1], true);
+                    else
+                        p_caster->CastSpell(m_caster,m_currentBasePoints[0], true);
+                    break;
+                }
                 // Death Grip
                 case 49576:
                 {
@@ -11874,45 +11897,6 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
         {
             switch(m_spellInfo->Id)
             {
-                case 46584:                                 // Raise Dead
-                {
-                    if (m_caster->GetTypeId() != TYPEID_PLAYER)
-                        return;
-                    Player* p_caster = (Player*)m_caster;
-
-                    // do nothing if ghoul summon already exsists (in fact not possible, but...)
-                    if (p_caster->FindGuardianWithEntry(m_currentBasePoints[0]) || p_caster->GetPet())
-                    {
-                        p_caster->RemoveSpellCooldown(m_spellInfo->Id, true);
-                        SendCastResult(SPELL_FAILED_ALREADY_HAVE_SUMMON);
-                        finish(false);
-                        return;
-                    }
-
-                    // check if "Glyph of Raise Dead" ,corpse- or "Corpse Dust" is available
-                    bool canCast = p_caster->CanNoReagentCast(m_spellInfo);
-                    if (!canCast && p_caster->HasItemCount(37201,1))
-                    {
-                        p_caster->CastSpell(m_caster, 48289, true);
-                        canCast = true;
-                    }
-
-                    // remove spellcooldown if can't cast and send result
-                    if (!canCast)
-                    {
-                        p_caster->RemoveSpellCooldown(m_spellInfo->Id, true);
-                        SendCastResult(SPELL_FAILED_REAGENTS);
-                        finish(false);
-                        return;
-                    }
-
-                    // check for "Master of Ghouls", id's stored in basepoints
-                    if (p_caster->HasAura(52143))
-                        p_caster->CastSpell(m_caster,m_currentBasePoints[2],true);
-                    else
-                        p_caster->CastSpell(m_caster,m_currentBasePoints[1],true);
-                    break;
-                }
                 case 50842:                                 // Pestilence
                 {
                     if (!unitTarget)
@@ -11955,6 +11939,29 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     CancelGlobalCooldown();
                     return;
                 }
+            }
+            // Festering Strike
+            case 85948:
+            {
+                // Blood Plague
+                if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(55078))
+                {
+                    int32 newDuration = holder->GetAuraDuration() + damage * IN_MILLISECONDS;
+                    if (newDuration > holder->GetAuraMaxDuration())
+                        newDuration = holder->GetAuraMaxDuration();
+                    holder->SetAuraDuration(newDuration);
+                    holder->SendAuraUpdate(false);
+                }
+                // Frost Fever
+                if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(55095))
+                {
+                    int32 newDuration = holder->GetAuraDuration() + damage * IN_MILLISECONDS;
+                    if (newDuration > holder->GetAuraMaxDuration())
+                        newDuration = holder->GetAuraMaxDuration();
+                    holder->SetAuraDuration(newDuration);
+                    holder->SendAuraUpdate(false);
+                }
+                return;
             }
             break;
         }

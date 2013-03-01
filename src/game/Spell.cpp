@@ -4831,10 +4831,7 @@ void Spell::SendCastResult(Player* caster, SpellEntry const* spellInfo, uint8 ca
         }
         case SPELL_FAILED_REAGENTS:
             // normally client checks reagents, just some script effects here
-            if(spellInfo->Id == 46584)                      // Raise Dead
-                data << uint32(37201);                      // Corpse Dust
-            else
-                data << uint32(0);                          // item id
+            data << uint32(0);                              // item id
             break;
         case SPELL_FAILED_NEED_MORE_ITEMS:
             data << uint32(0);                              // item id
@@ -9397,15 +9394,7 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
         }
         case 46584: // Raise Dead
         {
-            Unit* pCorpseTarget = NULL;
-            MaNGOS::NearestCorpseInObjectRangeCheck u_check(*m_caster, radius);
-            MaNGOS::UnitLastSearcher<MaNGOS::NearestCorpseInObjectRangeCheck> searcher(pCorpseTarget, u_check);
-            Cell::VisitGridObjects(m_caster, searcher, radius);
-
-            if (pCorpseTarget)
-                targetUnitMap.push_back(pCorpseTarget);
-            else
-                targetUnitMap.push_back((Unit*)m_caster);
+            targetUnitMap.push_back(m_caster);
             break;
         }
         case 47496: // Explode
