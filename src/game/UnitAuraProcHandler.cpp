@@ -3671,6 +3671,17 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 target = this;
                 break;
             }
+            // Dark Simulacrum
+            else if (dummySpell->Id == 77606)
+            {
+                if (GetTypeId() == TYPEID_PLAYER)
+                {
+                    if (procSpell && procSpell->powerType == POWER_MANA)
+                    {
+                    }
+                }
+                //if (Unit* caster = triggeredByAura->GetCaster())
+            }
             // Wandering Plague
             if (dummySpell->SpellIconID == 1614)
             {
