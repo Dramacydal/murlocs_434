@@ -614,7 +614,7 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
                 return SPELL_HAND;
 
             // skip Heart of the Crusader and Judgements of Just that have also same spell family mask
-            if (spellInfo->IsFitToFamilyMask(UI64LIT(0x00000820180400)) && spellInfo->HasAttribute(SPELL_ATTR_EX3_UNK9) && (spellInfo->SpellIconID != 237) && spellInfo->Id != 68055)
+            if (spellInfo->IsFitToFamilyMask(UI64LIT(0x00000820180400)) && spellInfo->HasAttribute(SPELL_ATTR_EX3_TRIGGERED_CAN_TRIGGER_PROC_2) && (spellInfo->SpellIconID != 237) && spellInfo->Id != 68055)
                 return SPELL_JUDGEMENT;
 
             // only paladin auras have this (for palaldin class family)
