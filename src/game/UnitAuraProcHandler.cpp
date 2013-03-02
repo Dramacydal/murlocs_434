@@ -3690,6 +3690,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                             return SPELL_AURA_PROC_FAILED;
 
                         if (IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_PET) ||
                             IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_ALL_TOTEMS) ||
                             IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_DEAD_PET) ||
                             IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_OBJECT_SLOT1) ||
