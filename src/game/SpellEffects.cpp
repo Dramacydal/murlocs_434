@@ -5378,19 +5378,6 @@ void Spell::EffectTriggerSpell(SpellEffectEntry const* effect)
                 pet->CastSpell(pet, 28305, true);
             return;
         }
-        // Empower Rune Weapon
-        case 53258:
-        {
-            // remove cooldown of frost/death, undead/blood activated in main spell
-            if (unitTarget->GetTypeId() == TYPEID_PLAYER)
-            {
-                bool res1 = ((Player*)unitTarget)->ActivateRunes(RUNE_FROST, 2);
-                bool res2 = ((Player*)unitTarget)->ActivateRunes(RUNE_DEATH, 2);
-                if (res1 || res2)
-                    ((Player*)unitTarget)->ResyncRunes();
-            }
-            return;
-        }
         // Demonic Leap
         case 54786:
         {
@@ -13650,15 +13637,6 @@ void Spell::EffectActivateRune(SpellEffectEntry const* effect)
     int32 count = damage;                                   // max amount of reset runes
     if (plr->ActivateRunes(RuneType(effect->EffectMiscValue), count))
         plr->ResyncRunes();
-
-    if (m_spellInfo->Id == 47568 && effect->EffectIndex == 1)
-    {
-        uint32 rp = m_caster->GetPower(POWER_RUNIC_POWER);
-        rp += 250;
-        if (rp > m_caster->GetMaxPower(POWER_RUNIC_POWER))
-            rp = m_caster->GetMaxPower(POWER_RUNIC_POWER);
-        m_caster->SetPower(POWER_RUNIC_POWER, rp);
-    }
 }
 
 void Spell::EffectTitanGrip(SpellEffectEntry const* effect)
