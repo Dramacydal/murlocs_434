@@ -3676,7 +3676,10 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             {
                 if (Unit* caster = triggeredByAura->GetCaster())
                 {
-                    if (Spell* spell = GetCurrentSpell(CURRENT_GENERIC_SPELL))
+                    Spell* spell = GetCurrentSpell(CURRENT_GENERIC_SPELL);
+                    if (!spell)
+                        spell = GetCurrentSpell(CURRENT_CHANNELED_SPELL);
+                    if (spell)
                     {
                         if (spell->IsTriggeredSpell())
                             return SPELL_AURA_PROC_FAILED;
@@ -3684,6 +3687,17 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         SpellEntry const* spellInfo = spell->m_spellInfo;
                         if (spellInfo->powerType != POWER_MANA ||
                             !spellInfo->GetManaCost() && !spellInfo->GetManaCostPercentage())
+                            return SPELL_AURA_PROC_FAILED;
+
+                        if (IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_ALL_TOTEMS) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_DEAD_PET) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_OBJECT_SLOT1) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_OBJECT_SLOT2) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_OBJECT_SLOT3) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_OBJECT_SLOT4) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_CHANGE_ITEM) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_DEAD_PET))
                             return SPELL_AURA_PROC_FAILED;
 
                         basepoints[0] = spellInfo->Id;
