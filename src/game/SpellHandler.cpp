@@ -448,6 +448,9 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
             {
                 spellInfo = newInfo;
                 spellId = newInfo->Id;
+                // Force triggered to spells mirrored by Dark Simulacrum
+                if (spellId == 77616)
+                    triggered = true;
             }
             break;
         }

@@ -514,6 +514,7 @@ class Spell
 
         bool IsNeedSendToClient() const;                    // use for hide spell cast for client in case when cast not have client side affect (animation or log entries)
         bool IsTriggeredSpellWithRedundentData() const;     // use for ignore some spell data for triggered spells like cast time, some triggered spells have redundant copy data from main spell for client use purpose
+        bool IsTriggeredSpell() const;
 
         CurrentSpellTypes GetCurrentContainer();
 

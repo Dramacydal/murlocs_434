@@ -364,8 +364,8 @@ pAuraProcHandler AuraProcHandler[TOTAL_AURAS]=
     &Unit::HandleNULLProc,                                  //329 SPELL_AURA_MOD_RUNIC_POWER_REGEN 3 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //330 SPELL_AURA_ALLOW_CAST_WHILE_MOVING 16 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //331 SPELL_AURA_MOD_WEATHER 10 spells in 4.3.4
-    &Unit::HandleNULLProc,                                  //332 SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS 16 spells in 4.3.4
-    &Unit::HandleNULLProc,                                  //333 SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS_2 10 spells in 4.3.4
+    &Unit::HandleSpellAuraOverrideActionbarSpellsProc,      //332 SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS 16 spells in 4.3.4
+    &Unit::HandleSpellAuraOverrideActionbarSpellsProc,      //333 SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS_2 10 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //334 SPELL_AURA_BLIND_SIGHT 2 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //335 invisibility-related 5 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //336 SPELL_AURA_FLIGHT_RESTRICTIONS 8 spells in 4.3.4
@@ -3674,13 +3674,23 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             // Dark Simulacrum
             else if (dummySpell->Id == 77606)
             {
-                if (GetTypeId() == TYPEID_PLAYER)
+                if (Unit* caster = triggeredByAura->GetCaster())
                 {
-                    if (procSpell && procSpell->powerType == POWER_MANA)
+                    if (Spell* spell = GetCurrentSpell(CURRENT_GENERIC_SPELL))
                     {
+                        if (spell->IsTriggeredSpell())
+                            return SPELL_AURA_PROC_FAILED;
+
+                        SpellEntry const* spellInfo = spell->m_spellInfo;
+                        if (spellInfo->powerType != POWER_MANA ||
+                            !spellInfo->GetManaCost() && !spellInfo->GetManaCostPercentage())
+                            return SPELL_AURA_PROC_FAILED;
+
+                        basepoints[0] = spellInfo->Id;
+                        caster->CastCustomSpell(caster, 77616, &basepoints[0], NULL, NULL, true);
                     }
                 }
-                //if (Unit* caster = triggeredByAura->GetCaster())
+                return SPELL_AURA_PROC_OK;
             }
             // Wandering Plague
             if (dummySpell->SpellIconID == 1614)
@@ -5824,6 +5834,21 @@ SpellAuraProcResult Unit::HandleVengeanceProc(Unit* pVictim, int32 damage, int32
             bp = maxVal;
 
         CastCustomSpell(this, triggered_spell_id, &bp, &bp, &basebp, true);
+    }
+
+    return SPELL_AURA_PROC_OK;
+}
+
+SpellAuraProcResult Unit::HandleSpellAuraOverrideActionbarSpellsProc(Unit* pVictim, uint32 damage, uint32 absorb, Aura* triggeredByAura, SpellEntry const *procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown)
+{
+    SpellEntry const* spellProto = triggeredByAura->GetSpellProto();
+    int32 triggerAmount = triggeredByAura->GetModifier()->m_amount;
+
+    // Dark Simulacrum
+    if (spellProto->Id == 77616)
+    {
+        if (!procSpell || procSpell->Id != triggerAmount)
+            return SPELL_AURA_PROC_FAILED;
     }
 
     return SPELL_AURA_PROC_OK;
