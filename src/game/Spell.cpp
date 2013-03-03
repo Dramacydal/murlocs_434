@@ -957,6 +957,10 @@ void Spell::prepareDataForTriggerSystem()
             else if (m_spellInfo->Id == 31803)
                 m_canTrigger = true;
             break;
+        case SPELLFAMILY_DEATHKNIGHT:
+            // Death Coil (damage)
+            if (m_spellInfo->Id == 47632)
+                m_canTrigger = true;
         default:
             break;
     }
