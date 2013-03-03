@@ -3721,7 +3721,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         cdRunes.push_back(i);
                 if (!cdRunes.empty())
                 {
-                    int i = urand(0, cdRunes.size());
+                    int i = urand(0, cdRunes.size() - 1);
                     player->SetRuneCooldown(i, 0);
                     player->ResyncRunes();
                 }
