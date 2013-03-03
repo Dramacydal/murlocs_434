@@ -3707,6 +3707,26 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 }
                 return SPELL_AURA_PROC_OK;
             }
+            // Runic Empowerment
+            else if (dummySpell->Id == 81229)
+            {
+                if (GetTypeId() != TYPEID_PLAYER)
+                    return SPELL_AURA_PROC_FAILED;
+
+                Player* player = (Player*)this;
+
+                std::vector<uint8> cdRunes(MAX_RUNES);
+                for (uint8 i = 0; i < MAX_RUNES; ++i)
+                    if (player->GetRuneCooldown(i))
+                        cdRunes.push_back(i);
+                if (!cdRunes.empty())
+                {
+                    int i = urand(0, cdRunes.size());
+                    player->SetRuneCooldown(i, 0);
+                    player->ResyncRunes();
+                }
+                return SPELL_AURA_PROC_OK;
+            }
             // Wandering Plague
             if (dummySpell->SpellIconID == 1614)
             {
@@ -4750,26 +4770,6 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 for (uint8 i = 0; i < MAX_RUNES; ++i)
                     if (((Player*)this)->GetRuneCooldown(i) == 0)
                         return SPELL_AURA_PROC_FAILED;
-            }
-            // Runic Empowerment
-            else if (auraSpellInfo->Id == 81229)
-            {
-                if (GetTypeId() != TYPEID_PLAYER)
-                    return SPELL_AURA_PROC_FAILED;
-
-                Player* player = ((Player*)this);
-
-                std::vector<uint8> cdRunes(MAX_RUNES);
-                for (uint8 i = 0; i < MAX_RUNES; ++i)
-                    if (player->GetRuneCooldown(i))
-                        cdRunes.push_back(i);
-                if (!cdRunes.empty())
-                {
-                    int i = urand(0, cdRunes.size());
-                    player->SetRuneCooldown(i, 0);
-                    player->ResyncRunes();
-                }
-                return SPELL_AURA_PROC_OK;
             }
             break;
         }
