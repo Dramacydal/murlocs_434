@@ -10148,17 +10148,19 @@ void Aura::PeriodicDummyTick()
         case SPELLFAMILY_DEATHKNIGHT:
         {
             // Death and Decay
-            if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000000020))
+            if (GetId() == 43265)
             {
-                if (Unit *caster = GetCaster())
-                {
-                    int32 bp = m_modifier.m_amount;
-                    // Item - Death Knight T10 Tank 4P Bonus
-                    if (Aura* glyph = caster->GetDummyAura(70650))
-                        bp *= (glyph->GetModifier()->m_amount + 100.0f)/100.0f;
+                int32 bp = 0;
+                if (SpellAuraHolder* holder = GetHolder())
+                    if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                        bp = aura->GetModifier()->m_amount;
 
-                    caster->CastCustomSpell(target, 52212, &bp, NULL, NULL, true, NULL, this);
-                }
+                // Item - Death Knight T10 Tank 4P Bonus
+                if (Aura* glyph = target->GetDummyAura(70650))
+                    bp *= (glyph->GetModifier()->m_amount + 100.0f)/100.0f;
+
+                if (DynamicObject* dynObj = target->GetDynObject(spell->Id))
+                    target->CastCustomSpell(dynObj->GetPositionX(), dynObj->GetPositionY(), dynObj->GetPositionZ(), 52212, &bp, NULL, NULL, true, NULL, this);
                 return;
             }
             // Raise Dead
