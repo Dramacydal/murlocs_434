@@ -8579,6 +8579,9 @@ bool Spell::CheckTargetCreatureType(Unit* target, uint32 effMask) const
         if (m_caster->HasAura(56420))
             spellCreatureTargetMask |= (1 << (CREATURE_TYPE_DRAGONKIN - 1)) | (1 << (CREATURE_TYPE_ELEMENTAL - 1));
     }
+    // Death Coil
+    else if (m_spellInfo->Id == 47541 && m_caster->IsFriendlyTo(target))
+        spellCreatureTargetMask |= 1 << (CREATURE_TYPE_UNDEAD - 1);
 
     // Dismiss Pet and Taming Lesson and Control Roskipped
     if (m_spellInfo->Id == 2641 || m_spellInfo->Id == 23356 || m_spellInfo->Id == 30009)
