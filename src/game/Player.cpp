@@ -22370,10 +22370,14 @@ void Player::learnSkillRewardedSpells(uint32 skill_id, uint32 skill_value )
 
 void Player::SendAurasForTarget(Unit *target)
 {
+    Unit::VisibleAuraMap const& visibleAuras = target->GetVisibleAuras();
+    // client crashfix
+    if (visibleAuras.empty())
+        return;
+
     WorldPacket data(SMSG_AURA_UPDATE_ALL);
     data << target->GetPackGUID();
 
-    Unit::VisibleAuraMap const& visibleAuras = target->GetVisibleAuras();
     for (Unit::VisibleAuraMap::const_iterator itr = visibleAuras.begin(); itr != visibleAuras.end(); ++itr)
         itr->second->BuildUpdatePacket(data);
 
