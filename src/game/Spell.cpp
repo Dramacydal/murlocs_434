@@ -6551,6 +6551,12 @@ SpellCastResult Spell::CheckCast(bool strict)
                     if (m_targets.getUnitTarget() && !m_caster->IsFriendlyTo(m_targets.getUnitTarget()) && !m_caster->HasInArc(M_PI_F, m_targets.getUnitTarget()))
                         return SPELL_FAILED_UNIT_NOT_INFRONT;
                 }
+                else if (m_spellInfo->Id == 47541)          // Death Coil
+                {
+                    if (m_targets.getUnitTarget() && !CheckTargetCreatureType(m_targets.getUnitTarget()))
+                        return SPELL_FAILED_BAD_TARGETS;
+                    break;
+                }
                 else if(m_spellInfo->Id == 49576)           // Death Grip
                 {
                     if(m_caster->m_movementInfo.HasMovementFlag(MovementFlags(MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR)))
@@ -8581,7 +8587,7 @@ bool Spell::CheckTargetCreatureType(Unit* target, uint32 effMask) const
     }
     // Death Coil
     else if (m_spellInfo->Id == 47541 && m_caster->IsFriendlyTo(target))
-        spellCreatureTargetMask |= 1 << (CREATURE_TYPE_UNDEAD - 1);
+        spellCreatureTargetMask = 1 << (CREATURE_TYPE_UNDEAD - 1);
 
     // Dismiss Pet and Taming Lesson and Control Roskipped
     if (m_spellInfo->Id == 2641 || m_spellInfo->Id == 23356 || m_spellInfo->Id == 30009)
