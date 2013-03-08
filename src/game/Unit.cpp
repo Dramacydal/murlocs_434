@@ -10541,6 +10541,13 @@ int32 Unit::CalculateSpellDamage(Unit const* target, SpellEntry const* spellProt
             }
             break;
         }
+        case SPELL_AURA_HEAL_ABSORB:
+        {
+            // Necrotic Strike
+            if (spellProto->Id == 73975)
+                return int32(GetTotalAttackPowerValue(BASE_ATTACK) * 0.7f);
+            break;
+        }
         // crowd control auras
         case SPELL_AURA_MOD_CONFUSE:
         case SPELL_AURA_MOD_FEAR:
