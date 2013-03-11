@@ -385,7 +385,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNULL,                                      //326 24 spells in 4.3.4 new phase auras
     &Aura::HandleUnused,                                    //327 0 spells in 4.3.4
     &Aura::HandleNULL,                                      //328 3 spells in 4.3.4 Eclipse Mastery Driver Passive
-    &Aura::HandleNULL,                                      //329 SPELL_AURA_MOD_RUNIC_POWER_REGEN 3 spells in 4.3.4
+    &Aura::HandleNULL,                                      //329 SPELL_AURA_MOD_RUNIC_POWER_GAIN 3 spells in 4.3.4
     &Aura::HandleNoImmediateEffect,                         //330 SPELL_AURA_ALLOW_CAST_WHILE_MOVING 16 spells in 4.3.4
     &Aura::HandleAuraForceWeather,                          //331 SPELL_AURA_MOD_WEATHER 10 spells in 4.3.4
     &Aura::HandleAuraOverrideActionbarSpells,               //332 SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS 16 spells in 4.3.4, implemented in WorldSession::HandleCastSpellOpcode

@@ -4976,6 +4976,12 @@ void Spell::SendSpellGo()
         castFlags |= CAST_FLAG_PREDICTED_RUNES;             // rune cooldowns list
     }
 
+    if (IsSpellHaveEffect(m_spellInfo, SPELL_EFFECT_ACTIVATE_RUNE))
+    {
+        castFlags |= CAST_FLAG_PREDICTED_RUNES;             // rune cooldowns list
+        castFlags |= CAST_FLAG_UNKNOWN19;                   // same as in SMSG_SPELL_START
+    }
+
     Unit* caster = m_triggeredByAuraSpell && IsChanneledSpell(m_triggeredByAuraSpell) ? GetAffectiveCaster() : m_caster;
     if (!caster)
         caster = m_caster;
@@ -5679,6 +5685,7 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take, bool hit)
         // you can gain some runic power when use runes
         float rp = float(src->runePowerGain);
         rp *= sWorld.getConfig(CONFIG_FLOAT_RATE_POWER_RUNICPOWER_INCOME);
+        rp += m_caster->GetTotalAuraModifier(SPELL_AURA_MOD_RUNIC_POWER_GAIN) * rp / 100;
         plr->ModifyPower(POWER_RUNIC_POWER, (int32)rp);
     }
 
@@ -7961,7 +7968,7 @@ SpellCastResult Spell::CheckPower()
         return SPELL_CAST_OK;
 
     // Do precise power regen on spell cast
-    if (m_powerCost > 0 && m_caster->GetTypeId() == TYPEID_PLAYER)
+    if (m_powerCost > 0 && m_caster->GetTypeId() == TYPEID_PLAYER && m_spellInfo->powerType != POWER_RUNE)
     {
         Player* playerCaster = (Player*)m_caster;
         int32 diff = REGEN_TIME_FULL - m_caster->GetRegenTimer();
