@@ -2495,7 +2495,7 @@ void Player::Regenerate(Powers power, uint32 diff)
         case POWER_RUNE:
         {
             if (getClass() != CLASS_DEATH_KNIGHT)
-                break;
+                return;
 
             for(uint32 rune = 0; rune < MAX_RUNES; rune += 2)
             {
@@ -23567,7 +23567,9 @@ void Player::ResyncRunes()
     for(uint32 i = 0; i < MAX_RUNES; ++i)
     {
         data << uint8(GetCurrentRune(i));                   // rune type
-        data << uint8(255 - (GetRuneCooldown(i) * 51));     // passed cooldown time (0-255)
+        // float casts ensure the division is performed on floats as we need float result
+        float baseCd = float(GetRuneBaseCooldown(i));
+        data << uint8((baseCd - float(GetRuneCooldown(i))) / baseCd * 255); // rune cooldown passed
     }
     GetSession()->SendPacket(&data);
 }

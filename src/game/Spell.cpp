@@ -5627,7 +5627,7 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take, bool hit)
 
     runeCost[RUNE_DEATH] = 0;                               // calculated later
 
-    if (!take)
+    if (take)
         plr->ClearLastUsedRuneMask();
 
     for (uint32 i = 0; i < MAX_RUNES; ++i)
