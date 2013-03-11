@@ -415,6 +415,12 @@ class MANGOS_DLL_SPEC Aura
             return maxDuration > 0 && m_modifier.periodictime > 0 ? maxDuration / m_modifier.periodictime : 0;
         }
         uint32 GetStackAmount() const { return GetHolder()->GetStackAmount(); }
+        void ResetPeriodic(bool resetPeriodicTimer = false)
+        {
+             if (resetPeriodicTimer)
+                 m_periodicTimer = m_modifier.periodictime;
+             m_periodicTick = 0;
+        }
 
         void SetLoadedState(int32 damage, uint32 periodicTime)
         {

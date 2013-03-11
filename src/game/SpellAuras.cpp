@@ -273,7 +273,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleUnused,                                    //214 Tamed Pet Passive (single test like spell 20782, also single for 157 aura)
     &Aura::HandleArenaPreparation,                          //215 SPELL_AURA_ARENA_PREPARATION
     &Aura::HandleModCastingSpeed,                           //216 SPELL_AURA_HASTE_SPELLS
-    &Aura::HandleUnused,                                    //217 8 spells in 4.3.4 melee haste related
+    &Aura::HandleModMeleeSpeedPct,                          //217 SPELL_AURA_MOD_MELEE_HASTE_2
     &Aura::HandleAuraModRangedHaste,                        //218 SPELL_AURA_HASTE_RANGED
     &Aura::HandleModManaRegen,                              //219 SPELL_AURA_MOD_MANA_REGEN_FROM_STAT
     &Aura::HandleModRatingFromStat,                         //220 SPELL_AURA_MOD_RATING_FROM_STAT
@@ -375,8 +375,8 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleUnused,                                    //316 old SPELL_AURA_MOD_PERIODIC_HASTE 0 spells in 4.3.4
     &Aura::HandleModIncreaseSpellPowerPct,                  //317 SPELL_AURA_MOD_INCREASE_SPELL_POWER_PCT 13 spells in 4.3.4, implemented in Unit::SpellBaseDamageBonusDone and Unit::SpellBaseHealingBonusDone
     &Aura::HandleAuraMastery,                               //318 SPELL_AURA_MASTERY 12 spells in 4.3
-    &Aura::HandleModMeleeSpeedPct,                          //319 SPELL_AURA_MOD_MELEE_ATTACK_SPEED 47 spells in 4.3.4
-    &Aura::HandleAuraModRangedHaste,                        //320 SPELL_AURA_MOD_RANGED_ATTACK_SPEED 5 spells in 4.3.4
+    &Aura::HandleModMeleeSpeedPct,                          //319 SPELL_AURA_MOD_MELEE_HASTE_3 47 spells in 4.3.4
+    &Aura::HandleAuraModRangedHaste,                        //320 SPELL_AURA_MOD_RANGED_HASTE_2 5 spells in 4.3.4
     &Aura::HandleNULL,                                      //321 1 spells in 4.3 Hex
     &Aura::HandleAuraInterfereTargeting,                    //322 SPELL_AURA_INTERFERE_TARGETING 6 spells in 4.3
     &Aura::HandleUnused,                                    //323 0 spells in 4.3.4
@@ -6541,6 +6541,26 @@ void Aura::HandleAuraPeriodicDummy(bool apply, bool Real)
                 m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(RANGED_ATTACK) * 14 / 100);
             break;
         }
+        case SPELLFAMILY_DEATHKNIGHT:
+        {
+            // Reaping and Blood Rites
+            if (GetSpellProto()->SpellIconID == 22 || GetSpellProto()->SpellIconID == 2724)
+            {
+                if (apply)
+                    break;
+
+                if (m_spellEffect->EffectApplyAuraName != SPELL_AURA_PERIODIC_DUMMY)
+                    break;
+                if (target->GetTypeId() != TYPEID_PLAYER)
+                    break;
+                if (((Player*)target)->getClass() != CLASS_DEATH_KNIGHT)
+                    break;
+
+                // aura removed - remove death runes
+                ((Player*)target)->RemoveRunesByAuraEffect(this);
+            }
+            break;
+        }
     }
 
     m_isPeriodic = apply;
@@ -10184,36 +10204,16 @@ void Aura::PeriodicDummyTick()
             // Summon Gargoyle
 //            if (spell->SpellFamilyFlags & UI64LIT(0x0000008000000000))
 //                return;
-            // Death Rune Mastery
-            if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000004000))
+            // Reaping and Blood Rites
+            if (spell->SpellIconID == 22 || spell->SpellIconID == 2724)
             {
                 if (target->GetTypeId() != TYPEID_PLAYER)
                     return;
+                if (((Player*)target)->getClass() != CLASS_DEATH_KNIGHT)
+                    return;
 
-                Player* plr = (Player*)target;
-
-                uint8 deathRuneType = RUNE_DEATH;
-  
-                for(uint32 i = 0; i < MAX_RUNES; ++i)
-                {
-                    if ((plr->GetCurrentRune(i) == RUNE_FROST || plr->GetCurrentRune(i) == RUNE_UNHOLY) && (plr->GetCurrentRune(i) != deathRuneType))
-                    {
-                        //megai2: on Obliterate or Death Strike
-                        SpellEntry const * usedBy = sSpellStore.LookupEntry(plr->RuneUsedBySpell(i));
-                        if (!usedBy)
-                            continue;
-                        if ((usedBy->SpellIconID == 2751 || usedBy->SpellIconID == 2639) && 
-                            roll_chance_i(sSpellMgr.GetSpellRank(spell->Id) * 33))
-                        {
-                            plr->ConvertRune(i, RUNE_DEATH);
-                            plr->SetRuneCooldown(i, plr->GetRuneCooldown(i)); // megai2: prevent overusage..
-                            if (deathRuneType != RUNE_DEATH)
-                                break;
-                            deathRuneType = plr->GetCurrentRune(i);
-                        }
-                    }
-                }
-                return;
+                // timer expired - remove death runes
+                ((Player*)target)->RemoveRunesByAuraEffect(this);
             }
             // Bladed Armor
             if (spell->SpellIconID == 2653)
@@ -10222,58 +10222,6 @@ void Aura::PeriodicDummyTick()
                 // Calculate AP bonus (from 1 effect of this spell)
                 int32 apBonus = m_modifier.m_amount * target->GetArmor() / target->CalculateSpellDamage(target, spell, EFFECT_INDEX_1);
                 target->CastCustomSpell(target, 61217, &apBonus, &apBonus, NULL, true, NULL, this);
-                return;
-            }
-            // Reaping
-            if (spell->SpellIconID == 22)
-            {
-                if (target->GetTypeId() != TYPEID_PLAYER)
-                    return;
-
-                Player* plr = (Player*)target;
-
-                for(uint32 i = 0; i < MAX_RUNES; ++i)
-                {
-                    if (plr->GetCurrentRune(i) == RUNE_BLOOD)
-                    {
-                        //megai2: on Pestilence or Blood strike
-                        SpellEntry const * usedBy = sSpellStore.LookupEntry(plr->RuneUsedBySpell(i));
-                        if (!usedBy)
-                            continue;
-                        if ((usedBy->SpellIconID == 2624 || usedBy->Id == 50842) && roll_chance_i(sSpellMgr.GetSpellRank(spell->Id) * 33))
-                        {
-                            plr->ConvertRune(i, RUNE_DEATH);
-                            plr->SetRuneCooldown(i, plr->GetRuneCooldown(i)); // megai2: prevent overusage..
-                            break;
-                        }
-                    }
-                }
-                return;
-            }
-            // Blood of the North
-            if (spell->SpellIconID == 3041)
-            {
-                if (target->GetTypeId() != TYPEID_PLAYER)
-                    return;
-
-                Player* plr = (Player*)target;
-
-                for(uint32 i = 0; i < MAX_RUNES; ++i)
-                {
-                    if (plr->GetCurrentRune(i) == RUNE_BLOOD)
-                    {
-                        //megai2: on Pestilence or Blood strike
-                        SpellEntry const * usedBy = sSpellStore.LookupEntry(plr->RuneUsedBySpell(i));
-                        if (!usedBy)
-                            continue;
-                        if ((usedBy->SpellIconID == 2624 || usedBy->Id == 50842) && roll_chance_i(spell->CalculateSimpleValue(EFFECT_INDEX_1) * 10))
-                        {
-                            plr->ConvertRune(i, RUNE_DEATH);
-                            plr->SetRuneCooldown(i, plr->GetRuneCooldown(i)); // megai2: prevent overusage..
-                            break;
-                        }
-                    }
-                }
                 return;
             }
             // Hysteria
@@ -10511,38 +10459,35 @@ void Aura::HandleAuraMirrorImage(bool apply, bool Real)
 
 void Aura::HandleAuraConvertRune(bool apply, bool Real)
 {
-    if(!Real)
+    if (!Real)
         return;
 
-    if(GetTarget()->GetTypeId() != TYPEID_PLAYER)
+    if (GetTarget()->GetTypeId() != TYPEID_PLAYER)
         return;
 
-    Player *plr = (Player*)GetTarget();
+    Player* plr = (Player*)GetTarget();
 
-    if(plr->getClass() != CLASS_DEATH_KNIGHT)
+    if (plr->getClass() != CLASS_DEATH_KNIGHT)
         return;
 
-    RuneType runeFrom = RuneType(m_spellEffect->EffectMiscValue);
-    RuneType runeTo   = RuneType(m_spellEffect->EffectMiscValueB);
-    uint8 runeFirst = runeFrom * 2;
-
+    uint32 runes = GetModifier()->m_amount;
+    // convert number of runes specified in aura amount of rune type in miscvalue to runetype in miscvalueb
     if (apply)
     {
-        uint8 idx = runeFirst;
-        if (plr->GetCurrentRune(runeFirst) == runeFrom && plr->GetCurrentRune(runeFirst + 1) != runeFrom)
-            idx = runeFirst;
-        else if (plr->GetCurrentRune(runeFirst) != runeFrom && plr->GetCurrentRune(runeFirst + 1) == runeFrom)
-            idx = runeFirst + 1;
-        else if (plr->GetRuneCooldown(runeFirst) && !plr->GetRuneCooldown(runeFirst + 1))
-            idx = runeFirst + 1;
-        else if (plr->GetRuneCooldown(runeFirst + 1) && !plr->GetRuneCooldown(runeFirst))
-            idx = runeFirst;
+        for (uint32 i = 0; i < MAX_RUNES && runes; ++i)
+        {
+            if (GetMiscValue() != plr->GetCurrentRune(i))
+                continue;
 
-        plr->ConvertRune(idx, runeTo);
-        GetModifier()->m_amount = idx;
+            if (!plr->GetRuneCooldown(i))
+            {
+                plr->AddRuneByAuraEffect(i, RuneType(GetMiscBValue()), this);
+                --runes;
+            }
+        }
     }
     else
-        plr->ConvertRune(GetModifier()->m_amount, runeFrom);
+        plr->RemoveRunesByAuraEffect(this);
 }
 
 void Aura::HandlePhase(bool apply, bool Real)

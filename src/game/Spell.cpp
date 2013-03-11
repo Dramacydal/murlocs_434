@@ -4919,7 +4919,11 @@ void Spell::SendSpellStart()
             data << uint8(m_runesState);
             data << uint8(caster->GetRunesState());
             for (uint8 i = 0; i < MAX_RUNES; ++i)
-                data << uint8(255 - ((caster->GetRuneCooldown(i) / REGEN_TIME_FULL) * 51));
+            {
+                // float casts ensure the division is performed on floats as we need float result
+                float baseCd = float(caster->GetRuneBaseCooldown(i));
+                data << uint8((baseCd - float(caster->GetRuneCooldown(i))) / baseCd * 255); // rune cooldown passed
+            }
         }
         else
         {
@@ -5006,7 +5010,11 @@ void Spell::SendSpellGo()
             data << uint8(m_runesState);
             data << uint8(caster->GetRunesState());
             for (uint8 i = 0; i < MAX_RUNES; ++i)
-                data << uint8(255 - ((caster->GetRuneCooldown(i) / REGEN_TIME_FULL) * 51));
+            // float casts ensure the division is performed on floats as we need float result
+            {
+                float baseCd = float(caster->GetRuneBaseCooldown(i));
+                data << uint8((baseCd - float(caster->GetRuneCooldown(i))) / baseCd * 255); // rune cooldown passed
+            }
         }
         else
         {
@@ -5578,16 +5586,16 @@ void Spell::TakePower()
         return;
     }
 
-    if (hit && powerType == POWER_RUNE)
+    if (powerType == POWER_RUNE)
     {
-        CheckOrTakeRunePower(true);
+        CheckOrTakeRunePower(true, hit);
         return;
     }
 
     m_caster->ModifyPower(powerType, -(int32)m_powerCost);
 }
 
-SpellCastResult Spell::CheckOrTakeRunePower(bool take)
+SpellCastResult Spell::CheckOrTakeRunePower(bool take, bool hit)
 {
     if (m_caster->GetTypeId() != TYPEID_PLAYER)
         return SPELL_CAST_OK;
@@ -5609,70 +5617,64 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take)
         m_runesState = plr->GetRunesState();                // store previous state
 
     // at this moment for rune cost exist only no cost mods, and no percent mods
-    int32 runeCostMod = 10000;
-    if (Player* modOwner = plr->GetSpellModOwner())
-        modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_COST, runeCostMod, this);
-
-    if (runeCostMod > 0)
+    int32 runeCost[NUM_RUNE_TYPES];                         // blood, frost, unholy, death
+    for (uint32 i = 0; i < RUNE_DEATH; ++i)
     {
-        int32 runeCost[NUM_RUNE_TYPES];                         // blood, frost, unholy, death
+        runeCost[i] = src->RuneCost[i];
+        if (Player* modOwner = m_caster->GetSpellModOwner())
+            modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_COST, runeCost[i], this);
+    }
 
-        // init cost data and apply mods
-        for (uint32 i = 0; i < RUNE_DEATH; ++i)
-            runeCost[i] = runeCostMod > 0 ? src->RuneCost[i] : 0;
+    runeCost[RUNE_DEATH] = 0;                               // calculated later
 
-        runeCost[RUNE_DEATH] = 0;                               // calculated later
+    if (!take)
+        plr->ClearLastUsedRuneMask();
 
-        // scan non-death runes (death rune not used explicitly in rune costs)
+    for (uint32 i = 0; i < MAX_RUNES; ++i)
+    {
+        RuneType rune = plr->GetCurrentRune(i);
+        if (!plr->GetRuneCooldown(i) && runeCost[rune] > 0)
+        {
+            if (take)
+            {
+                plr->SetRuneCooldown(i, hit ? plr->GetRuneBaseCooldown(i) : uint32(RUNE_MISS_COOLDOWN));
+                plr->SetLastUsedRune(rune);
+            }
+            --runeCost[rune];
+        }
+    }
+
+    runeCost[RUNE_DEATH] = runeCost[RUNE_BLOOD] + runeCost[RUNE_UNHOLY] + runeCost[RUNE_FROST];
+
+    if (runeCost[RUNE_DEATH] > 0)
+    {
         for (uint32 i = 0; i < MAX_RUNES; ++i)
         {
             RuneType rune = plr->GetCurrentRune(i);
-            if (runeCost[rune] <= 0)
-                continue;
-
-            // already used
-            if (plr->GetRuneCooldown(i) != 0)
-                continue;
-
-            if (take)
-                plr->SetRuneCooldown(i, RUNE_COOLDOWN, m_spellInfo->Id);         // 5*2=10 sec
-
-            --runeCost[rune];
-        }
-
-        // collect all not counted rune costs to death runes cost
-        for (uint32 i = 0; i < RUNE_DEATH; ++i)
-            if (runeCost[i] > 0)
-                runeCost[RUNE_DEATH] += runeCost[i];
-
-        // scan death runes
-        if (runeCost[RUNE_DEATH] > 0)
-        {
-            for (uint32 i = 0; i < MAX_RUNES && runeCost[RUNE_DEATH]; ++i)
+            if (!plr->GetRuneCooldown(i) && rune == RUNE_DEATH)
             {
-                RuneType rune = plr->GetCurrentRune(i);
-                if (rune != RUNE_DEATH)
-                    continue;
-
-                // already used
-                if (plr->GetRuneCooldown(i) != 0)
-                    continue;
-
                 if (take)
-                    plr->SetRuneCooldown(i, RUNE_COOLDOWN, m_spellInfo->Id); // 5*2=10 sec
+                {
+                    plr->SetRuneCooldown(i, hit ? plr->GetRuneBaseCooldown(i) : uint32(RUNE_MISS_COOLDOWN));
+                    plr->SetLastUsedRune(rune);
+                }
 
                 --runeCost[rune];
 
-                if (take)
-                    plr->ConvertRune(i, plr->GetBaseRune(i));
+                // keep Death Rune type if missed
+                if (take && hit)
+                    plr->RestoreBaseRune(i);
+
+                if (runeCost[RUNE_DEATH] == 0)
+                    break;
             }
         }
-
-        if (!take && runeCost[RUNE_DEATH] > 0)
-            return SPELL_FAILED_NO_POWER;                       // not sure if result code is correct
     }
 
-    if (take)
+    if (!take && runeCost[RUNE_DEATH] > 0)
+        return SPELL_FAILED_NO_POWER;
+
+    if (take && hit)
     {
         // you can gain some runic power when use runes
         float rp = float(src->runePowerGain);

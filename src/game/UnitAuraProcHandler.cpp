@@ -249,7 +249,7 @@ pAuraProcHandler AuraProcHandler[TOTAL_AURAS]=
     &Unit::HandleNULLProc,                                  //214 Tamed Pet Passive (single test like spell 20782, also single for 157 aura)
     &Unit::HandleNULLProc,                                  //215 SPELL_AURA_ARENA_PREPARATION
     &Unit::HandleNULLProc,                                  //216 SPELL_AURA_HASTE_SPELLS
-    &Unit::HandleNULLProc,                                  //217 8 spells in 4.3.4 melee haste related
+    &Unit::HandleNULLProc,                                  //217 SPELL_AURA_MOD_MELEE_HASTE_2
     &Unit::HandleNULLProc,                                  //218 SPELL_AURA_HASTE_RANGED
     &Unit::HandleNULLProc,                                  //219 SPELL_AURA_MOD_MANA_REGEN_FROM_STAT
     &Unit::HandleNULLProc,                                  //220 SPELL_AURA_MOD_RATING_FROM_STAT
@@ -351,8 +351,8 @@ pAuraProcHandler AuraProcHandler[TOTAL_AURAS]=
     &Unit::HandleNULLProc,                                  //316 old SPELL_AURA_MOD_PERIODIC_HASTE 0 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //317 SPELL_AURA_MOD_INCREASE_SPELL_POWER_PCT 13 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //318 SPELL_AURA_MASTERY 12 spells in 4.3
-    &Unit::HandleNULLProc,                                  //319 SPELL_AURA_MOD_MELEE_ATTACK_SPEED 47 spells in 4.3.4
-    &Unit::HandleNULLProc,                                  //320 SPELL_AURA_MOD_RANGED_ATTACK_SPEED 5 spells in 4.3.4
+    &Unit::HandleNULLProc,                                  //319 SPELL_AURA_MOD_MELEE_HASTE_3 47 spells in 4.3.4
+    &Unit::HandleNULLProc,                                  //320 SPELL_AURA_MOD_RANGED_HASTE_2 5 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //321 1 spells in 4.3 Hex
     &Unit::HandleNULLProc,                                  //322 SPELL_AURA_INTERFERE_TARGETING 6 spells in 4.3
     &Unit::HandleNULLProc,                                  //323 0 spells in 4.3.4
@@ -5728,11 +5728,13 @@ SpellAuraProcResult Unit::HandleRemoveByDamageProc(Unit* pVictim, uint32 damage,
 
 SpellAuraProcResult Unit::HandlePeriodicDummyAuraProc(Unit* pVictim, uint32 damage, uint32 absorb, Aura* triggeredByAura, SpellEntry const *procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown)
 {
-    switch (triggeredByAura->GetSpellProto()->GetSpellFamilyName())
+    SpellEntry const* dummySpell = triggeredByAura->GetSpellProto();
+
+    switch (dummySpell->GetSpellFamilyName())
     {
         case SPELLFAMILY_GENERIC:
         {
-            switch (triggeredByAura->GetId())
+            switch (dummySpell->Id)
             {
                 case 66334:                                 // Mistress' Kiss (Trial of the Crusader, ->
                 case 67905:                                 // -> Lord Jaraxxus encounter, all difficulties)
@@ -5742,6 +5744,59 @@ SpellAuraProcResult Unit::HandlePeriodicDummyAuraProc(Unit* pVictim, uint32 dama
                     CastSpell(this, 66359, true, NULL, triggeredByAura);
                     break;
                 }
+            }
+            break;
+        }
+        case SPELLFAMILY_DEATHKNIGHT:
+        {
+            // Reaping
+            // Blood Rites
+            if (dummySpell->SpellIconID == 22 || dummySpell->SpellIconID == 2724)
+            {
+                if (GetTypeId() == TYPEID_PLAYER)
+                {
+                    Player* player = (Player*)this;
+
+                    if (player->getClass() != CLASS_DEATH_KNIGHT)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    uint32 runeMask = player->GetLastUsedRuneMask();
+                    // cant proc only from death runes
+                    if ((runeMask & ~(1 << RUNE_DEATH)) == 0)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    // Reset amplitude - set death rune remove timer to 30s
+                    triggeredByAura->ResetPeriodic(true);
+
+                    uint32 runesLeft;
+
+                    // Blood Strike or Pestilence
+                    if (procSpell->Id == 45902 || procSpell->Id == 50842)
+                        runesLeft = 1;
+                    else
+                        runesLeft = 2;
+
+                    for (uint8 i = 0; i < MAX_RUNES && runesLeft; ++i)
+                    {
+                        RuneType rune = player->GetCurrentRune(i);
+                        if (rune == RUNE_DEATH)
+                            continue;
+
+                        if (player->GetRuneCooldown(i) != player->GetRuneBaseCooldown(i))
+                            continue;
+
+                        if ((runeMask & (1 << rune)) == 0)
+                            continue;
+
+                        --runesLeft;
+                        runeMask &= ~(1 << rune);
+
+                        // Mark aura as used
+                        player->AddRuneByAuraEffect(i, RUNE_DEATH, triggeredByAura);
+                    }
+                    return SPELL_AURA_PROC_OK;
+                }
+                return SPELL_AURA_PROC_FAILED;
             }
             break;
         }
