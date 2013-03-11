@@ -4731,15 +4731,6 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     !((Player*)this)->IsBaseRuneSlotsOnCooldown(RUNE_BLOOD))
                     return SPELL_AURA_PROC_FAILED;
             }
-            // Improved Blood Presence
-            else if (auraSpellInfo->Id == 63611)
-            {
-                if (GetTypeId() != TYPEID_PLAYER || !((Player*)this)->isHonorOrXPTarget(pVictim) || !(damage+absorb))
-                    return SPELL_AURA_PROC_FAILED;
-                // is absorb correct ?
-                basepoints[0] = triggerAmount * (damage+absorb) / 100;
-                trigger_spell_id = 50475;
-            }
             // Glyph of Death's Embrace - proc only on "heal" Coil
             else if (auraSpellInfo->Id == 58677)
             {
