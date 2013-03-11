@@ -12258,7 +12258,7 @@ void Spell::EffectActivateObject(SpellEffectEntry const* effect)
 
 void Spell::EffectApplyGlyph(SpellEffectEntry const* effect)
 {
-    if(m_caster->GetTypeId() != TYPEID_PLAYER)
+    if (m_caster->GetTypeId() != TYPEID_PLAYER || m_glyphIndex >= MAX_GLYPH_SLOT_INDEX)
         return;
 
     Player *player = (Player*)m_caster;
@@ -12285,7 +12285,7 @@ void Spell::EffectApplyGlyph(SpellEffectEntry const* effect)
     }
 
     // apply new one
-    if(uint32 glyph = effect->EffectMiscValue)
+    if (uint32 glyph = effect->EffectMiscValue)
     {
         if(GlyphPropertiesEntry const *gp = sGlyphPropertiesStore.LookupEntry(glyph))
         {
@@ -12304,6 +12304,12 @@ void Spell::EffectApplyGlyph(SpellEffectEntry const* effect)
             player->ApplyGlyph(m_glyphIndex, true);
             player->SendTalentsInfoData(false);
         }
+    }
+    else if (player->GetGlyph(m_glyphIndex))                // Removing the glyph, get the old one
+    {
+        player->ApplyGlyph(m_glyphIndex, false);
+        player->SetGlyph(m_glyphIndex, 0);
+        player->SendTalentsInfoData(false);
     }
 }
 

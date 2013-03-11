@@ -1226,7 +1226,6 @@ enum Opcodes
     SMSG_RESYNC_RUNES                                     = 0x6224, // 4.3.4 15595
     SMSG_ADD_RUNE_POWER                                   = 0x6915, // 4.3.4 15595
     CMSG_START_QUEST                                      = 0x148A,
-    CMSG_REMOVE_GLYPH                                     = 0x148B,
     CMSG_DUMP_OBJECTS                                     = 0x148C,
     SMSG_DUMP_OBJECTS_DATA                                = 0x148D,
     CMSG_DISMISS_CRITTER                                  = 0x148E,
