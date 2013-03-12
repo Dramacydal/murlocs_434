@@ -23615,8 +23615,10 @@ void Player::ResyncRunes()
         data << uint8(GetCurrentRune(i));                   // rune type
         // float casts ensure the division is performed on floats as we need float result
         uint16 baseCd = GetBaseRuneCooldown(i);
-        if (!baseCd)
+        if (!baseCd || !GetRuneCooldown(i))
             data << uint8(255);
+        else if (baseCd == GetRuneCooldown(i))
+            data << uint8(0);
         else
             data << uint8(float(baseCd - GetRuneCooldown(i)) / baseCd * 255); // rune cooldown passed
     }
