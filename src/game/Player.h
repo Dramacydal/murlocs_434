@@ -1699,7 +1699,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         void RegenerateHealth(uint32 diff);
         void setRegenTimer(uint32 time) { m_regenTimer = time; }
         void setWeaponChangeTimer(uint32 time) {m_weaponChangeTimer = time;}
-        void setWeaponChangeTimer(uint32 time) {m_weaponChangeTimer = time;}
 
         uint64 GetMoney() const { return GetUInt64Value(PLAYER_FIELD_COINAGE); }
         void ModifyMoney(int64 d)
