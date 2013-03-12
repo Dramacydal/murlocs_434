@@ -3716,14 +3716,25 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 Player* player = (Player*)this;
 
                 std::vector<uint8> cdRunes(MAX_RUNES);
-                for (uint8 i = 0; i < MAX_RUNES; ++i)
-                    if (player->GetRuneCooldown(i))
-                        cdRunes.push_back(i);
+                for (uint8 i = 0; i < MAX_RUNES; i += 2)
+                {
+                    uint16 cd1 = player->GetRuneCooldown(i);
+                    uint16 cd2 = player->GetRuneCooldown(i + 1);
+                    // Runic Empowerment can only activate a rune if both runes of that type are currently on cooldown.
+                    if (cd1 && cd2)
+                    {
+                        // find fully depleted runes
+                        // do not activate runes that were used by proc spell
+                        if (cd1 == player->GetRuneBaseCooldown(i) && (player->GetLastUsedRuneMask() & (1 << i)) == 0)
+                            cdRunes.push_back(i);
+                        else if (cd2 == player->GetRuneBaseCooldown(i + 1) && (player->GetLastUsedRuneMask() & (1 << (i + 1))) == 0)
+                            cdRunes.push_back(i + 1);
+                    }
+                }
                 if (!cdRunes.empty())
                 {
-                    int i = urand(0, cdRunes.size() - 1);
+                    uint8 i = urand(0, cdRunes.size() - 1);
                     player->SetRuneCooldown(i, 0);
-                    player->ResyncRunes();
                 }
                 return SPELL_AURA_PROC_OK;
             }
