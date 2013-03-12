@@ -3715,7 +3715,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
 
                 Player* player = (Player*)this;
 
-                std::vector<uint8> cdRunes(MAX_RUNES);
+                std::vector<uint8> cdRunes;
                 for (uint8 i = 0; i < MAX_RUNES; i += 2)
                 {
                     uint16 cd1 = player->GetRuneCooldown(i);
@@ -3734,7 +3734,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 if (!cdRunes.empty())
                 {
                     uint8 i = urand(0, cdRunes.size() - 1);
-                    player->SetRuneCooldown(i, 0);
+                    player->SetRuneCooldown(cdRunes[i], 0);
                     player->ResyncRunes();
                 }
                 return SPELL_AURA_PROC_OK;
