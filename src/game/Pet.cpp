@@ -39,6 +39,7 @@ m_declinedname(NULL)
     m_name = "Pet";
     m_regenTimer = REGEN_TIME_FULL;
     m_holyPowerRegenTimer = REGEN_TIME_HOLY_POWER;
+    m_focusRegenTimer = REGEN_TIME_PET_FOCUS;
 
     // pets always have a charminfo, even if they are not actually charmed
     CharmInfo* charmInfo = InitCharmInfo(this);

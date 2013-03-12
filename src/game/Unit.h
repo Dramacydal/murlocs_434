@@ -1180,8 +1180,9 @@ enum IgnoreUnitState
 
 // Regeneration defines
 #define REGEN_TIME_FULL         2000                        // This determines how often regen value is computed
-#define REGEN_TIME_PRECISE      500                         // Used in Spell::CheckPower for precise regeneration in spell cast time
 #define REGEN_TIME_HOLY_POWER   10000                       // This determines how often holy power regen is processed
+#define REGEN_TIME_PET_FOCUS    2000
+#define REGEN_TIME_PLAYER_FOCUS 1000
 
 struct SpellProcEventEntry;                                 // used only privately
 
@@ -2151,7 +2152,9 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 
         uint32 m_reactiveTimer[MAX_REACTIVE];
         uint32 m_regenTimer;
+        uint32 m_focusRegenTimer;
         uint32 m_holyPowerRegenTimer;
+        float m_powerFraction[MAX_STORED_POWERS];
 
         // Transports
         Transport* m_transport;

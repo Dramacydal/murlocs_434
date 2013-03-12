@@ -8001,15 +8001,6 @@ SpellCastResult Spell::CheckPower()
     if (m_CastItem)
         return SPELL_CAST_OK;
 
-    // Do precise power regen on spell cast
-    if (m_powerCost > 0 && m_caster->GetTypeId() == TYPEID_PLAYER && m_spellInfo->powerType != POWER_RUNE)
-    {
-        Player* playerCaster = (Player*)m_caster;
-        int32 diff = REGEN_TIME_FULL - m_caster->GetRegenTimer();
-        if (diff >= REGEN_TIME_PRECISE)
-            playerCaster->RegenerateAll(diff);
-    }
-
     // health as power used - need check health amount
     if (m_spellInfo->powerType == POWER_HEALTH)
     {

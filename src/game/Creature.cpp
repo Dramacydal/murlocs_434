@@ -173,6 +173,7 @@ m_creatureInfo(NULL)
 {
     m_regenTimer = 200;
     m_holyPowerRegenTimer = REGEN_TIME_HOLY_POWER;
+    m_focusRegenTimer = REGEN_TIME_PET_FOCUS;
     m_valuesCount = UNIT_END;
     m_valuesCount_335 = UNIT_END_335;
 
