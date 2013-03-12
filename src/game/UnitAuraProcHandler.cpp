@@ -3735,6 +3735,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 {
                     uint8 i = urand(0, cdRunes.size() - 1);
                     player->SetRuneCooldown(i, 0);
+                    player->ResyncRunes();
                 }
                 return SPELL_AURA_PROC_OK;
             }
