@@ -422,7 +422,8 @@ class Spell
         SpellCastResult CheckItems();
         SpellCastResult CheckRange(bool strict);
         SpellCastResult CheckPower();
-        SpellCastResult CheckOrTakeRunePower(bool take, bool hit = false);
+        SpellCastResult CheckRunePower();
+        void TakeRunePower(bool hit);
         SpellCastResult CheckCasterAuras() const;
 
         int32 CalculateDamage(SpellEffectIndex i, Unit* target) { return m_caster->CalculateSpellDamage(target, m_spellInfo, i, &m_currentBasePoints[i]); }

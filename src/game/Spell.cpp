@@ -5594,14 +5594,14 @@ void Spell::TakePower()
 
     if (powerType == POWER_RUNE)
     {
-        CheckOrTakeRunePower(true, hit);
+        TakeRunePower(hit);
         return;
     }
 
     m_caster->ModifyPower(powerType, -(int32)m_powerCost);
 }
 
-SpellCastResult Spell::CheckOrTakeRunePower(bool take, bool hit)
+SpellCastResult Spell::CheckRunePower()
 {
     if (m_caster->GetTypeId() != TYPEID_PLAYER)
         return SPELL_CAST_OK;
@@ -5616,11 +5616,56 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take, bool hit)
     if (!src)
         return SPELL_CAST_OK;
 
-    if (src->NoRuneCost() && (!take || src->NoRunicPowerGain()))
+    if (src->NoRuneCost())
         return SPELL_CAST_OK;
 
-    if (take)
-        m_runesState = plr->GetRunesState();                // store previous state
+    // at this moment for rune cost exist only no cost mods, and no percent mods
+    int32 runeCost[NUM_RUNE_TYPES];                         // blood, frost, unholy, death
+    for (uint32 i = 0; i < RUNE_DEATH; ++i)
+    {
+        runeCost[i] = src->RuneCost[i];
+        if (Player* modOwner = m_caster->GetSpellModOwner())
+            modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_COST, runeCost[i], this);
+    }
+
+    runeCost[RUNE_DEATH] = MAX_RUNES;                       // calculated later
+
+    for (uint32 i = 0; i < MAX_RUNES; ++i)
+    {
+        RuneType rune = plr->GetCurrentRune(i);
+        if (!plr->GetRuneCooldown(i) && runeCost[rune] > 0)
+            --runeCost[rune];
+    }
+
+    for (uint32 i = 0; i < RUNE_DEATH; ++i)
+        if (runeCost[i] > 0)
+            runeCost[RUNE_DEATH] += runeCost[i];
+
+    if (runeCost[RUNE_DEATH] > MAX_RUNES)
+        return SPELL_FAILED_NO_POWER;                       // not sure if result code is correct
+
+    return SPELL_CAST_OK;
+}
+
+void Spell::TakeRunePower(bool hit)
+{
+    if (m_caster->GetTypeId() != TYPEID_PLAYER)
+        return;
+
+    Player* plr = (Player*)m_caster;
+
+    if (plr->getClass() != CLASS_DEATH_KNIGHT)
+        return;
+
+    SpellRuneCostEntry const* src = sSpellRuneCostStore.LookupEntry(m_spellInfo->runeCostID);
+
+    if (!src)
+        return;
+
+    if (src->NoRuneCost() && src->NoRunicPowerGain())
+        return;
+
+    m_runesState = plr->GetRunesState();                    // store previous state
 
     // at this moment for rune cost exist only no cost mods, and no percent mods
     int32 runeCost[NUM_RUNE_TYPES];                         // blood, frost, unholy, death
@@ -5633,19 +5678,15 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take, bool hit)
 
     runeCost[RUNE_DEATH] = 0;                               // calculated later
 
-    if (take)
-        plr->ClearLastUsedRuneMask();
+    plr->ClearLastUsedRuneMask();
 
     for (uint32 i = 0; i < MAX_RUNES; ++i)
     {
         RuneType rune = plr->GetCurrentRune(i);
         if (!plr->GetRuneCooldown(i) && runeCost[rune] > 0)
         {
-            if (take)
-            {
-                plr->SetRuneCooldown(i, hit ? plr->GetRuneBaseCooldown(i) : uint32(RUNE_MISS_COOLDOWN));
-                plr->SetLastUsedRune(rune);
-            }
+            plr->SetRuneCooldown(i, hit ? plr->GetRuneBaseCooldown(i) : uint32(RUNE_MISS_COOLDOWN));
+            plr->SetLastUsedRune(rune);
             --runeCost[rune];
         }
     }
@@ -5659,16 +5700,12 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take, bool hit)
             RuneType rune = plr->GetCurrentRune(i);
             if (!plr->GetRuneCooldown(i) && rune == RUNE_DEATH)
             {
-                if (take)
-                {
-                    plr->SetRuneCooldown(i, hit ? plr->GetRuneBaseCooldown(i) : uint32(RUNE_MISS_COOLDOWN));
-                    plr->SetLastUsedRune(rune);
-                }
-
+                plr->SetRuneCooldown(i, hit ? plr->GetRuneBaseCooldown(i) : uint32(RUNE_MISS_COOLDOWN));
+                plr->SetLastUsedRune(rune);
                 --runeCost[rune];
 
                 // keep Death Rune type if missed
-                if (take && hit)
+                if (hit)
                     plr->RestoreBaseRune(i);
 
                 if (runeCost[RUNE_DEATH] == 0)
@@ -5677,10 +5714,7 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take, bool hit)
         }
     }
 
-    if (!take && runeCost[RUNE_DEATH] > 0)
-        return SPELL_FAILED_NO_POWER;
-
-    if (take && hit)
+    if (hit)
     {
         // you can gain some runic power when use runes
         float rp = float(src->runePowerGain);
@@ -5689,7 +5723,7 @@ SpellCastResult Spell::CheckOrTakeRunePower(bool take, bool hit)
         plr->ModifyPower(POWER_RUNIC_POWER, (int32)rp);
     }
 
-    return SPELL_CAST_OK;
+    return;
 }
 
 void Spell::TakeReagents()
@@ -7994,7 +8028,7 @@ SpellCastResult Spell::CheckPower()
     //check rune cost only if a spell has PowerType == POWER_RUNE
     if (m_spellInfo->powerType == POWER_RUNE)
     {
-        SpellCastResult failReason = CheckOrTakeRunePower(false);
+        SpellCastResult failReason = CheckRunePower();
         if (failReason != SPELL_CAST_OK)
             return failReason;
     }
