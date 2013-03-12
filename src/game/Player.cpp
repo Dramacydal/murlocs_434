@@ -23513,7 +23513,7 @@ void Player::SetTitle(CharTitlesEntry const* title, bool lost)
     GetSession()->SendPacket(&data);
 }
 
-uint16 Player::GetRuneTypeBaseCooldown(RuneType runeType) const
+uint16 Player::CalculateRuneTypeBaseCooldown(RuneType runeType) const
 {
     float cooldown = RUNE_BASE_COOLDOWN;
     float hastePct = 0.0f;
@@ -23614,8 +23614,11 @@ void Player::ResyncRunes()
     {
         data << uint8(GetCurrentRune(i));                   // rune type
         // float casts ensure the division is performed on floats as we need float result
-        float baseCd = float(GetRuneBaseCooldown(i));
-        data << uint8((baseCd - float(GetRuneCooldown(i))) / baseCd * 255); // rune cooldown passed
+        uint16 baseCd = GetBaseRuneCooldown(i);
+        if (!baseCd)
+            data << uint8(255);
+        else
+            data << uint8(float(baseCd - GetRuneCooldown(i)) / baseCd * 255); // rune cooldown passed
     }
     GetSession()->SendPacket(&data);
 }
@@ -23652,6 +23655,7 @@ void Player::InitRunes()
         SetCurrentRune(i, runeSlotTypes[i]);                // init current types
         SetRuneCooldown(i, 0);                              // reset cooldowns
         SetRuneConvertAura(i, NULL);
+        SetBaseRuneCooldown(i, 0);
         m_runes->SetRuneState(i);
     }
 

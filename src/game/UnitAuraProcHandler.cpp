@@ -3725,9 +3725,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     {
                         // find fully depleted runes
                         // do not activate runes that were used by proc spell
-                        if (cd1 == player->GetRuneBaseCooldown(i) && (player->GetLastUsedRuneMask() & (1 << i)) == 0)
+                        if (cd1 == player->GetBaseRuneCooldown(i) && !player->IsLastUsedRune(i))
                             cdRunes.push_back(i);
-                        else if (cd2 == player->GetRuneBaseCooldown(i + 1) && (player->GetLastUsedRuneMask() & (1 << (i + 1))) == 0)
+                        else if (cd2 == player->GetBaseRuneCooldown(i + 1) && !player->IsLastUsedRune(i))
                             cdRunes.push_back(i + 1);
                     }
                 }
@@ -5794,7 +5794,7 @@ SpellAuraProcResult Unit::HandlePeriodicDummyAuraProc(Unit* pVictim, uint32 dama
                         if (rune == RUNE_DEATH)
                             continue;
 
-                        if (player->GetRuneCooldown(i) != player->GetRuneBaseCooldown(i))
+                        if (player->GetRuneCooldown(i) != player->GetBaseRuneCooldown(i))
                             continue;
 
                         if ((runeMask & (1 << rune)) == 0)

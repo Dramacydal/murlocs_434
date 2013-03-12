@@ -4920,9 +4920,11 @@ void Spell::SendSpellStart()
             data << uint8(caster->GetRunesState());
             for (uint8 i = 0; i < MAX_RUNES; ++i)
             {
-                // float casts ensure the division is performed on floats as we need float result
-                float baseCd = float(caster->GetRuneBaseCooldown(i));
-                data << uint8((baseCd - float(caster->GetRuneCooldown(i))) / baseCd * 255); // rune cooldown passed
+                uint16 baseCd = caster->GetBaseRuneCooldown(i);
+                if (!baseCd)
+                    data << uint8(255);
+                else
+                    data << uint8(float(baseCd - caster->GetRuneCooldown(i)) / baseCd * 255); // rune cooldown passed
             }
         }
         else
@@ -5016,10 +5018,13 @@ void Spell::SendSpellGo()
             data << uint8(m_runesState);
             data << uint8(caster->GetRunesState());
             for (uint8 i = 0; i < MAX_RUNES; ++i)
-            // float casts ensure the division is performed on floats as we need float result
             {
-                float baseCd = float(caster->GetRuneBaseCooldown(i));
-                data << uint8((baseCd - float(caster->GetRuneCooldown(i))) / baseCd * 255); // rune cooldown passed
+                // float casts ensure the division is performed on floats as we need float result
+                uint16 baseCd = caster->GetBaseRuneCooldown(i);
+                if (!baseCd)
+                    data << uint8(255);
+                else
+                    data << uint8(float(baseCd - caster->GetRuneCooldown(i)) / baseCd * 255); // rune cooldown passed
             }
         }
         else
@@ -5685,7 +5690,9 @@ void Spell::TakeRunePower(bool hit)
         RuneType rune = plr->GetCurrentRune(i);
         if (!plr->GetRuneCooldown(i) && runeCost[rune] > 0)
         {
-            plr->SetRuneCooldown(i, hit ? plr->GetRuneBaseCooldown(i) : uint32(RUNE_MISS_COOLDOWN));
+            uint16 baseCd = hit ? plr->CalculateRuneBaseCooldown(i) : uint16(RUNE_MISS_COOLDOWN);
+            plr->SetBaseRuneCooldown(i, baseCd);
+            plr->SetRuneCooldown(i, baseCd);
             plr->SetLastUsedRune(rune);
             --runeCost[rune];
         }
@@ -5700,7 +5707,9 @@ void Spell::TakeRunePower(bool hit)
             RuneType rune = plr->GetCurrentRune(i);
             if (!plr->GetRuneCooldown(i) && rune == RUNE_DEATH)
             {
-                plr->SetRuneCooldown(i, hit ? plr->GetRuneBaseCooldown(i) : uint32(RUNE_MISS_COOLDOWN));
+                uint16 baseCd = hit ? plr->CalculateRuneBaseCooldown(i) : uint16(RUNE_MISS_COOLDOWN);
+                plr->SetBaseRuneCooldown(i, baseCd);
+                plr->SetRuneCooldown(i, baseCd);
                 plr->SetLastUsedRune(rune);
                 --runeCost[rune];
 

@@ -449,6 +449,7 @@ struct RuneInfo
 {
     uint8  BaseRune;
     uint8  CurrentRune;
+    uint16 BaseCooldown;
     uint16 Cooldown;                                        // msec
     Aura const* ConvertAura;
 };
@@ -2595,15 +2596,18 @@ class MANGOS_DLL_SPEC Player : public Unit
         RuneType GetBaseRune(uint8 index) const { return RuneType(m_runes->runes[index].BaseRune); }
         RuneType GetCurrentRune(uint8 index) const { return RuneType(m_runes->runes[index].CurrentRune); }
         uint16 GetRuneCooldown(uint8 index) const { return m_runes->runes[index].Cooldown; }
-        uint16 GetRuneBaseCooldown(uint8 index) const { return GetRuneTypeBaseCooldown(GetBaseRune(index)); }
-        uint16 GetRuneTypeBaseCooldown(RuneType runeType) const;
+        uint16 GetBaseRuneCooldown(uint8 index) const { return m_runes->runes[index].BaseCooldown; }
+        uint16 CalculateRuneBaseCooldown(uint8 index) const { return CalculateRuneTypeBaseCooldown(GetBaseRune(index)); }
+        uint16 CalculateRuneTypeBaseCooldown(RuneType runeType) const;
         bool IsBaseRuneSlotsOnCooldown(RuneType runeType) const;
         void ClearLastUsedRuneMask() { m_runes->lastUsedRuneMask = 0; }
-        uint32 GetLastUsedRuneMask() { return m_runes->lastUsedRuneMask; }
+        uint32 GetLastUsedRuneMask() const { return m_runes->lastUsedRuneMask; }
+        bool IsLastUsedRune(uint8 index) const { return m_runes->lastUsedRuneMask & (1 << index); }
         void SetLastUsedRune(RuneType type);
         void SetBaseRune(uint8 index, RuneType baseRune) { m_runes->runes[index].BaseRune = baseRune; }
         void SetCurrentRune(uint8 index, RuneType currentRune) { m_runes->runes[index].CurrentRune = currentRune; }
         void SetRuneCooldown(uint8 index, uint16 cooldown);
+        void SetBaseRuneCooldown(uint8 index, uint16 cooldown) { m_runes->runes[index].BaseCooldown = cooldown; }
         void SetRuneConvertAura(uint8 index, Aura const* aura);
         void AddRuneByAuraEffect(uint8 index, RuneType newType, Aura const* aura);
         void RemoveRunesByAuraEffect(Aura const* aura);
