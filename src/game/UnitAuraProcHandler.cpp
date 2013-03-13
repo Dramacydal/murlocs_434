@@ -3582,7 +3582,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     runeBlade->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     int32 procDmg = int32((damage+absorb) * 0.5f);
                     runeBlade->CastCustomSpell(pVictim, procSpell->Id, &procDmg, NULL, NULL, true, NULL, NULL, runeBlade->GetObjectGuid());
-                    SendSpellNonMeleeDamageLog(pVictim, procSpell->Id, procDmg, SPELL_SCHOOL_MASK_NORMAL, 0, 0, false, 0, false);
+                    //SendSpellNonMeleeDamageLog(pVictim, procSpell->Id, procDmg, SPELL_SCHOOL_MASK_NORMAL, 0, 0, false, 0, false);
                     break;
                 }
                 else
@@ -4745,6 +4745,17 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     default:
                         return SPELL_AURA_PROC_FAILED;
                 }
+            }
+            // Crimson Scourge
+            else if (auraSpellInfo->SpellIconID ==  2725)
+            {
+                if (!pVictim || pVictim == this)
+                    return SPELL_AURA_PROC_FAILED;
+
+                // check Blood Plague present
+                if (!pVictim->HasAura(55078))
+                    return SPELL_AURA_PROC_FAILED;
+                break;
             }
             // Glyph of Death's Embrace - proc only on "heal" Coil
             else if (auraSpellInfo->Id == 58677)
