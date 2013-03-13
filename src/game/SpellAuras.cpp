@@ -6681,6 +6681,13 @@ void Aura::HandleDamagePercentTaken(bool apply, bool Real)
             target->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
             target->RemoveSpellsCausingAura(SPELL_AURA_MOD_INVISIBILITY);
         }
+        // Will of the Necropolis
+        else if (GetId() == 81162)
+        {
+            if (target->GetTypeId() == TYPEID_PLAYER)
+                ((Player*)target)->RemoveSpellCooldown(48982, true);
+            target->CastSpell(target, 96171, true);
+        }
     }
 }
 
