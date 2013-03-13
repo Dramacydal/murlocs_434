@@ -2892,7 +2892,7 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
                     RemainingDamage -= absorbed;
                     continue;
                 }
-                // Anti-Magic Shell (on single party/raid member)
+                // Anti-Magic Zone (on single party/raid member)
                 if (spellProto->Id == 50462)
                 {
                     RemainingDamage -= RemainingDamage * currentAbsorb / 100;
