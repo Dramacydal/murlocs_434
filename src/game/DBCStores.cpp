@@ -1467,12 +1467,6 @@ void LoadDBCStores(const std::string& dataPath)
             }
          }
 
-        //megai2: set 8 sec update to dk death rune auras
-        if (spell->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && (spell->IsFitToFamilyMask(UI64LIT(0x4000)) || spell->SpellIconID == 22 || spell->SpellIconID == 3041))
-            if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
-                if (eff->EffectApplyAuraName == SPELL_AURA_PERIODIC_DUMMY)
-                    eff->EffectAmplitude = 8 * IN_MILLISECONDS;
-
         // Lightwell, enable healing spd scale
         if (spell->IsFitToFamily(SPELLFAMILY_PRIEST, UI64LIT(0x0), 0x4000))
             if (SpellCategoriesEntry* cat = (SpellCategoriesEntry*)spell->GetSpellCategories())

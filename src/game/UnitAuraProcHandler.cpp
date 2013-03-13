@@ -4736,18 +4736,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                         return SPELL_AURA_PROC_FAILED;
                 }
             }
-            // Blade Barrier
-            else if (auraSpellInfo->SpellIconID == 85)
-            {
-                if (GetTypeId() != TYPEID_PLAYER || getClass() != CLASS_DEATH_KNIGHT ||
-                    !((Player*)this)->IsBaseRuneSlotsOnCooldown(RUNE_BLOOD))
-                    return SPELL_AURA_PROC_FAILED;
-            }
             // Glyph of Death's Embrace - proc only on "heal" Coil
             else if (auraSpellInfo->Id == 58677)
             {
-                if (procSpell && procSpell->Id != 47633)
+                if (!procSpell || procSpell->Id != 47633)
                     return SPELL_AURA_PROC_FAILED;
+                break;
             }
             // Glyph of Death Grip
             if (auraSpellInfo->Id == 62259)

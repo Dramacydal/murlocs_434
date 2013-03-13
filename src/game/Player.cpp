@@ -2537,10 +2537,6 @@ void Player::Regenerate(Powers power, uint32 diff)
         for(AuraList::const_iterator i = ModPowerRegenPCTAuras.begin(); i != ModPowerRegenPCTAuras.end(); ++i)
             if ((*i)->GetModifier()->m_miscvalue == power)
                 addvalue *= ((*i)->GetModifier()->m_amount + 100) / 100.0f;
-
-        // Butchery requires combat for this effect
-        if (power != POWER_RUNIC_POWER || isInCombat())
-            addvalue += GetTotalAuraModifierByMiscValue(SPELL_AURA_MOD_POWER_REGEN, power) * ((power != POWER_ENERGY) ? m_regenTimer : diff) / (5 * IN_MILLISECONDS);
     }
 
     if (addvalue < 0.0f)
