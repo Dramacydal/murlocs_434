@@ -595,6 +595,11 @@ Unit::Unit() :
     m_comboPoints = 0;
 
     m_lastSanctuaryTime = 0;
+
+    m_damage_counter_timer = 1 * IN_MILLISECONDS;
+
+    for (int i = 0; i < MAX_DAMAGE_COUNTERS; ++i)
+        m_damage_counters[i].push_front(0);
 }
 
 Unit::~Unit()
@@ -631,6 +636,20 @@ void Unit::Update( uint32 update_diff, uint32 p_time )
     _UpdateAura();
     }else
     m_AurasCheck -= p_time;*/
+
+    if (m_damage_counter_timer <= update_diff)
+    {
+        for (int i = 0; i < MAX_DAMAGE_COUNTERS; ++i)
+        {
+            m_damage_counters[i].push_front(0);
+            while (m_damage_counters[i].size() > MAX_DAMAGE_LOG_SECS)
+                m_damage_counters[i].pop_back;
+        }
+
+        m_damage_counter_timer = 1 * IN_MILLISECONDS;
+    }
+    else
+        m_damage_counter_timer -= update_diff;
 
     // WARNING! Order of execution here is important, do not change.
     // Spells must be processed with event system BEFORE they go to _UpdateSpells.
@@ -1086,7 +1105,13 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 
     if (spellProto && (spellProto->Id == 69649 || (spellProto->Id >= 71056 && spellProto->Id <= 71058) || (spellProto->Id >= 73061 && spellProto->Id <= 73064)) && (health <= damage))  
         damage = health - 10;//megai2: leave 10 hp xD
- 
+
+    if (damagetype == DIRECT_DAMAGE || damagetype == SPELL_DIRECT_DAMAGE)
+    {
+        m_damage_counters[DAMAGE_DONE_COUNTER][0] += health >= damage ? damage : health;
+        pVictim->m_damage_counters[DAMAGE_TAKEN_COUNTER][0] += health >= damage ? damage : health;
+    }
+
     if (health <= damage)
     {
         DEBUG_FILTER_LOG(LOG_FILTER_DAMAGE, "DealDamage %s Killed %s", GetGuidStr().c_str(), pVictim->GetGuidStr().c_str());
@@ -7083,6 +7108,9 @@ int32 Unit::DealHeal(Unit* pVictim, uint32 addhealth, SpellEntry const* spellPro
     int32 gain = pVictim->ModifyHealth(int32(addhealth));
     int32 overheal = int32(addhealth) - gain;
     Unit* unit = this;
+
+    if (gain)
+        m_damage_counters[HEALING_DONE_COUNTER][0] += gain;
 
     if (GetTypeId()==TYPEID_UNIT && ((Creature*)this)->IsTotem() && ((Totem*)this)->GetTotemType() != TOTEM_STATUE)
         unit = GetOwner();
@@ -14185,3 +14213,43 @@ bool Unit::IsVisionObscured(Unit* target) const
 
     return false;
 }
+
+uint32 Unit::GetHealingDoneInPastSecs (uint32 secs)
+{
+    uint32 heal = 0;
+
+    if (secs > MAX_DAMAGE_LOG_SECS)
+        secs = MAX_DAMAGE_LOG_SECS;
+
+    for (uint32 i = 0; i < secs && i < m_heal_done.size(); ++i)
+        heal += m_heal_done[i];
+
+    return heal;
+}
+
+uint32 Unit::GetDamageDoneInPastSecs (uint32 secs)
+{
+    uint32 damage = 0;
+
+    if (secs > MAX_DAMAGE_LOG_SECS)
+        secs = MAX_DAMAGE_LOG_SECS;
+
+    for (uint32 i = 0; i < secs && i < m_damage_done.size(); ++i)
+        damage += m_damage_done[i];
+
+    return damage;
+}
+
+uint32 Unit::GetDamageTakenInPastSecs (uint32 secs)
+{
+    uint32 tdamage = 0;
+
+    if (secs > MAX_DAMAGE_LOG_SECS)
+        secs = MAX_DAMAGE_LOG_SECS;
+
+    for (uint32 i = 0; i < secs && i < m_damage_taken.size(); ++i)
+        tdamage += m_damage_taken[i];
+
+    return tdamage;
+}
+

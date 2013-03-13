@@ -1184,6 +1184,16 @@ enum IgnoreUnitState
 #define REGEN_TIME_PET_FOCUS    2000
 #define REGEN_TIME_PLAYER_FOCUS 1000
 
+#define MAX_DAMAGE_LOG_SECS     120
+
+enum
+{
+    DAMAGE_DONE_COUNTER     = 0,
+    DAMAGE_TAKEN_COUNTER    = 1,
+    HEALING_DONE_COUNTER    = 2,
+    MAX_DAMAGE_COUNTERS     = 3,
+};
+
 struct SpellProcEventEntry;                                 // used only privately
 
 class MANGOS_DLL_SPEC Unit : public WorldObject
@@ -2103,6 +2113,12 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void BuildMoveSetCanFlyPacket(WorldPacket* data, bool apply, uint32 value);
         void BuildMoveFeatherFallPacket(WorldPacket* data, bool apply, uint32 value);
         void BuildMoveGravityPacket(WorldPacket* data, bool apply, uint32 value);
+
+        std::deque<uint32> m_damage_counters[MAX_DAMAGE_COUNTERS];
+        int32 m_damage_counter_timer;
+        uint32 GetHealingDoneInPastSecs (uint32 secs);
+        uint32 GetDamageDoneInPastSecs (uint32 secs);
+        uint32 GetDamageTakenInPastSecs (uint32 secs);
 
     protected:
         explicit Unit ();
