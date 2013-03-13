@@ -1581,8 +1581,11 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 58374;
                 break;
             }
-            // Vengeance
+            // Vengeance (warrior)
             else if (dummySpell->Id == 93098)
+                return HandleVengeanceProc(pVictim, damage, triggerAmount);
+            // Vengeance (death knight)
+            else if (dummySpell->Id == 93099)
                 return HandleVengeanceProc(pVictim, damage, triggerAmount);
             break;
         }
@@ -2667,7 +2670,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 basepoints[1] = int32(GetAttackTime(BASE_ATTACK) * (ap * 0.005f + 0.01f * holy) / 1000);
                 break;
             }
-            // Vengeance
+            // Vengeance (paladin)
             else if (dummySpell->Id == 84839)
                 return HandleVengeanceProc(pVictim, damage, triggerAmount);
 
