@@ -2118,6 +2118,9 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         int32 m_damage_counter_timer;
         uint32 GetDamageCounterInPastSecs(uint32 secs, int type);
 
+        // haxx here
+        time_t m_boneShieldCooldown;
+
     protected:
         explicit Unit ();
 
