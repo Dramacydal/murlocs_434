@@ -9911,6 +9911,9 @@ void Aura::PeriodicDummyTick()
                     if (target->IsInCombat())
                         return;
 
+                    if (target->GetDamageCounterInPastSecs(2, DAMAGE_TAKEN_COUNTER))
+                        return;
+
                     int32 bp0 = 0, bp1 = 0, bp2 = GetModifier()->m_amount;
                     SpellAuraHolder* holder = GetHolder();
                     if (!holder)
