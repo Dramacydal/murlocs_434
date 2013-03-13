@@ -14214,42 +14214,15 @@ bool Unit::IsVisionObscured(Unit* target) const
     return false;
 }
 
-uint32 Unit::GetHealingDoneInPastSecs (uint32 secs)
+uint32 Unit::GetDamageCounterInPastSecs(uint32 secs, int type)
 {
-    uint32 heal = 0;
+    if (type >= MAX_DAMAGE_COUNTERS)
+        return 0;
 
-    if (secs > MAX_DAMAGE_LOG_SECS)
-        secs = MAX_DAMAGE_LOG_SECS;
-
-    for (uint32 i = 0; i < secs && i < m_heal_done.size(); ++i)
-        heal += m_heal_done[i];
-
-    return heal;
-}
-
-uint32 Unit::GetDamageDoneInPastSecs (uint32 secs)
-{
     uint32 damage = 0;
 
-    if (secs > MAX_DAMAGE_LOG_SECS)
-        secs = MAX_DAMAGE_LOG_SECS;
-
-    for (uint32 i = 0; i < secs && i < m_damage_done.size(); ++i)
-        damage += m_damage_done[i];
+    for (uint32 i = 0; i < secs && i < m_damage_counters[type].size(); ++i)
+        damage += m_damage_counters[type][i];
 
     return damage;
 }
-
-uint32 Unit::GetDamageTakenInPastSecs (uint32 secs)
-{
-    uint32 tdamage = 0;
-
-    if (secs > MAX_DAMAGE_LOG_SECS)
-        secs = MAX_DAMAGE_LOG_SECS;
-
-    for (uint32 i = 0; i < secs && i < m_damage_taken.size(); ++i)
-        tdamage += m_damage_taken[i];
-
-    return tdamage;
-}
-

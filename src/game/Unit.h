@@ -2116,9 +2116,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 
         std::deque<uint32> m_damage_counters[MAX_DAMAGE_COUNTERS];
         int32 m_damage_counter_timer;
-        uint32 GetHealingDoneInPastSecs (uint32 secs);
-        uint32 GetDamageDoneInPastSecs (uint32 secs);
-        uint32 GetDamageTakenInPastSecs (uint32 secs);
+        uint32 GetDamageCounterInPastSecs(uint32 secs, int type);
 
     protected:
         explicit Unit ();
