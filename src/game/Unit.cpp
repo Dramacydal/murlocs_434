@@ -643,7 +643,7 @@ void Unit::Update( uint32 update_diff, uint32 p_time )
         {
             m_damage_counters[i].push_front(0);
             while (m_damage_counters[i].size() > MAX_DAMAGE_LOG_SECS)
-                m_damage_counters[i].pop_back;
+                m_damage_counters[i].pop_back();
         }
 
         m_damage_counter_timer = 1 * IN_MILLISECONDS;
