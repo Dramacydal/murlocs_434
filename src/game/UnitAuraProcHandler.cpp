@@ -4760,7 +4760,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Might of the Frozen Wastes
             else if (auraSpellInfo->SpellIconID == 4444)
             {
-                if (!haveOffhandWeapon())
+                if (haveOffhandWeapon())
                     return SPELL_AURA_PROC_FAILED;
                 break;
             }
