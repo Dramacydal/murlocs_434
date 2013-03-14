@@ -5115,25 +5115,6 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 }
                 return;
             }
-            // Obliterate
-            else if (dkClassOptions && dkClassOptions->SpellFamilyFlags & UI64LIT(0x0002000000000000))
-            {
-                // search for Annihilation
-                Unit::AuraList const& dummyList = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
-                for (Unit::AuraList::const_iterator itr = dummyList.begin(); itr != dummyList.end(); ++itr)
-                {
-                    if ((*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && (*itr)->GetSpellProto()->SpellIconID == 2710)
-                    {
-                        if (roll_chance_i((*itr)->GetModifier()->m_amount)) // don't consume if found
-                            return;
-                        else
-                            break;
-                    }
-                }
-
-                // consume diseases
-                unitTarget->RemoveAurasWithDispelType(DISPEL_DISEASE, m_caster->GetObjectGuid());
-            }
             // Corpse Explosion. Execute for Effect1 only
             else if (m_spellInfo->SpellIconID == 1737 && SpellEffectIndex(effect->EffectIndex) == EFFECT_INDEX_1)
             {
@@ -8562,7 +8543,23 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
                 // Heart Strike secondary target
                 if (m_spellInfo->SpellIconID == 3145)
                     if (m_targets.getUnitTarget() != unitTarget)
-                        weaponDamagePercentMod /= 2.0f;
+                    {
+                        int8 mod = 0;
+                        for (TargetList::const_iterator itr = m_UniqueTargetInfo.begin(); itr != m_UniqueTargetInfo.end(); ++itr)
+                        {
+                            if ((itr->effectMask & (1 << effect->EffectIndex)) == 0)
+                                continue;
+
+                            if (itr->targetGUID == unitTarget->GetObjectGuid())
+                            {
+                                mod += 1;
+                                break;
+                            }
+                        }
+
+                        while (mod--)
+                            weaponDamagePercentMod *= 0.75f ;
+                    }
             }
             // Rune Strike
             if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x2000000000000000))
