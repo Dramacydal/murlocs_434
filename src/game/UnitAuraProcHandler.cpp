@@ -3766,15 +3766,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // triggered_spell_id in spell data
                 break;
             }
-            // Hungering Cold (51209 only)
-            if (dummySpell->SpellIconID == 2797)
-            {
-                // Damage from diseases does not break the freeze effect
-                if (procSpell && (GetAllSpellMechanicMask(procSpell) & (1 << (MECHANIC_INFECTED-1))))
-                    return SPELL_AURA_PROC_FAILED;
-
-                break;
-            }
             // Sudden Doom
             if (dummySpell->SpellIconID == 1939)
             {
@@ -5731,7 +5722,7 @@ SpellAuraProcResult Unit::HandleRemoveByDamageProc(Unit* pVictim, uint32 damage,
         return SPELL_AURA_PROC_FAILED;
 
     // Hungering Cold
-    if (triggeredByAura->GetId() == 51209)
+    if (triggeredByAura->GetId() == 49203)
     {
         // Damage from diseases does not break the freeze effect
         if (procSpell && (GetAllSpellMechanicMask(procSpell) & (1 << (MECHANIC_INFECTED-1))))

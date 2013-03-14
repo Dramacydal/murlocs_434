@@ -10504,8 +10504,8 @@ int32 Unit::CalculateSpellDamage(Unit const* target, SpellEntry const* spellProt
                     break;
             }
 
-            // Wywern Sting
-            if (spellProto->Id == 51209 || spellProto->IsFitToFamily(SPELLFAMILY_HUNTER, UI64LIT(0x100000000000)))
+            // Hungering Cold and Wywern Sting
+            if (spellProto->Id == 49203 || spellProto->IsFitToFamily(SPELLFAMILY_HUNTER, UI64LIT(0x100000000000)))
                 return 1;
 
             int32 amount;
