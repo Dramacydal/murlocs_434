@@ -12234,6 +12234,19 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     return;
                 }
                 case 49039: spellId1 = 50397; break;        // Lichborne
+                // Pillar of Frost
+                case 51271:
+                {
+                    if (apply)
+                    {
+                        // Glyph of Pillar of Frost
+                        if (m_target->HasAura(58635))
+                            spellId1 = 90259;
+                    }
+                    else 
+                        spellId1 = 90259;
+                    break;
+                }
                 case 55078:                                 // Blood Plague
                 case 55095:                                 // Frost Fever
                 {
