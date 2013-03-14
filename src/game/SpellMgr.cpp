@@ -2897,6 +2897,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 // Anti-Magic Shell and Magic Suppression
                 if (spellInfo_1->SpellIconID == 99 && spellInfo_2->SpellIconID == 99)
                     return false;
+
+                // Chains of Ice and Chilblains
+                if (spellInfo_1->SpellIconID == 180 && spellInfo_2->SpellIconID == 180)
+                    return false;
             }
             break;
         default:

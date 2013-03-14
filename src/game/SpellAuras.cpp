@@ -2856,6 +2856,27 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 }
                 break;
             }
+            case SPELLFAMILY_DEATHKNIGHT:
+            {
+                switch (GetId())
+                {
+                    // Chains of Ice
+                    case 45524:
+                    {
+                        if (Unit* caster = GetCaster())
+                        {
+                            // Chilblains (Rank 1)
+                            if (caster->HasAura(50040))
+                                caster->CastSpell(target, 96293, true);
+                            // Chilblains (Rank 2)
+                            else if (caster->HasAura(50041))
+                                caster->CastSpell(target, 96294, true);
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
         }
     }
     // AT REMOVE
