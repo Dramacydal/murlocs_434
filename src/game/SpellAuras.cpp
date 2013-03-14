@@ -12276,31 +12276,20 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                         if (m_target->HasAura(58635))
                             spellId1 = 90259;
                     }
-                    else 
+                    else
                         spellId1 = 90259;
                     break;
                 }
-                case 55078:                                 // Blood Plague
                 case 55095:                                 // Frost Fever
                 {
-                    Unit* caster = GetCaster();
-                    if (apply && caster)
+                    if (!apply)
                     {
-                        uint32 talents[6] = { 49032, 49631, 49632, 51099, 51160, 51161 };
-                        uint32 procs[6] = { 50508, 50509, 50510, 51726, 51734, 51735 };
-
-                        uint32 spell = 0;
-                        for (int8 i = 5; i >= 0; --i)
-                        {
-                            if (caster->HasAura(talents[i]))
-                            {
-                                spell = procs[i];
-                                break;
-                            }
-                        }
-                        if (spell)
-                            caster->CastSpell(m_target, spell, true);
+                        // Remove Brittle Bones debuffs
+                        spellId1 = 81325;
+                        spellId1 = 81326;
                     }
+                    else
+                        return;
                     break;
                 }
             }
