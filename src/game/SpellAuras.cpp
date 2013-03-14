@@ -7726,10 +7726,10 @@ void Aura::HandleModDamageDone(bool apply, bool Real)
 
     SpellEquippedItemsEntry const* equippedItems = GetSpellProto()->GetSpellEquippedItems();
 
-    if((m_modifier.m_miscvalue & SPELL_SCHOOL_MASK_NORMAL) != 0)
+    if ((m_modifier.m_miscvalue & SPELL_SCHOOL_MASK_NORMAL) != 0)
     {
         // apply generic physical damage bonuses including wand case
-        if (equippedItems && (equippedItems->EquippedItemClass == -1 || target->GetTypeId() != TYPEID_PLAYER))
+        if (!equippedItems || equippedItems->EquippedItemClass == -1 || target->GetTypeId() != TYPEID_PLAYER)
         {
             target->HandleStatModifier(UNIT_MOD_DAMAGE_MAINHAND, TOTAL_VALUE, float(m_modifier.m_amount), apply);
             target->HandleStatModifier(UNIT_MOD_DAMAGE_OFFHAND, TOTAL_VALUE, float(m_modifier.m_amount), apply);
@@ -7740,7 +7740,7 @@ void Aura::HandleModDamageDone(bool apply, bool Real)
             // done in Player::_ApplyWeaponDependentAuraMods
         }
 
-        if(target->GetTypeId() == TYPEID_PLAYER)
+        if (target->GetTypeId() == TYPEID_PLAYER)
         {
             if(m_positive)
                 target->ApplyModUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS, m_modifier.m_amount, apply);
@@ -7750,10 +7750,10 @@ void Aura::HandleModDamageDone(bool apply, bool Real)
     }
 
     // Skip non magic case for speedup
-    if((m_modifier.m_miscvalue & SPELL_SCHOOL_MASK_MAGIC) == 0)
+    if ((m_modifier.m_miscvalue & SPELL_SCHOOL_MASK_MAGIC) == 0)
         return;
 
-    if( equippedItems && (equippedItems->EquippedItemClass != -1 || equippedItems->EquippedItemInventoryTypeMask != 0) )
+    if (equippedItems && (equippedItems->EquippedItemClass != -1 || equippedItems->EquippedItemInventoryTypeMask != 0))
     {
         // wand magic case (skip generic to all item spell bonuses)
         // done in Player::_ApplyWeaponDependentAuraMods
@@ -7764,9 +7764,9 @@ void Aura::HandleModDamageDone(bool apply, bool Real)
 
     // Magic damage modifiers implemented in Unit::SpellDamageBonusDone
     // This information for client side use only
-    if(target->GetTypeId() == TYPEID_PLAYER)
+    if (target->GetTypeId() == TYPEID_PLAYER)
     {
-        if(m_positive)
+        if (m_positive)
         {
             for(int i = SPELL_SCHOOL_HOLY; i < MAX_SPELL_SCHOOL; ++i)
             {
@@ -7813,10 +7813,10 @@ void Aura::HandleModDamagePercentDone(bool apply, bool Real)
 
     SpellEquippedItemsEntry const* equippedItems = GetSpellProto()->GetSpellEquippedItems();
 
-    if((m_modifier.m_miscvalue & SPELL_SCHOOL_MASK_NORMAL) != 0)
+    if ((m_modifier.m_miscvalue & SPELL_SCHOOL_MASK_NORMAL) != 0)
     {
         // apply generic physical damage bonuses including wand case
-        if (equippedItems && (equippedItems->EquippedItemClass == -1 || target->GetTypeId() != TYPEID_PLAYER))
+        if (!equippedItems || equippedItems->EquippedItemClass == -1 || target->GetTypeId() != TYPEID_PLAYER)
         {
             target->HandleStatModifier(UNIT_MOD_DAMAGE_MAINHAND, TOTAL_PCT, float(m_modifier.m_amount), apply);
             target->HandleStatModifier(UNIT_MOD_DAMAGE_OFFHAND, TOTAL_PCT, float(m_modifier.m_amount), apply);

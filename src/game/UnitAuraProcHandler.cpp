@@ -438,33 +438,34 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, SpellAuraHolder* holder, S
     }
     // Aura added by spell can`t trigger from self (prevent drop charges/do triggers)
     // But except periodic triggers (can triggered from self)
-    if(procSpell && procSpell->Id == spellProto->Id && !(EventProcFlag & PROC_FLAG_ON_TAKE_PERIODIC))
+    if (procSpell && procSpell->Id == spellProto->Id && !(EventProcFlag & PROC_FLAG_ON_TAKE_PERIODIC))
         return false;
 
     // Check if current equipment allows aura to proc
-    if(!isVictim && GetTypeId() == TYPEID_PLAYER)
+    if (!isVictim && GetTypeId() == TYPEID_PLAYER)
     {
-        SpellEquippedItemsEntry const* eqItems = spellProto->GetSpellEquippedItems();
-
-        if(eqItems && eqItems->EquippedItemClass == ITEM_CLASS_WEAPON)
+        if (SpellEquippedItemsEntry const* eqItems = spellProto->GetSpellEquippedItems())
         {
-            Item *item = NULL;
-            if(attType == BASE_ATTACK)
-                item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND);
-            else if (attType == OFF_ATTACK)
-                item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
-            else
-                item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_RANGED);
+            if (eqItems->EquippedItemClass == ITEM_CLASS_WEAPON)
+            {
+                Item *item = NULL;
+                if (attType == BASE_ATTACK)
+                    item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND);
+                else if (attType == OFF_ATTACK)
+                    item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
+                else
+                    item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_RANGED);
 
-            if(!item || item->IsBroken() || !CanUseEquippedWeapon(attType) || item->GetProto()->Class != ITEM_CLASS_WEAPON || !((1<<item->GetProto()->SubClass) & eqItems->EquippedItemSubClassMask))
-                return false;
-        }
-        else if(eqItems && eqItems->EquippedItemClass == ITEM_CLASS_ARMOR)
-        {
-            // Check if player is wearing shield
-            Item *item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
-            if(!item || item->IsBroken() || !CanUseEquippedWeapon(OFF_ATTACK) || item->GetProto()->Class != ITEM_CLASS_ARMOR || !((1<<item->GetProto()->SubClass) & eqItems->EquippedItemSubClassMask))
-                return false;
+                if (!item || item->IsBroken() || !CanUseEquippedWeapon(attType) || item->GetProto()->Class != ITEM_CLASS_WEAPON || !((1<<item->GetProto()->SubClass) & eqItems->EquippedItemSubClassMask))
+                    return false;
+            }
+            else if(eqItems->EquippedItemClass == ITEM_CLASS_ARMOR)
+            {
+                // Check if player is wearing shield
+                Item *item = ((Player*)this)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
+                if (!item || item->IsBroken() || !CanUseEquippedWeapon(OFF_ATTACK) || item->GetProto()->Class != ITEM_CLASS_ARMOR || !((1<<item->GetProto()->SubClass) & eqItems->EquippedItemSubClassMask))
+                    return false;
+            }
         }
     }
     // Get chance from spell

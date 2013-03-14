@@ -6766,12 +6766,15 @@ void Spell::EffectProficiency(SpellEffectEntry const* /*effect*/)
     Player *p_target = (Player*)unitTarget;
 
     SpellEquippedItemsEntry const* eqItems = m_spellInfo->GetSpellEquippedItems();
-    if (eqItems && eqItems->EquippedItemClass == ITEM_CLASS_WEAPON && !(p_target->GetWeaponProficiency() & eqItems->EquippedItemSubClassMask))
+    if (!eqItems)
+        return;
+
+    if (eqItems->EquippedItemClass == ITEM_CLASS_WEAPON && !(p_target->GetWeaponProficiency() & eqItems->EquippedItemSubClassMask))
     {
         p_target->AddWeaponProficiency(eqItems->EquippedItemSubClassMask);
         p_target->SendProficiency(ITEM_CLASS_WEAPON, p_target->GetWeaponProficiency());
     }
-    if (eqItems && eqItems->EquippedItemClass == ITEM_CLASS_ARMOR && !(p_target->GetArmorProficiency() & eqItems->EquippedItemSubClassMask))
+    if (eqItems->EquippedItemClass == ITEM_CLASS_ARMOR && !(p_target->GetArmorProficiency() & eqItems->EquippedItemSubClassMask))
     {
         p_target->AddArmorProficiency(eqItems->EquippedItemSubClassMask);
         p_target->SendProficiency(ITEM_CLASS_ARMOR, p_target->GetArmorProficiency());
@@ -13946,9 +13949,9 @@ void Spell::EffectWMODamage(SpellEffectEntry const* effect)
         {
             SpellEquippedItemsEntry const* spellEquip = (*i)->GetSpellProto()->GetSpellEquippedItems();
             if (((*i)->GetModifier()->m_miscvalue & GetSpellSchoolMask(m_spellInfo)) &&
-                spellEquip && spellEquip->EquippedItemClass == -1 &&
+                (!spellEquip || spellEquip->EquippedItemClass == -1 &&
                                                                 // -1 == any item class (not wand then)
-                spellEquip->EquippedItemInventoryTypeMask == 0 )
+                spellEquip->EquippedItemInventoryTypeMask == 0))
                                                                 // 0 == any inventory type (not wand then)
             {
                 mod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
