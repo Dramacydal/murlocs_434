@@ -930,9 +930,13 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
     {
         case SUMMON_PET:
         {
-            SetByteValue(UNIT_FIELD_BYTES_0, 1, CLASS_MAGE);
             if (cinfo->family == CREATURE_FAMILY_GHOUL)
+            {
                 setPowerType(POWER_ENERGY);
+                SetByteValue(UNIT_FIELD_BYTES_0, 1, CLASS_ROGUE);
+            }
+            else
+                SetByteValue(UNIT_FIELD_BYTES_0, 1, CLASS_MAGE);
 
             // this enables popup window (pet dismiss, cancel)
             SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
