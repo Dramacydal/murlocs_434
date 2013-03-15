@@ -10259,14 +10259,6 @@ void Aura::PeriodicDummyTick()
                 target->CastCustomSpell(target, 61217, &apBonus, &apBonus, NULL, true, NULL, this);
                 return;
             }
-            // Hysteria
-            if (spell->IsFitToFamilyMask(UI64LIT(0x0000000020000000)))
-            {
-                // damage not expected to be show in logs, not any damage spell related to damage apply
-                uint32 deal = m_modifier.m_amount * target->GetMaxHealth() / 100;
-                target->DealDamage(target, deal, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-                return;
-            }
             break;
         }
         case SPELLFAMILY_PRIEST:

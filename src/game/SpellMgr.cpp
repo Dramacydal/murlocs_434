@@ -971,8 +971,12 @@ bool IsPositiveAura(SpellEntry const * spellproto, SpellEffectIndex effIndex)
                 case SPELL_AURA_GHOST:
                 case SPELL_AURA_PERIODIC_LEECH:
                 case SPELL_AURA_MOD_STALKED:
-                case SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
                 case SPELL_AURA_MOD_FEAR:
+                    return false;
+                case SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
+                    // Unholy Frenzy
+                    if (spellproto->Id == 49016)
+                        return true;
                     return false;
                 case SPELL_AURA_PERIODIC_DAMAGE:            // used in positive spells also.
                     // part of negative spell if casted at self (prevent cancel)

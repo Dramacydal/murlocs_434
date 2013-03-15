@@ -11916,8 +11916,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     if (!mainTarget)
                         return;
 
-                    // do only refresh diseases on main target if caster has Glyph of Disease
-                    if (mainTarget == unitTarget && !m_caster->HasAura(63334))
+                    if (mainTarget == unitTarget)
                         return;
 
                     // Blood Plague

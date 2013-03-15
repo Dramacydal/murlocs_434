@@ -4213,6 +4213,9 @@ void Spell::cast(bool skipCheck)
             // Dancing Rune Weapon
             else if (m_spellInfo->Id == 49028)              // Dancing Rune Weapon (parry)
                 AddTriggeredSpell(81256);
+            // Pestilence
+            else if (m_spellInfo->Id == 50842)
+                AddPrecastSpell(76243);                     // dot damage reducer
             // Explode
             //else if (m_spellInfo->Id == 47496)
             //    AddTriggeredSpell(53730);                   // Knock Back
