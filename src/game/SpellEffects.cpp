@@ -13691,16 +13691,13 @@ void Spell::EffectActivateRune(SpellEffectEntry const* effect)
         if (plr->GetRuneCooldown(j))
         {
             // Energize Blood, Frost, Unholy Rune
-            // these spells activate fully depleted not consumed by last spell runes depending on base rune
+            // these spells activate fully depleted runes depending on base rune
             if (m_spellInfo->Id == 81166 || m_spellInfo->Id == 81168 || m_spellInfo->Id == 81169)
             {
                 if (plr->GetBaseRune(j) != RuneType(effect->EffectMiscValue))
                     continue;
 
                 if (plr->GetRuneCooldown(j) != plr->GetBaseRuneCooldown(j))
-                    continue;
-
-                if (plr->IsLastUsedRune(j))
                     continue;
             }
             else if (plr->GetCurrentRune(j) != RuneType(effect->EffectMiscValue))

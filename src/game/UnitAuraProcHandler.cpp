@@ -3734,9 +3734,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         {
                             // find fully depleted runes
                             // do not activate runes that were used by proc spell
-                            if (cd1 == player->GetBaseRuneCooldown(i) && !player->IsLastUsedRune(i))
+                            if (cd1 == player->GetBaseRuneCooldown(i))
                                 cdRunes.push_back(i);
-                            else if (cd2 == player->GetBaseRuneCooldown(i + 1) && !player->IsLastUsedRune(i + 1))
+                            else if (cd2 == player->GetBaseRuneCooldown(i + 1))
                                 cdRunes.push_back(i + 1);
                         }
                     }
