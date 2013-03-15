@@ -3562,8 +3562,14 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
         }
         case SPELLFAMILY_DEATHKNIGHT:
         {
+            // Ebon Plaguebringer
+            if (dummySpell->SpellIconID == 1766)
+            {
+                basepoints[0] = triggerAmount;
+                triggered_spell_id = 65142;
+            }
             // Butchery
-            if (dummySpell->SpellIconID == 2664)
+            else if (dummySpell->SpellIconID == 2664)
             {
                 basepoints[0] = triggerAmount;
                 triggered_spell_id = 50163;
@@ -3774,22 +3780,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     return SPELL_AURA_PROC_FAILED;
 
                 // triggered_spell_id in spell data
-                break;
-            }
-            // Sudden Doom
-            if (dummySpell->SpellIconID == 1939)
-            {
-                int32 casterLevel = getLevel();
-                if (casterLevel > 79)
-                    triggered_spell_id = 49895;
-                else if (casterLevel > 75)
-                    triggered_spell_id = 49894;
-                else if (casterLevel > 67)
-                    triggered_spell_id = 49893;
-                else if (casterLevel > 61)
-                    triggered_spell_id = 49892;
-                else
-                    triggered_spell_id = 47541;
                 break;
             }
             break;

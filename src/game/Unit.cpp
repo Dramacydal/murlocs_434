@@ -7409,25 +7409,6 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
         if (pVictim->HasAuraState(AuraState((*i)->GetMiscValue())))
             DoneTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
 
-    // Amaru: DK debuffs should do effect on all casts
-    Aura* cryptFeverDisease = pVictim->GetAura(SPELL_AURA_LINKED, SPELLFAMILY_DEATHKNIGHT, UI64LIT(0x0), 0x10);
-    Aura* ebonPlagueDisease = pVictim->GetAura(SPELL_AURA_LINKED, SPELLFAMILY_DEATHKNIGHT, UI64LIT(0x0), 0x40);
-    if (ebonPlagueDisease || cryptFeverDisease)
-    {
-        if (spellProto->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && spellProto->GetDispel() == DISPEL_DISEASE)
-            if (ebonPlagueDisease)  // Apply disease bonus from either Crypt Fever or Ebon Plague
-                DoneTotalMod *= (ebonPlagueDisease->GetModifier()->m_amount + 100.0f) / 100.0f;
-            else if (cryptFeverDisease)
-                DoneTotalMod *= (cryptFeverDisease->GetModifier()->m_amount + 100.0f) / 100.0f;
-
-        if (ebonPlagueDisease)
-        {
-            if (SpellEffectEntry const * effect = ebonPlagueDisease->GetSpellProto()->GetSpellEffect(EFFECT_INDEX_1))
-                if (GetSpellSchoolMask(spellProto) & effect->EffectMiscValue)
-                    DoneTotalMod *= (effect->CalculateSimpleValue() + 100.0f) / 100.0f;
-        }
-    }
-
     if (spellProto->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0xB20000)))
     {
         // Revealing Strike
@@ -7794,6 +7775,10 @@ uint32 Unit::SpellDamageBonusTaken(Unit *pCaster, SpellEntry const *spellProto, 
         if ((*i)->GetCasterGuid() == pCaster->GetObjectGuid() && (*i)->isAffectedOnSpell(spellProto))
             TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
     }
+
+    // Ebon Plague
+    if (Aura* ebonPlague = GetAura(65142, EFFECT_INDEX_0))
+        TakenTotalMod *= (ebonPlague->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) + 100.0f) / 100.0f;
 
     // Mod damage from spell mechanic
     TakenTotalMod *= GetTotalAuraMultiplierByMiscValueForMask(SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT,GetAllSpellMechanicMask(spellProto));
