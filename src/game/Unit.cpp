@@ -8697,7 +8697,15 @@ uint32 Unit::MeleeDamageBonusDone(Unit *pVictim, uint32 pdamage,WeaponAttackType
         }
 
         // SPELL_AURA_MOD_AUTOATTACK_DAMAGE for autoattacks
-        DonePercent *= GetTotalAuraMultiplier(SPELL_AURA_MOD_AUTOATTACK_DAMAGE);
+        AuraList const& mModAutoAttackDamageAuras = GetAurasByType(SPELL_AURA_MOD_AUTOATTACK_DAMAGE);
+        for(AuraList::const_iterator i = mModAutoAttackDamageAuras.begin(); i != mModAutoAttackDamageAuras.end(); ++i)
+        {
+            if (((*i)->GetSpellProto()->GetEquippedItemClass()) == -1 ||                 // general, weapon independent
+                (pWeapon && pWeapon->IsFitToSpellRequirements((*i)->GetSpellProto())))   // OR used weapon fits aura requirements
+            {
+                DonePercent *= ((*i)->GetModifier()->m_amount+100.0f) / 100.0f;
+            }
+        }
     }
 
     // ..done pct (by creature type mask)
