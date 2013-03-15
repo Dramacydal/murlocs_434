@@ -3602,15 +3602,11 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             // Unholy Blight
             if (dummySpell->Id == 49194)
             {
-                basepoints[0] = (damage+absorb) * triggerAmount / 100;
+                basepoints[0] = int32((damage + absorb) * triggerAmount / 100);
 
-                // Glyph of Unholy Blight
-                if (Aura *aura = GetDummyAura(63332))
-                    basepoints[0] += basepoints[0] * aura->GetModifier()->m_amount / 100;
-
-                // Split between 10 ticks
-                basepoints[0] /= 10;
                 triggered_spell_id = 50536;
+                // Split between ticks
+                basepoints[0] /= GetSpellAuraMaxTicks(triggered_spell_id);
                 break;
             }
             // Vendetta

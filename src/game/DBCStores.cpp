@@ -1226,6 +1226,11 @@ void LoadDBCStores(const std::string& dataPath)
                     opt->procCharges = 1;
                 break;
             }
+            case 50536:                         // Unholy Blight
+            {
+                spell->speed = 24.0f;
+                break;
+            }
             case 51698:                         // Honor Among Thieves (Rank 1)
             {
                 spell->SpellClassOptionsId = 12892;
