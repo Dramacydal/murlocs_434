@@ -1195,13 +1195,6 @@ void LoadDBCStores(const std::string& dataPath)
                 spell->AttributesEx &= ~SPELL_ATTR_EX_CANT_TARGET_SELF;
                 break;
             }
-            case 49036:                         // Epidemic (Rank 1)
-            case 49562:                         // Epidemic (Rank 2)
-            {
-                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
-                    eff->EffectSpellClassMask.Flags2 |= 0x40;  // affect Ebon Plaguebringer
-                break;
-            }
             case 50025:                         // Plague Barrel
             {
                 spell->rangeIndex = 164;
