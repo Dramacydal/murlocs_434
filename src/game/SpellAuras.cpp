@@ -7867,7 +7867,8 @@ void Aura::HandleModDamagePercentDone(bool apply, bool Real)
             if (GetStackAmount() == GetSpellProto()->GetStackAmount())
             {
                 if (Unit* owner = target->GetOwner())
-                    owner->CastSpell(owner, 93426, true);   // cast Dark Transformation marker
+                    if (owner->HasSpell(63560))
+                        owner->CastSpell(owner, 93426, true);   // cast Dark Transformation marker
             }
         }
     }
