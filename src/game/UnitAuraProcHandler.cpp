@@ -5455,7 +5455,7 @@ SpellAuraProcResult Unit::HandleAddFlatModifierAuraProc(Unit* pVictim, uint32 /*
             if (spellInfo->SpellIconID == 2723)
             {
                 if (GetTypeId() == TYPEID_PLAYER)
-                    ((Player*)this)->RemoveSpellCooldown(49576);
+                    ((Player*)this)->RemoveSpellCooldown(49576, true);
             }
             break;
         }
