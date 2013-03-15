@@ -983,6 +983,12 @@ void LoadDBCStores(const std::string& dataPath)
                 spell->AttributesEx5 |= SPELL_ATTR_EX5_START_PERIODIC_AT_APPLY;
                 break;
             }
+            case 11327:                         // Vanish
+            {
+                if (SpellInterruptsEntry* intr = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
+                    intr->InterruptFlags &= ~0x8000000; //AURA_INTERRUPT_FLAG_DAMAGE2
+                break;
+            }
             case 12051:                         // Evocation
             {
                 if (SpellInterruptsEntry* intr = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
