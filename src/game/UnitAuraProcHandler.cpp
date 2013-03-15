@@ -5390,6 +5390,16 @@ SpellAuraProcResult Unit::HandleAddFlatModifierAuraProc(Unit* pVictim, uint32 /*
             }
             break;
         }
+        case SPELLFAMILY_DEATHKNIGHT:
+        {
+            // Unholy Command
+            if (spellInfo->SpellIconID == 2723)
+            {
+                if (GetTypeId() == TYPEID_PLAYER)
+                    ((Player*)this)->RemoveSpellCooldown(49576);
+            }
+            break;
+        }
     }
 
     return SPELL_AURA_PROC_OK;
