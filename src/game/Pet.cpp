@@ -2271,18 +2271,6 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                     // just dk scaling aura here
                     scale = 0.678f;
 
-                    // search for "Ravenous Dead"
-                    AuraList const& mStat = owner->GetAurasByType(SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE);
-                    for(Unit::AuraList::const_iterator itr = mStat.begin(); itr != mStat.end(); ++itr)
-                    {
-                        SpellClassOptionsEntry const * opt = (*itr)->GetSpellProto()->GetSpellClassOptions();
-                        if (opt && opt->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && (*itr)->GetSpellProto()->SpellIconID == 3010)
-                        {
-                            scale *= float((*itr)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) + 100) / 100.0f;
-                            break;
-                        }
-                    }
-
                     // "Glyph of Ghoul"
                     if (Aura* glyph = owner->GetDummyAura(58686))
                         scale *= float(glyph->GetModifier()->m_amount + 100) / 100.0f;
@@ -2340,18 +2328,6 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                             // skip gargoyle
                             if (GetEntry() == 27829)
                                 break;
-
-                            // search for "Ravenous Dead"
-                            AuraList const& mStat = owner->GetAurasByType(SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE);
-                            for(Unit::AuraList::const_iterator itr = mStat.begin(); itr != mStat.end(); ++itr)
-                            {
-                                SpellClassOptionsEntry const * opt = (*itr)->GetSpellProto()->GetSpellClassOptions();
-                                if (opt && opt->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && (*itr)->GetSpellProto()->SpellIconID == 3010)
-                                {
-                                    scale *= float((*itr)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) + 100) / 100.0f;
-                                    break;
-                                }
-                            }
 
                             // "Glyph of Ghoul"
                             if (Aura* glyph = owner->GetDummyAura(58686))

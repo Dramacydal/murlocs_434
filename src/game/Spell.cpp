@@ -961,6 +961,9 @@ void Spell::prepareDataForTriggerSystem()
             // Death Coil (damage)
             if (m_spellInfo->Id == 47632)
                 m_canTrigger = true;
+            // Death Coil (heal)
+            else if (m_spellInfo->Id == 47633)
+                m_canTrigger = true;
         default:
             break;
     }
