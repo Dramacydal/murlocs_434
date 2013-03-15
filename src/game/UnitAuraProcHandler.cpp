@@ -4728,13 +4728,14 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Shadow Infusion
             if (auraSpellInfo->SpellIconID == 152)
             {
-                Unit* pet = target->GetPet();
+                Unit* pet = GetPet();
                 if (!pet || !pet->IsInWorld() || pet->isDead())
                     return SPELL_AURA_PROC_FAILED;
 
                 // Dark Transformation
                 if (pet->HasAura(63560))
                     return SPELL_AURA_PROC_FAILED;
+
                 break;
             }
             // Will of the Necropolis

@@ -7864,8 +7864,11 @@ void Aura::HandleModDamagePercentDone(bool apply, bool Real)
         // Shadow Infusion
         else if (GetId() == 91342)
         {
-            if (Unit* owner = target->GetOwner())
-                owner->CastSpell(owner, 93426, true);   // cast Dark Transformation marker
+            if (GetStackAmount() == GetSpellProto()->GetStackAmount())
+            {
+                if (Unit* owner = target->GetOwner())
+                    owner->CastSpell(owner, 93426, true);   // cast Dark Transformation marker
+            }
         }
     }
 
