@@ -2753,6 +2753,33 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
 
                     return;
                 }
+                case 47468:                                 // Claw
+                {
+                    if (!unitTarget)
+                        return;
+
+                    // check for Dark Transformation
+                    m_caster->CastSpell(unitTarget, m_caster->HasAura(63560) ? 91778 : 91776, true);
+                    return;
+                }
+                case 47482:                                 // Leap
+                {
+                    if (!unitTarget)
+                        return;
+
+                    // check for Dark Transformation
+                    m_caster->CastSpell(unitTarget, m_caster->HasAura(63560) ? 91809 : 91802, true);
+                    return;
+                }
+                case 47484:                                 // Huddle
+                {
+                    if (!unitTarget)
+                        return;
+
+                    // check for Dark Transformation
+                    m_caster->CastSpell(unitTarget, m_caster->HasAura(63560) ? 91837 : 91838, true);
+                    return;
+                }
                 case 48046:                                 // Use Camera
                 {
                     if (!unitTarget)
@@ -5026,6 +5053,16 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                         p_caster->CastSpell(m_caster,m_currentBasePoints[0], true);
                     break;
                 }
+                // Gnaw
+                case 47481:
+                {
+                    if (!unitTarget)
+                        return;
+
+                    // check for Dark Transformation
+                    m_caster->CastSpell(unitTarget, m_caster->HasAura(63560) ? 91797 : 91800, true);
+                    return;
+                }
                 // Death Grip
                 case 49576:
                 {
@@ -5035,6 +5072,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     m_caster->CastSpell(unitTarget, 49560, true);
                     return;
                 }
+                // Death Grip
                 case 49560:
                 {
                     if (!unitTarget || unitTarget == m_caster)

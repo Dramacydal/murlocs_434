@@ -7844,17 +7844,29 @@ void Aura::HandleModDamagePercentDone(bool apply, bool Real)
         return;
     }
 
-    // Elemental Oath - Damage increase on Clearcasting
-    if (apply && GetId() == 16246)
+    if (apply)
     {
-        Unit::AuraList const& auras = GetTarget()->GetAurasByType(SPELL_AURA_MOD_ALL_CRIT_CHANCE);
-        for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
-            if ((*i)->GetId() == 51466 ||   //Elemental Oath rank 1
-                (*i)->GetId() == 51470)     //Elemental Oath rank 2
-            {
-                m_modifier.m_amount += (*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1);
-                break;
-            }
+        // Elemental Oath - Damage increase on Clearcasting
+        if (GetId() == 16246)
+        {
+            Unit::AuraList const& auras = GetTarget()->GetAurasByType(SPELL_AURA_MOD_ALL_CRIT_CHANCE);
+            for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
+                if ((*i)->GetId() == 51466 ||   //Elemental Oath rank 1
+                    (*i)->GetId() == 51470)     //Elemental Oath rank 2
+                {
+                    m_modifier.m_amount += (*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1);
+                    break;
+                }
+        }
+        // Dark Transformation
+        else if (GetId() == 63560)
+            target->RemoveAurasDueToSpell(91342);       // Remove Shadow Infusion
+        // Shadow Infusion
+        else if (GetId() == 91342)
+        {
+            if (Unit* owner = target->GetOwner())
+                owner->CastSpell(owner, 93426, true);   // cast Dark Transformation marker
+        }
     }
 
     // Magic damage percent modifiers implemented in Unit::SpellDamageBonusDone
@@ -9966,9 +9978,9 @@ void Aura::PeriodicDummyTick()
                     else
                     {
                         if (aura0)
-                            aura0->ChangeAmount(bp0, true);
+                            aura0->ChangeAmount(bp0, false);
                         if (aura1)
-                            aura1->ChangeAmount(bp0, true);
+                            aura1->ChangeAmount(bp1, false);
                         holder->SendAuraUpdate(false);
                     }
                     break;
@@ -10216,6 +10228,33 @@ void Aura::PeriodicDummyTick()
 
                 if (DynamicObject* dynObj = target->GetDynObject(spell->Id))
                     target->CastCustomSpell(dynObj->GetPositionX(), dynObj->GetPositionY(), dynObj->GetPositionZ(), 52212, &bp, NULL, NULL, true, NULL, this);
+                return;
+            }
+            // Dark Transformation
+            else if (GetId() == 93426)
+            {
+                Unit* pet = target->GetPet();
+                if (!pet || !pet->IsInWorld() || pet->isDead())
+                {
+                    target->RemoveAurasDueToSpell(GetId());
+                    return;
+                }
+
+                // Dark Transformation
+                if (target->HasAura(63560))
+                {
+                    target->RemoveAurasDueToSpell(GetId());
+                    return;
+                }
+
+                // Search Shadow Infusion
+                SpellAuraHolder* infusion = pet->GetSpellAuraHolder(91342);
+                if (!infusion || infusion->GetStackAmount() != infusion->GetSpellProto()->GetStackAmount())
+                {
+                    target->RemoveAurasDueToSpell(GetId());
+                    return;
+                }
+
                 return;
             }
             // Raise Dead
