@@ -5285,7 +5285,7 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
             Unit::AuraList const& auras = caster->GetAurasByType(SPELL_AURA_DUMMY);
             for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
             {
-                if ((*i)->GetSpellProto()->SpellIconID == 1910 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT)
+                if ((*i)->GetSpellProto()->SpellIconID == 1910 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_GENERIC)
                 {
                     if (roll_chance_i((*i)->GetModifier()->m_amount))
                     {

@@ -10261,6 +10261,30 @@ void Aura::PeriodicDummyTick()
 
                 return;
             }
+            // Death's Advance
+            else if (GetId() == 96268)
+            {
+                if (target->GetTypeId() != TYPEID_PLAYER || target->getClass() != CLASS_DEATH_KNIGHT)
+                    return;
+
+                Player* player = (Player*)target;
+
+                uint8 cd = 0;
+                for (uint8 i = 0; i < MAX_RUNES; ++i)
+                {
+                    if (player->GetBaseRune(i) != RUNE_UNHOLY)
+                        continue;
+
+                    if (player->GetRuneCooldown(i))
+                        ++cd;
+                }
+
+                if (cd < 2)
+                    target->RemoveAurasDueToSpell(GetId());
+                else
+                    GetHolder()->RefreshHolder();
+                return;
+            }
             // Raise Dead
 //            if (spell->SpellFamilyFlags & UI64LIT(0x0000000000001000))
 //                return;
