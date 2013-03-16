@@ -4152,7 +4152,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     return SPELL_AURA_PROC_FAILED;
 
                 // do not proc from Arane Missiles themselves
-                if (!procSpell || procSpell->IsFitToFamily(SPELLFAMILY_MAGE, UI64LIT(0x200800))
+                if (!procSpell || procSpell->IsFitToFamily(SPELLFAMILY_MAGE, UI64LIT(0x200800)))
                     return SPELL_AURA_PROC_FAILED;
                 break;
             }
