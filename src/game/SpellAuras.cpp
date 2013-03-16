@@ -391,7 +391,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleAuraOverrideActionbarSpells,               //332 SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS 16 spells in 4.3.4, implemented in WorldSession::HandleCastSpellOpcode
     &Aura::HandleAuraOverrideActionbarSpells,               //333 SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS_2 10 spells in 4.3.4, implemented in WorldSession::HandleCastSpellOpcode
     &Aura::HandleNULL,                                      //334 SPELL_AURA_BLIND_SIGHT 2 spells in 4.3.4
-    &Aura::HandleNULL,                                      //335 invisibility-related 5 spells in 4.3.4
+    &Aura::HandleAuraSeeWhileInvisible,                     //335 SPELL_AURA_SEE_WHILE_INVISIBLE implemented in Unit::isVisibleForOrDetect 5 spells in 4.3.4
     &Aura::HandleNULL,                                      //336 SPELL_AURA_FLIGHT_RESTRICTIONS 8 spells in 4.3.4
     &Aura::HandleNoImmediateEffect,                         //337 SPELL_AURA_MOD_VENDOR_PRICE 1 spells in 4.3.4
     &Aura::HandleNoImmediateEffect,                         //338 SPELL_AURA_MOD_DURABILITY_LOSS 3 spells in 4.3.4,  implemented in Player::DurabilityLossAll
@@ -12934,3 +12934,10 @@ void Aura::HandleAuraInterfereTargeting(bool apply, bool Real)
     }
 }
 
+void Aura::HandleAuraSeeWhileInvisible(bool apply, bool Real)
+{
+    Unit* target = GetTarget();
+
+    if (Real && target->GetTypeId() == TYPEID_PLAYER)
+        ((Player*)target)->GetCamera().UpdateVisibilityForOwner();
+}

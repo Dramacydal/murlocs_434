@@ -9526,7 +9526,7 @@ bool Unit::isVisibleForOrDetect(Unit const* u, WorldObject const* viewPoint, boo
             // player see other player with stealth/invisibility only if he in same group or raid or same team (raid/team case dependent from conf setting)
             if(GetTypeId()==TYPEID_PLAYER && u->GetTypeId()==TYPEID_PLAYER)
             {
-                if(((Player*)this)->IsGroupVisibleFor(((Player*)u)))
+                if (((Player*)this)->IsGroupVisibleFor(((Player*)u)))
                     return true;
 
                 // else apply same rules as for hostile case (detecting check for stealth)
@@ -9544,8 +9544,13 @@ bool Unit::isVisibleForOrDetect(Unit const* u, WorldObject const* viewPoint, boo
             // else apply detecting check for stealth
         }
 
+        // SPELL_AURA_SEE_WHILE_INVISIBLE functionality
+        if (invisible)
+            if (m_invisibilityMask == 0 && u->HasAura(SPELL_AURA_SEE_WHILE_INVISIBLE))
+                invisible = false;
+
         // none other cases for detect invisibility, so invisible
-        if(invisible)
+        if (invisible)
             return false;
 
         // else apply stealth detecting check
@@ -9692,12 +9697,12 @@ bool Unit::canDetectInvisibilityOf(Unit const* u) const
                 if(((*itr)->GetModifier()->m_miscvalue)==i && detectLevel < (*itr)->GetModifier()->m_amount)
                     detectLevel = (*itr)->GetModifier()->m_amount;
 
-            if(i==6 && GetTypeId()==TYPEID_PLAYER)          // special drunk detection case
+            if (i==6 && GetTypeId()==TYPEID_PLAYER)     // special drunk detection case
             {
                 detectLevel = ((Player*)this)->GetDrunkValue();
             }
 
-            if(invLevel <= detectLevel)
+            if (invLevel <= detectLevel)
                 return true;
         }
     }
