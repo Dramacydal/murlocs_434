@@ -2524,6 +2524,7 @@ void Player::Regenerate(Powers power, uint32 diff)
                 {
                     if (cd == GetBaseRuneCooldown(runeToRegen))
                         UpdateRuneRegen(runeSlotTypes[runeToRegen]);
+
                     diff = uint32(diff * GetFloatValue(PLAYER_RUNE_REGEN_1 + uint8(GetCurrentRune(runeToRegen))) / 0.1f);
                     uint16 newCd = (cd > diff) ? cd - diff : 0;
                     SetRuneCooldown(runeToRegen, newCd);
@@ -23527,17 +23528,17 @@ void Player::UpdateRuneRegen(RuneType rune)
         if (GetBaseRune(i) != rune)
             continue;
 
-        uint32 cd = GetRuneCooldown(rune);
-        uint32 secondRuneCd = GetRuneCooldown(rune + 1);
+        uint32 cd = GetRuneCooldown(i);
+        uint32 secondRuneCd = GetRuneCooldown(i + 1);
         if (secondRuneCd && (cd > secondRuneCd || !cd))
         {
-            cooldown = GetBaseRuneCooldown(rune + 1);
-            actualRune = GetCurrentRune(rune + 1);
+            cooldown = GetBaseRuneCooldown(i + 1);
+            actualRune = GetCurrentRune(i + 1);
         }
         else
         {
-            cooldown = GetBaseRuneCooldown(rune);
-            actualRune = GetCurrentRune(rune);
+            cooldown = GetBaseRuneCooldown(i);
+            actualRune = GetCurrentRune(i);
         }
 
         break;
