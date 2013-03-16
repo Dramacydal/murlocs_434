@@ -2672,43 +2672,18 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
     int32  preventDeathAmount = 0;
 
     // full absorb cases (by chance)
-    AuraList const& vAbsorb = GetAurasByType(SPELL_AURA_SCHOOL_ABSORB);
-    for(AuraList::const_iterator i = vAbsorb.begin(); i != vAbsorb.end() && RemainingDamage > 0; ++i)
-    {
-        // only work with proper school mask damage
-        Modifier* i_mod = (*i)->GetModifier();
-        if (!(i_mod->m_miscvalue & schoolMask))
-            continue;
+    //AuraList const& vAbsorb = GetAurasByType(SPELL_AURA_SCHOOL_ABSORB);
+    //for(AuraList::const_iterator i = vAbsorb.begin(); i != vAbsorb.end() && RemainingDamage > 0; ++i)
+    //{
+    //    // only work with proper school mask damage
+    //    Modifier* i_mod = (*i)->GetModifier();
+    //    if (!(i_mod->m_miscvalue & schoolMask))
+    //        continue;
 
-        SpellEntry const* i_spellProto = (*i)->GetSpellProto();
-        SpellClassOptionsEntry const* adsClassOptions = i_spellProto->GetSpellClassOptions();
-        // Fire Ward or Frost Ward
-        if(adsClassOptions && adsClassOptions->SpellFamilyName == SPELLFAMILY_MAGE && adsClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000000108))
-        {
-            int chance = 0;
-            Unit::AuraList const& auras = GetAurasByType(SPELL_AURA_ADD_PCT_MODIFIER);
-            for (Unit::AuraList::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
-            {
-                SpellEntry const* itr_spellProto = (*itr)->GetSpellProto();
-                // Frost Warding (chance full absorb)
-                if (itr_spellProto->GetSpellFamilyName() == SPELLFAMILY_MAGE && itr_spellProto->SpellIconID == 501)
-                {
-                    // chance stored in next dummy effect
-                    chance = itr_spellProto->CalculateSimpleValue(EFFECT_INDEX_1);
-                    break;
-                }
-            }
-            if(roll_chance_i(chance))
-            {
-                int32 amount = RemainingDamage;
-                RemainingDamage = 0;
+    //    SpellEntry const* i_spellProto = (*i)->GetSpellProto();
+    //    SpellClassOptionsEntry const* adsClassOptions = i_spellProto->GetSpellClassOptions();
 
-                // Frost Warding (mana regen)
-                CastCustomSpell(this, 57776, &amount, NULL, NULL, true, NULL, *i);
-                break;
-            }
-        }
-    }
+    //}
 
     // Need remove expired auras after
     bool existExpired = false;

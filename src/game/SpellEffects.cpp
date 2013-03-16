@@ -4165,23 +4165,36 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 }
                 case 42955:                                 // Conjure Refreshment
                 {
-                    if(m_caster->GetTypeId() != TYPEID_PLAYER)
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER)
                         return;
 
-                    if(m_caster->getLevel() > 84)
+                    if (m_caster->getLevel() > 84)
                         m_caster->CastSpell(unitTarget, 92727, true); // conjure refreshment, rank 7
-                    else if(m_caster->getLevel() > 79)
+                    else if (m_caster->getLevel() > 79)
                         m_caster->CastSpell(unitTarget, 42956, true); // conjure refreshment, rank 6
-                    else if(m_caster->getLevel() > 74)
+                    else if (m_caster->getLevel() > 74)
                         m_caster->CastSpell(unitTarget, 74625, true); // conjure refreshment, rank 5
-                    else if(m_caster->getLevel() > 64)
+                    else if (m_caster->getLevel() > 64)
                         m_caster->CastSpell(unitTarget, 92805, true); // conjure refreshment, rank 4
-                    else if(m_caster->getLevel() > 54)
+                    else if (m_caster->getLevel() > 54)
                         m_caster->CastSpell(unitTarget, 92802, true); // conjure refreshment, rank 3
-                    else if(m_caster->getLevel() > 44)
+                    else if (m_caster->getLevel() > 44)
                         m_caster->CastSpell(unitTarget, 92799, true); // conjure refreshment, rank 2
-                    else if(m_caster->getLevel() > 38)
+                    else if (m_caster->getLevel() > 38)
                         m_caster->CastSpell(unitTarget, 92739, true); // conjure refreshment, rank 1
+                    return;
+                }
+                case 43987:                                 // Ritual of Refreshment
+                {
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    if (m_caster->getLevel() < 80)
+                        m_caster->CastSpell(unitTarget, 74650, true);   // Ritual of Refreshment (Rank 1)
+                    else if (m_caster->getLevel() < 85)
+                        m_caster->CastSpell(unitTarget, 92824, true);   // Ritual of Refreshment (Rank 2)
+                    else
+                        m_caster->CastSpell(unitTarget, 92827, true);   // Ritual of Refreshment (Rank 3)
                     return;
                 }
                 case 82731:                                 // Flame Orb Dummy
