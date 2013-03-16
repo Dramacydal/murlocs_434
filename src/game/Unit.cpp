@@ -5304,6 +5304,12 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
         RemoveAuraHolderFromStack(spellId, stackAmount, casterGuid, AURA_REMOVE_BY_DISPEL);
 }
 
+bool Unit::HasSatedAura() const
+{
+    // Exhaustion, Sated, Temporal Displacement
+    return HasAura(57723) || HasAura(57724) || HasAura(80354);
+}
+
 void Unit::RemoveAurasDueToSpellBySteal(uint32 spellId, ObjectGuid casterGuid, Unit *stealer)
 {
     SpellAuraHolder* holder = GetSpellAuraHolder(spellId, casterGuid);
@@ -5316,10 +5322,9 @@ void Unit::RemoveAurasDueToSpellBySteal(uint32 spellId, ObjectGuid casterGuid, U
     // Power Word: Shield
     if (opt && opt->SpellFamilyName == SPELLFAMILY_PRIEST && spellProto->GetMechanic() == MECHANIC_SHIELD &&
         (opt->SpellFamilyFlags & UI64LIT(0x0000000000000001)) && stealer->HasAura(restr->excludeTargetAuraSpell) ||
-        // Bloodlust
-        spellProto->Id == 2825 && stealer->HasAura(57724) ||
-        // Heroism
-        spellProto->Id == 32182 && stealer->HasAura(57723))
+        // Bloodlust, Heroism, Time Warp
+        (spellProto->Id == 2825 || spellProto->Id == 32182 || spellProto->Id == 80353) &&
+        stealer->HasSatedAura())
     {
         if (stealCharges)
         {

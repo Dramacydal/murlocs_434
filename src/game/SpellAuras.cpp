@@ -11617,6 +11617,19 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 spellId1 = 79808;
                 break;
             }
+            // Time Warp
+            else if (m_spellProto->Id == 80353)
+            {
+                if (apply)
+                {
+                    Unit* caster = GetCaster();
+                    if (!caster)
+                        return;
+
+                    caster->CastSpell(m_target, 80354, true);
+                    return;
+                }
+            }
             // Ice Barrier (non stacking from one caster)
             else if (m_spellProto->SpellIconID == 32)
             {
@@ -12086,6 +12099,20 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                         if (Pet* pet = m_target->GetPet())
                             if (pet->isAlive())
                                 pet->CastSpell(pet, 53257, true);
+                    }
+                    return;
+                }
+                // Ancient Hysteria
+                case 90355:
+                {
+                    if (apply)
+                    {
+                        Unit* caster = GetCaster();
+                        if (!caster)
+                            return;
+
+                        caster->CastSpell(m_target, 57724, true);
+                        return;
                     }
                     return;
                 }
