@@ -2522,11 +2522,11 @@ void Player::Regenerate(Powers power, uint32 diff)
 
                 if (cd)
                 {
+                    if (cd == GetBaseRuneCooldown(runeToRegen))
+                        UpdateRuneRegen(runeSlotTypes[runeToRegen]);
                     diff = uint32(diff * GetFloatValue(PLAYER_RUNE_REGEN_1 + uint8(GetCurrentRune(runeToRegen))) / 0.1f);
                     uint16 newCd = (cd > diff) ? cd - diff : 0;
                     SetRuneCooldown(runeToRegen, newCd);
-                    if (!newCd)
-                        UpdateRuneRegen(runeSlotTypes[runeToRegen]);
                 }
             }
             return;
