@@ -7776,9 +7776,12 @@ uint32 Unit::SpellDamageBonusTaken(Unit *pCaster, SpellEntry const *spellProto, 
             TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
     }
 
-    // Ebon Plague
-    if (Aura* ebonPlague = GetAura(65142, EFFECT_INDEX_0))
-        TakenTotalMod *= (ebonPlague->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) + 100.0f) / 100.0f;
+    if (schoolMask & SPELL_SCHOOL_MASK_MAGIC)
+    {
+        // Ebon Plague
+        if (Aura* ebonPlague = GetAura(65142, EFFECT_INDEX_0))
+            TakenTotalMod *= (ebonPlague->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) + 100.0f) / 100.0f;
+    }
 
     // Mod damage from spell mechanic
     TakenTotalMod *= GetTotalAuraMultiplierByMiscValueForMask(SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT,GetAllSpellMechanicMask(spellProto));
