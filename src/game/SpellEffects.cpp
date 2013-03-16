@@ -4080,14 +4080,20 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
         {
             switch(m_spellInfo->Id)
             {
-                /// Adonai, bug #34 spell 3
-                case 55342:                                 // Mirror Image
+                case 1459:                                  // Arcane Brilliance
                 {
-                    m_caster->CastSpell(m_caster, 58831, true); // Image 1
-                    m_caster->CastSpell(m_caster, 58833, true); // Image 2
-                    m_caster->CastSpell(m_caster, 58834, true); // Image 3
+                    Unit* target = unitTarget;
+                    if (!target)
+                        target = m_caster;
 
-                    // TODO: Glyph of Mirror Image, 65047 - Image 4
+                    uint32 spellId;
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER
+                        || ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup())
+                        spellId = 79057;
+                    else
+                        spellId = 79058;
+
+                    m_caster->CastSpell(target, spellId, true);
                     return;
                 }
                 case 11958:                                 // Cold Snap
@@ -4112,30 +4118,14 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     }
                     return;
                 }
-                /// Adonai, bug #34, spell 2
-                case 92283:                                 // TODO: Frostfire Orb Dummy
+                /// Adonai, bug #34 spell 3
+                case 55342:                                 // Mirror Image
                 {
-                    return;
-                }
-                case 82731:                                 // Flame Orb Dummy
-                {
-                    if (m_caster->GetTypeId() == TYPEID_PLAYER)
-                    {
-                        Player *mage = ((Player *) m_caster);
-                        mage->CastSpell(m_caster, 84765, true);                  // Flame Orb summon spell
-                        Unit *orb = mage->GetSummonUnit(84765);
-                        if (orb)
-                            orb->CastSpell(orb, 82690, true, NULL, NULL, mage->GetGUID());                   // Flame Orb Periodic Trigger Aura
-                    }
-                    return;
-                }
-                case 82734:                                 // Flame Orb Periodic Trigger Dummy
-                {
-                    if(unitTarget)
-                    {
-                        m_caster->CastCustomVisualSpell(unitTarget, 82739, true, NULL, NULL, m_originalCasterGUID, NULL, 59509); // Flame Orb DMG spell
-                        m_caster->StopMoving();                                                                                  // Should look like Sear Beam
-                    }
+                    m_caster->CastSpell(m_caster, 58831, true); // Image 1
+                    m_caster->CastSpell(m_caster, 58833, true); // Image 2
+                    m_caster->CastSpell(m_caster, 58834, true); // Image 3
+
+                    // TODO: Glyph of Mirror Image, 65047 - Image 4
                     return;
                 }
                 case 31687:                                 // Summon Water Elemental
@@ -4173,7 +4163,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
 
                     return;
                 }
-                case 42955: // Conjure refreshment dummy
+                case 42955:                                 // Conjure Refreshment
                 {
                     if(m_caster->GetTypeId() != TYPEID_PLAYER)
                         return;
@@ -4192,6 +4182,32 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                         m_caster->CastSpell(unitTarget, 92799, true); // conjure refreshment, rank 2
                     else if(m_caster->getLevel() > 38)
                         m_caster->CastSpell(unitTarget, 92739, true); // conjure refreshment, rank 1
+                    return;
+                }
+                case 82731:                                 // Flame Orb Dummy
+                {
+                    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        Player *mage = ((Player *) m_caster);
+                        mage->CastSpell(m_caster, 84765, true);                  // Flame Orb summon spell
+                        Unit *orb = mage->GetSummonUnit(84765);
+                        if (orb)
+                            orb->CastSpell(orb, 82690, true, NULL, NULL, mage->GetGUID());                   // Flame Orb Periodic Trigger Aura
+                    }
+                    return;
+                }
+                case 82734:                                 // Flame Orb Periodic Trigger Dummy
+                {
+                    if(unitTarget)
+                    {
+                        m_caster->CastCustomVisualSpell(unitTarget, 82739, true, NULL, NULL, m_originalCasterGUID, NULL, 59509); // Flame Orb DMG spell
+                        m_caster->StopMoving();                                                                                  // Should look like Sear Beam
+                    }
+                    return;
+                }
+                /// Adonai, bug #34, spell 2
+                case 92283:                                 // TODO: Frostfire Orb Dummy
+                {
                     return;
                 }
             }
@@ -4368,10 +4384,14 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 if (!target)
                     target = m_caster;
 
-                if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER)
-                    return;
+                uint32 spellId;
+                if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER
+                    || ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup())
+                    spellId = 79104;
+                else
+                    spellId = 79105;
 
-                m_caster->CastSpell(target, ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup() ? 79104 : 79105, true);
+                m_caster->CastSpell(target, spellId, true);
                 return;
             }
             // Shadow Protection
@@ -4381,10 +4401,14 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 if (!target)
                     target = m_caster;
 
-                if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER)
-                    return;
+                uint32 spellId;
+                if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER
+                    || ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup())
+                    spellId = 79106;
+                else
+                    spellId = 79107;
 
-                m_caster->CastSpell(target, ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup() ? 79106 : 79107, true);
+                m_caster->CastSpell(target, spellId, true);
                 return;
             }
             break;
@@ -4771,10 +4795,14 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     if (!target)
                         target = m_caster;
 
-                    if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER)
-                        return;
+                    uint32 spellId;
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER
+                        || ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup())
+                        spellId = 79101;
+                    else
+                        spellId = 79102;
 
-                    m_caster->CastSpell(target, ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup() ? 79101 : 79102, true);
+                    m_caster->CastSpell(target, spellId, true);
                     return;
                 }
                 case 20217:                                 // Blessing of Kings
@@ -4783,10 +4811,14 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     if (!target)
                         target = m_caster;
 
-                    if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER)
-                        return;
+                    uint32 spellId;
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER
+                        || ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup())
+                        spellId = 79062;
+                    else
+                        spellId = 79063;
 
-                    m_caster->CastSpell(target, ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup() ? 79062 : 79063, true);
+                    m_caster->CastSpell(target, spellId, true);
                     return;
                 }
                 case 31789:                                 // Righteous Defense (step 1)
