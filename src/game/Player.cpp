@@ -23530,7 +23530,9 @@ void Player::UpdateRuneRegen(RuneType rune)
 
         uint32 cd = GetRuneCooldown(i);
         uint32 secondRuneCd = GetRuneCooldown(i + 1);
-        if (secondRuneCd && (cd > secondRuneCd || !cd))
+        if (!cd && !secondRuneCd)
+            actualRune = GetCurrentRune(i);
+        else if (secondRuneCd && (cd > secondRuneCd || !cd))
         {
             cooldown = GetBaseRuneCooldown(i + 1);
             actualRune = GetCurrentRune(i + 1);
