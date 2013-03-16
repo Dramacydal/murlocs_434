@@ -4779,17 +4779,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 if ((player->GetLastUsedRuneMask() & (1 << RUNE_UNHOLY)) == 0)
                     return SPELL_AURA_PROC_FAILED;
 
-                uint8 cd = 0;
-                for (uint8 i = 0; i < MAX_RUNES; ++i)
-                {
-                    if (player->GetBaseRune(i) != RUNE_UNHOLY)
-                        continue;
-
-                    if (player->GetRuneCooldown(i))
-                        ++cd;
-                }
-
-                if (cd >= 2)
+                if (player->IsBaseRuneSlotsOnCooldown(RUNE_UNHOLY))
                     break;
 
                 return SPELL_AURA_PROC_FAILED;
