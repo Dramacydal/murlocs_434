@@ -7265,19 +7265,21 @@ void Aura::HandleAuraModTotalHealthPercentRegen(bool apply, bool /*Real*/)
 
 void Aura::HandleAuraModTotalEnergyPercentRegen(bool apply, bool /*Real*/)
 {
-    if(m_modifier.periodictime == 0)
+    if (m_modifier.periodictime == 0)
         m_modifier.periodictime = 1000;
 
-    m_periodicTimer = m_modifier.periodictime;
+    if (!GetSpellProto()->HasAttribute(SPELL_ATTR_EX5_START_PERIODIC_AT_APPLY))
+        m_periodicTimer = m_modifier.periodictime;
     m_isPeriodic = apply;
 }
 
 void Aura::HandleModRegen(bool apply, bool /*Real*/)        // eating
 {
-    if(m_modifier.periodictime == 0)
+    if (m_modifier.periodictime == 0)
         m_modifier.periodictime = 5000;
 
-    m_periodicTimer = 5000;
+    if (!GetSpellProto()->HasAttribute(SPELL_ATTR_EX5_START_PERIODIC_AT_APPLY))
+        m_periodicTimer = 5000;
     m_isPeriodic = apply;
 }
 
@@ -7287,7 +7289,7 @@ void Aura::HandleModPowerRegen(bool apply, bool Real)       // drinking
         return;
 
     Powers pt = GetTarget()->getPowerType();
-    if(m_modifier.periodictime == 0)
+    if (m_modifier.periodictime == 0)
     {
         // Anger Management (only spell use this aura for rage)
         if (pt == POWER_RAGE)
