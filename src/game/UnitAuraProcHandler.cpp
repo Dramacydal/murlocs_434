@@ -1292,8 +1292,16 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 29442;
                 break;
             }
+            // Improved Mana Gem
+            else if (dummySpell->SpellIconID == 1036)
+            {
+                triggered_spell_id = 83098;
+                basepoints[0] = int32(triggerAmount * GetMaxPower(POWER_MANA) / 100.0f);
+                basepoints[1] = basepoints[0];
+                break;
+            }
             // Master of Elements
-            if (dummySpell->SpellIconID == 1920)
+            else if (dummySpell->SpellIconID == 1920)
             {
                 if(!procSpell)
                     return SPELL_AURA_PROC_FAILED;
