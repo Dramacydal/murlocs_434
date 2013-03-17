@@ -1317,19 +1317,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 29077;
                 break;
             }
-            // Nether Vortex
-            else if (dummySpell->SpellIconID == 2294)
-            {
-                // ...if no target is currently affected by Slow
-                if (GetSingleCastSpellTarget(31589))
-                    return SPELL_AURA_PROC_FAILED;
-
-                triggered_spell_id = 31589;
-                break;
-            }
-
             // Arcane Potency
-            if (dummySpell->SpellIconID == 2120)
+            else if (dummySpell->SpellIconID == 2120)
             {
                 if(!procSpell)
                     return SPELL_AURA_PROC_FAILED;
@@ -1349,21 +1338,40 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 }
                 break;
             }
+            // Nether Vortex
+            else if (dummySpell->SpellIconID == 2294)
+            {
+                // ...if no target is currently affected by Slow
+                if (GetSingleCastSpellTarget(31589))
+                    return SPELL_AURA_PROC_FAILED;
 
+                triggered_spell_id = 31589;
+                break;
+            }
             // Hot Streak
-            if (dummySpell->SpellIconID == 2999)
+            else if (dummySpell->Id == 44445)
+            {
+                if (effIndex != EFFECT_INDEX_0 || !roll_chance_i(triggerAmount))
+                    return SPELL_AURA_PROC_FAILED;
+
+                triggered_spell_id = 48108;
+                break;
+            }
+            // Improved Hot Streak
+            else if (dummySpell->Id == 44446 || dummySpell->Id == 44448)
             {
                 if (effIndex != EFFECT_INDEX_0)
                     return SPELL_AURA_PROC_OK;
+
                 Aura *counter = GetAura(triggeredByAura->GetId(), EFFECT_INDEX_1);
                 if (!counter)
                     return SPELL_AURA_PROC_OK;
 
                 // Count spell criticals in a row in second aura
-                Modifier *mod = counter->GetModifier();
+                Modifier* mod = counter->GetModifier();
                 if (procEx & PROC_EX_CRITICAL_HIT)
                 {
-                    mod->m_amount *=2;
+                    mod->m_amount *= 2;
                     if (mod->m_amount < 100) // not enough
                         return SPELL_AURA_PROC_OK;
                     // Critical counted -> roll chance
@@ -4152,6 +4160,10 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             {
                 // do not proc without Arcane Missiles learned
                 if (!HasSpell(5143))
+                    return SPELL_AURA_PROC_FAILED;
+
+                // do not proc with Hot Streak talent
+                if (HasSpell(44445))
                     return SPELL_AURA_PROC_FAILED;
 
                 // do not proc from Arane Missiles themselves
