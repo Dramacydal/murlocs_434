@@ -4124,6 +4124,11 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                         return SPELL_AURA_PROC_FAILED;
                 }
             }
+            else if (auraSpellInfo->SpellIconID == 4623)    // Invocation
+            {
+                // done in other way
+                return SPELL_AURA_PROC_FAILED;
+            }
             else if(auraSpellInfo->Id == 26467)             // Persistent Shield (Scarab Brooch trinket)
             {
                 // This spell originally trigger 13567 - Dummy Trigger (vs dummy effect)
