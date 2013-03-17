@@ -1306,10 +1306,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 if(!procSpell)
                     return SPELL_AURA_PROC_FAILED;
 
-                // mana cost save
+                // _base_ mana cost save
                 int32 cost = procSpell->GetManaCost() + procSpell->GetManaCostPercentage() * GetCreateMana() / 100;
-                if (Player* owner = GetSpellModOwner())
-                    owner->ApplySpellMod(dummySpell->Id, SPELLMOD_COST, cost);
 
                 basepoints[0] = cost * triggerAmount / 100;
                 if (basepoints[0] <= 0)
