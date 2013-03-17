@@ -11692,7 +11692,6 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     spellId1 = 68391;
                     break;
                 }
-                case 44401:                                 // Missile Barrage (triggered)
                 case 48108:                                 // Hot Streak (triggered)
                 case 57761:                                 // Fireball! (Brain Freeze triggered)
                 {

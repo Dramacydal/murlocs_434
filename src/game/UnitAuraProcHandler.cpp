@@ -475,12 +475,6 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, SpellAuraHolder* holder, S
     if(spellProcEvent && spellProcEvent->customChance)
         chance = spellProcEvent->customChance;
 
-    // Missile Barrage hack
-    if (spellProto->Id == 44404 || spellProto->Id == 54486 || spellProto->Id == 54488 || spellProto->Id == 54489 || spellProto->Id == 54490)
-        // Arcane Barrage, Fireball, Frostbolt, Frostfire Bolt
-        if (procSpell && procSpell->IsFitToFamilyMask(UI64LIT(0x367FE00000021)))
-            chance /= 2;
-
     // If PPM exist calculate chance from PPM
     if (spellProcEvent && spellProcEvent->ppmRate != 0)
     {
@@ -1502,11 +1496,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         return SPELL_AURA_PROC_FAILED;
 
                     SpellAuraHolder* holder;
-                    // Missile Barrage
-                    if (SpellAuraHolder* _holder = GetSpellAuraHolder(44401, GetObjectGuid()))
-                        holder = _holder;
                     // Hot Streak
-                    else if (SpellAuraHolder* _holder = GetSpellAuraHolder(48108, GetObjectGuid()))
+                    if (SpellAuraHolder* _holder = GetSpellAuraHolder(48108, GetObjectGuid()))
                         holder = _holder;
                     // Brain Freeze
                     else if (SpellAuraHolder* _holder = GetSpellAuraHolder(57761, GetObjectGuid()))
