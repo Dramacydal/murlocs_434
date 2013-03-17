@@ -1408,7 +1408,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         return SPELL_AURA_PROC_FAILED;
 
                     basepoints[0] = int32(triggerAmount * (damage + absorb) /
-                        GetSpellAuraMaxTicks(triggered_spell_id));
+                        GetSpellAuraMaxTicks(triggered_spell_id) / 100.0f);
 
                     basepoints[0] += target->GetRemainingDotDamage(triggered_spell_id, GetObjectGuid());
                     break;
