@@ -2731,6 +2731,8 @@ class MANGOS_DLL_SPEC Player : public Unit
             ObjectGuid swapTarget;
         } m_soulSwapData;
 
+        std::deque<ObjectGuid> m_livingBombTargets;
+
     private:
         void CreateOrDeletePremiumItem(bool create);
         void ApplyPremiumSpells(bool apply);
