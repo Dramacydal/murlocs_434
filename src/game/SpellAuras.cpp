@@ -1198,8 +1198,6 @@ void Aura::HandleAddModifier(bool apply, bool Real)
             case 54741:                                     // Firestarter
             case 57761:                                     // Fireball!
             case 64823:                                     // Elune's Wrath (Balance Druid T8 Set)
-            case 57529:                                     // Arcane Potency (Rank 1)
-            case 57531:                                     // Arcane Potency (Rank 2)
             case 63165:                                     // Decimation (Rank 1)
             case 63167:                                     // Decimation (Rank 2)
             case 74434:                                     // Soulburn
