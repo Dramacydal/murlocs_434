@@ -9516,7 +9516,7 @@ bool Unit::isVisibleForOrDetect(Unit const* u, WorldObject const* viewPoint, boo
 
         // SPELL_AURA_SEE_WHILE_INVISIBLE functionality
         if (invisible)
-            if (m_invisibilityMask == 0 && u->HasAura(SPELL_AURA_SEE_WHILE_INVISIBLE))
+            if (m_invisibilityMask == 0 && u->HasAuraType(SPELL_AURA_SEE_WHILE_INVISIBLE))
                 invisible = false;
 
         // none other cases for detect invisibility, so invisible
