@@ -5774,8 +5774,35 @@ SpellAuraProcResult Unit::HandleRemoveByDamageProc(Unit* pVictim, uint32 damage,
     if (procSpell && triggeredByAura->GetModifier()->m_auraname == SPELL_AURA_MOD_ROOT && (GetAllSpellMechanicMask(procSpell) & (1 << (MECHANIC_ROOT-1))))
         return SPELL_AURA_PROC_FAILED;
 
+    // Polymorph
+    if (GetSpellSpecific(triggeredByAura->GetId()) == SPELL_MAGE_POLYMORPH)
+    {
+        // Improved Polymorph Marker
+        if (!HasAura(87515))
+        {
+            if (Unit* caster = triggeredByAura->GetCaster())
+            {
+                if (caster->GetTypeId() == TYPEID_PLAYER)
+                {
+                    // find Improved Polymorph
+                    if (SpellEntry const * ip = ((Player*)caster)->GetKnownTalentRankById(11210))
+                    {
+                        // Improved Polymorph (Rank 1)
+                        if (ip->Id == 11210)
+                            CastSpell(this, 83046, true, NULL, triggeredByAura, caster->GetObjectGuid());
+                        // Improved Polymorph (Rank 2)
+                        else if (ip->Id == 12592)
+                            CastSpell(this, 83047, true, NULL, triggeredByAura, caster->GetObjectGuid());
+
+                        // Improved Polymorph Marker
+                        CastSpell(this, 87515, true);
+                    }
+                }
+            }
+        }
+    }
     // Hungering Cold
-    if (triggeredByAura->GetId() == 49203)
+    else if (triggeredByAura->GetId() == 49203)
     {
         // Damage from diseases does not break the freeze effect
         if (procSpell && (GetAllSpellMechanicMask(procSpell) & (1 << (MECHANIC_INFECTED-1))))
