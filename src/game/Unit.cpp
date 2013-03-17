@@ -4845,6 +4845,10 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
         {
             Player* player = (Player*)caster;
 
+            std::deque<ObjectGuid>::iterator curr = std::find(player->m_livingBombTargets.begin(), player->m_livingBombTargets.end(), GetObjectGuid());
+            if (curr != player->m_livingBombTargets.end())
+                player->m_livingBombTargets.erase(curr);
+
             // Living Bomb can only be at 3 targets at once
             while (player->m_livingBombTargets.size() >= 3)
             {
