@@ -4003,6 +4003,12 @@ void Spell::cast(bool skipCheck)
                 if (m_caster->HasAura(44543) || m_caster->HasAura(44545))
                     AddTriggeredSpell(44544);   // Fingers of Frost
             }
+            // Slow
+            else if (m_spellInfo->Id == 31589)
+            {
+                if (IsTriggeredSpell())
+                    AddPrecastSpell(86262);     // Nether Vortex
+            }
             // Fingers of Frost
             else if (m_spellInfo->Id == 44544)
                 AddPrecastSpell(74396);
