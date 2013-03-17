@@ -5803,7 +5803,7 @@ SpellAuraProcResult Unit::HandleRemoveByDamageProc(Unit* pVictim, uint32 damage,
                 if (caster->GetTypeId() == TYPEID_PLAYER)
                 {
                     // find Improved Polymorph
-                    if (SpellEntry const * ip = ((Player*)caster)->GetKnownTalentRankById(11210))
+                    if (SpellEntry const * ip = ((Player*)caster)->GetKnownTalentRankById(9142))
                     {
                         // Improved Polymorph (Rank 1)
                         if (ip->Id == 11210)
