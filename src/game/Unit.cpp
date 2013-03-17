@@ -2942,7 +2942,7 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
 
         RemainingDamage -= currentAbsorb;
 
-        // Fire Ward or Frost Ward or Ice Barrier (or Mana Shield)
+        // Mage Ward or Ice Barrier (or Mana Shield)
         // for Incanter's Absorption converting to spell power
         if (spellProto->IsFitToFamily(SPELLFAMILY_MAGE, UI64LIT(0x0000000000000000), 0x00000008))
             incanterAbsorption += currentAbsorb;
@@ -3012,7 +3012,7 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
             ApplyPowerMod(POWER_MANA, manaReduction, false);
         }
 
-        // Mana Shield (or Fire Ward or Frost Ward or Ice Barrier)
+        // Mana Shield (or Mage Ward or Ice Barrier)
         // for Incanter's Absorption converting to spell power
         if ((*i)->GetSpellProto()->IsFitToFamily(SPELLFAMILY_MAGE, UI64LIT(0x0000000000000000), 0x000008))
             incanterAbsorption += currentAbsorb;

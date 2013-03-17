@@ -10380,13 +10380,15 @@ void Aura::HandlePreventFleeing(bool apply, bool Real)
 
 void Aura::HandleManaShield(bool apply, bool Real)
 {
-    if(!Real)
+    if (!Real)
         return;
 
+    Unit* target = GetTarget();
+
     // prevent double apply bonuses
-    if(apply && (GetTarget()->GetTypeId()!=TYPEID_PLAYER || !((Player*)GetTarget())->GetSession()->PlayerLoading()))
+    if (apply && (target->GetTypeId() != TYPEID_PLAYER || !((Player*)target)->GetSession()->PlayerLoading()))
     {
-        if(Unit* caster = GetCaster())
+        if (Unit* caster = GetCaster())
         {
             float DoneActualBenefit = 0.0f;
             switch(GetSpellProto()->GetSpellFamilyName())
@@ -10400,6 +10402,24 @@ void Aura::HandleManaShield(bool apply, bool Real)
             DoneActualBenefit *= caster->CalculateLevelPenalty(GetSpellProto());
 
             m_modifier.m_amount += (int32)DoneActualBenefit;
+        }
+    }
+    else if (!apply)
+    {
+        // Mana Shield
+        if (GetId() == 1463)
+        {
+            // only from fully depleted shield
+            if (m_modifier.m_amount > 0)
+                return;
+
+            Unit* caster = GetCaster();
+            if (!caster || caster->GetTypeId() != TYPEID_PLAYER)
+                return;
+
+            // Incanters Absorbtion
+            if (((Player*)caster)->GetKnownTalentById(9188))
+                target->CastSpell(target, 86261, true);
         }
     }
 }
