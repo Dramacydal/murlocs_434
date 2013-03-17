@@ -1393,28 +1393,16 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 case 11119:
                 case 11120:
                 case 12846:
-                case 12847:
-                case 12848:
                 {
                     triggered_spell_id = 12654;
 
                     if (!procSpell || procSpell->Id == triggered_spell_id)
                         return SPELL_AURA_PROC_FAILED;
 
-                    switch (dummySpell->Id)
-                    {
-                        case 11119: basepoints[0] = int32(0.08f*(damage+absorb) / GetSpellAuraMaxTicks(triggered_spell_id)); break;
-                        case 11120: basepoints[0] = int32(0.16f*(damage+absorb) / GetSpellAuraMaxTicks(triggered_spell_id)); break;
-                        case 12846: basepoints[0] = int32(0.24f*(damage+absorb) / GetSpellAuraMaxTicks(triggered_spell_id)); break;
-                        case 12847: basepoints[0] = int32(0.32f*(damage+absorb) / GetSpellAuraMaxTicks(triggered_spell_id)); break;
-                        case 12848: basepoints[0] = int32(0.40f*(damage+absorb) / GetSpellAuraMaxTicks(triggered_spell_id)); break;
-                        default:
-                            ERROR_LOG("Unit::HandleDummyAuraProc: non handled spell id: %u (IG)",dummySpell->Id);
-                            return SPELL_AURA_PROC_FAILED;
-                    }
+                    basepoints[0] = int32(triggerAmount * (damage + absorb) /
+                        GetSpellAuraMaxTicks(triggered_spell_id));
 
                     basepoints[0] += target->GetRemainingDotDamage(triggered_spell_id, GetObjectGuid());
-
                     break;
                 }
                 // Empowered Fire (mana regen)
