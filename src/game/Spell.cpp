@@ -9429,6 +9429,36 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
 
             return true;
         }
+        case 12355: // Impact
+        {
+            Unit* currentTarget = m_targets.getUnitTarget();
+            if (!currentTarget)
+                return true;
+
+            // Ignite, Pyroblast, Living Bomb, Combustion
+            uint32 spellIds[4] = { 12654, 11366, 44457, 83853 };
+            SpellAuraHolder* dot = NULL;
+            for (int i = 0; i < 4 && !dot; ++i)
+                dot = currentTarget->GetSpellAuraHolder(spellIds[i], m_caster->GetObjectGuid());
+
+            if (dot)
+            {
+                m_targets.setDestination(currentTarget->GetPositionX(), currentTarget->GetPositionY(), currentTarget->GetPositionZ());
+
+                Spell::UnitList tempTargetUnitMap;
+                FillAreaTargets(tempTargetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_AOE_DAMAGE);
+                for (Spell::UnitList::iterator itr = tempTargetUnitMap.begin(); itr != tempTargetUnitMap.end(); ++itr)
+                {
+                    if (!(*itr)->CanFreeMove())
+                        continue;
+
+                    targetUnitMap.push_back(*itr);
+                }
+            }
+
+            targetUnitMap.remove(currentTarget);
+            return true;
+        }
         case 19185: // Entrapment
         case 64803:
         case 64804:

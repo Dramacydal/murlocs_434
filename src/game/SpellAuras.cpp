@@ -6186,6 +6186,12 @@ void Aura::HandleAuraProcTriggerSpell(bool apply, bool Real)
             if(apply)
                 GetHolder()->SetAuraCharges(6);
             break;
+        case 64343:                                         // Impact
+        {
+            if (target->GetTypeId() == TYPEID_PLAYER)
+                ((Player*)target)->RemoveSpellCooldown(2136, true);
+            break;
+        }
         case 75806:                                         // Grand Crusader (Rank 1)
         case 85043:                                         // Grand Crusader (Rank 2)
         {

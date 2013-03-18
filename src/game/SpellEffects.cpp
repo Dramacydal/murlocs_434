@@ -12155,6 +12155,78 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
             }
             break;
         }
+        case SPELLFAMILY_MAGE:
+        {
+            switch (m_spellInfo->Id)
+            {
+                case 11129:                                     // Combustion
+                {
+                    if (!unitTarget)
+                        return;
+
+                    // Ignite, Pyroblast, Living Bomb
+                    uint32 spellIds[3] = { 12654, 11366, 44457 };
+
+                    int32 bp = 0;
+                    for (uint8 i = 0; i < 3; ++i)
+                    {
+                        if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(spellIds[i], m_caster->GetObjectGuid()))
+                        {
+                            for (int j = 0; j < MAX_EFFECT_INDEX; ++j)
+                                if (Aura* aura = holder->GetAuraByEffectIndex(SpellEffectIndex(j)))
+                                {
+                                    if (aura->GetModifier()->m_auraname != SPELL_AURA_PERIODIC_DAMAGE)
+                                        continue;
+
+                                    int32 mod = aura->GetModifier()->m_amount;
+                                    uint32 dmgClass = holder->GetSpellProto()->GetDmgClass();
+                                    if (dmgClass == SPELL_DAMAGE_CLASS_NONE || dmgClass == SPELL_DAMAGE_CLASS_MAGIC)
+                                        mod = unitTarget->SpellDamageBonusTaken(m_caster, holder->GetSpellProto(), mod, DOT, holder->GetStackAmount());
+
+                                    bp += mod * IN_MILLISECONDS / aura->GetModifier()->periodictime;
+                                    break;
+                                }
+                        }
+                    }
+
+                    if (bp)
+                        m_caster->CastCustomSpell(unitTarget, 83853, &bp, NULL, NULL, true);
+                    return;
+                }
+                case 12355:                                     // Impact
+                {
+                    if (!unitTarget)
+                        return;
+
+                    Unit* mainTarget = m_targets.getUnitTarget();
+                    if (!mainTarget)
+                        return;
+
+                    // Pyroblast
+                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(11366, m_caster->GetObjectGuid()))
+                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_1))
+                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
+                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                    // Ignite
+                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(12654, m_caster->GetObjectGuid()))
+                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
+                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                    // Living Bomb
+                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(44457, m_caster->GetObjectGuid()))
+                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
+                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                    // Combustion
+                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(83853, m_caster->GetObjectGuid()))
+                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
+                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                    return;
+                }
+            }
+            break;
+        }
     }
 
     // normal DB scripted effect

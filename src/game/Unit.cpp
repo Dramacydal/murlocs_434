@@ -13836,10 +13836,11 @@ float Unit::GetPathLength(float destX, float destY, float destZ, bool forceDest,
     return dist;
 }
 
-void Unit::_AddAura(uint32 spellID, uint32 duration)
+Aura* Unit::_AddAura(uint32 spellID, uint32 duration, Unit* caster)
 {
     SpellEntry const *spellInfo = sSpellStore.LookupEntry( spellID );
 
+    Aura* aura = NULL;
     if (spellInfo)
     {
         if (IsSpellAppliesAura(spellInfo, (1 << EFFECT_INDEX_0) | (1 << EFFECT_INDEX_1) | (1 << EFFECT_INDEX_2)) || IsSpellHaveEffect(spellInfo, SPELL_EFFECT_PERSISTENT_AREA_AURA))
@@ -13859,7 +13860,7 @@ void Unit::_AddAura(uint32 spellID, uint32 duration)
                     effect->Effect == SPELL_EFFECT_APPLY_AURA   ||
                     effect->Effect == SPELL_EFFECT_PERSISTENT_AREA_AURA)
                 {
-                    Aura *aura = CreateAura(spellInfo, SpellEffectIndex(i), NULL, holder, this, NULL, NULL);
+                    aura = CreateAura(spellInfo, SpellEffectIndex(i), NULL, holder, this, caster, NULL);
                     holder->AddAura(aura, SpellEffectIndex(i));
                     holder->SetAuraDuration(duration);
                     DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Manually adding aura of spell %u, index %u, duration %u ms", spellID, i, duration);
@@ -13868,6 +13869,8 @@ void Unit::_AddAura(uint32 spellID, uint32 duration)
             AddSpellAuraHolder(holder);
         }
     }
+
+    return aura;
 }
 
 void Unit::SendMonsterMoveExitVehicle(float x, float y, float z)
