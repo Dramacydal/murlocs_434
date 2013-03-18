@@ -8541,8 +8541,24 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                 }
             }
         }
+        // Mage Ward
+        if (spellProto->Id == 543)
+        {
+            // only from fully depleted shield
+            if (m_modifier.m_amount > 0)
+                return;
+
+            Unit* caster = GetCaster();
+            if (!caster || caster->GetTypeId() != TYPEID_PLAYER)
+                return;
+
+            // Molten Shields
+            if (caster->HasAura(11094))
+                target->CastSpell(target, 31643, true);
+            return;
+        }
         // Ranger: Glyph of Guardian Spirit (http://getmangos.com/community/post/119077/)
-        if (spellProto->Id == 47788)
+        else if (spellProto->Id == 47788)
         {
             if (m_removeMode != AURA_REMOVE_BY_EXPIRE)
                 return;
@@ -10418,6 +10434,8 @@ void Aura::HandleManaShield(bool apply, bool Real)
             // Incanters Absorbtion
             if (((Player*)caster)->GetKnownTalentById(9188))
                 target->CastSpell(target, 86261, true);
+
+            return;
         }
     }
 }
