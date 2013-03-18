@@ -810,6 +810,58 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                 }
                 break;
             }
+            case SPELLFAMILY_MAGE:
+            {
+                switch (m_spellInfo->Id)
+                {
+                    case 11113:         // Blast Wave
+                    {
+                        // Search Improved Firestarter talent
+                        int32 ifsChance = 0;
+
+                        Unit::AuraList const& mDummyAuras = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
+                        for (Unit::AuraList::const_iterator itr = mDummyAuras.begin(); itr != mDummyAuras.end(); ++itr)
+                        {
+                            if ((*itr)->GetSpellProto()->SpellIconID == 37 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_MAGE &&
+                                (*itr)->GetEffIndex() == EFFECT_INDEX_0)
+                            {
+                                ifsChance = (*itr)->GetModifier()->m_amount;
+                                break;
+                            }
+                        }
+
+                        if (roll_chance_i(ifsChance))
+                        {
+                            int32 count = 0;
+                            bool needBreak = false;
+
+                            // count affected targets, only for first affected
+                            for (TargetList::iterator itr = m_UniqueTargetInfo.begin(); itr != m_UniqueTargetInfo.end(); ++itr)
+                            {
+                                if ((itr->effectMask & (1 << effect->EffectIndex)) == 0)
+                                    continue;
+
+                                if (itr->targetGUID == unitTarget->GetObjectGuid() && count > 0)
+                                {
+                                    needBreak = true;
+                                    break;
+                                }
+
+                                ++count;
+                            }
+
+                            if (needBreak)
+                                break;
+
+                            // cast Flame Strike
+                            if (count >= 2)
+                                m_caster->CastSpell(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, 2120, true);
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
             case SPELLFAMILY_WARLOCK:
             {
                 // Shadowflame
@@ -13112,11 +13164,6 @@ void Spell::EffectKnockBack(SpellEffectEntry const* effect)
     // Thunderstorm
     if (m_spellInfo->IsFitToFamily(SPELLFAMILY_SHAMAN, UI64LIT(0x00200000000000)))
         if (m_caster->HasAura(62132))         // Glyph of Thunderstorm
-            return;
-
-    // Blast Wave
-    if (m_spellInfo->IsFitToFamily(SPELLFAMILY_MAGE, UI64LIT(0x0004000000000)))
-        if (m_caster->HasAura(62126))         // Glyph of Blast Wave
             return;
 
     // Instantly interrupt non melee spells being casted
