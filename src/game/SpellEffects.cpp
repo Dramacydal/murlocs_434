@@ -13185,12 +13185,17 @@ void Spell::EffectDispelMechanic(SpellEffectEntry const* effect)
     if (!unitTarget)
         return;
 
+    int32 count = damage;
+
+    if (!count && m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_GENERIC)
+        count = 1;
+
     uint32 mechanic = effect->EffectMiscValue;
 
     std::set<uint32> toRemoveSpellList;
     std::set<uint32> failSpellList;
     Unit::SpellAuraHolderMap& Auras = unitTarget->GetSpellAuraHolderMap();
-    for(Unit::SpellAuraHolderMap::iterator iter = Auras.begin(); iter != Auras.end(); ++iter)
+    for(Unit::SpellAuraHolderMap::iterator iter = Auras.begin(); iter != Auras.end() && count > 0; ++iter)
     {
         SpellAuraHolder* holder = iter->second;
         if (holder->HasMechanic(mechanic))
@@ -13202,6 +13207,7 @@ void Spell::EffectDispelMechanic(SpellEffectEntry const* effect)
                 toRemoveSpellList.insert(holder->GetId());
             else
                 failSpellList.insert(holder->GetId());
+            --count;
         }
     }
 
