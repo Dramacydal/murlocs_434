@@ -5475,19 +5475,7 @@ SpellAuraProcResult Unit::HandleAddPctModifierAuraProc(Unit* pVictim, uint32 /*d
     switch(spellInfo->GetSpellFamilyName())
     {
         case SPELLFAMILY_MAGE:
-        {
-            // Combustion
-            if (spellInfo->Id == 11129)
-            {
-                //last charge and crit
-                if (triggeredByAura->GetHolder()->GetAuraCharges() <= 1 && (procEx & PROC_EX_CRITICAL_HIT) )
-                    return SPELL_AURA_PROC_OK;                        // charge counting (will removed)
-
-                CastSpell(this, 28682, true, castItem, triggeredByAura);
-                return (procEx & PROC_EX_CRITICAL_HIT) ? SPELL_AURA_PROC_OK : SPELL_AURA_PROC_FAILED; // charge update only at crit hits, no hidden cooldowns
-            }
             break;
-        }
         case SPELLFAMILY_WARLOCK:
         {
             // Soulburn
