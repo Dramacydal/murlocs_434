@@ -606,6 +606,8 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
     memset(m_voidStorageItems, NULL, VOID_STORAGE_MAX_SLOT * sizeof(VoidStorageItem*));
 
     m_rootTimes = 0;
+
+    m_pyromaniacCounter = 0;
 }
 
 Player::~Player ()

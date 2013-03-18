@@ -2732,6 +2732,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         } m_soulSwapData;
 
         std::deque<ObjectGuid> m_livingBombTargets;
+        int32 m_pyromaniacCounter;
 
     private:
         void CreateOrDeletePremiumItem(bool create);
