@@ -7541,8 +7541,25 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
     {
         case SPELLFAMILY_MAGE:
         {
+            // Forstbolt
+            if (spellProto->Id == 116)
+            {
+                if (pVictim->isFrozen() || IsIgnoreUnitState(spellProto, IGNORE_UNIT_TARGET_NON_FROZEN))
+                {
+                    // search Shatter
+                    Unit::AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                    for (Unit::AuraList::const_iterator itr = mDummyAuras.begin(); itr != mDummyAuras.end(); ++itr)
+                    {
+                        if ((*itr)->GetSpellProto()->SpellIconID == 976 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_MAGE)
+                        {
+                            DoneTotalMod *= ((*itr)->GetModifier()->m_amount + 100.0f) / 100.0f;
+                            break;
+                        }
+                    }
+                }
+            }
             // Ice Lance
-            if (spellProto->SpellIconID == 186)
+            else if (spellProto->SpellIconID == 186)
             {
                 if (pVictim->isFrozen() || IsIgnoreUnitState(spellProto, IGNORE_UNIT_TARGET_NON_FROZEN))
                     DoneTotalMod *= 2.0f;
@@ -7933,6 +7950,8 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
     if (spellProto->HasAttribute(SPELL_ATTR_EX2_CANT_CRIT))
         return false;
 
+    bool applySpellMod = true;
+
     float crit_chance = 0.0f;
     switch(spellProto->GetDmgClass())
     {
@@ -7969,11 +7988,22 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                 {
                     if (!((*i)->isAffectedOnSpell(spellProto)))
                         continue;
+
                     switch((*i)->GetModifier()->m_miscvalue)
                     {
-                        case  849: if (pVictim->isFrozen() || IsIgnoreUnitState(spellProto, IGNORE_UNIT_TARGET_NON_FROZEN)) crit_chance+= 17.0f; break; //Shatter Rank 1
-                        case  910: if (pVictim->isFrozen() || IsIgnoreUnitState(spellProto, IGNORE_UNIT_TARGET_NON_FROZEN)) crit_chance+= 34.0f; break; //Shatter Rank 2
-                        case  911: if (pVictim->isFrozen() || IsIgnoreUnitState(spellProto, IGNORE_UNIT_TARGET_NON_FROZEN)) crit_chance+= 50.0f; break; //Shatter Rank 3
+                        case 911:                           // Shatter
+                        {
+                            applySpellMod = false;
+                            if(Player* modOwner = GetSpellModOwner())
+                                modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_CRITICAL_CHANCE, crit_chance);
+
+                            if (pVictim->isFrozen() || IsIgnoreUnitState(spellProto, IGNORE_UNIT_TARGET_NON_FROZEN))
+                                if ((*i)->GetId() == 11170)
+                                    crit_chance *= 2;
+                                else
+                                    crit_chance *= 3;
+                            break;
+                         }
                         case 7917:                          // Glyph of Shadowburn
                             if (pVictim->HasAuraState(AURA_STATE_HEALTHLESS_35_PERCENT))
                                 crit_chance+=(*i)->GetModifier()->m_amount;
@@ -8165,8 +8195,9 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
     }
     // percent done
     // only players use intelligence for critical chance computations
-    if(Player* modOwner = GetSpellModOwner())
-        modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_CRITICAL_CHANCE, crit_chance);
+    if (applySpellMod)
+        if (Player* modOwner = GetSpellModOwner())
+            modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_CRITICAL_CHANCE, crit_chance);
 
     crit_chance = crit_chance > 0.0f ? crit_chance : 0.0f;
     bool result = roll_chance_f(crit_chance);
