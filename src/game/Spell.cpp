@@ -9405,32 +9405,11 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
     // Resulting effect depends on spell that we want to cast
     switch (m_spellInfo->Id)
     {
-        /// Adonai, bug #34 spell 1
-        case 82691: // Ring of Frost trigger spell
-        {
-            // Need to trigger this only when ring is fully deployed...
-            if(m_targets.getUnitTarget() && m_targets.getUnitTarget()->HasAura(91264))
-                return true;
-            
-            // ... and only once per target ...
-            FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_NOT_FRIENDLY);
-            for (UnitList::iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end();)
-            {
-                if ((*itr)->HasAura(m_spellInfo->Id))
-                    itr = targetUnitMap.erase(itr);
-                else
-                    ++itr;
-            }
-
-            // ... and has max 10 targets
-            Aura* triggerAura = m_caster->GetAura(m_triggeredByAuraSpell->Id, EFFECT_INDEX_1); // well I dunno... Are really all periodic auras placed at caster and only triggerSpell points at target?
-            if(triggerAura)
-                triggerAura->GetModifier()->m_amount -= targetUnitMap.size();
-
-            return true;
-        }
         case 12355: // Impact
         {
+            if (effIndex != EFFECT_INDEX_1)
+                return false;
+
             Unit* currentTarget = m_targets.getUnitTarget();
             if (!currentTarget)
                 return true;
@@ -10005,6 +9984,30 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
                 return true;
             }
             return false;
+        }
+        /// Adonai, bug #34 spell 1
+        case 82691: // Ring of Frost trigger spell
+        {
+            // Need to trigger this only when ring is fully deployed...
+            if(m_targets.getUnitTarget() && m_targets.getUnitTarget()->HasAura(91264))
+                return true;
+            
+            // ... and only once per target ...
+            FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_NOT_FRIENDLY);
+            for (UnitList::iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end();)
+            {
+                if ((*itr)->HasAura(m_spellInfo->Id))
+                    itr = targetUnitMap.erase(itr);
+                else
+                    ++itr;
+            }
+
+            // ... and has max 10 targets
+            Aura* triggerAura = m_caster->GetAura(m_triggeredByAuraSpell->Id, EFFECT_INDEX_1); // well I dunno... Are really all periodic auras placed at caster and only triggerSpell points at target?
+            if(triggerAura)
+                triggerAura->GetModifier()->m_amount -= targetUnitMap.size();
+
+            return true;
         }
         default:
         {
