@@ -9055,6 +9055,37 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     m_caster->CastSpell(m_caster,spell_id,true,NULL);
                     return;
                 }
+                case 12355:                                     // Impact
+                {
+                    if (!unitTarget)
+                        return;
+
+                    Unit* mainTarget = m_targets.getUnitTarget();
+                    if (!mainTarget)
+                        return;
+
+                    // Pyroblast
+                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(11366, m_caster->GetObjectGuid()))
+                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_1))
+                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
+                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                    // Ignite
+                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(12654, m_caster->GetObjectGuid()))
+                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
+                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                    // Living Bomb
+                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(44457, m_caster->GetObjectGuid()))
+                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
+                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                    // Combustion
+                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(83853, m_caster->GetObjectGuid()))
+                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
+                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                    return;
+                }
                 case 17512:                                 // Piccolo of the Flaming Fire
                 {
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
@@ -12191,37 +12222,6 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
 
                     if (bp)
                         m_caster->CastCustomSpell(unitTarget, 83853, &bp, NULL, NULL, true);
-                    return;
-                }
-                case 12355:                                     // Impact
-                {
-                    if (!unitTarget)
-                        return;
-
-                    Unit* mainTarget = m_targets.getUnitTarget();
-                    if (!mainTarget)
-                        return;
-
-                    // Pyroblast
-                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(11366, m_caster->GetObjectGuid()))
-                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_1))
-                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
-                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
-                    // Ignite
-                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(12654, m_caster->GetObjectGuid()))
-                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
-                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
-                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
-                    // Living Bomb
-                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(44457, m_caster->GetObjectGuid()))
-                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
-                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
-                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
-                    // Combustion
-                    if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(83853, m_caster->GetObjectGuid()))
-                        if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
-                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
-                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
                     return;
                 }
             }
