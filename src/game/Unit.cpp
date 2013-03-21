@@ -13845,7 +13845,7 @@ Aura* Unit::_AddAura(uint32 spellID, uint32 duration, Unit* caster)
     {
         if (IsSpellAppliesAura(spellInfo, (1 << EFFECT_INDEX_0) | (1 << EFFECT_INDEX_1) | (1 << EFFECT_INDEX_2)) || IsSpellHaveEffect(spellInfo, SPELL_EFFECT_PERSISTENT_AREA_AURA))
         {
-            SpellAuraHolder* holder = CreateSpellAuraHolder(spellInfo, this, this);
+            SpellAuraHolder* holder = CreateSpellAuraHolder(spellInfo, this, caster ? caster : this);
 
             for (uint8 i = 0; i < MAX_EFFECT_INDEX; ++i)
             {
