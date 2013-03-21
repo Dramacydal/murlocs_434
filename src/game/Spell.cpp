@@ -2144,10 +2144,13 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
         {
             switch(m_spellInfo->Id)
             {
-            case 38194:                   // Blink
-            case 82734:                   // Flame Orb DMG Spell
-                unMaxTargets = 1;
-                break;
+                case 38194:                     // Blink
+                case 82734:                     // Flame Orb DMG Spell
+                    unMaxTargets = 1;
+                    break;
+                case 83154:                     // Piercing Chill
+                    unMaxTargets = m_caster->HasAura(83157) ? 2 : 1;
+                    break;
             }
             break;
         }
@@ -2778,8 +2781,8 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                         m_targets.setDestination(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ());
 
                     FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_AOE_DAMAGE);
-                    // Jinx: Curse of the Elements
-                    if (m_spellInfo->Id == 85547 || m_spellInfo->Id == 86105)
+                    // Jinx: Curse of the Elements, Piercing Chill
+                    if (m_spellInfo->Id == 85547 || m_spellInfo->Id == 86105 || m_spellInfo->Id == 83154)
                         targetUnitMap.remove(m_targets.getUnitTarget());
                     break;
                 }
@@ -9991,7 +9994,7 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
             // Need to trigger this only when ring is fully deployed...
             if(m_targets.getUnitTarget() && m_targets.getUnitTarget()->HasAura(91264))
                 return true;
-            
+
             // ... and only once per target ...
             FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_NOT_FRIENDLY);
             for (UnitList::iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end();)

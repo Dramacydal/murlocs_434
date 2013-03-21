@@ -1459,6 +1459,12 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectBasePoints = 25;
                 break;
             }
+            case 83154:                         // Piercing Chill
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_2))
+                    eff->EffectImplicitTargetA = TARGET_CURRENT_ENEMY_COORDINATES;
+                break;
+            }
             case 88611:                         // Smoke Bomb
             {
                 spell->Attributes |= SPELL_ATTR_CANT_CANCEL;
