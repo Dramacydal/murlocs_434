@@ -3119,7 +3119,7 @@ void Unit::CalculateDamageAbsorbAndResist(Unit *pCaster, SpellSchoolMask schoolM
                 // Cauterize
                 else if (preventDeathSpell->SpellIconID == 3878)
                 {
-                    int32 bp = int32(spellProto->CalculateSimpleValue(EFFECT_INDEX_1) * GetMaxHealth() / 100.0f);
+                    int32 bp = int32(preventDeathSpell->CalculateSimpleValue(EFFECT_INDEX_1) * GetMaxHealth() / 100.0f);
                     CastCustomSpell(this, 87023, NULL, &bp, NULL, true);
                     ((Player*)this)->AddSpellCooldown(87023, 0, time(NULL) + 60);
                     RemainingDamage = 0;
