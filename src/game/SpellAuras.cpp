@@ -5902,8 +5902,30 @@ void Aura::HandleAuraModDecreaseSpeed(bool apply, bool Real)
 
     if (apply)
     {
+        // Cone of Cold
+        if (GetId() == 120)
+        {
+            if (Unit* caster = GetCaster())
+            {
+                // Search Improved Cone of Cold
+                Unit::AuraList const& mDummyAuras = caster->GetAurasByType(SPELL_AURA_DUMMY);
+                for (Unit::AuraList::const_iterator itr = mDummyAuras.begin(); itr != mDummyAuras.end(); ++itr)
+                {
+                    if ((*itr)->GetSpellProto()->SpellIconID == 35 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_MAGE)
+                    {
+                        // Rank 1
+                        if ((*itr)->GetId() == 11190)
+                            target->CastSpell(target, 83301, true, NULL, this, caster->GetObjectGuid());
+                        // Rank 2
+                        else if ((*itr)->GetId() == 12489)
+                            target->CastSpell(target, 83302, true, NULL, this, caster->GetObjectGuid());
+                        break;
+                    }
+                }
+            }
+        }
         // Gronn Lord's Grasp, becomes stoned
-        if (GetId() == 33572)
+        else if (GetId() == 33572)
         {
             if (GetStackAmount() >= 5 && !target->HasAura(33652))
                 target->CastSpell(target, 33652, true);
