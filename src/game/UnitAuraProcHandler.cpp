@@ -5329,24 +5329,22 @@ SpellAuraProcResult Unit::HandleAddFlatModifierAuraProc(Unit* pVictim, uint32 /*
 {
     SpellEntry const *spellInfo = triggeredByAura->GetSpellProto();
 
-    switch(spellInfo->GetSpellFamilyName())
+    switch (spellInfo->GetSpellFamilyName())
     {
         case SPELLFAMILY_MAGE:
         {
-            //switch (spellInfo->Id)
-            //{
-            //    case 11175:                         // Permafrost (Rank 1)
-            //    case 12569:                         // Permafrost (Rank 2)
-            //    case 12571:                         // Permafrost (Rank 3)
-            //    {
-            //        if (triggeredByAura->GetEffIndex() != EFFECT_INDEX_2)
-            //            return SPELL_AURA_PROC_FAILED;
+            switch (spellInfo->Id)
+            {
+                case 83049:                         // Early Frost
+                case 83050:
+                {
+                    if (triggeredByAura->GetEffIndex() != EFFECT_INDEX_0)
+                        return SPELL_AURA_PROC_FAILED;
 
-            //        int32 bp0 = triggeredByAura->GetModifier()->m_amount;
-            //        CastCustomSpell(pVictim, 68391, &bp0, NULL, NULL, true);
-            //        return SPELL_AURA_PROC_OK;
-            //    }
-            //}
+                    CastSpell(this, spellInfo->Id == 83049 ? 83162 : 83239, true);
+                    break;
+                }
+            }
             break;
         }
         case SPELLFAMILY_WARRIOR:
