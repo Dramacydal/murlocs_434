@@ -7563,6 +7563,10 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
             {
                 if (pVictim->isFrozen() || IsIgnoreUnitState(spellProto, IGNORE_UNIT_TARGET_NON_FROZEN))
                     DoneTotalMod *= 2.0f;
+
+                // Fingers of Frost
+                if (HasAura(44544))
+                    DoneTotalMod *= 1.25f;
             }
 
             bool snaredOrSlowed = pVictim->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED);

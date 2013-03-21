@@ -2503,11 +2503,6 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if (spellInfo_1->SpellIconID == 187 && spellInfo_2->SpellIconID == 816 ||
                     spellInfo_2->SpellIconID == 187 && spellInfo_1->SpellIconID == 816)
                     return false;
-
-                // Fingers of Frost dummy and ignore unit state aura
-                if (spellInfo_1->Id == 44544 && spellInfo_2->Id == 74396 ||
-                    spellInfo_2->Id == 44544 && spellInfo_1->Id == 74396)
-                    return false;
             }
             // Detect Invisibility and Mana Shield (multi-family check)
             if( spellInfo_2->Id == 132 && spellInfo_1->SpellIconID == 209 && spellInfo_1->SpellVisual[0] == 968 )

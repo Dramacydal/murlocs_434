@@ -4137,6 +4137,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                         return SPELL_AURA_PROC_FAILED;
                 }
             }
+            else if (auraSpellInfo->SpellIconID == 2947)    // Fingers of Frost
+            {
+                if (!roll_chance_i(triggerAmount))
+                    return SPELL_AURA_PROC_FAILED;
+                break;
+            }
             else if (auraSpellInfo->SpellIconID == 4623)    // Invocation
             {
                 // done in other way
@@ -5119,13 +5125,6 @@ SpellAuraProcResult Unit::HandleOverrideClassScriptAuraProc(Unit *pVictim, uint3
             if (!procSpell || procSpell->SpellVisual[0] != 9487)
                 return SPELL_AURA_PROC_FAILED;
             triggered_spell_id = 12485;
-            break;
-        }
-        case 989:                                           // Improved Blizzard (Rank 3)
-        {
-            if (!procSpell || procSpell->SpellVisual[0] != 9487)
-                return SPELL_AURA_PROC_FAILED;
-            triggered_spell_id = 12486;
             break;
         }
         case 4533:                                          // Dreamwalker Raiment 2 pieces bonus
