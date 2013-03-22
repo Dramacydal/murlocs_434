@@ -7541,7 +7541,7 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
     {
         case SPELLFAMILY_MAGE:
         {
-            // Forstbolt
+            // Frostbolt
             if (spellProto->Id == 116)
             {
                 if (pVictim->isFrozen() || IsIgnoreUnitState(spellProto, IGNORE_UNIT_TARGET_NON_FROZEN))
