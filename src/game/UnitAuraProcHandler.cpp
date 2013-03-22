@@ -5320,6 +5320,18 @@ SpellAuraProcResult Unit::HandleIgnoreUnitStateAuraProc(Unit* pVictim, uint32 da
             }
             break;
         }
+        case SPELLFAMILY_MAGE:
+        {
+            // Fingers of Frost
+            if (spellProto->Id == 44544)
+            {
+                Unit* target = triggeredByAura->GetTarget();
+                // Remove only single aura from stack
+                if (triggeredByAura->GetHolder()->ModStackAmount(-1))
+                    target->RemoveSpellAuraHolder(triggeredByAura->GetHolder());
+            }
+            break;
+        }
     }
 
     return SPELL_AURA_PROC_OK;

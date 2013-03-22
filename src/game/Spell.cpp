@@ -10015,8 +10015,7 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
             if (m_spellInfo->IsFitToFamily(SPELLFAMILY_PRIEST, UI64LIT(0x80000000000000)) ||
                 m_spellInfo->IsFitToFamily(SPELLFAMILY_PALADIN, UI64LIT(0x200000)) && m_spellInfo->GetSpellEffectIdByIndex(EFFECT_INDEX_0) == SPELL_EFFECT_DUMMY)
             {
-                Unit* target = m_targets.getUnitTarget();
-                if (target)
+                if (Unit* target = m_targets.getUnitTarget())
                 {
                     if (m_caster->IsFriendlyTo(target))
                     {
