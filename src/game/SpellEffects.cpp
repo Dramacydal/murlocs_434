@@ -7712,7 +7712,8 @@ void Spell::DoSummonGuardian(SpellEffectEntry const * effect, uint32 forceFactio
         if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
         {
             // Summon in random point all other units if location present
-            if (count > 0)
+            // do not randomize for Ring of Frost
+            if (count > 0 && m_spellInfo->Id != 82676)
             {
                 float x, y, z;
                 m_caster->GetRandomPoint(center_x, center_y, center_z, radius, x, y, z);
