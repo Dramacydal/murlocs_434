@@ -81,7 +81,7 @@ struct MANGOS_DLL_DECL npc_mage_orbAI : public ScriptedAI
             }
         }
 
-        if (m_seekTimer)
+        if (m_seekTimer && m_creature->GetOwnerGuid())
         {
             if (m_seekTimer < diff)
                 m_creature->ForcedDespawn(500);
