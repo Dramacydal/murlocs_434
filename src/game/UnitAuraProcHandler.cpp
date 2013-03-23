@@ -4133,6 +4133,9 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     if (GetTypeId() != TYPEID_PLAYER)
                         return SPELL_AURA_PROC_FAILED;
 
+                    if (GetHealthPercent() > 50.0f)
+                        return SPELL_AURA_PROC_FAILED;
+
                     trigger_spell_id = 11426;
                     if (HasAura(trigger_spell_id) || ((Player*)this)->HasSpellCooldown(trigger_spell_id))
                         return SPELL_AURA_PROC_FAILED;
