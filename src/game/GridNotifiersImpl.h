@@ -40,75 +40,14 @@ inline void MaNGOS::VisibleNotifier::Visit(GridRefManager<T> &m)
     }
 }
 
-inline void MaNGOS::ObjectUpdater::Visit(CreatureMapType &m)
-{
-    uint32  lastUpdateTime;
-    uint32  diffTime;
-    uint32  minUpdateTime = 0;
-    uint32  visitorsCount = 0;
-    uint8   visitCount = 1;
-    std::vector<uint32> lastUpdateTimeList;
-    lastUpdateTimeList.clear();
-
-    for (CreatureMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
-    {
-        ++visitorsCount;
-        lastUpdateTime = iter->getSource()->GetLastUpdateTime();
-        if (lastUpdateTime == 0)
-        {
-            iter->getSource()->SetLastUpdateTime();
-            lastUpdateTime = iter->getSource()->GetLastUpdateTime();
-        }
-        lastUpdateTimeList.push_back(lastUpdateTime);
-    }
-
-    if (visitorsCount == 0)
-        return;
-
-    std::unique(lastUpdateTimeList.begin(), lastUpdateTimeList.end());
-    std::sort(lastUpdateTimeList.begin(), lastUpdateTimeList.end());
-
-    if (lastUpdateTimeList.empty())
-        return;
-
-    if (visitorsCount > sWorld.getConfig(CONFIG_UINT32_MAPUPDATE_MAXVISITORS))
-        minUpdateTime = lastUpdateTimeList.at(sWorld.getConfig(CONFIG_UINT32_MAPUPDATE_MAXVISITORS));
-    else
-        minUpdateTime = lastUpdateTimeList.at(visitorsCount-1);
-
-    if (visitorsCount > 500 )
-        for (CreatureMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
-        {
-            sLog.outError("%s, visitorsCount: %u", iter->getSource()->GetGuidStr().c_str(), visitorsCount);
-        }
-
-    for (CreatureMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
-    {
-        lastUpdateTime = iter->getSource()->GetLastUpdateTime();
-        diffTime = WorldTimer::getMSTimeDiff(lastUpdateTime, WorldTimer::getMSTime());
-
-        if (diffTime < (iter->getSource()->IsInCombat() ? 
-            sWorld.getConfig(CONFIG_UINT32_INTERVAL_MAPUPDATE) : 5 * sWorld.getConfig(CONFIG_UINT32_INTERVAL_MAPUPDATE)) || 
-            lastUpdateTime > minUpdateTime)
-            continue;
-
-        WorldObject::UpdateHelper helper(iter->getSource());
-        helper.Update(diffTime);
-        iter->getSource()->SetLastUpdateTime();
-        visitCount++;
-        if (visitCount > sWorld.getConfig(CONFIG_UINT32_MAPUPDATE_MAXVISITS))
-            break;
-    }
-}
-
-/*inline void MaNGOS::ObjectUpdater::Visit(CreatureMapType & m)
+inline void MaNGOS::ObjectUpdater::Visit(CreatureMapType & m)
 {
     for (CreatureMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
     {
         WorldObject::UpdateHelper helper(iter->getSource());
         helper.Update(i_timeDiff);
     }
-}*/
+}
 
 inline void PlayerCreatureRelocationWorker(Player* pl, Creature* c)
 {
