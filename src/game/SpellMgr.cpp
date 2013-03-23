@@ -5056,7 +5056,7 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
             if  (spellproto->SpellIconID == 1548)
                 return DIMINISHING_DRAGONS_BREATH;
             //Shattered Barrier
-            else if (spellproto->Id == 55080)
+            else if (spellproto->Id == 55080 || spellproto->Id == 83073)
                 return DIMINISHING_TRIGGER_ROOT;
             // Frost Nova / Freeze (Water Elemental)
             else if (spellproto->SpellIconID == 193)
@@ -5064,6 +5064,9 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
             // Slow
             else if (spellproto->Id == 31589)
                 return DIMINISHING_LIMITONLY;
+            // Improved Cone of Cold
+            else if (spellproto->Id == 83301 || spellproto->Id == 83302)
+                return DIMINISHING_TRIGGER_ROOT;
             break;
         case SPELLFAMILY_ROGUE:
         {
