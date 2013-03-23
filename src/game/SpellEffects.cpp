@@ -859,6 +859,50 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                         }
                         break;
                     }
+                    case 33395:         // Freeze
+                    {
+                        Unit* owner = m_caster->GetOwner();
+                        if (!owner || owner->GetTypeId() != TYPEID_PLAYER)
+                            break;
+
+                        bool needBreak = false;
+                        // only first target
+                        for (TargetList::iterator itr = m_UniqueTargetInfo.begin(); itr != m_UniqueTargetInfo.end(); ++itr)
+                        {
+                            if ((itr->effectMask & (1 << effect->EffectIndex)) == 0)
+                                continue;
+
+                            if (itr->targetGUID != unitTarget->GetObjectGuid())
+                                needBreak = true;
+
+                            break;
+                        }
+
+                        if (needBreak)
+                            break;
+
+                        int32 chance = 0;
+                        // Search Improved Freeze
+                        Unit::AuraList const& mDummyAuras = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
+                        for (Unit::AuraList::const_iterator itr = mDummyAuras.begin(); itr != mDummyAuras.end(); ++itr)
+                        {
+                            if ((*itr)->GetSpellProto()->SpellIconID == 94 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_MAGE &&
+                                (*itr)->GetEffIndex() == EFFECT_INDEX_0)
+                            {
+                                chance = (*itr)->GetModifier()->m_amount;
+                                break;
+                            }
+                        }
+
+                        if (chance && roll_chance_i(chance))
+                        {
+                            // Fingers of Frost
+                            owner->CastSpell(owner, 44544, true);
+                            owner->CastSpell(owner, 44544, true);
+                        }
+
+                        break;
+                    }
                 }
                 break;
             }
