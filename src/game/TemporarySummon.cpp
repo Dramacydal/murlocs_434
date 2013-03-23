@@ -191,6 +191,9 @@ void TemporarySummon::UnSummon(uint32 delay)
         return;
     }
 
+    if (AI())
+        AI()->BeforeDespawn();
+
     CombatStop();
 
     if (GetSummonerGuid().IsCreatureOrVehicle())

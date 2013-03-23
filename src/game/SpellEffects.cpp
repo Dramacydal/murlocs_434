@@ -4284,30 +4284,33 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                         m_caster->CastSpell(unitTarget, 92827, true);   // Ritual of Refreshment (Rank 3)
                     return;
                 }
-                case 82731:                                 // Flame Orb Dummy
+                case 82731:                                 // Flame Orb
                 {
-                    if (m_caster->GetTypeId() == TYPEID_PLAYER)
-                    {
-                        Player *mage = ((Player *) m_caster);
-                        mage->CastSpell(m_caster, 84765, true);                  // Flame Orb summon spell
-                        Unit *orb = mage->GetSummonUnit(84765);
-                        if (orb)
-                            orb->CastSpell(orb, 82690, true, NULL, NULL, mage->GetGUID());                   // Flame Orb Periodic Trigger Aura
-                    }
+                    m_caster->CastSpell(m_caster, 84765, true);         // Flame Orb
                     return;
                 }
                 case 82734:                                 // Flame Orb Periodic Trigger Dummy
                 {
-                    if(unitTarget)
+                    if (unitTarget)
+                        m_caster->CastSpell(unitTarget, 86719, true, NULL, NULL, m_caster->GetOwnerGuid()); // Flame Orb DMG spell
+                    return;
+                }
+                case 84718:                                 // Frostfire Orb Periodic Trigger Dummy
+                {
+                    if (unitTarget)
                     {
-                        m_caster->CastCustomVisualSpell(unitTarget, 82739, true, NULL, NULL, m_originalCasterGUID, NULL, 59509); // Flame Orb DMG spell
-                        m_caster->StopMoving();                                                                                  // Should look like Sear Beam
+                        Unit* owner = m_caster->GetOwner();
+                        // Frostfire Orb (Rank 2)
+                        if (owner && owner->HasAura(84727))
+                            m_caster->CastSpell(unitTarget, 84721, true, NULL, NULL, m_caster->GetOwnerGuid()); // Frostfire Orb DMG spell with chill
+                        else
+                            m_caster->CastSpell(unitTarget, 95969, true, NULL, NULL, m_caster->GetOwnerGuid()); // Frostfire Orb DMG spell
                     }
                     return;
                 }
-                /// Adonai, bug #34, spell 2
-                case 92283:                                 // TODO: Frostfire Orb Dummy
+                case 92283:                                 // Frostfire Orb
                 {
+                    m_caster->CastSpell(m_caster, 84714, true);         // Frostfire Orb
                     return;
                 }
             }

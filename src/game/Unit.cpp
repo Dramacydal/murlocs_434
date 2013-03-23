@@ -1708,69 +1708,6 @@ void Unit::CastCustomSpell(Unit* Victim, SpellEntry const *spellInfo, int32 cons
     spell->prepare(&targets, triggeredByAura);
 }
 
-void Unit::CastCustomVisualSpell(Unit* Victim, uint32 spellId, bool triggered, Item *castItem, Aura* triggeredByAura, ObjectGuid originalCaster, SpellEntry const* triggeredBy, uint32 visualSpell)
-{
-    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
-
-    if(!spellInfo)
-    {
-        if (triggeredByAura)
-            ERROR_LOG("CastCustomSpell: unknown spell id %i by caster: %s triggered by aura %u (eff %u)", spellId, GetGuidStr().c_str(), triggeredByAura->GetId(), triggeredByAura->GetEffIndex());
-        else
-            ERROR_LOG("CastCustomSpell: unknown spell id %i by caster: %s", spellId, GetGuidStr().c_str());
-        return;
-    }
-
-    CastCustomVisualSpell(Victim, spellInfo, triggered, castItem, triggeredByAura, originalCaster, triggeredBy, visualSpell);
-}
-
-void Unit::CastCustomVisualSpell(Unit* Victim, SpellEntry const *spellInfo, bool triggered, Item *castItem, Aura* triggeredByAura, ObjectGuid originalCaster, SpellEntry const* triggeredBy, uint32 visualSpell)
-{
-    if(!spellInfo)
-    {
-        if (triggeredByAura)
-            ERROR_LOG("CastSpell: unknown spell by caster: %s triggered by aura %u (eff %u)", GetGuidStr().c_str(), triggeredByAura->GetId(), triggeredByAura->GetEffIndex());
-        else
-            ERROR_LOG("CastSpell: unknown spell by caster: %s", GetGuidStr().c_str());
-        return;
-    }
-
-    if (castItem)
-        DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "WORLD: cast Item spellId - %i", spellInfo->Id);
-
-    if (triggeredByAura)
-    {
-        if (!originalCaster)
-            originalCaster = triggeredByAura->GetCasterGuid();
-
-        triggeredBy = triggeredByAura->GetSpellProto();
-    }
-    else
-    {
-        triggeredByAura = GetTriggeredByClientAura(spellInfo->Id);
-        if (triggeredByAura)
-        {
-            triggered = true;
-            triggeredBy = triggeredByAura->GetSpellProto();
-        }
-    }
-
-    Spell *spell = new Spell(this, spellInfo, triggered, originalCaster, triggeredBy);
-
-    SpellCastTargets targets;
-    targets.setUnitTarget( Victim );
-
-    if (spellInfo->GetTargets() & TARGET_FLAG_DEST_LOCATION)
-        targets.setDestination(Victim->GetPositionX(), Victim->GetPositionY(), Victim->GetPositionZ());
-    if (spellInfo->GetTargets() & TARGET_FLAG_SOURCE_LOCATION)
-        if (WorldObject* caster = spell->GetCastingObject())
-            targets.setSource(caster->GetPositionX(), caster->GetPositionY(), caster->GetPositionZ());
-
-    spell->m_CastItem = castItem;
-    spell->m_customVisual = visualSpell;
-    spell->prepare(&targets, triggeredByAura);
-}
-
 // used for scripting
 void Unit::CastSpell(float x, float y, float z, uint32 spellId, bool triggered, Item *castItem, Aura* triggeredByAura, ObjectGuid originalCaster, SpellEntry const* triggeredBy)
 {

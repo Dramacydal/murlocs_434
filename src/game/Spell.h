@@ -486,7 +486,6 @@ class Spell
         Item* m_CastItem;
         uint8 m_cast_count;
         uint32 m_glyphIndex;
-        uint32 m_customVisual;
         SpellCastTargets m_targets;
 
         int32 GetCastTime() const { return m_casttime; }

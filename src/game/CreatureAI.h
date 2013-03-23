@@ -276,6 +276,9 @@ class MANGOS_DLL_SPEC CreatureAI
 
         /// Pointer to the Creature controlled by this AI
         Creature* const m_creature;
+
+        // called when creature is about to despawn
+        virtual void BeforeDespawn() { }
 };
 
 struct SelectableAI : public FactoryHolder<CreatureAI>, public Permissible<Creature>

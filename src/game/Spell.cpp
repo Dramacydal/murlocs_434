@@ -456,7 +456,6 @@ Spell::Spell(Unit* caster, SpellEntry const* info, bool triggered, ObjectGuid or
     m_delayStart = 0;
     m_delayAtDamageCount = 0;
     m_damage = 0;
-    m_customVisual = 0;
 
     m_applyMultiplierMask = 0;
 
@@ -1530,20 +1529,8 @@ void Spell::DoSpellHitOnUnit(Unit *unit, uint32 effectMask)
 
     if (realCaster)
     {
-        if (m_spellInfo->IsFitToFamily(SPELLFAMILY_MAGE, UI64LIT(0x1)) && m_spellInfo->SpellVisual[0] == 67)
-        {
-            // Glyph of Fireball
-            if (realCaster->HasAura(56368))
-                effectMask &= ~(1 << 1);
-        }
-        else if (m_spellInfo->IsFitToFamily(SPELLFAMILY_MAGE, UI64LIT(0x20)) && m_spellInfo->SpellVisual[0] == 13)
-        {
-            // Glyph of Frostbolt
-            if (realCaster->HasAura(56370))
-                effectMask &= ~(1 << 0);
-        }
         // Exorcism
-        else if (m_spellInfo->Id == 879)
+        if (m_spellInfo->Id == 879)
         {
             // Glyph of Exorcism
             if (!realCaster->HasAura(54934))
@@ -2145,7 +2132,8 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             switch(m_spellInfo->Id)
             {
                 case 38194:                     // Blink
-                case 82734:                     // Flame Orb DMG Spell
+                case 82734:                     // Flame Orb
+                case 84718:                     // Frostfire Orb
                     unMaxTargets = 1;
                     break;
                 case 83154:                     // Piercing Chill
@@ -2784,6 +2772,10 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                     // Jinx: Curse of the Elements, Piercing Chill
                     if (m_spellInfo->Id == 85547 || m_spellInfo->Id == 86105 || m_spellInfo->Id == 83154)
                         targetUnitMap.remove(m_targets.getUnitTarget());
+
+                    // Flame Orb and Frostfire Orb
+                    if (m_spellInfo->Id == 82734 || m_spellInfo->Id == 84718)
+                        targetUnitMap.sort(TargetDistanceOrderNear(m_caster));
                     break;
                 }
             }
@@ -5006,7 +4998,7 @@ void Spell::SendSpellGo()
 
     data << caster->GetPackGUID();
     data << uint8(m_cast_count);                            // pending spell cast?
-    data << uint32(m_customVisual ? m_customVisual : m_spellInfo->Id);                        // spellId
+    data << uint32(m_spellInfo->Id);                        // spellId
     data << uint32(castFlags);                              // cast flags
     data << uint32(m_timer);
     data << uint32(WorldTimer::getMSTime());                // timestamp
