@@ -1124,6 +1124,12 @@ void LoadDBCStores(const std::string& dataPath)
                 spell->AttributesEx3 |= SPELL_ATTR_EX3_CANT_MISS;
                 break;
             }
+            case 44544:                         // Fingers of Frost
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectSpellClassMask.Flags |= UI64LIT(0x20000);    // Ice Lance mask
+                break;
+            }
             case 44807:                         // Crazed Rage
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
