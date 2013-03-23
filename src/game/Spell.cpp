@@ -9985,27 +9985,30 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
             }
             return false;
         }
-        /// Adonai, bug #34 spell 1
-        case 82691: // Ring of Frost trigger spell
+        case 82691:                                     // Ring of Frost
         {
+            Unit* target = m_targets.getUnitTarget();
+            if (!target)
+                return false;
+
             // Need to trigger this only when ring is fully deployed...
-            if(m_targets.getUnitTarget() && m_targets.getUnitTarget()->HasAura(91264))
+            if (target->HasAura(91264))
                 return true;
 
-            // ... and only once per target ...
+            if (!m_triggeredByAuraSpell || m_triggeredByAuraSpell->Id != 82676)
+                return  false;
+
+            radius = m_triggeredByAuraSpell->CalculateSimpleValue(EFFECT_INDEX_1);
+
             FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_NOT_FRIENDLY);
             for (UnitList::iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end();)
             {
-                if ((*itr)->HasAura(m_spellInfo->Id))
+                // already frozen of has 3 sec immune to freeze
+                if ((*itr)->HasAura(m_spellInfo->Id) || (*itr)->GetSpellAuraHolder(91264, m_caster->GetObjectGuid()))
                     itr = targetUnitMap.erase(itr);
                 else
                     ++itr;
             }
-
-            // ... and has max 10 targets
-            Aura* triggerAura = m_caster->GetAura(m_triggeredByAuraSpell->Id, EFFECT_INDEX_1); // well I dunno... Are really all periodic auras placed at caster and only triggerSpell points at target?
-            if(triggerAura)
-                triggerAura->GetModifier()->m_amount -= targetUnitMap.size();
 
             return true;
         }

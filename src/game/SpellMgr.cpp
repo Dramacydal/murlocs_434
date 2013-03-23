@@ -5064,6 +5064,9 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
             // Slow
             else if (spellproto->Id == 31589)
                 return DIMINISHING_LIMITONLY;
+            // Ring of Frost
+            else if (spellproto->Id == 82691)
+                return DIMINISHING_DISORIENT;
             // Improved Cone of Cold
             else if (spellproto->Id == 83301 || spellproto->Id == 83302)
                 return DIMINISHING_TRIGGER_ROOT;

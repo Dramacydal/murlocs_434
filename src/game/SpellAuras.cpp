@@ -1978,24 +1978,26 @@ void Aura::TriggerSpell()
                         return;
                     /// Adonai, bug #34, spell 1
                     case 82676:                             // Ring of Frost
-                        if(this->m_modifier.m_amount <= 0)
-                            return;
-
-                        if(GetCaster()->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        if (Unit* caster = GetCaster())
                         {
-                            Unit* ring = ((Player *) GetCaster())->GetSummonUnit(auraId);
-                            if(ring)
+                            if(caster->GetTypeId() == TYPEID_PLAYER)
                             {
-                                trigger_spell_id = 82691;
-                                triggerTarget = ring;
+                                if (Unit* ring = ((Player *) GetCaster())->GetSummonUnit(auraId))
+                                {
+                                    trigger_spell_id = 82691;
+                                    triggerTarget = ring;
+                                }
                             }
                         }
                         break;
+                    }
                     default:
                         break;
                 }
                 break;
             }
+
 //            case SPELLFAMILY_WARRIOR:
 //            {
 //                switch(auraId)
@@ -5385,7 +5387,7 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
         Unit* pCaster = GetCaster();
         if (!pCaster)
             return;
-        
+
         if (apply)
         {
             if(pCaster->GetOwner() && target->isAlive() && pCaster->GetOwner()->HasAura(56250)) // Glyph of Succubus
@@ -5406,6 +5408,13 @@ void Aura::HandleAuraModStun(bool apply, bool Real)
             target->CastSpell(target, 48274, true);    // Target Summon Banshee
             target->CastSpell(target, 48275, true);    // Target Summon Banshee
         }
+    }
+    // Ring of Frost
+    else if (GetId() == 82691)
+    {
+        if (!apply)
+            if (Unit* caster = GetCaster())
+                caster->CastSpell(target, 91264, true); // 3sec immune spell
     }
 }
 
@@ -6307,24 +6316,6 @@ void Aura::HandlePeriodicTriggerSpell(bool apply, bool /*Real*/)
                 {
                     if (Unit* pCaster = GetCaster())
                         pCaster->CastSpell(pCaster, 66085, true, NULL, this);
-                }
-
-                return;
-            default:
-                break;
-        }
-    }
-    else
-    {
-        switch(GetId())
-        {
-            /// Adonai, bug #34 spell 1
-            case 82676:  // Ring of Frost
-                if(GetCaster()->GetTypeId() == TYPEID_PLAYER)
-                {
-                    Unit* ring = ((Player *) GetCaster())->GetSummonUnit(GetId());
-                    if(ring)  // Cast additional dummy aura that tracks ring deployment, duration 2.5 sec
-                        GetCaster()->CastSpell(ring, 91264, true);
                 }
 
                 return;
