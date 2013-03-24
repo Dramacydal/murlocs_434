@@ -4292,26 +4292,26 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 case 82734:                                 // Flame Orb Periodic Trigger Dummy
                 {
                     if (unitTarget)
-                        m_caster->CastSpell(unitTarget, 86719, true, NULL, NULL, m_caster->GetOwnerGuid()); // Flame Orb DMG spell
+                        m_caster->CastSpell(unitTarget, 86719, true, NULL, NULL, m_caster->GetCreatorGuid()); // Flame Orb DMG spell
                     return;
                 }
                 case 84718:                                 // Frostfire Orb Periodic Trigger Dummy
                 {
                     if (unitTarget)
                     {
-                        Unit* owner = m_caster->GetOwner();
+                        Unit* creator = m_caster->GetCreator();
                         // Frostfire Orb (Rank 2)
-                        if (owner && owner->HasAura(84727))
-                            m_caster->CastSpell(unitTarget, 84721, true, NULL, NULL, m_caster->GetOwnerGuid()); // Frostfire Orb DMG spell with chill
+                        if (creator && creator->HasAura(84727))
+                            m_caster->CastSpell(unitTarget, 84721, true, NULL, NULL, m_caster->GetCreatorGuid()); // Frostfire Orb DMG spell with chill
                         else
-                            m_caster->CastSpell(unitTarget, 95969, true, NULL, NULL, m_caster->GetOwnerGuid()); // Frostfire Orb DMG spell
+                            m_caster->CastSpell(unitTarget, 95969, true, NULL, NULL, m_caster->GetCreatorGuid()); // Frostfire Orb DMG spell
                     }
                     return;
                 }
                 case 86719:                                 // Flame Orb
                 {
                     if (unitTarget)
-                        m_caster->CastSpell(unitTarget, 82739, true, NULL, NULL, m_caster->GetOwnerGuid()); // Frostfire Orb DMG spell
+                        m_caster->CastSpell(unitTarget, 82739, true, NULL, NULL, m_caster->GetCreatorGuid()); // Frostfire Orb DMG spell
                     return;
                 }
                 case 92283:                                 // Frostfire Orb
