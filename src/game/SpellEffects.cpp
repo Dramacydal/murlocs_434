@@ -4308,6 +4308,12 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     }
                     return;
                 }
+                case 86719:                                 // Flame Orb
+                {
+                    if (unitTarget)
+                        m_caster->CastSpell(unitTarget, 82739, true, NULL, NULL, m_caster->GetOwnerGuid()); // Frostfire Orb DMG spell
+                    return;
+                }
                 case 92283:                                 // Frostfire Orb
                 {
                     m_caster->CastSpell(m_caster, 84714, true);         // Frostfire Orb
