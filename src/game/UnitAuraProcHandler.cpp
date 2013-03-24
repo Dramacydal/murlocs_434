@@ -6156,6 +6156,24 @@ SpellAuraProcResult Unit::HandleAuraProcOnPowerAmount(Unit* pVictim, uint32 dama
             else if (powerMod < 0 && triggeredByAura->GetEffIndex() != EFFECT_INDEX_1)
                 return SPELL_AURA_PROC_FAILED;
 
+            // check Eclipse State
+            if (!HasAura(48517) && !HasAura(48518))
+            {
+                // search Euphoria
+                Unit::AuraList const& dummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                for (Unit::AuraList::const_iterator itr = dummyAuras.begin(); itr != dummyAuras.end(); ++itr)
+                {
+                    if ((*itr)->GetSpellProto()->SpellIconID == 4431 && (*itr)->GetEffIndex() == EFFECT_INDEX_0 &&
+                        (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID)
+                    {
+                        // energize eclipse
+                        if (roll_chance_i((*itr)->GetModifier()->m_amount))
+                            CastCustomSpell(this, 81069, &powerMod, NULL, NULL, true);
+                        break;
+                    }
+                }
+            }
+
             ModifyPower(powerType, powerMod);
             int32 newPower = GetPower(powerType);
 
@@ -6175,6 +6193,20 @@ SpellAuraProcResult Unit::HandleAuraProcOnPowerAmount(Unit* pVictim, uint32 dama
                 // Remove Nature's Grace Cooldown
                 if (GetTypeId() == TYPEID_PLAYER)
                     ((Player*)this)->RemoveSpellCooldown(16880, true);
+
+                // search Euphoria
+                Unit::AuraList const& dummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                for (Unit::AuraList::const_iterator itr = dummyAuras.begin(); itr != dummyAuras.end(); ++itr)
+                {
+                    if ((*itr)->GetSpellProto()->SpellIconID == 4431 && (*itr)->GetEffIndex() == EFFECT_INDEX_2 &&
+                        (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID)
+                    {
+                        int32 basepoints = (*itr)->GetModifier()->m_amount;
+                        // energize mana
+                        CastCustomSpell(this, 81070, &basepoints, NULL, NULL, true);
+                        break;
+                    }
+                }
 
                 // cast Eclipse
                 CastSpell(this, triggeredByAura->GetSpellEffect()->EffectTriggerSpell, true);
