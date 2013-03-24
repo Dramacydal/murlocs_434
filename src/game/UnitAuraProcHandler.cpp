@@ -6159,17 +6159,21 @@ SpellAuraProcResult Unit::HandleAuraProcOnPowerAmount(Unit* pVictim, uint32 dama
             // check Eclipse State
             if (!HasAura(48517) && !HasAura(48518))
             {
-                // search Euphoria
-                Unit::AuraList const& dummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
-                for (Unit::AuraList::const_iterator itr = dummyAuras.begin(); itr != dummyAuras.end(); ++itr)
+                // only Starfire and Wrath
+                if (procSpell->Id == 2912 || procSpell->Id == 5176)
                 {
-                    if ((*itr)->GetSpellProto()->SpellIconID == 4431 && (*itr)->GetEffIndex() == EFFECT_INDEX_0 &&
-                        (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID)
+                    // search Euphoria
+                    Unit::AuraList const& dummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                    for (Unit::AuraList::const_iterator itr = dummyAuras.begin(); itr != dummyAuras.end(); ++itr)
                     {
-                        // energize eclipse
-                        if (roll_chance_i((*itr)->GetModifier()->m_amount))
-                            CastCustomSpell(this, 81069, &powerMod, NULL, NULL, true);
-                        break;
+                        if ((*itr)->GetSpellProto()->SpellIconID == 4431 && (*itr)->GetEffIndex() == EFFECT_INDEX_0 &&
+                            (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID)
+                        {
+                            // energize eclipse
+                            if (roll_chance_i((*itr)->GetModifier()->m_amount))
+                                CastCustomSpell(this, 81069, &powerMod, NULL, NULL, true);
+                            break;
+                        }
                     }
                 }
             }
