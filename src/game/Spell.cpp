@@ -8743,11 +8743,6 @@ bool Spell::CheckTarget(Unit* target, SpellEffectIndex eff)
         && !target->isVisibleForOrDetect(m_caster, m_caster, false))
         return false;
 
-    // Starfall AOE star must not damage trigger target
-    if (m_spellInfo->Id == 50294 || m_spellInfo->Id == 53188 || m_spellInfo->Id == 53189 || m_spellInfo->Id == 53190)
-        if (m_targets.getUnitTarget() && m_targets.getUnitTarget() == target)
-            return false;
-
     // Foam Sword Attack & Bonked!
     if (m_spellInfo->Id == 62973 || m_spellInfo->Id == 62991)
     {
