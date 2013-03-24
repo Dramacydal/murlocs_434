@@ -6119,10 +6119,11 @@ SpellAuraProcResult Unit::HandleAuraProcOnPowerAmount(Unit* pVictim, uint32 dama
             else if (procSpell->Id == 8921 || procSpell->Id == 93402)
             {
                 // search Lunar Shower buff
-                Unit::AuraList const& procAuras = GetAurasByType(SPELL_AURA_PROC_TRIGGER_SPELL);
-                for (Unit::AuraList::const_iterator itr = procAuras.begin(); itr != procAuras.end(); ++itr)
+                Unit::AuraList const& pctModAuras = GetAurasByType(SPELL_AURA_ADD_PCT_MODIFIER);
+                for (Unit::AuraList::const_iterator itr = pctModAuras.begin(); itr != pctModAuras.end(); ++itr)
                 {
-                    if ((*itr)->GetSpellProto()->SpellIconID == 3698 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID)
+                    if ((*itr)->GetSpellProto()->SpellIconID == 3698 && (*itr)->GetEffIndex() == EFFECT_INDEX_0 &&
+                        (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID)
                     {
                         if (SpellEntry const * spell = sSpellStore.LookupEntry(33603))
                             powerMod = spell->CalculateSimpleValue(EFFECT_INDEX_2) * (procSpell->Id == 8921 ? 1 : -1);
