@@ -8301,12 +8301,7 @@ uint32 Unit::SpellHealingBonusDone(Unit *pVictim, SpellEntry const *spellProto, 
                     ++ownHotCount;
 
             if (ownHotCount)
-            {
                 DoneTotalMod *= 1.2f;                          // base bonus at HoTs
-
-                if (Aura* glyph = GetAura(62971, EFFECT_INDEX_0))// Glyph of Nourish
-                    DoneTotalMod *= (glyph->GetModifier()->m_amount * ownHotCount + 100.0f) / 100.0f;
-            }
         }
         // Lifebloom
         else if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000001000000000)))
