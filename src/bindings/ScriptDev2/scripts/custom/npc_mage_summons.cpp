@@ -21,6 +21,9 @@ struct MANGOS_DLL_DECL npc_mage_orbAI : public ScriptedAI
         Reset();
     }
 
+    void MoveInLineOfSight(Unit* pWho) { }
+    void EnterCombat(Unit* pEnemy) { }
+
     void Reset()
     {
         snared = false;
