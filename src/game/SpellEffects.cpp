@@ -6154,7 +6154,7 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
         {
             Unit::AuraList const& RejorRegr = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_HEAL);
             // find most short by duration
-            Aura *targetAura = NULL;
+            Aura* targetAura = NULL;
             for(Unit::AuraList::const_iterator i = RejorRegr.begin(); i != RejorRegr.end(); ++i)
             {
                 SpellClassOptionsEntry const* smClassOptions = (*i)->GetSpellProto()->GetSpellClassOptions();
@@ -6172,25 +6172,10 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
                 ERROR_LOG("Target (GUID: %u TypeId: %u) has aurastate AURA_STATE_SWIFTMEND but no matching aura.", unitTarget->GetGUIDLow(), unitTarget->GetTypeId());
                 return;
             }
-            int idx = 0;
-            SpellEffectEntry const* targetSpellEffect = NULL;
-            while(idx < 3)
-            {
-                targetSpellEffect = targetAura->GetSpellProto()->GetSpellEffect(SpellEffectIndex(idx));
-                if(targetSpellEffect && targetSpellEffect->EffectApplyAuraName == SPELL_AURA_PERIODIC_HEAL)
-                    break;
-                ++idx;
-            }
-
-            int32 tickheal = targetAura->GetModifier()->m_amount;
-            tickheal = unitTarget->SpellHealingBonusTaken(m_caster, targetAura->GetSpellProto(), tickheal, DOT);
-            int32 tickcount = GetSpellDuration(targetAura->GetSpellProto()) / (targetSpellEffect ? targetSpellEffect->EffectAmplitude : 1) - 1;
 
             // Glyph of Swiftmend
             if (!caster->HasAura(54824))
                 unitTarget->RemoveAurasByCasterSpell(targetAura->GetId(), targetAura->GetCasterGuid());
-
-            addhealth += tickheal * tickcount;
         }
         // Runic Healing Injector & Healing Potion Injector effect increase for engineers
         else if ((m_spellInfo->Id == 67486 || m_spellInfo->Id == 67489) && unitTarget->GetTypeId() == TYPEID_PLAYER)

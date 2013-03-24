@@ -1019,12 +1019,6 @@ void LoadDBCStores(const std::string& dataPath)
                 //spell->SpellFamilyFlags.Flags |= UI64LIT(0x0000000000000004);
                 break;
             }
-            case 18562:                         // Swiftmend
-            {
-                if (SpellCategoriesEntry* cat = (SpellCategoriesEntry*)spell->GetSpellCategories())
-                    cat->DmgClass = SPELL_DAMAGE_CLASS_NONE;
-                break;
-            }
             case 18754:                         // Improved Succubus
             case 18755:
             case 18756:

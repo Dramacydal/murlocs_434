@@ -5415,10 +5415,6 @@ bool IsSpellIgnoresHealReductionEffects(SpellEntry const * spellInfo)
             // Lifebloom final heal
             if (spellInfo->Id == 33778)
                 return true;
-            // Swiftmend (hacked through DBC)
-            else if (spellInfo->GetTargetAuraState() == AURA_STATE_SWIFTMEND)
-                return true;
-
             break;
         }
         case SPELLFAMILY_SHAMAN:
