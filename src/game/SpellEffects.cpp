@@ -883,7 +883,7 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
 
                         int32 chance = 0;
                         // Search Improved Freeze
-                        Unit::AuraList const& mDummyAuras = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
+                        Unit::AuraList const& mDummyAuras = owner->GetAurasByType(SPELL_AURA_DUMMY);
                         for (Unit::AuraList::const_iterator itr = mDummyAuras.begin(); itr != mDummyAuras.end(); ++itr)
                         {
                             if ((*itr)->GetSpellProto()->SpellIconID == 94 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_MAGE &&
