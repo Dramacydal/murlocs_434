@@ -12078,6 +12078,9 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 if (!apply)
                     spellId2 = 51185;                       // King of the Jungle (Enrage damage aura)
             }
+            // Eclipse (Solar)
+            else if (GetId() == 48517)
+                spellId1 = 94338;
             else
                 return;
             break;

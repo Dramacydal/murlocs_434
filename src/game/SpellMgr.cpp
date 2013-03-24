@@ -2707,6 +2707,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if (spellInfo_1->IsFitToFamilyMask(UI64LIT(0x00040000)) &&
                     spellInfo_2->IsFitToFamilyMask(UI64LIT(0x00040000)))
                     return true;
+
+                // Eclipse (Solar)
+                if (spellInfo_1->SpellIconID == 3449 && spellInfo_2->SpellIconID == 3449)
+                    return false;
             }
 
             // Leader of the Pack and Scroll of Stamina (multi-family check)

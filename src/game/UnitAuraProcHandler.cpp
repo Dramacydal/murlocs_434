@@ -2287,36 +2287,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 }
             }
 
-            // Eclipse
-            if (dummySpell->SpellIconID == 2856)
-            {
-                if (!procSpell)
-                    return SPELL_AURA_PROC_FAILED;
-
-                // Wrath crit
-                if (procClassOptions && procClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000000001))
-                {
-                    if (HasAura(48517))
-                        return SPELL_AURA_PROC_FAILED;
-                    if (!roll_chance_i(60))
-                        return SPELL_AURA_PROC_FAILED;
-                    triggered_spell_id = 48518;
-                    target = this;
-                    break;
-                }
-                // Starfire crit
-                if (procClassOptions && procClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000000004))
-                {
-                    if (HasAura(48518))
-                        return SPELL_AURA_PROC_FAILED;
-                    triggered_spell_id = 48517;
-                    target = this;
-                    break;
-                }
-                return SPELL_AURA_PROC_FAILED;
-            }
             // Living Seed
-            else if (dummySpell->SpellIconID == 2860)
+            if (dummySpell->SpellIconID == 2860)
             {
                 triggered_spell_id = 48504;
                 basepoints[0] = triggerAmount * damage / 100;
