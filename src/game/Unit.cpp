@@ -8254,12 +8254,6 @@ uint32 Unit::SpellHealingBonusDone(Unit *pVictim, SpellEntry const *spellProto, 
                 if (pVictim->GetHealth() < pVictim->GetMaxHealth() / 2)
                     DoneTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
                 break;
-            case 7798: // Glyph of Regrowth
-            {
-                if (pVictim->GetAura(SPELL_AURA_PERIODIC_HEAL, SPELLFAMILY_DRUID, UI64LIT(0x0000000000000040)))
-                    DoneTotalMod *= ((*i)->GetModifier()->m_amount+100.0f)/100.0f;
-                break;
-            }
             case 8477: // Nourish Heal Boost
             {
                 int32 stepPercent = (*i)->GetModifier()->m_amount;
@@ -9342,25 +9336,26 @@ int32 Unit::ModifyPower(Powers power, int32 dVal)
     if(dVal==0)
         return 0;
 
-    int32 curPower = (int32)GetPower(power);
+    int32 curPower = GetPower(power);
 
     int32 val = dVal + curPower;
-    if(val <= 0)
+    int32 minPower = GetMinPower(power);
+    if (val <= minPower)
     {
-        SetPower(power,0);
+        SetPower(power, minPower);
         return -curPower;
     }
 
-    int32 maxPower = (int32)GetMaxPower(power);
+    int32 maxPower = GetMaxPower(power);
 
-    if(val < maxPower)
+    if (val < maxPower)
     {
-        SetPower(power,val);
+        SetPower(power, val);
         gain = val - curPower;
     }
     else if(curPower != maxPower)
     {
-        SetPower(power,maxPower);
+        SetPower(power, maxPower);
         gain = maxPower - curPower;
     }
 
@@ -11183,17 +11178,35 @@ int32 Unit::GetPower(Powers power) const
     if (powerIndex == INVALID_POWER_INDEX)
         return 0;
 
-    return GetUInt32Value(UNIT_FIELD_POWER1 + powerIndex);
+    return GetInt32Value(UNIT_FIELD_POWER1 + powerIndex);
 }
 
 int32 Unit::GetPowerByIndex(uint32 index) const
 {
     MANGOS_ASSERT(index < MAX_STORED_POWERS);
 
-    return GetUInt32Value(UNIT_FIELD_POWER1 + index);
+    return GetInt32Value(UNIT_FIELD_POWER1 + index);
 }
 
-uint32 Unit::GetMaxPower(Powers power) const
+int32 Unit::GetMinPowerByIndex(uint32 index) const
+{
+    Powers power = GetPowerTypeByIndex(index, getClass());
+    if (power == INVALID_POWER)
+        return 0;
+
+    return power == POWER_ECLIPSE ? -100 : 0;
+}
+
+int32 Unit::GetMinPower(Powers power) const
+{
+    uint32 powerIndex = GetPowerIndex(power);
+    if (powerIndex == INVALID_POWER_INDEX)
+        return 0;
+
+    return power == POWER_ECLIPSE ? -100 : 0;
+}
+
+int32 Unit::GetMaxPower(Powers power) const
 {
     if (power == POWER_HEALTH)
         return GetMaxHealth();
@@ -11202,14 +11215,14 @@ uint32 Unit::GetMaxPower(Powers power) const
     if (powerIndex == INVALID_POWER_INDEX)
         return 0;
 
-    return GetUInt32Value(UNIT_FIELD_MAXPOWER1 + powerIndex);
+    return GetInt32Value(UNIT_FIELD_MAXPOWER1 + powerIndex);
 }
 
-uint32 Unit::GetMaxPowerByIndex(uint32 index) const
+int32 Unit::GetMaxPowerByIndex(uint32 index) const
 {
     MANGOS_ASSERT(index < MAX_STORED_POWERS);
 
-    return GetUInt32Value(UNIT_FIELD_MAXPOWER1 + index);
+    return GetInt32Value(UNIT_FIELD_MAXPOWER1 + index);
 }
 
 void Unit::SetPower(Powers power, int32 val)
@@ -11226,21 +11239,23 @@ void Unit::SetPower(Powers power, int32 val)
 
 void Unit::SetPowerByIndex(uint32 powerIndex, int32 val)
 {
+    MANGOS_ASSERT(powerIndex < MAX_STORED_POWERS);
+
     int32 maxPower = GetMaxPowerByIndex(powerIndex);
     if (val > maxPower)
         val = maxPower;
 
-    if (val < 0)
-        val = 0;
+    Powers power = getPowerType(powerIndex);
+    MANGOS_ASSERT(power != INVALID_POWER);
+
+    int32 minPower = GetMinPower(power);
+    if (val < minPower)
+        val = minPower;
 
     if (GetPowerByIndex(powerIndex) == val)
         return;
 
-    MANGOS_ASSERT(powerIndex < MAX_STORED_POWERS);
     SetInt32Value(UNIT_FIELD_POWER1 + powerIndex, val);
-
-    Powers power = getPowerType(powerIndex);
-    MANGOS_ASSERT(power != INVALID_POWER);
 
     if (IsInWorld())
     {
@@ -11249,7 +11264,7 @@ void Unit::SetPowerByIndex(uint32 powerIndex, int32 val)
         data << uint32(1); // iteration count
         // for (int i = 0; i < count; ++i)
         data << uint8(power);
-        data << uint32(val);
+        data << int32(val);
         SendMessageToSet(&data, true);
     }
 
@@ -11367,7 +11382,7 @@ void Unit::ApplyAuraProcTriggerDamage( Aura* aura, bool apply )
         tAuraProcTriggerDamage.remove(aura);
 }
 
-uint32 Unit::GetCreatePowers( Powers power ) const
+int32 Unit::GetCreatePowers(Powers power) const
 {
     switch(power)
     {
@@ -11382,14 +11397,14 @@ uint32 Unit::GetCreatePowers( Powers power ) const
         case POWER_RUNE:        return GetTypeId() == TYPEID_PLAYER && ((Player const*)this)->getClass() == CLASS_DEATH_KNIGHT ? 8 : 0;
         case POWER_RUNIC_POWER: return GetTypeId() == TYPEID_PLAYER && ((Player const*)this)->getClass() == CLASS_DEATH_KNIGHT ? 1000 : 0;
         case POWER_SOUL_SHARDS: return 0;
-        case POWER_ECLIPSE:     return 0;                   // TODO: fix me
+        case POWER_ECLIPSE:     return 0;
         case POWER_HOLY_POWER:  return 0;
     }
 
     return 0;
 }
 
-uint32 Unit::GetCreateMaxPowers(Powers power) const
+int32 Unit::GetCreateMaxPowers(Powers power) const
 {
     switch (power)
     {
@@ -11397,6 +11412,8 @@ uint32 Unit::GetCreateMaxPowers(Powers power) const
             return GetTypeId() == TYPEID_PLAYER && ((Player const*)this)->getClass() == CLASS_PALADIN ? 3 : 0;
         case POWER_SOUL_SHARDS:
             return GetTypeId() == TYPEID_PLAYER && ((Player const*)this)->getClass() == CLASS_WARLOCK ? 3 : 0;
+        case POWER_ECLIPSE:
+            return 100;
         default:
             return GetCreatePowers(power);
     }

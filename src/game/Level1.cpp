@@ -698,7 +698,7 @@ bool ChatHandler::HandleModifyHolyPowerCommand(char* args)
     if (HasLowerSecurity(chr))
         return false;
 
-    int32 maxPower = int32(chr->GetMaxPower(POWER_HOLY_POWER));
+    int32 maxPower = chr->GetMaxPower(POWER_HOLY_POWER);
     if (power > maxPower)
     {
         SendSysMessage(LANG_BAD_VALUE);
@@ -741,7 +741,7 @@ bool ChatHandler::HandleModifySoulShardsCommand(char* args)
     if (HasLowerSecurity(chr))
         return false;
 
-    int32 maxPower = int32(chr->GetMaxPower(POWER_SOUL_SHARDS));
+    int32 maxPower = chr->GetMaxPower(POWER_SOUL_SHARDS);
     if (power > maxPower)
     {
         SendSysMessage(LANG_BAD_VALUE);
@@ -866,10 +866,10 @@ bool ChatHandler::HandleModifyEnergyCommand(char* args)
     if (needReportToTarget(chr))
         ChatHandler(chr).PSendSysMessage(LANG_YOURS_ENERGY_CHANGED, GetNameLink().c_str(), energy/10, energym/10);
 
-    chr->SetMaxPower(POWER_ENERGY,energym );
-    chr->SetPower(POWER_ENERGY, energy );
+    chr->SetMaxPower(POWER_ENERGY, energym);
+    chr->SetPower(POWER_ENERGY, energy);
 
-    DETAIL_LOG(GetMangosString(LANG_CURRENT_ENERGY),chr->GetMaxPower(POWER_ENERGY));
+    DETAIL_LOG(GetMangosString(LANG_CURRENT_ENERGY), chr->GetMaxPower(POWER_ENERGY));
 
     return true;
 }
