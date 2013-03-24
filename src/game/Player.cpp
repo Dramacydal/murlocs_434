@@ -18911,7 +18911,12 @@ void Player::SaveToDB()
 
     static_assert(MAX_STORED_POWERS == 5, "Query not updated.");
     for (uint32 i = 0; i < MAX_STORED_POWERS; ++i)
-        uberInsert.addInt32(GetPowerByIndex(i));
+    {
+        if (getPowerType(i) != POWER_ECLIPSE)
+            uberInsert.addInt32(GetPowerByIndex(i));
+        else
+            uberInsert.addInt32(0);
+    }
 
     uberInsert.addUInt32(uint32(m_specsCount));
     uberInsert.addUInt32(uint32(m_activeSpec));
