@@ -6980,7 +6980,7 @@ void Spell::EffectSummonType(SpellEffectEntry const* effect)
     // need research summon metod, DoSummonWild by default?
     if ((int32)summon_prop->Title == -1)
     {
-        DoSummonWild(effect, summon_prop->FactionId, true);
+        DoSummonWild(effect, m_caster->getFaction(), true);
         return;
     }
 
