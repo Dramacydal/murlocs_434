@@ -72,6 +72,7 @@ struct MANGOS_DLL_DECL npc_mage_orbAI : public ScriptedAI
                 m_creature->m_movementInfo.AddMovementFlag(MOVEFLAG_HOVER);
                 m_creature->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_HOVER);
                 m_creature->SetFloatValue(UNIT_FIELD_HOVERHEIGHT, 2.5f);
+                m_creature->SetWalk(false);
 
                 Position destPos;
                 m_creature->GetPosition(destPos.x, destPos.y, destPos.z);
