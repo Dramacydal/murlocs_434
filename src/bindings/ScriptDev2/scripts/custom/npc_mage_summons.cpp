@@ -74,6 +74,12 @@ struct MANGOS_DLL_DECL npc_mage_orbAI : public ScriptedAI
                 m_creature->SetFloatValue(UNIT_FIELD_HOVERHEIGHT, 2.5f);
                 m_creature->SetWalk(false);
 
+                WorldPacket data;
+                data.Initialize(SMSG_SPLINE_MOVE_SET_HOVER, 8 + 4 + 1);
+                data.WriteGuidMask<3, 7, 0, 1, 4, 6, 2, 5>(m_creature->GetObjectGuid());
+                data.WriteGuidBytes<2, 4, 3, 1, 7, 0, 5, 6>(m_creature->GetObjectGuid());
+                m_creature->SendMessageToSet(&data, true);
+
                 Position destPos;
                 m_creature->GetPosition(destPos.x, destPos.y, destPos.z);
                 creator->GetNearPoint(creator, destPos.x, destPos.y, destPos.z, creator->GetObjectBoundingRadius(), 50.0f, creator->GetOrientation());
