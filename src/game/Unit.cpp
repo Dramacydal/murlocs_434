@@ -2363,22 +2363,12 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
                 // Ranger: Thorns - from getmangos.com (+ sql part!)
                 if (i_spellProto->IsFitToFamily(SPELLFAMILY_DRUID, UI64LIT(0x00000100)))
                 {
-                    Unit::AuraList const& dummyList = pVictim->GetAurasByType(SPELL_AURA_DUMMY);
-                    for(Unit::AuraList::const_iterator iter = dummyList.begin(); iter != dummyList.end(); ++iter)
-                    {      
-                        // Brambles
-                        if ((*iter)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID &&
-                            (*iter)->GetSpellProto()->SpellIconID == 53)
-                        {
-                            damage += uint32(damage * (*iter)->GetModifier()->m_amount / 100);
-                            break;
-                        }
-                    }
-
-                    // Ranger - Thorns spell power coeff: 3,3% from www.wowwiki.com/Spell_power_coefficient
-                    damage += uint32(pVictim->SpellBaseDamageBonusDone(GetSpellSchoolMask(i_spellProto)) * 0.033f);
+                    // has Mangle - in feral spec
+                    if (pVictim->HasAura(33876))
+                        damage += uint32(pVictim->GetTotalAttackPowerValue(BASE_ATTACK) * 0.168f);
+                    else
+                        damage += uint32(pVictim->SpellBaseDamageBonusDone(GetSpellSchoolMask(i_spellProto)) * 0.168f);
                 }
-
 
                 //uint32 absorb, resist;
                 //CalculateDamageAbsorbAndResist(pVictim, GetSpellSchoolMask(i_spellProto), SPELL_DIRECT_DAMAGE, damage, &absorb, &resist);
@@ -10735,13 +10725,6 @@ int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMas
         switch(spellProto->GetSpellFamilyName())
         {
             case SPELLFAMILY_DRUID:
-                // Thorns
-                if (spellProto->SpellIconID == 53 && spellProto->IsFitToFamilyMask(UI64LIT(0x0000000000000100)))
-                {
-                    // Glyph of Thorns
-                    if (Aura *aur = GetAura(57862, EFFECT_INDEX_0))
-                        duration += aur->GetModifier()->m_amount * MINUTE * IN_MILLISECONDS;
-                }
                 break;
             case SPELLFAMILY_PALADIN:
                 // Blessing of Might
