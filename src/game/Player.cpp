@@ -2294,25 +2294,6 @@ Unit* Player::GetSummonUnit(uint32 spellId) const
     return NULL;
 }
 
-uint32 Player::GetSummonUnitCount() const
-{
-    return m_summonList.size();
-}
-
-uint32 Player::GetSummonUnitCountBySpell(uint32 spellId) const
-{
-    if (m_summonList.empty())
-        return 0;
-
-    uint32 numofsummon = 0;
-
-    for (SummonUnitList::const_iterator i = m_summonList.begin(); i != m_summonList.end(); ++i)
-        if ((*i)->GetUInt32Value(UNIT_CREATED_BY_SPELL) == spellId)
-            numofsummon++;
-    
-    return numofsummon;
-}
-
 void Player::RemoveSummonUnit(Unit* summon)
 {
     MANGOS_ASSERT(summon);

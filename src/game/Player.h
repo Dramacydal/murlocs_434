@@ -1213,6 +1213,8 @@ struct VoidStorageItem
     uint32 ItemSuffixFactor;
 };
 
+typedef std::list<Unit*> SummonUnitList;
+
 class MANGOS_DLL_SPEC Player : public Unit
 {
     friend class WorldSession;
@@ -1279,11 +1281,9 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         Visuals* m_vis;
         void AddSummonUnit(Unit* summon);
-        void RemoveSummonUnit(uint32 spellid);
-        void RemoveSummonUnit(Unit* summon); 
+        void RemoveSummonUnit(Unit* summon);
         Unit* GetSummonUnit(uint32 spellId) const;
-        uint32 GetSummonUnitCount() const;
-        uint32 GetSummonUnitCountBySpell(uint32 spellId) const;
+        SummonUnitList& GetSummonUnitList() { return m_summonList; }
 
         uint32 m_nextVehicleId;
 
@@ -3095,7 +3095,6 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         uint32 m_kickDelay;
 
-        typedef std::list<Unit*> SummonUnitList;
         SummonUnitList m_summonList;
 
         // LFG
