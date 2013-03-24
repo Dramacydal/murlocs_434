@@ -4284,7 +4284,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                         m_caster->CastSpell(unitTarget, 92827, true);   // Ritual of Refreshment (Rank 3)
                     return;
                 }
-                case 82731:                                 // Flame Orb
+                case 82731:                                 // Flame Orb (summon)
                 {
                     m_caster->CastSpell(m_caster, 84765, true);         // Flame Orb
                     return;
@@ -4292,13 +4292,18 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 case 82734:                                 // Flame Orb Periodic Trigger Dummy
                 {
                     if (unitTarget)
-                        m_caster->CastSpell(unitTarget, 86719, true, NULL, NULL, m_caster->GetCreatorGuid()); // Flame Orb DMG spell
+                    {
+                        m_caster->CastSpell(unitTarget, 86719, true, NULL, NULL, m_caster->GetCreatorGuid());   // orb visual
+                        m_caster->CastSpell(unitTarget, 82739, true, NULL, NULL, m_caster->GetCreatorGuid());   // Frostfire Orb DMG spell
+                    }
                     return;
                 }
                 case 84718:                                 // Frostfire Orb Periodic Trigger Dummy
                 {
                     if (unitTarget)
                     {
+                        m_caster->CastSpell(unitTarget, 86719, true, NULL, NULL, m_caster->GetCreatorGuid());   // orb visual
+
                         Unit* creator = m_caster->GetCreator();
                         // Frostfire Orb (Rank 2)
                         if (creator && creator->HasAura(84727))
@@ -4308,13 +4313,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     }
                     return;
                 }
-                case 86719:                                 // Flame Orb
-                {
-                    if (unitTarget)
-                        m_caster->CastSpell(unitTarget, 82739, true, NULL, NULL, m_caster->GetCreatorGuid()); // Frostfire Orb DMG spell
-                    return;
-                }
-                case 92283:                                 // Frostfire Orb
+                case 92283:                                 // Frostfire Orb (summon)
                 {
                     m_caster->CastSpell(m_caster, 84714, true);         // Frostfire Orb
                     return;
