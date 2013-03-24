@@ -13770,7 +13770,8 @@ bool Unit::CheckCanCastDispellOn(Unit* target, SpellEntry const * spellInfo)
     if (dispelMask == 1)
         return true;
 
-    return offensive && target->HasPositiveAuraByDispelMask(dispelMask) || !offensive && target->HasNegativeAuraByDispelMask(dispelMask);
+    return true;
+    //return offensive && target->HasPositiveAuraByDispelMask(dispelMask) || !offensive && target->HasNegativeAuraByDispelMask(dispelMask);
 }
 
 ObjectGuid Unit::GetTransportGuid() const
