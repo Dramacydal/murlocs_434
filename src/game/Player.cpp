@@ -19069,6 +19069,19 @@ void Player::_SaveAuras()
     for(SpellAuraHolderMap::const_iterator itr = auraHolders.begin(); itr != auraHolders.end(); ++itr)
     {
         SpellAuraHolder *holder = itr->second;
+
+        // below auras are not saved
+        switch (holder->GetId())
+        {
+            case 48517: // Eclipse (Solar)
+            case 48518: // Eclipse (Lunar)
+            case 67483: // Eclipse Marker
+            case 67484: // Eclipse Marker
+                continue;
+            default:
+                break;
+        }
+
         //skip all holders from spells that are passive or channeled
         //do not save single target holders (unless they were cast by the player)
         if (!holder->IsPassive() && !IsChanneledSpell(holder->GetSpellProto()) && (holder->GetCasterGuid() == GetObjectGuid() || !holder->IsSingleTarget()))
