@@ -12252,6 +12252,34 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
             }
             break;
         }
+        case SPELLFAMILY_DRUID:
+        {
+            switch (m_spellInfo->Id)
+            {
+                case 88433:                                     // Empowered Touch
+                {
+                    SpellAuraHolder* holder = NULL;
+                    // Lifebloom
+                    if (holder = unitTarget->GetSpellAuraHolder(33763, m_caster->GetObjectGuid()))
+                        holder->RefreshHolder();
+                    // Lifebloom
+                    if (holder = unitTarget->GetSpellAuraHolder(94447, m_caster->GetObjectGuid()))
+                        holder->RefreshHolder();
+
+                    if (holder)
+                    {
+                        // Revitalize
+                        if (m_caster->GetTypeId() == TYPEID_PLAYER && ((Player*)m_caster)->GetKnownTalentRankById(8269))
+                        {
+                            // Replenishment
+                            m_caster->CastSpell(m_caster, 57669, true);
+                        }
+                    }
+                    return;
+                }
+            }
+            break;
+        }
     }
 
     // normal DB scripted effect
