@@ -8006,7 +8006,6 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             spellId1 = 5420;
             spellId2 = 81097;
             spellId3 = 81098;
-            MasterShaperSpellId = 48422;
             break;
         case FORM_TRAVEL:
             spellId1 = 5419;
@@ -8128,7 +8127,7 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             // Master Shapeshifter
             if (MasterShaperSpellId)
             {
-                Unit::AuraList const& ShapeShifterAuras = target->GetAurasByType(SPELL_AURA_DUMMY);
+                Unit::AuraList const& ShapeShifterAuras = target->GetAurasByType(SPELL_AURA_MOD_HEALING_DONE_PERCENT);
                 for(Unit::AuraList::const_iterator i = ShapeShifterAuras.begin(); i != ShapeShifterAuras.end(); ++i)
                 {
                     if ((*i)->GetSpellProto()->SpellIconID == 2851)
