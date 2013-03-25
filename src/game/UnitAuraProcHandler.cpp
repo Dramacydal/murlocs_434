@@ -2286,12 +2286,11 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         return SPELL_AURA_PROC_FAILED;
                 }
             }
-
             // Living Seed
-            if (dummySpell->SpellIconID == 2860)
+            else if (dummySpell->SpellIconID == 2860)
             {
                 triggered_spell_id = 48504;
-                basepoints[0] = triggerAmount * damage / 100;
+                basepoints[0] = int32(triggerAmount * damage / 100);
                 break;
             }
             break;
@@ -5148,23 +5147,6 @@ SpellAuraProcResult Unit::HandleOverrideClassScriptAuraProc(Unit *pVictim, uint3
         case 5497:                                          // Improved Mana Gems (Serpent-Coil Braid)
             CastSpell(pVictim, 37445, true);                // Mana Surge (direct because triggeredByAura has no duration)
             return SPELL_AURA_PROC_OK;
-        case 7010:                                          // Revitalize (rank 1)
-        case 7011:                                          // Revitalize (rank 2)
-        case 7012:                                          // Revitalize (rank 3)
-        {
-            if(!roll_chance_i(triggerAmount))
-                return SPELL_AURA_PROC_FAILED;
-
-            switch( pVictim->getPowerType() )
-            {
-                case POWER_MANA:        triggered_spell_id = 48542; break;
-                case POWER_RAGE:        triggered_spell_id = 48541; break;
-                case POWER_ENERGY:      triggered_spell_id = 48540; break;
-                case POWER_RUNIC_POWER: triggered_spell_id = 48543; break;
-                default: return SPELL_AURA_PROC_FAILED;
-            }
-            break;
-        }
     }
 
     // not processed

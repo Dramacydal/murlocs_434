@@ -6552,9 +6552,6 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
         case 63375:                                         // Improved Stormstrike
             damage = damage * unitTarget->GetCreateMana() / 100;
             break;
-        case 48542:                                         // Revitalize (mana restore case) - Ranger: corrected mana restore!
-            damage = damage * unitTarget->GetMaxPower(POWER_MANA) / 100;
-            break;
         case 53385:                                         // Divine Storm
         {
             // Divine Storm grant holy power only if it;s damage part hit 4+ targets

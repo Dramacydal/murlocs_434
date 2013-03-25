@@ -1257,6 +1257,13 @@ void Aura::HandleAddModifier(bool apply, bool Real)
                 ((Player*)target)->RemoveSpellCooldown(78674, true);
             break;
         }
+        case 96206:     // Nature's Bounty
+        {
+            if (target->GetTypeId() == TYPEID_PLAYER)
+                if (((Player*)target)->m_naturesBountyCounter < 3)
+                    target->RemoveAurasDueToSpell(GetId());
+            break;
+        }
         default:
             break;
     }
@@ -7649,12 +7656,9 @@ void Aura::HandleModCastingSpeed(bool apply, bool /*Real*/)
         // Pyromaniac
         if (GetId() == 83582)
         {
-            if (Unit* caster = GetCaster())
-            {
-                if (caster->GetTypeId() == TYPEID_PLAYER)
-                    if (((Player*)caster)->m_pyromaniacCounter < 3)
-                        caster->RemoveAurasDueToSpell(GetId());
-            }
+            if (target->GetTypeId() == TYPEID_PLAYER)
+                if (((Player*)target)->m_pyromaniacCounter < 3)
+                    target->RemoveAurasDueToSpell(GetId());
         }
     }
 }
@@ -12069,8 +12073,39 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
         }
         case SPELLFAMILY_DRUID:
         {
+            if (GetId() == 774)
+            {
+                // Nature's Bounty check
+                if (Unit* caster = GetCaster())
+                {
+                    if (caster->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        Player* player = (Player*)caster;
+                        if (SpellEntry const * tal = player->GetKnownTalentRankById(8255))
+                        {
+                            if (!apply)
+                            {
+                                if (player->m_naturesBountyCounter > 0)
+                                    --player->m_naturesBountyCounter;
+
+                                if (player->m_naturesBountyCounter < 3)
+                                    caster->RemoveAurasDueToSpell(96206);
+                            }
+                            else
+                            {
+                                ++player->m_naturesBountyCounter;
+                                if (player->m_naturesBountyCounter >= 3 && !caster->HasAura(96206))
+                                {
+                                    int32 bp = -tal->CalculateSimpleValue(EFFECT_INDEX_1);
+                                    caster->CastCustomSpell(caster, 96206, &bp, NULL, NULL, true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             // Bear Form (Passive2)
-            if (GetId() == 21178)
+            else if (GetId() == 21178)
                 spellId1 = 57339;
             // Barkskin
             else if (GetId()==22812 && m_target->HasAura(63057)) // Glyph of Barkskin

@@ -4150,6 +4150,16 @@ void Spell::cast(bool skipCheck)
                 if (m_caster->HasAura(70718))               // Item - Druid T10 Balance 2P Bonus
                     AddPrecastSpell(70721);                 // Omen of Doom
             }
+            // Lifebloom
+            else if (m_spellInfo->Id == 33763 || m_spellInfo->Id == 94447)
+            {
+                // Revitalize
+                if (m_caster->GetTypeId() == TYPEID_PLAYER && ((Player*)m_caster)->GetKnownTalentRankById(8269))
+                {
+                    // Replenishment
+                    AddTriggeredSpell(57669);
+                }
+            }
             break;
         }
         case SPELLFAMILY_HUNTER:
