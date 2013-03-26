@@ -5147,14 +5147,11 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
             Unit* caster = healAura->GetCaster();
             if(target && caster)
             {
-                int32 heal = healAura->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1);
+                int32 heal = caster->CalculateSpellDamage(target, spellEntry, EFFECT_INDEX_1);
                 heal = caster->SpellHealingBonusDone(target, spellEntry, heal, SPELL_DIRECT_DAMAGE);
                 heal = target->SpellHealingBonusTaken(caster, spellEntry, heal, SPELL_DIRECT_DAMAGE);
                 heal *= stackAmount;
                 target->CastCustomSpell(target, 33778, &heal, NULL, NULL, true, NULL, NULL, caster->GetObjectGuid());
-
-                int32 returnmana = stackAmount * (spellEntry->GetManaCostPercentage() * caster->GetCreateMana() / 100) / 2;
-                caster->CastCustomSpell(caster, 64372, &returnmana, NULL, NULL, true);
             }
         }
     }
@@ -5369,7 +5366,7 @@ void Unit::RemoveAurasDueToSpellBySteal(uint32 spellId, ObjectGuid casterGuid, U
         Unit* caster = holder->GetCaster();
         if(target && caster)
         {
-            int32 heal = spellProto->CalculateSimpleValue(EFFECT_INDEX_1);
+            int32 heal = caster->CalculateSpellDamage(target, spellProto, EFFECT_INDEX_1);
             heal = caster->SpellHealingBonusDone(target, spellProto, heal, SPELL_DIRECT_DAMAGE);
             heal = target->SpellHealingBonusTaken(caster, spellProto, heal, SPELL_DIRECT_DAMAGE);
             target->CastCustomSpell(target, 33778, &heal, NULL, NULL, true, NULL, NULL, caster->GetObjectGuid());

@@ -3724,9 +3724,10 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x1000000000))
             {
                 Unit* caster = GetCaster();
-                int32 damage = GetSpellProto()->CalculateSimpleValue(GetEffIndex());
+                int32 damage = 0;
                 if (caster)
                 {
+                    damage = caster->CalculateSpellDamage(target, GetSpellProto(), GetEffIndex());
                     // prevent double apply bonuses
                     if (target->GetTypeId() != TYPEID_PLAYER || !((Player*)target)->GetSession()->PlayerLoading())
                     {
@@ -3761,10 +3762,6 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                             int32 amount = damage;
                             target->CastCustomSpell(target, 33778, &amount, NULL, NULL, true, NULL, NULL, caster->GetObjectGuid());
                         }
-
-                        // Return mana on expire and if cancelled by stealer
-                        int32 returnmana = (GetSpellProto()->GetManaCostPercentage() * caster->GetCreateMana() / 100) * GetStackAmount() / 2;
-                        caster->CastCustomSpell(caster, 64372, &returnmana, NULL, NULL, true);
                     }
                 }
                 return;
