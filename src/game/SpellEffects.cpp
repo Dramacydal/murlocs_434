@@ -5573,17 +5573,13 @@ void Spell::EffectTriggerSpell(SpellEffectEntry const* effect)
         // Stampeding Roar (Cat Form)
         case 77764:
         {
-            Unit::AuraList const& auras = m_caster->GetAurasByType(SPELL_AURA_MOD_INCREASE_SPEED);
-            for (Unit::AuraList::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
-            {
-                if ((*itr)->GetSpellProto()->SpellIconID == 67 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID)
-                {
-                    if (!roll_chance_i((*itr)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)))
-                        return;
-                    break;
-                }
-            }
-            break;
+            if (m_caster->GetTypeId() == TYPEID_PLAYER)
+                // search Feral Swiftness
+                if (SpellEntry const* talent = ((Player*)m_caster)->GetKnownTalentRankById(8295))
+                    if (roll_chance_i(talent->CalculateSimpleValue(EFFECT_INDEX_1)))
+                        break;
+
+            return;
         }
     }
 

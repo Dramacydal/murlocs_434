@@ -5785,16 +5785,13 @@ void Aura::HandleAuraModIncreaseSpeed(bool apply, bool Real)
         {
             if (Unit* caster = GetCaster())
             {
-                Unit::AuraList const& auras = caster->GetAurasByType(SPELL_AURA_MOD_INCREASE_SPEED);
-                for (Unit::AuraList::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
+                if (caster->GetTypeId() == TYPEID_PLAYER)
                 {
-                    if ((*itr)->GetSpellProto()->SpellIconID == 67 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID)
-                    {
-                        // cast Feral Swiftness Clear
-                        if (roll_chance_i((*itr)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)))
+                    // search Feral Swiftness
+                    if (SpellEntry const* talent = ((Player*)caster)->GetKnownTalentRankById(8295))
+                        if (roll_chance_i(talent->CalculateSimpleValue(EFFECT_INDEX_1)))
+                            // cast Feral Swiftness Clear
                             caster->CastSpell(target, 97985, true);
-                        break;
-                    }
                 }
             }
         }
