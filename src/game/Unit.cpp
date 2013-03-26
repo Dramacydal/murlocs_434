@@ -8110,18 +8110,35 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
             break;
         }
         case SPELL_DAMAGE_CLASS_MELEE:
-            // Rend and Tear - crit bonus to Ferocious Bite
-            if (pVictim && spellProto->IsFitToFamily(SPELLFAMILY_DRUID, UI64LIT(0x0000000000800000)) && spellProto->SpellIconID == 1680)
+            if (pVictim)
             {
-                if (pVictim->HasAuraState(AURA_STATE_BLEEDING))
+                // Ravage (Cat Form) and Ravage (Stampede)
+                if (spellProto->Id == 6785 || spellProto->Id == 81170)
                 {
+                    // Search Predatory Strikes
                     Unit::AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
-                    for (Unit::AuraList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
-                        if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID && (*i)->GetSpellProto()->SpellIconID == 2859 && (*i)->GetEffIndex() == 1)
-                        {
-                            crit_chance += (*i)->GetModifier()->m_amount;
-                            break;
-                        }
+                        for (Unit::AuraList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
+                            if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID && (*i)->GetSpellProto()->SpellIconID == 1563 &&
+                                (*i)->GetEffIndex() == EFFECT_INDEX_0)
+                            {
+                                if (pVictim->GetHealthPercent() > (*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1))
+                                    crit_chance += (*i)->GetModifier()->m_amount;
+                                break;
+                            }
+                }
+                // Rend and Tear - crit bonus to Ferocious Bite
+                else if (pVictim && spellProto->IsFitToFamily(SPELLFAMILY_DRUID, UI64LIT(0x0000000000800000)) && spellProto->SpellIconID == 1680)
+                {
+                    if (pVictim->HasAuraState(AURA_STATE_BLEEDING))
+                    {
+                        Unit::AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                        for (Unit::AuraList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
+                            if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID && (*i)->GetSpellProto()->SpellIconID == 2859 && (*i)->GetEffIndex() == 1)
+                            {
+                                crit_chance += (*i)->GetModifier()->m_amount;
+                                break;
+                            }
+                    }
                 }
             }
             // do not use break here
