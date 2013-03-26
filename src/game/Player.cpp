@@ -4259,6 +4259,8 @@ bool Player::resetTalents(bool no_cost, bool all_specs)
     if(HasAtLoginFlag(AT_LOGIN_RESET_TALENTS) && all_specs)
         RemoveAtLoginFlag(AT_LOGIN_RESET_TALENTS,true);
 
+    RemoveSpecDependentAuras();
+
     if (m_usedTalentCount == 0 && !all_specs)
     {
         UpdateFreeTalentPoints(false);                      // for fix if need counter
@@ -25059,15 +25061,7 @@ void Player::ActivateSpec(uint8 specNum)
 
     UpdateArmorSpecializations();
 
-    // remove spec-dependent auras
-    std::vector<uint32> auras2remove;
-    SpellAuraHolderMap const& vAuras = GetSpellAuraHolderMap();
-    for (SpellAuraHolderMap::const_iterator i = vAuras.begin(); i != vAuras.end(); ++i)
-        if (!i->second->IsPassive() && i->second->GetCasterGuid() == GetObjectGuid() && i->second->GetSpellProto()->HasAttribute(SPELL_ATTR_EX6_REMOVED_AT_SPEC_SWITCH))
-            auras2remove.push_back(i->second->GetId());
-
-    for (size_t i = 0; i < auras2remove.size(); ++i)
-        RemoveAurasDueToSpell(auras2remove[i]);
+    RemoveSpecDependentAuras();
 }
 
 void Player::UpdateSpecCount(uint8 count)
@@ -27296,4 +27290,16 @@ void Player::SetMover(Unit* target)
     data.WriteGuidBytes<6, 2, 3, 0,5, 7, 1, 4>(m_mover->GetObjectGuid());
 
     SendDirectMessage(&data);
+}
+
+void Player::RemoveSpecDependentAuras()
+{
+    std::vector<uint32> auras2remove;
+    SpellAuraHolderMap const& vAuras = GetSpellAuraHolderMap();
+    for (SpellAuraHolderMap::const_iterator i = vAuras.begin(); i != vAuras.end(); ++i)
+        if (!i->second->IsPassive() && i->second->GetCasterGuid() == GetObjectGuid() && i->second->GetSpellProto()->HasAttribute(SPELL_ATTR_EX6_REMOVED_AT_SPEC_SWITCH))
+            auras2remove.push_back(i->second->GetId());
+
+    for (size_t i = 0; i < auras2remove.size(); ++i)
+        RemoveAurasDueToSpell(auras2remove[i]);
 }
