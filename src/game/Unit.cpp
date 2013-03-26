@@ -2380,7 +2380,7 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
                 if (i_spellProto->IsFitToFamily(SPELLFAMILY_DRUID, UI64LIT(0x00000100)))
                 {
                     // has Mangle - in feral spec
-                    if (pVictim->HasAura(33876))
+                    if (pVictim->HasSpell(33876))
                         damage += uint32(pVictim->GetTotalAttackPowerValue(BASE_ATTACK) * 0.168f);
                     else
                         damage += uint32(pVictim->SpellBaseDamageBonusDone(GetSpellSchoolMask(i_spellProto)) * 0.168f);
