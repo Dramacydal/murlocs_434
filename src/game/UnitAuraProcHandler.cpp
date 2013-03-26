@@ -2274,6 +2274,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     return SPELL_AURA_PROC_FAILED;
 
                 triggered_spell_id = 774;
+                target = this;
                 if (GetSpellAuraHolder(triggered_spell_id, GetObjectGuid()))
                     return SPELL_AURA_PROC_FAILED;
 
