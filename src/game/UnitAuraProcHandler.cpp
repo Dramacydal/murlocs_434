@@ -5097,7 +5097,13 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
         // Druid - Savage Defense
         case 62606:
         {
+            if (!roll_chance_i(triggeredByAura->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)))
+                return SPELL_AURA_PROC_FAILED;
+
             basepoints[0] = int32(GetTotalAttackPowerValue(BASE_ATTACK) * triggerAmount / 100);
+            // Savage Defender
+            if (Aura* mastery = GetAura(77494, EFFECT_INDEX_0))
+                basepoints[0] += int32(basepoints[0] * mastery->GetModifier()->m_amount / 100);
             break;
         }
     }
