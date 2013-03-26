@@ -6107,6 +6107,10 @@ SpellAuraProcResult Unit::HandleAuraProcOnPowerAmount(Unit* pVictim, uint32 dama
             if (!procSpell)
                 return SPELL_AURA_PROC_FAILED;
 
+            // forbid proc when not in balance spec
+            if (!HasSpell(78674))
+                return SPELL_AURA_PROC_FAILED;
+
             bool hasMarker = false;
             int32 direction = 1;
             // lunar Eclipse Marker

@@ -25048,6 +25048,9 @@ void Player::ActivateSpec(uint8 specNum)
 
     SetPower(pw, 0);
 
+    SetPower(POWER_HOLY_POWER, 0);
+    SetPower(POWER_ECLIPSE, 0);
+
     if (m_talentsPrimaryTree[m_activeSpec] && !sTalentTabStore.LookupEntry(m_talentsPrimaryTree[m_activeSpec]))
         resetTalents(true);
 
@@ -25055,6 +25058,16 @@ void Player::ActivateSpec(uint8 specNum)
     UpdateManaRegen();
 
     UpdateArmorSpecializations();
+
+    // remove spec-dependent auras
+    std::vector<uint32> auras2remove;
+    SpellAuraHolderMap const& vAuras = GetSpellAuraHolderMap();
+    for (SpellAuraHolderMap::const_iterator i = vAuras.begin(); i != vAuras.end(); ++i)
+        if (!i->second->IsPassive() && i->second->GetCasterGuid() == GetObjectGuid() && i->second->GetSpellProto()->HasAttribute(SPELL_ATTR_EX6_REMOVED_AT_SPEC_SWITCH))
+            auras2remove.push_back(i->second->GetId());
+
+    for (size_t i = 0; i < auras2remove.size(); ++i)
+        RemoveAurasDueToSpell(auras2remove[i]);
 }
 
 void Player::UpdateSpecCount(uint8 count)
