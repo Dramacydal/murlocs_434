@@ -1149,16 +1149,16 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
             {
                 SpellEffectEntry const* rakeSpellEffect = m_spellInfo->GetSpellEffect(EFFECT_INDEX_2);
                 // Ferocious Bite
-                if (m_caster->GetTypeId()==TYPEID_PLAYER && (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x000800000)) && m_spellInfo->SpellVisual[0]==6587)
+                if (classOptions && (classOptions->SpellFamilyFlags & UI64LIT(0x000800000)) && m_spellInfo->SpellVisual[0] == 6587)
                 {
-                    // converts up to 30 points of energy into ($f1+$AP/410) additional damage
-                    float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
-                    float multiple = ap / 410 + effect->DmgMultiplier;
-                    damage += int32(((Player*)m_caster)->GetComboPoints() * ap * 7 / 100);
-                    uint32 energy = m_caster->GetPower(POWER_ENERGY);
-                    uint32 used_energy = energy > 30 ? 30 : energy;
-                    damage += int32(used_energy * multiple);
-                    m_caster->SetPower(POWER_ENERGY,energy-used_energy);
+                    // converts up to 35 points to up to 100% damage
+                    int32 energy = m_caster->GetPower(POWER_ENERGY);
+                    if (energy > 35)
+                        energy = 35;
+
+                    float mod = energy * 100.0f / 35;
+                    damage = int32(damage * mod);
+                    m_caster->ModifyPower(POWER_ENERGY, -energy);
                 }
                 // Rake
                 else if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000001000) && rakeSpellEffect && rakeSpellEffect->Effect == SPELL_EFFECT_ADD_COMBO_POINTS)
