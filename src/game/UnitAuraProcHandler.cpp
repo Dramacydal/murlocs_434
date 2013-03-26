@@ -2322,6 +2322,16 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 basepoints[0] = int32(triggerAmount * damage / 100);
                 break;
             }
+            // Gift of the Earthmother
+            {
+                if (!procSpell || effIndex != EFFECT_INDEX_1)
+                    return SPELL_AURA_PROC_FAILED;
+
+                triggered_spell_id = 64801;
+                basepoints[0] = int32(triggerAmount * damage / 100);
+                basepoints[0] *= GetSpellAuraMaxTicks(procSpell);
+                break;
+            }
             break;
         }
         case SPELLFAMILY_ROGUE:
