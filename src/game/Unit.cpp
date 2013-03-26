@@ -7369,6 +7369,13 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
         if (pVictim->HasAuraState(AuraState((*i)->GetMiscValue())))
             DoneTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
 
+    // bonus from auras increasing damage by spell mechanic
+    AuraList const &mDamageDoneByMechanic = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE_BY_MECHANIC);
+    for (AuraList::const_iterator i = mDamageDoneByMechanic.begin(); i != mDamageDoneByMechanic.end(); ++i)
+        if (int32 misc = (*i)->GetModifier()->m_miscvalue)
+            if (GetAllSpellMechanicMask(spellProto) & (1 << (misc - 1)))
+                DoneTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
+
     if (spellProto->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0xB20000)))
     {
         // Revealing Strike
@@ -8764,6 +8771,13 @@ uint32 Unit::MeleeDamageBonusDone(Unit *pVictim, uint32 pdamage,WeaponAttackType
 
     if (spellProto)
     {
+        // bonus from auras increasing damage by spell mechanic
+        AuraList const &mDamageDoneByMechanic = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE_BY_MECHANIC);
+        for (AuraList::const_iterator i = mDamageDoneByMechanic.begin(); i != mDamageDoneByMechanic.end(); ++i)
+            if (int32 misc = (*i)->GetModifier()->m_miscvalue)
+                if (GetAllSpellMechanicMask(spellProto) & (1 << (misc - 1)))
+                    DonePercent *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
+
         SpellClassOptionsEntry const* classOptions = spellProto->GetSpellClassOptions();
         // Icy Touch, Howling Blast, Obliterate, Frost Strike
         if (classOptions && classOptions->IsFitToFamily(SPELLFAMILY_DEATHKNIGHT, UI64LIT(0x2000600000002)))
