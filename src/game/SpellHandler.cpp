@@ -456,6 +456,19 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
         }
     }
 
+    // Lifebloom
+    if (spellId == 33763)
+    {
+        // search Tree of Life (Passive)
+        if (Aura* aura = _mover->GetAura(81098, EFFECT_INDEX_1))
+        {
+            if (SpellEntry const* newInfo = sSpellStore.LookupEntry(aura->GetModifier()->m_amount))
+            {
+                spellInfo = newInfo;
+                spellId = newInfo->Id;
+            }
+        }
+    }
     // client provided targets
     SpellCastTargets targets;
 

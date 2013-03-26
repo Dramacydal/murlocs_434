@@ -2650,19 +2650,8 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     ((classOptions2->SpellFamilyFlags == UI64LIT(0x0) && spellInfo_2->SpellIconID == 108) && (classOptions1->SpellFamilyFlags & UI64LIT(0x20000000000000))))
                     return false;
 
-                //  Tree of Life (Shapeshift) and 81097 Tree of Life (Passive)
-                if ((spellId_1 == 33891 && spellId_2 == 81097) ||
-                    (spellId_2 == 33891 && spellId_1 == 81097))
-                    return false;
-
-                //  Tree of Life (Shapeshift) and 81098 Tree of Life (Passive)
-                if ((spellId_1 == 33891 && spellId_2 == 81098) ||
-                    (spellId_2 == 33891 && spellId_1 == 81098))
-                    return false;
-
-                //  81097 Tree of Life (Passive) and 81098 Tree of Life (Passive)
-                if ((spellId_1 == 81097 && spellId_2 == 81098) ||
-                    (spellId_2 == 81097 && spellId_1 == 81098))
+                // Tree of Life and passives
+                if (spellInfo_1->SpellIconID == 5420 && spellInfo_2->SpellIconID == 5420)
                     return false;
 
                 // Lifebloom and Wild Growth
