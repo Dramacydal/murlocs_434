@@ -2260,6 +2260,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     basepoints[0] = int32(triggerAmount * (damage+absorb) / 100) / GetSpellAuraMaxTicks(triggered_spell_id);
                     break;
                 }
+                // Vengeance
+                case 84840:
+                    return HandleVengeanceProc(pVictim, damage, triggerAmount);
             }
             // Nature's Ward
             if (dummySpell->SpellIconID == 2250)
