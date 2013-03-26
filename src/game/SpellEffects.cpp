@@ -1152,12 +1152,9 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                 if (classOptions && (classOptions->SpellFamilyFlags & UI64LIT(0x000800000)) && m_spellInfo->SpellVisual[0] == 6587)
                 {
                     // converts up to 35 points to up to 100% damage
-                    int32 energy = m_caster->GetPower(POWER_ENERGY);
-                    if (energy > 35)
-                        energy = 35;
+                    int32 energy = std::min(m_caster->GetPower(POWER_ENERGY), 35);
+                    damage += int32(damage * energy / 35);
 
-                    float mod = energy * 100.0f / 35;
-                    damage = int32(damage * mod);
                     m_caster->ModifyPower(POWER_ENERGY, -energy);
                 }
                 // Rake
