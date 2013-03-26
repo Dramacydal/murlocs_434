@@ -12258,12 +12258,15 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
             {
                 case 88433:                                     // Empowered Touch
                 {
+                    if (!unitTarget)
+                        return;
+
                     SpellAuraHolder* holder = NULL;
                     // Lifebloom
                     if (holder = unitTarget->GetSpellAuraHolder(33763, m_caster->GetObjectGuid()))
                         holder->RefreshHolder();
                     // Lifebloom
-                    if (holder = unitTarget->GetSpellAuraHolder(94447, m_caster->GetObjectGuid()))
+                    else if (holder = unitTarget->GetSpellAuraHolder(94447, m_caster->GetObjectGuid()))
                         holder->RefreshHolder();
 
                     if (holder)
