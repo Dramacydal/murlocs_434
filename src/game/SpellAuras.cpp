@@ -5798,8 +5798,9 @@ void Aura::HandleAuraModIncreaseSpeed(bool apply, bool Real)
                 }
             }
         }
+    }
 
-    GetTarget()->UpdateSpeed(MOVE_RUN, true);
+    target->UpdateSpeed(MOVE_RUN, true);
 }
 
 void Aura::HandleAuraModIncreaseMountedSpeed(bool apply, bool Real)
