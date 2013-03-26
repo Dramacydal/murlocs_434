@@ -1157,17 +1157,6 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
 
                     m_caster->ModifyPower(POWER_ENERGY, -energy);
                 }
-                // Rake
-                else if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000001000) && rakeSpellEffect && rakeSpellEffect->Effect == SPELL_EFFECT_ADD_COMBO_POINTS)
-                {
-                    // $AP*0.01 bonus
-                    damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100);
-                }
-                // Swipe
-                else if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0010000000000000))
-                {
-                    damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.08f);
-                }
                 break;
             }
             case SPELLFAMILY_ROGUE:
