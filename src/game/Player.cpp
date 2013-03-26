@@ -608,7 +608,7 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
     m_rootTimes = 0;
 
     m_pyromaniacCounter = 0;
-    m_naturesBountyCounter = 0
+    m_naturesBountyCounter = 0;
 }
 
 Player::~Player ()
