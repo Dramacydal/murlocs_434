@@ -10109,17 +10109,16 @@ void Aura::PeriodicDummyTick()
                     if (target->getPowerType() != POWER_RAGE)
                         return;
 
-                    int32 rage = target->GetPower(POWER_RAGE);
+                    int32 rage = std::min(target->GetPower(POWER_RAGE), 100);
 
                     // Nothing todo
                     if (rage == 0)
                         return;
 
-                    int32 mod = std::min(rage, 100);
-                    int32 healthPerRage = target->CalculateSpellDamage(target, spell, EFFECT_INDEX_1) / 100;
-                    int32 regen = target->GetMaxHealth() * (mod * healthPerRage / 100) / 10;
+                    float healthPerRage = target->CalculateSpellDamage(target, spell, EFFECT_INDEX_1) / 100.0f;
+                    int32 regen = int32(target->GetMaxHealth() * rage * healthPerRage / 100 / 10);
                     target->CastCustomSpell(target, 22845, &regen, NULL, NULL, true, NULL, this);
-                    target->SetPower(POWER_RAGE, rage - mod);
+                    target->ModifyPower(POWER_RAGE, -rage);
                     return;
                 }
                 // Force of Nature
