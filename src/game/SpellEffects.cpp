@@ -5570,6 +5570,21 @@ void Spell::EffectTriggerSpell(SpellEffectEntry const* effect)
             m_caster->CastSpell(m_caster, triggered_spell_id, false);
             return;
         }
+        // Stampeding Roar (Cat Form)
+        case 77764:
+        {
+            Unit::AuraList const& auras = m_caster->GetAurasByType(SPELL_AURA_MOD_INCREASE_SPEED);
+            for (Unit::AuraList::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
+            {
+                if ((*itr)->GetSpellProto()->SpellIconID == 67 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID)
+                {
+                    if (!roll_chance_i((*itr)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)))
+                        return;
+                    break;
+                }
+            }
+            break;
+        }
     }
 
     // normal case
@@ -11691,6 +11706,14 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     for (uint32 triggeredSpell = effect->CalculateSimpleValue(); triggeredSpell < m_spellInfo->Id; ++triggeredSpell)
                         unitTarget->CastSpell(unitTarget, triggeredSpell, true);
 
+                    return;
+                }
+                case 97985:                                 // Feral Swiftness Clear
+                {
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->RemoveRootsAndSnares();
                     return;
                 }
             }
