@@ -7134,7 +7134,7 @@ void Spell::DoSummonPet(SpellEffectEntry const * effect)
     if (pet_entry == 37994)     // Mage: Water Elemental from Glyph
         m_duration = 86400000;  // 24 hours
 
-    if (m_caster->GetTypeId()==TYPEID_PLAYER && spawnCreature->LoadPetFromDB((Player*)m_caster,pet_entry))
+    if (m_caster->GetTypeId()==TYPEID_PLAYER && spawnCreature->LoadPetFromDB((Player*)m_caster, pet_entry))
     {
         // Summon in dest location
         if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
@@ -8206,6 +8206,10 @@ void Spell::EffectTameCreature(SpellEffectEntry const* /*effect*/)
     //SendChannelUpdate(0);
     finish();
 
+    PetSaveMode slot = plr->GetFreeStableSlot();
+    if (slot == PET_SAVE_NOT_IN_SLOT)
+        return;
+
     Pet* pet = new Pet(HUNTER_PET);
 
     if(!pet->CreateBaseAtCreature(creatureTarget))
@@ -8255,6 +8259,8 @@ void Spell::EffectTameCreature(SpellEffectEntry const* /*effect*/)
     // visual effect for levelup
     pet->SetUInt32Value(UNIT_FIELD_LEVEL, level);
 
+    pet->m_actualSlot = slot;
+
     // caster have pet now
     plr->SetPet(pet);
 
@@ -8264,7 +8270,10 @@ void Spell::EffectTameCreature(SpellEffectEntry const* /*effect*/)
 
 void Spell::EffectSummonPet(SpellEffectEntry const* effect)
 {
+    PetSaveMode slot = PET_SAVE_NOT_IN_SLOT;
     uint32 petentry = effect->EffectMiscValue;
+    if (!petentry && m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_GENERIC)
+        slot = PetSaveMode(damage);
 
     Pet *OldSummon = m_caster->GetPet();
 
@@ -8310,7 +8319,7 @@ void Spell::EffectSummonPet(SpellEffectEntry const* effect)
     Pet* NewSummon = new Pet;
 
     // petentry==0 for hunter "call pet" (current pet summoned if any)
-    if (m_caster->GetTypeId() == TYPEID_PLAYER && NewSummon->LoadPetFromDB((Player*)m_caster, petentry))
+    if (m_caster->GetTypeId() == TYPEID_PLAYER && NewSummon->LoadPetFromDB((Player*)m_caster, petentry, 0, false, slot))
         return;
 
     // not error in case fail hunter call pet

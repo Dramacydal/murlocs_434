@@ -50,6 +50,8 @@ m_declinedname(NULL)
         charmInfo->SetState(CHARM_STATE_REACT, REACT_DEFENSIVE);
     else if(type == GUARDIAN_PET)                           // always aggressive
         charmInfo->SetState(CHARM_STATE_REACT, REACT_AGGRESSIVE);
+
+    m_actualSlot = PET_SAVE_NOT_IN_SLOT;
 }
 
 Pet::~Pet()
@@ -78,7 +80,7 @@ void Pet::RemoveFromWorld()
     Unit::RemoveFromWorld();
 }
 
-bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool current)
+bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool current, PetSaveMode slot)
 {
     m_loading = true;
 
@@ -87,25 +89,30 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     QueryResult *result;
 
     if (petnumber)
-        // known petnumber entry                  0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17
-        result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType "
+        // known petnumber entry                  0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17       18
+        result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType, actual_slot "
             "FROM character_pet WHERE owner = '%u' AND id = '%u'",
             ownerid, petnumber);
     else if (current)
-        // current pet (slot 0)                   0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17
-        result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType "
+        // current pet (slot 0)                   0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17       18
+        result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType, actual_slot "
             "FROM character_pet WHERE owner = '%u' AND slot = '%u'",
-            ownerid, PET_SAVE_AS_CURRENT );
+            ownerid, PET_SAVE_AS_CURRENT);
+    else if (slot != PET_SAVE_NOT_IN_SLOT)
+        // pet by slot                            0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17       18
+        result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType, actual_slot "
+            "FROM character_pet WHERE owner = '%u' AND actual_slot = '%u'",
+            ownerid, PET_SAVE_AS_CURRENT);
     else if (petentry)
         // known petentry entry (unique for summoned pet, but non unique for hunter pet (only from current or not stabled pets)
-        //                                        0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17
-        result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType "
+        //                                        0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17       18
+        result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType, actual_slot "
             "FROM character_pet WHERE owner = '%u' AND entry = '%u' AND (slot = '%u' OR slot > '%u') ",
             ownerid, petentry,PET_SAVE_AS_CURRENT,PET_SAVE_LAST_STABLE_SLOT);
     else
         // any current or other non-stabled pet (for hunter "call pet")
-        //                                        0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17
-        result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType "
+        //                                        0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17       18
+        result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType, actual_slot "
             "FROM character_pet WHERE owner = '%u' AND (slot = '%u' OR slot > '%u') ",
             ownerid,PET_SAVE_AS_CURRENT,PET_SAVE_LAST_STABLE_SLOT);
 
@@ -119,6 +126,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     if (!petentry)
     {
         delete result;
+        m_loading = false;
         return false;
     }
 
@@ -127,6 +135,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     {
         sLog.outError("Pet entry %u does not exist but used at pet load (owner: %s).", petentry, owner->GetGuidStr().c_str());
         delete result;
+        m_loading = false;
         return false;
     }
 
@@ -149,6 +158,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
         if (!creatureInfo->isTameable(owner->CanTameExoticPets()))
         {
             delete result;
+            m_loading = false;
             return false;
         }
     }
@@ -159,6 +169,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     {
         owner->SetTemporaryUnsummonedPetNumber(pet_number);
         delete result;
+        m_loading = false;
         return false;
     }
 
@@ -170,12 +181,15 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     if (!Create(guid, pos, creatureInfo, pet_number))
     {
         delete result;
+        m_loading = false;
         return false;
     }
 
     setPetType(pet_type);
     setFaction(owner->getFaction());
     SetUInt32Value(UNIT_CREATED_BY_SPELL, summon_spell_id);
+
+    m_actualSlot = PetSaveMode(fields[17].GetUInt32());
 
     // reget for sure use real creature info selected for Pet at load/creating
     CreatureInfo const *cinfo = GetCreatureInfo();
@@ -184,6 +198,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
         AIM_Initialize();
         pos.GetMap()->Add((Creature*)this);
         delete result;
+        m_loading = false;
         return true;
     }
 
@@ -424,8 +439,8 @@ void Pet::SavePetToDB(PetSaveMode mode)
 
         // save pet
         SqlStatement savePet = CharacterDatabase.CreateStatement(insPet, "INSERT INTO character_pet ( id, entry,  owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, "
-            "curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType) "
-             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            "curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType, actual_slot) "
+             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         savePet.addUInt32(m_charmInfo->GetPetNumber());
         savePet.addUInt32(GetEntry());
@@ -453,6 +468,7 @@ void Pet::SavePetToDB(PetSaveMode mode)
         savePet.addUInt64(uint64(m_resetTalentsTime));
         savePet.addUInt32(GetUInt32Value(UNIT_CREATED_BY_SPELL));
         savePet.addUInt32(uint32(getPetType()));
+        savePet.addUInt32(uint32(m_actualSlot));
 
         savePet.Execute();
         CharacterDatabase.CommitTransaction();

@@ -27303,3 +27303,23 @@ void Player::RemoveSpecDependentAuras()
     for (size_t i = 0; i < auras2remove.size(); ++i)
         RemoveAurasDueToSpell(auras2remove[i]);
 }
+
+PetSaveMode Player::GetFreeStableSlot() const
+{
+    QueryResult* result = CharacterDatabase.PQuery("SELECT actual_slot from character_pet WHERE owner = %u'", GetObjectGuid().GetCounter());
+    if (!result)
+        return PET_SAVE_AS_CURRENT;
+
+    uint32 usedSlots = 0;
+    do
+        usedSlots |= 1 << (*result)[0].GetUInt32();
+    while (result->NextRow());
+
+    delete result;
+
+    for (int i = 0; i < PET_SAVE_FIRST_STABLE_SLOT; ++i)
+        if ((usedSlots & (1 << i)) == 0)
+            return PetSaveMode(i);
+
+    return PET_SAVE_NOT_IN_SLOT;
+}
