@@ -8162,6 +8162,10 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             if (form == FORM_CAT && ((Player*)target)->HasAura(52610))
                 target->CastSpell(target, 62071, true);
 
+            // remove Vengeance Buff on entering cat form
+            if (form == FORM_CAT)
+                target->RemoveAurasDueToSpell(76691);
+
             // Survival of the Fittest (Armor part)
             if (form == FORM_BEAR)
             {
