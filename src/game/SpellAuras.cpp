@@ -12126,7 +12126,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 {
                     // search Primal Madness
                     if (m_target->GetTypeId() == TYPEID_PLAYER)
-                        if (SpellEntry const* spellInfo = ((Player*)this)->GetKnownTalentRankById(8335))
+                        if (SpellEntry const* spellInfo = ((Player*)m_target)->GetKnownTalentRankById(8335))
                             spellId1 = spellInfo->Id == 80316 ? 80879 : 80886;
                 }
                 else
