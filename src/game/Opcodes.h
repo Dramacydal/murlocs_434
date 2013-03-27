@@ -1459,6 +1459,7 @@ enum Opcodes
     SMSG_VOID_TRANSFER_RESULT                             = 0x1DA6, // 4.3.4 15595
     CMSG_OBJECT_UPDATE_FAILED                             = 0x3808, // 4.3.4 15595
     SMSG_MOVE_SET_ACTIVE_MOVER                            = 0x11B3, // 4.3.4 15595
+    CMSG_SET_PET_SLOT                                     = 0x3A04, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF
