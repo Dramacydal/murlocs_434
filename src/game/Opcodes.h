@@ -678,12 +678,8 @@ enum Opcodes
     CMSG_CANCEL_AUTO_REPEAT_SPELL                         = 0x6C35, // 4.3.4 15595
     MSG_GM_ACCOUNT_ONLINE                                 = 0x126F,
     MSG_LIST_STABLED_PETS                                 = 0x0834, // 4.3.4 15595
-    CMSG_STABLE_PET                                       = 0x1271,
-    CMSG_UNSTABLE_PET                                     = 0x1272,
-    CMSG_BUY_STABLE_SLOT                                  = 0x1273,
     SMSG_STABLE_RESULT                                    = 0x2204, // 4.3.4 15595
     CMSG_STABLE_REVIVE_PET                                = 0x1275,
-    CMSG_STABLE_SWAP_PET                                  = 0x1276,
     MSG_QUEST_PUSH_RESULT                                 = 0x4515, // 4.3.4 15595
     SMSG_PLAY_MUSIC                                       = 0x4B06, // 4.3.4 15595
     SMSG_PLAY_OBJECT_SOUND                                = 0x2635, // 4.3.4 15595
