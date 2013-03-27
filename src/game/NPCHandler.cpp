@@ -598,18 +598,6 @@ void WorldSession::SendStablePet( ObjectGuid guid )
 
     uint8 num = 0;                                          // counter for place holder
 
-    // not let move dead pet in slot
-    if(pet && pet->isAlive() && pet->getPetType()==HUNTER_PET)
-    {
-        data << uint32(pet->m_actualSlot);
-        data << uint32(pet->GetCharmInfo()->GetPetNumber());
-        data << uint32(pet->GetEntry());
-        data << uint32(pet->getLevel());
-        data << pet->GetName();                             // petname
-        data << uint8(1);                                   // 1 = current, 2/3 = in stable (any from 4,5,... create problems with proper show)
-        ++num;
-    }
-
     //                                                     0      1   2      3      4     5
     QueryResult* result = CharacterDatabase.PQuery("SELECT owner, id, entry, level, name, actual_slot FROM character_pet WHERE owner = '%u' AND actual_slot >= '%u' AND actual_slot <= '%u' ORDER BY actual_slot",
         _player->GetGUIDLow(), PET_SAVE_AS_CURRENT, PET_SAVE_LAST_STABLE_SLOT);

@@ -22183,6 +22183,9 @@ void Player::SendInitialPacketsAfterAddToMap()
 
     RemoveBuggedPrimarySkills();
 
+    if (getClass() == CLASS_HUNTER)
+        GetSession()->SendStablePet(GetObjectGuid());
+
     // fix client movement freeze after teleport?
     GetMap()->PlayerRelocation(this, GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
 }
