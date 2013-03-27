@@ -8803,26 +8803,33 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
                 break;
             case SPELL_EFFECT_NORMALIZED_WEAPON_DMG:
             {
-                int32 normalizedMod = 1;
                 // Pulverize
-                if (unitTarget && m_spellInfo->Id == 80313)
+                if (m_spellInfo->Id == 80313)
                 {
-                    normalizedMod = 0;
-                    if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(33745, m_caster->GetObjectGuid()))
+                    int32 normalizedMod = 1;
+                    if (unitTarget)
                     {
-                        normalizedMod = holder->GetStackAmount();
-                        unitTarget->RemoveSpellAuraHolder(holder);
-
-                        // crit bonus
-                        if (SpellEntry const* spellInfo = sSpellStore.LookupEntry(80951))
+                        normalizedMod = 0;
+                        if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(33745, m_caster->GetObjectGuid()))
                         {
-                            int32 bp =  spellInfo->CalculateSimpleValue(EFFECT_INDEX_0) * normalizedMod;
-                            m_caster->CastCustomSpell(m_caster, spellInfo, &bp, NULL, NULL, true);
+                            normalizedMod = holder->GetStackAmount();
+                            unitTarget->RemoveSpellAuraHolder(holder);
+
+                            // crit bonus
+                            if (SpellEntry const* spellInfo = sSpellStore.LookupEntry(80951))
+                            {
+                                int32 bp =  spellInfo->CalculateSimpleValue(EFFECT_INDEX_0) * normalizedMod;
+                                m_caster->CastCustomSpell(m_caster, spellInfo, &bp, NULL, NULL, true);
+                            }
                         }
                     }
-                }
 
-                fixed_bonus += CalculateDamage(SpellEffectIndex(j), unitTarget) * normalizedMod;
+                    fixed_bonus += CalculateDamage(SpellEffectIndex(j), unitTarget) * normalizedMod * 6 / 10;
+                }
+                else
+                    fixed_bonus += CalculateDamage(SpellEffectIndex(j), unitTarget);
+
+                
                 normalized = true;
                 break;
             }
