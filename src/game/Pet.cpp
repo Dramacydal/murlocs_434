@@ -102,7 +102,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
         // pet by slot                            0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17       18
         result = CharacterDatabase.PQuery("SELECT id, entry, owner, modelid, level, exp, Reactstate, slot, name, renamed, curhealth, curmana, abdata, savetime, resettalents_cost, resettalents_time, CreatedBySpell, PetType, actual_slot "
             "FROM character_pet WHERE owner = '%u' AND actual_slot = '%u'",
-            ownerid, PET_SAVE_AS_CURRENT);
+            ownerid, uint32(slot));
     else if (petentry)
         // known petentry entry (unique for summoned pet, but non unique for hunter pet (only from current or not stabled pets)
         //                                        0   1      2(?)   3        4      5    6           7     8     9        10         11       12      13        14                 15                 16              17       18
