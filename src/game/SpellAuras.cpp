@@ -8027,9 +8027,6 @@ void Aura::HandleShapeshiftBoosts(bool apply)
         case FORM_BEAR:
             spellId1 = 1178;
             spellId2 = 21178;
-            // Berserk boost for Mangle (Bear)
-            if (!apply || target->HasSpell(50334))
-                spellId3 = 58923;
             MasterShaperSpellId = 48418;
             break;
         case FORM_BATTLESTANCE:
@@ -8860,7 +8857,22 @@ void Aura::PeriodicTick()
             target->SendPeriodicAuraLog(&pInfo);
 
             if (pdamage)
+            {
                 procVictim|=PROC_FLAG_TAKEN_ANY_DAMAGE;
+
+                // Lacerate
+                if (GetId() == 33745)
+                {
+                    if (Unit* caster = GetCaster())
+                    {
+                        // Berserk passive - removes Mangle (Bear) cooldown on Lacerate tick
+                        // original spell missing in dbc
+                        if (caster->HasSpell(50334) && roll_chance_i(50))
+                            caster->CastSpell(caster, 93622, true);
+                    }
+                }
+
+            }
 
             pCaster->ProcDamageAndSpell(target, procAttacker, procVictim, procEx, pdamage, absorb, BASE_ATTACK, spellProto);
 
@@ -12088,6 +12100,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
         }
         case SPELLFAMILY_DRUID:
         {
+            // Rejuvenation
             if (GetId() == 774)
             {
                 // Nature's Bounty check
@@ -12153,6 +12166,9 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             // Eclipse (Solar)
             else if (GetId() == 48517)
                 spellId1 = 94338;
+            // Berserk
+            else if (GetId() == 50334)
+                spellId1 = 58923;                           // Berserk (Mangle (Bear) modifier)
             // Stampede
             else if (GetId() == 81021 || GetId() == 81022)
                 spellId1 = 109881;                          // Stampede Ravage Marker
