@@ -12109,6 +12109,23 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     }
                 }
             }
+            // Tiger's Fury or Berserk
+            else if (GetId() == 5217 || GetId() == 50334)
+            {
+                if (apply)
+                {
+                    // search Primal Madness
+                    if (m_target->GetTypeId() == TYPEID_PLAYER)
+                        if (SpellEntry const* spellInfo = ((Player*)this)->GetKnownTalentRankById(8335))
+                            spellId1 = spellInfo->Id == 80316 ? 80879 : 80886;
+                }
+                else
+                {
+                    spellId1 = 80879;
+                    spellId2 = 80886;
+                }
+                break;
+            }
             // Bear Form (Passive2)
             else if (GetId() == 21178)
                 spellId1 = 57339;

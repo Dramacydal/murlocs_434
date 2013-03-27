@@ -2700,6 +2700,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 // Eclipse (Solar)
                 if (spellInfo_1->SpellIconID == 3449 && spellInfo_2->SpellIconID == 3449)
                     return false;
+
+                // Tiger's Fury, Primal Madness, etc
+                if (spellInfo_1->SpellIconID == 1181 && spellInfo_2->SpellIconID == 1181)
+                    return false;
             }
 
             // Leader of the Pack and Scroll of Stamina (multi-family check)
