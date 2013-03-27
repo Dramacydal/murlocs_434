@@ -11178,10 +11178,6 @@ void SpellAuraHolder::CleanupTriggeredSpells()
         if(!spellEffect)
             continue;
 
-        // King of the Jungle, trigger of increase damage is remove with remove Enrage
-        if (m_spellProto->IsFitToFamily(SPELLFAMILY_DRUID, UI64LIT(0x0000000000080000)))
-            m_target->RemoveAurasDueToSpell(51185);
-
         if (!spellEffect->EffectApplyAuraName)
             continue;
 

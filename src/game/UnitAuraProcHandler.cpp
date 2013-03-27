@@ -2326,6 +2326,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 break;
             }
             // Gift of the Earthmother
+            else if (dummySpell->SpellIconID == 3186)
             {
                 if (!procSpell || effIndex != EFFECT_INDEX_1)
                     return SPELL_AURA_PROC_FAILED;
