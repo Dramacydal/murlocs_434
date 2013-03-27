@@ -1259,14 +1259,14 @@ void Aura::HandleAddModifier(bool apply, bool Real)
         }
         case 93622:     // Berserk
         {
-            if (target->GetTypeId() == TYPEID_PLAYER)
+            if (apply && target->GetTypeId() == TYPEID_PLAYER)
                 // remove Mangle (Bear) cooldown
                 ((Player*)target)->RemoveSpellCooldown(33878, true);
             break;
         }
         case 96206:     // Nature's Bounty
         {
-            if (target->GetTypeId() == TYPEID_PLAYER)
+            if (apply && target->GetTypeId() == TYPEID_PLAYER)
                 if (((Player*)target)->m_naturesBountyCounter < 3)
                     target->RemoveAurasDueToSpell(GetId());
             break;
