@@ -4494,8 +4494,16 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
         }
         case SPELLFAMILY_DRUID:
         {
+            // Primal Madness
+            if (auraSpellInfo->SpellIconID == 1181)
+            {
+                // proc only from Berserk and Enrage
+                if (!procSpell || procSpell->SpellIconID != 961 && procSpell->SpellIconID != 2852)
+                    return SPELL_AURA_PROC_FAILED;
+                break;
+            }
             // Efflorescense
-            if (auraSpellInfo->SpellIconID == 2886)
+            else if (auraSpellInfo->SpellIconID == 2886)
             {
                 basepoints[1] = int32(triggerAmount * damage / 100.0f);
                 break;
