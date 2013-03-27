@@ -4162,9 +4162,6 @@ void Spell::cast(bool skipCheck)
             // Faerie Fire (Feral)
             if (m_spellInfo->Id == 16857 && m_caster->GetShapeshiftForm() != FORM_CAT)
                 AddTriggeredSpell(60089);
-            // Berserk (Bear Mangle part)
-            else if (m_spellInfo->Id == 50334 && m_caster->GetShapeshiftForm() == FORM_BEAR)
-                AddTriggeredSpell(58923);
             // Clearcasting
             else if (m_spellInfo->Id == 16870)
             {

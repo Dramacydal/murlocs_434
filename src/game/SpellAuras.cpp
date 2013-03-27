@@ -1257,6 +1257,13 @@ void Aura::HandleAddModifier(bool apply, bool Real)
                 ((Player*)target)->RemoveSpellCooldown(78674, true);
             break;
         }
+        case 93622:     // Berserk
+        {
+            if (target->GetTypeId() == TYPEID_PLAYER)
+                // remove Mangle (Bear) cooldown
+                ((Player*)target)->RemoveSpellCooldown(33878, true);
+            break;
+        }
         case 96206:     // Nature's Bounty
         {
             if (target->GetTypeId() == TYPEID_PLAYER)
@@ -8020,6 +8027,9 @@ void Aura::HandleShapeshiftBoosts(bool apply)
         case FORM_BEAR:
             spellId1 = 1178;
             spellId2 = 21178;
+            // Berserk boost for Mangle (Bear)
+            if (!apply || target->HasSpell(50334))
+                spellId3 = 58923;
             MasterShaperSpellId = 48418;
             break;
         case FORM_BATTLESTANCE:

@@ -5562,6 +5562,14 @@ SpellAuraProcResult Unit::HandleAddFlatModifierAuraProc(Unit* pVictim, uint32 /*
             }
             break;
         }
+        case SPELLFAMILY_DRUID:
+        {
+            // Berserk
+            if (spellInfo->Id == 58923)
+                // cast cost spellmod spell
+                CastSpell(this, 93622, true);
+            break;
+        }
     }
 
     return SPELL_AURA_PROC_OK;
