@@ -2354,6 +2354,17 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 }
                 break;
             }
+            // Blood in the Water
+            else if (dummySpell->SpellIconID == 4399)
+            {
+                if (!pVictim || pVictim->GetHealthPercent() > triggerAmount)
+                    return SPELL_AURA_PROC_FAILED;
+
+                // Rip and Ferocius Bite have intersecting class masks
+                if (!procSpell || procSpell->Id != 22568)
+                    return SPELL_AURA_PROC_FAILED;
+                break;
+            }
             break;
         }
         case SPELLFAMILY_ROGUE:
@@ -4487,6 +4498,17 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             if (auraSpellInfo->SpellIconID == 2886)
             {
                 basepoints[1] = int32(triggerAmount * damage / 100.0f);
+                break;
+            }
+            // Blood in the Water
+            else if (auraSpellInfo->SpellIconID == 4399)
+            {
+                if (!pVictim || pVictim->GetHealthPercent() > triggerAmount)
+                    return SPELL_AURA_PROC_FAILED;
+
+                // Rip and Ferocius Bite have intersecting class masks
+                if (!procSpell || procSpell->Id != 22568)
+                    return SPELL_AURA_PROC_FAILED;
                 break;
             }
             // Druid Forms Trinket

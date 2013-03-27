@@ -11705,6 +11705,16 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
 
                     return;
                 }
+                case 80863:                                 // Blood in the Water
+                {
+                    if (!unitTarget)
+                        return;
+
+                    // get Rip
+                    if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(1079, m_caster->GetObjectGuid()))
+                        holder->RefreshHolder();
+                    return;
+                }
                 case 97985:                                 // Feral Swiftness Clear
                 {
                     if (!unitTarget)
