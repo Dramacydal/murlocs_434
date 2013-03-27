@@ -429,12 +429,12 @@ void Pet::SavePetToDB(PetSaveMode mode)
         }
 
         // prevent existence another hunter pet in PET_SAVE_AS_CURRENT and PET_SAVE_NOT_IN_SLOT
-        if (getPetType()==HUNTER_PET && (mode==PET_SAVE_AS_CURRENT||mode > PET_SAVE_LAST_STABLE_SLOT))
+        if (getPetType() == HUNTER_PET && mode > PET_SAVE_LAST_STABLE_SLOT)
         {
             static SqlStatementID del ;
 
-            stmt = CharacterDatabase.CreateStatement(del, "DELETE FROM character_pet WHERE owner = ? AND (slot = ? OR slot > ?)");
-            stmt.PExecute(ownerLow, uint32(PET_SAVE_AS_CURRENT), uint32(PET_SAVE_LAST_STABLE_SLOT));
+            stmt = CharacterDatabase.CreateStatement(del, "UPDATE character_pet SET slot = actual_slot WHERE owner = ? AND slot > ?");
+            stmt.PExecute(ownerLow, uint32(PET_SAVE_LAST_STABLE_SLOT));
         }
 
         // save pet
