@@ -189,7 +189,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber, bool c
     setFaction(owner->getFaction());
     SetUInt32Value(UNIT_CREATED_BY_SPELL, summon_spell_id);
 
-    m_actualSlot = PetSaveMode(fields[17].GetUInt32());
+    m_actualSlot = PetSaveMode(fields[18].GetUInt32());
 
     // reget for sure use real creature info selected for Pet at load/creating
     CreatureInfo const *cinfo = GetCreatureInfo();
