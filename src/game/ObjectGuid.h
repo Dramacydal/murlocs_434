@@ -119,7 +119,13 @@ class MANGOS_DLL_SPEC ObjectGuid
             return HighGuid(IsLargeHigh(high) ? high :
                 (m_guid >> 52) & 0xFFF);
         }
-        uint32   GetEntry() const { return HasEntry() ? uint32((m_guid >> 32) & UI64LIT(0xFFFF)) : 0; }
+        uint32   GetEntry() const
+        {
+            if (!HasEntry())
+                return 0;
+
+            return uint32((m_guid >> 32) & UI64LIT(IsLargeHigh() ? 0xFFFF : 0xFFFFF));
+        }
         uint32   GetCounter()  const
         {
             return HasEntry()
