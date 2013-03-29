@@ -758,13 +758,11 @@ void WorldSession::HandleSetPetSlotOpcode(WorldPacket& recv_data)
     uint32 srcId = fields[2].GetUInt32();
     delete result;
 
-    uint32 destPetNumber = 0;
-    int32 destId = 0;
-    if (result = CharacterDatabase.PQuery("SELECT id, entry FROM character_pet WHERE owner = '%u' AND actual_slot = '%u'",
-        _player->GetGUIDLow(), petNumber))
+    uint32 destId = 0;
+    if (result = CharacterDatabase.PQuery("SELECT id FROM character_pet WHERE owner = '%u' AND actual_slot = '%u'",
+        _player->GetGUIDLow(), newSlot))
     {
         destId = (*result)[0].GetUInt32();
-        destPetNumber = (*result)[1].GetUInt32();
         delete result;
     }
 
@@ -794,7 +792,6 @@ void WorldSession::HandleSetPetSlotOpcode(WorldPacket& recv_data)
     if (Pet* pet = _player->GetPet())
         if (pet->m_actualSlot == PetSaveMode(slot) || newSlot == PetSaveMode(slot))
             pet->Unsummon(pet->isAlive() ? PetSaveMode(slot) : PET_SAVE_AS_DELETED, _player);
-
 
     CharacterDatabase.BeginTransaction();
     CharacterDatabase.PExecute("UPDATE `character_pet` SET `slot` = '%u', `actual_slot` = '%u' WHERE `id` = '%u'",
