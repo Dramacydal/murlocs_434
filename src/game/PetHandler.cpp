@@ -603,7 +603,7 @@ void WorldSession::HandlePetAbandon(WorldPacket& recv_data)
     {
         if (pet->IsPet())
         {
-            Pet* p = (Pet*)this;
+            Pet* p = (Pet*)pet;
             if (p->m_actualSlot < PET_SAVE_FIRST_STABLE_SLOT)
                 SendPetSlotUpdated(p->GetObjectGuid().GetEntry(), p->m_actualSlot, -1, 0);
 
@@ -820,7 +820,7 @@ void WorldSession::HandleLearnPreviewTalentsPet(WorldPacket& recv_data)
 void WorldSession::SendPetSlotUpdated(uint32 petNumber, int32 srcSlot, int32 dstSlot, int32 unk)
 {
     WorldPacket data(SMSG_PET_SLOT_UPDATED, 16);
-    data << int32(dstSlot);     // dest slot?
+    data << int32(dstSlot);     // dest slot
     data << int32(srcSlot);     // src slot?
     data << uint32(petNumber);  // pet number
     data << uint32(0);          // unk
