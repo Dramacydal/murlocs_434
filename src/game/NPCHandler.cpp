@@ -37,6 +37,7 @@
 
 enum StableResultCode
 {
+    STABLE_ERR_NONE         = 0x00,                         // does nothing, just resets stable states
     STABLE_ERR_MONEY        = 0x01,                         // "you don't have enough money"
     STABLE_INVALID_SLOT     = 0x03,
     STABLE_ERR_STABLE       = 0x06,                         // currently used in most fail cases
@@ -624,7 +625,7 @@ void WorldSession::SendStablePet( ObjectGuid guid )
     data.put<uint8>(wpos, num);                             // set real data to placeholder
     SendPacket(&data);
 
-    SendStableResult(STABLE_SUCCESS_STABLE);
+    SendStableResult(STABLE_ERR_NONE);
 }
 
 void WorldSession::SendStableResult(uint8 res)
