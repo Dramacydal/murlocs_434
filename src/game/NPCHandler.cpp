@@ -594,8 +594,7 @@ void WorldSession::SendStablePet( ObjectGuid guid )
     size_t wpos = data.wpos();
     data << uint8(0);                                       // place holder for slot show number
 
-    //data << uint8(MAX_PET_STABLES);
-    data << uint8(0);
+    data << uint8(MAX_PET_STABLES);
 
     uint8 num = 0;                                          // counter for place holder
 
