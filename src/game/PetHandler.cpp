@@ -182,7 +182,12 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
                     {
                         Pet* p = (Pet*)pet;
                         if (p->getPetType() == HUNTER_PET)
+                        {
+                            if (p->m_actualSlot < PET_SAVE_FIRST_STABLE_SLOT)
+                                SendPetSlotUpdated(p->GetObjectGuid().GetEntry(), p->m_actualSlot, -1, 0);
+
                             p->Unsummon(PET_SAVE_AS_DELETED, _player);
+                        }
                         else
                             // dismissing a summoned pet is like killing them (this prevents returning a soulshard...)
                             p->SetDeathState(CORPSE);
@@ -597,7 +602,13 @@ void WorldSession::HandlePetAbandon(WorldPacket& recv_data)
     if (Creature* pet = _player->GetMap()->GetAnyTypeCreature(guid))
     {
         if (pet->IsPet())
-            ((Pet*)pet)->Unsummon(PET_SAVE_AS_DELETED, _player);
+        {
+            Pet* p = (Pet*)this;
+            if (p->m_actualSlot < PET_SAVE_FIRST_STABLE_SLOT)
+                SendPetSlotUpdated(p->GetObjectGuid().GetEntry(), p->m_actualSlot, -1, 0);
+
+            p->Unsummon(PET_SAVE_AS_DELETED, _player);
+        }
         else if (pet->GetObjectGuid() == _player->GetCharmGuid())
         {
             _player->Uncharm();
@@ -804,4 +815,15 @@ void WorldSession::HandleLearnPreviewTalentsPet(WorldPacket& recv_data)
     }
 
     _player->SendTalentsInfoData(true);
+}
+
+void WorldSession::SendPetSlotUpdated(uint32 petNumber, int32 srcSlot, int32 dstSlot, int32 unk)
+{
+    WorldPacket data(SMSG_PET_SLOT_UPDATED, 16);
+    data << int32(dstSlot);     // dest slot?
+    data << int32(srcSlot);     // src slot?
+    data << uint32(petNumber);  // pet number
+    data << uint32(0);          // unk
+
+    SendPacket(&data);
 }

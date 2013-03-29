@@ -1438,4 +1438,5 @@ void InitializeOpcodes()
     OPCODE(CMSG_OBJECT_UPDATE_FAILED,                    STATUS_LOGGEDIN, PROCESS_INPLACE,      &WorldSession::HandleObjectUpdateFailedOpcode  );
     OPCODE(SMSG_MOVE_SET_ACTIVE_MOVER,                   STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
     OPCODE(CMSG_SET_PET_SLOT,                            STATUS_LOGGEDIN, PROCESS_INPLACE,      &WorldSession::HandleSetPetSlotOpcode          );
+    OPCODE(SMSG_PET_SLOT_UPDATED,                        STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
 };
