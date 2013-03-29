@@ -613,7 +613,8 @@ void WorldSession::SendStablePet( ObjectGuid guid )
             data << uint32(fields[2].GetUInt32());          // creature entry
             data << uint32(fields[3].GetUInt32());          // level
             data << fields[4].GetString();                  // name
-            data << uint8(fields[5].GetUInt32() < PET_SAVE_FIRST_STABLE_SLOT ? 1 : 3);  // 1 = current, 2/3 = in stable (any from 4,5,... create problems with proper show)
+            //data << uint8(fields[5].GetUInt32() < PET_SAVE_FIRST_STABLE_SLOT ? 1 : 3);  // 1 = current, 2/3 = in stable (any from 4,5,... create problems with proper show)
+            data << uint8(2);  // 1 = current, 2/3 = in stable (any from 4,5,... create problems with proper show)
 
             ++num;
         }while( result->NextRow() );
