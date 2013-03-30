@@ -5113,7 +5113,30 @@ void Aura::HandleFeignDeath(bool apply, bool Real)
     if(!Real)
         return;
 
-    GetTarget()->SetFeignDeath(apply, GetCasterGuid(), GetId());
+    Unit* target = GetTarget();
+
+    if (apply)
+    {
+        Spell::UnitList targets;
+        MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck u_check(target, target, target->GetMap()->GetVisibilityDistance());
+        MaNGOS::UnitListSearcher<MaNGOS::AnyUnfriendlyUnitInObjectRangeCheck> searcher(targets, u_check);
+        Cell::VisitAllObjects(target, searcher, target->GetMap()->GetVisibilityDistance());
+
+        for (Spell::UnitList::iterator tIter = targets.begin(); tIter != targets.end(); ++tIter)
+        {
+            for (uint32 i = CURRENT_MELEE_SPELL; i < CURRENT_MAX_SPELL; ++i)
+            {
+                if ((*tIter)->GetCurrentSpell(CurrentSpellTypes(i))
+                    && (*tIter)->GetCurrentSpell(CurrentSpellTypes(i))->m_targets.getUnitTargetGuid() == target->GetObjectGuid())
+                {
+                    (*tIter)->InterruptSpell(CurrentSpellTypes(i), false);
+                    (*tIter)->AttackStop();
+                }
+            }
+        }
+    }
+
+    target->SetFeignDeath(apply, GetCasterGuid(), GetId());
 }
 
 void Aura::HandleAuraModDisarm(bool apply, bool Real)
