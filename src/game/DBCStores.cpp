@@ -979,6 +979,11 @@ void LoadDBCStores(const std::string& dataPath)
                 //intr->AuraInterruptFlags = 0x1F;
                 break;
             }
+            case 5384:                          // Feign Death
+            {
+                spell->powerType = 0;
+                break;
+            }
             case 6358:                          // Seduction
             {
                 spell->SchoolMask = SPELL_SCHOOL_MASK_MAGIC;
