@@ -4702,30 +4702,6 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
         case SPELLFAMILY_HUNTER:
         {
             SpellClassOptionsEntry const* huntClassOptions = m_spellInfo->GetSpellClassOptions();
-            // Steady Shot
-            if (huntClassOptions && huntClassOptions->SpellFamilyFlags & UI64LIT(0x100000000))
-            {
-                if (!unitTarget || !unitTarget->isAlive())
-                    return;
-
-                bool found = false;
-
-                // check dazed affect
-                Unit::AuraList const& decSpeedList = unitTarget->GetAurasByType(SPELL_AURA_MOD_DECREASE_SPEED);
-                for(Unit::AuraList::const_iterator iter = decSpeedList.begin(); iter != decSpeedList.end(); ++iter)
-                {
-                    if ((*iter)->GetSpellProto()->SpellIconID==15 && (*iter)->GetSpellProto()->GetDispel()==0)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (found)
-                    m_damage+= damage;
-                return;
-            }
-
             // Disengage
             if (huntClassOptions && huntClassOptions->SpellFamilyFlags & UI64LIT(0x0000400000000000))
             {
@@ -8614,18 +8590,9 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
         }
         case SPELLFAMILY_HUNTER:
         {
-            // Arcane Shot
-            if (m_spellInfo->Id == 3044)
-                spell_bonus += int32(0.248f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
             // Kill Shot
-            else if (m_spellInfo->Id == 53351)
+            if (m_spellInfo->Id == 53351)
                 spell_bonus += int32(0.45f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
-            // Steady Shot
-            else if (m_spellInfo->Id == 56641)
-                spell_bonus += int32(0.221f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
-            // Cobra Shot
-            else if (m_spellInfo->Id == 77767)
-                spell_bonus += int32(0.217f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
             break;
         }
         case SPELLFAMILY_SHAMAN:
