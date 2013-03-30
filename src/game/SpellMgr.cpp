@@ -5101,6 +5101,9 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
             // Entrapment (own diminishing)
             else if (spellproto->SpellVisual[0] == 7484 && spellproto->SpellIconID == 20)
                 return DIMINISHING_ENTRAPMENT;
+            // Widow Venom
+            else if (spellproto->Id == 82654)
+                return DIMINISHING_LIMITONLY;
             break;
         }
         case SPELLFAMILY_WARLOCK:
@@ -5226,6 +5229,9 @@ int32 GetDiminishingReturnsLimitDuration(DiminishingGroup group, SpellEntry cons
             // Hunter's Mark
             else if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x400))
                 return 120000;
+            // Widow Venom
+            else if (spellproto->Id == 82654)
+                return 10000;
             break;
         }
         case SPELLFAMILY_PALADIN:

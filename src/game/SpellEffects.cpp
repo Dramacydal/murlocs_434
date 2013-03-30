@@ -4801,7 +4801,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     if (!pet || !unitTarget)
                         return;
 
-                    pet->CastSpell(unitTarget, effect->CalculateSimpleValue(), true);
+                    pet->CastSpell(unitTarget, damage, true);
                     return;
                 }
             }

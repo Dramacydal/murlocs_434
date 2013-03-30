@@ -2671,13 +2671,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     target = this;
                     break;
                 }
-                // Glyph of Mend Pet
-                case 57870:
-                {
-                    pVictim->CastSpell(pVictim, 57894, true, NULL, NULL, GetObjectGuid());
-                    return SPELL_AURA_PROC_OK;
-                    break;
-                }
                 // Improved Kill Command - Item set bonus
                 case 37483:
                 {
