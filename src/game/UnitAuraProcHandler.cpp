@@ -1109,26 +1109,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     owner->CastSpell(owner,58227,true,castItem,triggeredByAura);
                     return SPELL_AURA_PROC_OK;
                 }
-                // Kill Command, pet aura
-                case 58914:
-                {
-                    // also decrease owner buff stack
-                    Unit* owner = GetOwner();
-                    if (!owner)
-                        return SPELL_AURA_PROC_FAILED;
-
-                    owner->RemoveAuraHolderFromStack(34027);
-
-                    // Remove only single aura from stack
-                    if (triggeredByAura->GetHolder()->ModStackAmount(-1))
-                    {
-                        owner->RemoveAurasDueToSpell(34026);
-                        return SPELL_AURA_PROC_OK;
-                    }
-                    else
-                        return SPELL_AURA_PROC_CANT_TRIGGER;
-                    break;
-                }
                 // Swift Hand of Justice
                 case 59906:
                 {

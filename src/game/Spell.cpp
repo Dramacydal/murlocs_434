@@ -7232,9 +7232,19 @@ SpellCastResult Spell::CheckCast(bool strict)
                 switch(m_spellInfo->Id)
                 {
                     case 34026:                             // Kill Command
-                        if (!m_caster->GetPet())
+                    {
+                        Pet* pet = m_caster->GetPet();
+                        if (!pet)
                             return SPELL_FAILED_NO_PET;
+
+                        Unit* target = pet->getVictim();
+                        if (!target)
+                            return SPELL_FAILED_NO_VALID_TARGETS;
+
+                        if (pet->GetDistance(target) > 5.0f)
+                            return SPELL_FAILED_OUT_OF_RANGE;
                         break;
+                    }
                     case 61336:                             // Survival Instincts
                         if (m_caster->GetTypeId() != TYPEID_PLAYER || !((Player*)m_caster)->IsInFeralForm())
                             return SPELL_FAILED_ONLY_SHAPESHIFT;

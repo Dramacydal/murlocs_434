@@ -2836,15 +2836,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 break;
             }
             case SPELLFAMILY_HUNTER:
-            {
-                switch(GetId())
-                {
-                    case 34026:                             // Kill Command
-                        target->CastSpell(target, 34027, true, NULL, this);
-                        return;
-                }
                 break;
-            }
             case SPELLFAMILY_MAGE:
             {
                 // Fingers of Frost stacks set to max at apply
@@ -10803,10 +10795,8 @@ SpellAuraHolder::SpellAuraHolder(SpellEntry const* spellproto, Unit* target, Wor
         case 24659:                                         // Unstable Power
         case 24662:                                         // Restless Strength
         case 26464:                                         // Mercurial Shield
-        case 34027:                                         // Kill Command
         case 53257:                                         // Cobra strike
         case 55166:                                         // Tidal Force
-        case 58914:                                         // Kill Command (pet part)
         case 62519:                                         // Attuned to Nature
         case 64455:                                         // Feral Essence
         case 66228:                                         // Nether Power (ToC: Lord Jaraxxus)
@@ -12207,16 +12197,6 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 {
                     if (!apply || m_target->HasAura(60144)) // Viper Attack Speed
                         spellId1 = 61609;                   // Vicious Viper
-                    else
-                        return;
-                    break;
-                }
-                case 34027:                                 // Kill Command, owner aura (spellmods)
-                {
-                    if (m_target->HasAura(35029))           // Focused Fire, rank 1
-                        spellId1 = 60110;                   // Kill Command, Focused Fire rank 1 bonus
-                    else if (m_target->HasAura(35030))      // Focused Fire, rank 2
-                        spellId1 = 60113;                   // Kill Command, Focused Fire rank 2 bonus
                     else
                         return;
                     break;
