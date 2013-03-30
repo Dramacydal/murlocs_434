@@ -5131,13 +5131,6 @@ void Aura::HandleFeignDeath(bool apply, bool Real)
                 {
                     (*tIter)->InterruptSpell(CurrentSpellTypes(i), false);
                     (*tIter)->AttackStop();
-
-                    if ((*tIter)->GetTypeId() == TYPEID_PLAYER && (*tIter)->GetTargetGuid() == target->GetObjectGuid())
-                    {
-                        WorldPacket data(SMSG_CLEAR_TARGET, 8);
-                        data << (*tIter)->GetObjectGuid();
-                        (*tIter)->SendMessageToSet(&data, false);
-                    }
                 }
             }
         }
