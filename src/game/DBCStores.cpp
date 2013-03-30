@@ -948,13 +948,19 @@ void LoadDBCStores(const std::string& dataPath)
                 spell->Attributes &= ~SPELL_ATTR_UNK11;
                 break;
             }
+            case 2643:                          // Multi-Shot
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->Effect = 0;
+                break;
+            }
             case 2654:                          // Summon Tamed (TEST) -> Premium NPC Summoner
             {
                 spell->Attributes = 0x10000110;
                 spell->CastingTimeIndex = 0;
                 spell->DurationIndex = 21;
                 spell->rangeIndex = 1;
-                
+
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
                 {
                     eff->Effect = 28;

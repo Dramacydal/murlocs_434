@@ -4894,13 +4894,7 @@ void Aura::HandleRangedAPBonus(bool apply, bool Real)
         switch(GetSpellProto()->GetSpellFamilyName())
         {
             case SPELLFAMILY_HUNTER:
-            {
-                // Hunter's Mark: Improved Hunter's Mark
-                if (opt && GetEffIndex() == EFFECT_INDEX_1 && (opt->SpellFamilyFlags & UI64LIT(0x400)))
-                    if (Player* modOwner = caster->GetSpellModOwner())
-                        modOwner->ApplySpellMod(GetId(), SPELLMOD_EFFECT2, GetModifier()->m_amount);
                 break;
-            }
         }
     }
 }
