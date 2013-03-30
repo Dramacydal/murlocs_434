@@ -979,11 +979,6 @@ void LoadDBCStores(const std::string& dataPath)
                 //intr->AuraInterruptFlags = 0x1F;
                 break;
             }
-            case 5384:                          // Feign Death
-            {
-                spell->powerType = 0;
-                break;
-            }
             case 6358:                          // Seduction
             {
                 spell->SchoolMask = SPELL_SCHOOL_MASK_MAGIC;
@@ -1311,6 +1306,12 @@ void LoadDBCStores(const std::string& dataPath)
             {
                 if (SpellClassOptionsEntry* opt = (SpellClassOptionsEntry*)spell->GetSpellClassOptions())
                     opt->SpellFamilyFlags.Flags &= ~(UI64LIT(0x1));
+                break;
+            }
+            case 56641:                         // Steady Shot
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_2))
+                    eff->EffectImplicitTargetA = 1;
                 break;
             }
             case 57529:                         // Arcane potency

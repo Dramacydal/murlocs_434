@@ -4930,6 +4930,10 @@ void Spell::SendSpellStart()
         m_spellInfo->powerType != POWER_HEALTH)
         castFlags |= CAST_FLAG_PREDICTED_POWER;
 
+    // Feigh Death
+    if (m_spellInfo->Id == 5384)
+        castFlags &= ~CAST_FLAG_PREDICTED_POWER;
+
     WorldPacket data(SMSG_SPELL_START, (8 + 8 + 4 + 4 + 2));
     if (m_CastItem)
         data << m_CastItem->GetPackGUID();
@@ -5003,6 +5007,10 @@ void Spell::SendSpellGo()
         m_caster->GetTypeId() == TYPEID_UNIT && ((Creature*)m_caster)->IsPet()) &&
         m_spellInfo->powerType != POWER_HEALTH)
         castFlags |= CAST_FLAG_PREDICTED_POWER;
+
+    // Feigh Death
+    if (m_spellInfo->Id == 5384)
+        castFlags &= ~CAST_FLAG_PREDICTED_POWER;
 
     if (m_caster->GetTypeId() == TYPEID_PLAYER && m_caster->getClass() == CLASS_DEATH_KNIGHT && m_spellInfo->runeCostID)
     {
