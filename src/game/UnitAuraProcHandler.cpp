@@ -2704,6 +2704,12 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     triggered_spell_id = 37482;                 // Exploited Weakness
                     break;
                 }
+                case 82661:                                     // Aspect of the Fox
+                {
+                    basepoints[0] = triggerAmount;
+                    triggered_spell_id = 99289;
+                    break;
+                }
             }
             break;
         }
