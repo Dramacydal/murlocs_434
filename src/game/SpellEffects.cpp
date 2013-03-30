@@ -12105,7 +12105,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                         return;
 
                     // get Serpent Sting
-                    if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(77767, m_caster->GetObjectGuid()))
+                    if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(1978, m_caster->GetObjectGuid()))
                     {
                         int32 maxDuration = holder->GetAuraMaxDuration();
                         int32 newDuration = std::min(holder->GetAuraDuration() + damage * IN_MILLISECONDS, maxDuration);
