@@ -3790,7 +3790,7 @@ void Spell::prepare(SpellCastTargets const* targets, Aura* triggeredByAura)
 
     // stealth must be removed at cast starting (at show channel bar)
     // skip triggered spell (item equip spell casting and other not explicit character casts/item uses)
-    if ( !m_IsTriggeredSpell && isSpellBreakStealth(m_spellInfo) && m_casttime > 0)
+    if ((!m_IsTriggeredSpell || m_spellInfo->Id == SPELL_ID_AUTOSHOT) && isSpellBreakStealth(m_spellInfo) && m_casttime > 0)
     {
         m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_CAST);
 
@@ -3945,7 +3945,7 @@ void Spell::cast(bool skipCheck)
     }
 
     // skip triggered spell (item equip spell casting and other not explicit character casts/item uses)
-    if ( !m_IsTriggeredSpell && isSpellBreakStealth(m_spellInfo) && m_casttime == 0)
+    if ((!m_IsTriggeredSpell || m_spellInfo->Id == SPELL_ID_AUTOSHOT) && isSpellBreakStealth(m_spellInfo) && m_casttime == 0)
     {
         m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_CAST);
 

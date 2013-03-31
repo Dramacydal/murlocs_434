@@ -1245,7 +1245,10 @@ void LoadDBCStores(const std::string& dataPath)
             case 51755:                         // Camouflage
             {
                 if (SpellInterruptsEntry* inter = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
+                {
                     inter->AuraInterruptFlags &= ~4;    // AURA_INTERRUPT_FLAG_CAST
+                    inter->AuraInterruptFlags |= 8192;  // AURA_INTERRUPT_FLAG_SPELL_ATTACK
+                }
                 break;
             }
             case 51804:                         // Power Siphon disable
