@@ -4701,7 +4701,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     return SPELL_AURA_PROC_FAILED;
             }
             // Tamed Pet Passive 07 (DND)
-            else if (auraSpellInfo->Id == 20874)
+            else if (auraSpellInfo->Id == 20784)
             {
                 basepoints[0] = triggerAmount;
                 break;
