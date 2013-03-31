@@ -409,7 +409,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNULL,                                      //350 SPELL_AURA_MOD_MATERIAL_GAIN 1 spells in 4.3.4
     &Aura::HandleNULL,                                      //351 8 spells in 4.3.4 archaeology-related
     &Aura::HandleNULL,                                      //352 1 spells in 4.3.4 enables worgen<>human form switches
-    &Aura::HandleNULL,                                      //353 SPELL_AURA_MOD_CAMOUFLAGE 3 spells in 4.3.4
+    &Aura::HandleNULL,                                      //353 SPELL_AURA_CAMOUFLAGE 3 spells in 4.3.4
     &Aura::HandleNoImmediateEffect,                         //354 SPELL_AURA_MOD_HEALING_DONE_FROM_PCT_HEALTH 2 spells in 4.3.4, implemented in Unit::SpellHealingBonusDone
     &Aura::HandleUnused,                                    //355 0 spells in 4.3.4
     &Aura::HandleNoImmediateEffect,                         //356 SPELL_AURA_MOD_DAMAGE_DONE_FROM_PCT_POWER 2 spells in 4.3.4, imlemented in Unit::SpellDamageBonusDone
@@ -12231,8 +12231,12 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                         return;
                     break;
                 }
-                // Cobra strikes
-                case 53257:
+                case 51755:                                 // Camouflage
+                {
+                    spellId1 = 80326;                       // Camouflage
+                    break;
+                }
+                case 53257:                                 // Cobra strikes
                 {
                     if (m_target->GetObjectGuid().IsPet())
                     {

@@ -1242,6 +1242,12 @@ void LoadDBCStores(const std::string& dataPath)
                 spell->SpellClassOptionsId = 12892;
                 break;
             }
+            case 51755:                         // Camouflage
+            {
+                if (SpellInterruptsEntry* inter = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
+                    inter->AuraInterruptFlags &= ~4;    // AURA_INTERRUPT_FLAG_CAST
+                break;
+            }
             case 51804:                         // Power Siphon disable
             {
                 for (int i = 0; i < MAX_EFFECT_INDEX; ++i)

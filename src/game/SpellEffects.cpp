@@ -4751,8 +4751,14 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     ((Player*)m_caster)->SendAttackSwingCancelAttack();
                     return;
                 }
-                // Last Stand
-                case 53478:
+                case 51753:                                 // Camouflage
+                {
+                    m_caster->CastSpell(m_caster, 51755, true);
+                    if (Pet* pet = m_caster->GetPet())
+                        pet->CastSpell(pet, 51755, true);
+                    return;
+                }
+                case 53478:                                 // Last Stand
                 {
                     if (!unitTarget)
                         return;
@@ -4760,8 +4766,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     unitTarget->CastCustomSpell(unitTarget, 53479, &healthModSpellBasePoints0, NULL, NULL, true, NULL);
                     return;
                 }
-                // Master's Call
-                case 53271:
+                case 53271:                                 // Master's Call
                 {
                     Pet* pet = m_caster->GetPet();
                     if (!pet || !unitTarget)
@@ -4770,8 +4775,7 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     pet->CastSpell(unitTarget, damage, true);
                     return;
                 }
-                // Steady Shot
-                case 56641:
+                case 56641:                                 // Steady Shot
                 {
                     // energize
                     m_caster->CastSpell(m_caster, 77443, true);
