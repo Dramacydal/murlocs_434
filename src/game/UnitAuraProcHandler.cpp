@@ -352,7 +352,7 @@ pAuraProcHandler AuraProcHandler[TOTAL_AURAS]=
     &Unit::HandleNULLProc,                                  //317 SPELL_AURA_MOD_INCREASE_SPELL_POWER_PCT 13 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //318 SPELL_AURA_MASTERY 12 spells in 4.3
     &Unit::HandleNULLProc,                                  //319 SPELL_AURA_MOD_MELEE_HASTE_3 47 spells in 4.3.4
-    &Unit::HandleNULLProc,                                  //320 SPELL_AURA_MOD_RANGED_HASTE_2 5 spells in 4.3.4
+    &Unit::HandleModRangedHasteAuraProc,                    //320 SPELL_AURA_MOD_RANGED_HASTE_2 5 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //321 1 spells in 4.3 Hex
     &Unit::HandleNULLProc,                                  //322 SPELL_AURA_INTERFERE_TARGETING 6 spells in 4.3
     &Unit::HandleNULLProc,                                  //323 0 spells in 4.3.4
@@ -6399,3 +6399,13 @@ SpellAuraProcResult Unit::HandleAuraProcOnPowerAmount(Unit* pVictim, uint32 dama
 
     return SPELL_AURA_PROC_OK;
 }
+
+SpellAuraProcResult Unit::HandleModRangedHasteAuraProc(Unit* pVictim, uint32 damage, uint32 absorb, Aura* triggeredByAura, SpellEntry const *procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown)
+{
+    // Improved Steady Shot
+    if (triggeredByAura->GetId() == 53220)
+        return SPELL_AURA_PROC_FAILED;
+
+    return SPELL_AURA_PROC_OK;
+}
+
