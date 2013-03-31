@@ -781,7 +781,7 @@ void WorldSession::HandleSetPetSlotOpcode(WorldPacket& recv_data)
             return;
         }
 
-         CreatureInfo const* creatureInfo = ObjectMgr::GetCreatureTemplate(creatureId);
+        CreatureInfo const* creatureInfo = ObjectMgr::GetCreatureTemplate(creatureId);
         if (!creatureInfo || !creatureInfo->isTameable(_player->CanTameExoticPets()))
         {
             // if problem in exotic pet
