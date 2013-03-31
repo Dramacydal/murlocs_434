@@ -853,7 +853,7 @@ bool Pet::CreateBaseAtCreature(Creature* creature)
 
     if(cinfo->type == CREATURE_TYPE_BEAST)
     {
-        SetByteValue(UNIT_FIELD_BYTES_0, 1, CLASS_WARRIOR);
+        SetByteValue(UNIT_FIELD_BYTES_0, 1, CLASS_HUNTER);
         SetByteValue(UNIT_FIELD_BYTES_0, 2, GENDER_NONE);
         SetByteValue(UNIT_FIELD_BYTES_0, 3, POWER_FOCUS);
         SetSheath(SHEATH_STATE_MELEE);
@@ -963,7 +963,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             if (!pInfo)         //If no pet levelstats in DB - use 1 for default hunter pet
                 pInfo = sObjectMgr.GetPetLevelInfo(1, petlevel);
 
-            SetByteValue(UNIT_FIELD_BYTES_0, 1, CLASS_WARRIOR);
+            SetByteValue(UNIT_FIELD_BYTES_0, 1, CLASS_HUNTER);
             SetByteValue(UNIT_FIELD_BYTES_0, 2, GENDER_NONE);
             SetSheath(SHEATH_STATE_MELEE);
 
