@@ -3791,7 +3791,17 @@ void Spell::prepare(SpellCastTargets const* targets, Aura* triggeredByAura)
     // stealth must be removed at cast starting (at show channel bar)
     // skip triggered spell (item equip spell casting and other not explicit character casts/item uses)
     if ( !m_IsTriggeredSpell && isSpellBreakStealth(m_spellInfo) && m_casttime > 0)
+    {
         m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_CAST);
+
+        for (uint32 i = 0; i < MAX_EFFECT_INDEX; ++i)
+            if (SpellEffectEntry const* eff = m_spellInfo->GetSpellEffect(SpellEffectIndex(i)))
+                if (m_targets.getUnitTarget())
+                {
+                    m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_SPELL_ATTACK);
+                    break;
+                }
+    }
 
     // add non-triggered (with cast time and without)
     if (!m_IsTriggeredSpell)
@@ -3936,7 +3946,17 @@ void Spell::cast(bool skipCheck)
 
     // skip triggered spell (item equip spell casting and other not explicit character casts/item uses)
     if ( !m_IsTriggeredSpell && isSpellBreakStealth(m_spellInfo) && m_casttime == 0)
+    {
         m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_CAST);
+
+        for (uint32 i = 0; i < MAX_EFFECT_INDEX; ++i)
+            if (SpellEffectEntry const* eff = m_spellInfo->GetSpellEffect(SpellEffectIndex(i)))
+                if (m_targets.getUnitTarget())
+                {
+                    m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_SPELL_ATTACK);
+                    break;
+                }
+    }
 
     SpellClassOptionsEntry const* classOpt = m_spellInfo->GetSpellClassOptions();
 

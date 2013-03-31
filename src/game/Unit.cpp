@@ -3213,6 +3213,8 @@ void Unit::AttackerStateUpdate (Unit *pVictim, WeaponAttackType attType, bool ex
     if(IsNonMeleeSpellCasted(false))
         return;
 
+    RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_MELEE_ATTACK);
+
     uint32 hitInfo;
     if (attType == BASE_ATTACK)
         hitInfo = HITINFO_NORMALSWING2;
