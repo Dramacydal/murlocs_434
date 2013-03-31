@@ -5967,31 +5967,24 @@ void Aura::HandleModMechanicImmunity(bool apply, bool /*Real*/)
         if (GetId() == 54508)
             mechanicMask = (1<<(MECHANIC_ROOT-1))|(1<<(MECHANIC_SNARE-1))|(1<<(MECHANIC_STUN-1))|
             (1<<(MECHANIC_BANISH-1))|(1<<(MECHANIC_HORROR-1))|(1<<(MECHANIC_FEAR-1));
-        // Bestial Wrath and The Beast Within
-        else if (GetId() == 19574 || GetId() == 34471)
+        // Bestial Wrath
+        else if (GetId() == 19574)
             mechanicMask = IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK;
 
         if (apply)
             target->RemoveAurasAtMechanicImmunity(mechanicMask, GetId());
     }
 
-    // Bestial Wrath and The Beast Within
-    if (GetId() == 19574 || GetId() == 34471)
+    // The Beast Within cast on owner if talent present
+    if (GetId() == 19574)
     {
-        // The Beast Within cast on owner if talent present
-        if (GetId() == 19574)
+        if (Unit* owner = target->GetOwner())
         {
-            if (Unit* owner = target->GetOwner())
-            {
-                // Search talent The Beast Within
-                if (owner->HasAura(34692))
-                {
-                    if (apply)
-                        owner->CastSpell(owner, 34471, true, NULL, this);
-                    else
-                        owner->RemoveAurasDueToSpell(34471);
-                }
-            }
+            // Search talent The Beast Within
+            if (apply && owner->HasAura(34692))
+                owner->CastSpell(owner, 34471, true, NULL, this);
+            else
+                owner->RemoveAurasDueToSpell(34471);
         }
 
         mechanicMask = IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK | (1 << (MECHANIC_DISARM - 1));
