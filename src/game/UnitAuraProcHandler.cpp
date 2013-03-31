@@ -2641,23 +2641,11 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 return SPELL_AURA_PROC_OK;
             }
             // Rapid Recuperation
-            else if ( dummySpell->SpellIconID == 3560 )
+            else if (dummySpell->SpellIconID == 3560)
             {
-                // This effect only from Rapid Killing (mana regen)
-                if (!(procClassOptions && procClassOptions->SpellFamilyFlags & UI64LIT(0x0100000000000000)))
-                    return SPELL_AURA_PROC_FAILED;
-
                 target = this;
-
-                switch(dummySpell->Id)
-                {
-                    case 53228:                             // Rank 1
-                        triggered_spell_id = 56654;
-                        break;
-                    case 53232:                             // Rank 2
-                        triggered_spell_id = 58882;
-                        break;
-                }
+                basepoints[0] = triggerAmount;
+                triggered_spell_id = 58883;
                 break;
             }
             // Lock and Load

@@ -938,8 +938,11 @@ void Spell::prepareDataForTriggerSystem()
                 m_canTrigger = true;
             break;
         case SPELLFAMILY_HUNTER:
-            // Hunter Rapid Killing/Explosive Trap Effect/Immolation Trap Effect/Frost Trap Aura/Snake Trap Effect/Explosive Shot
-            if (m_spellInfo->IsFitToFamilyMask(UI64LIT(0x0100200000000214), 0x200))
+            // Hunter Explosive Trap Effect/Immolation Trap Effect/Frost Trap Aura/Snake Trap Effect/Explosive Shot
+            if (m_spellInfo->IsFitToFamilyMask(UI64LIT(0x0100200000000214)))
+                m_canTrigger = true;
+            // Rapid Killing
+            else if (m_spellInfo->IsFitToFamilyMask(UI64LIT(0), 0x1000000))
                 m_canTrigger = true;
             break;
         case SPELLFAMILY_PALADIN:
