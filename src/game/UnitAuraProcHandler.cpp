@@ -2622,6 +2622,24 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 target = this;
                 break;
             }
+            // Improved Steady Shot
+            else if (dummySpell->SpellIconID == 3409)
+            {
+                basepoints[0] = triggeredByAura->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0);
+
+                Modifier* mod = triggeredByAura->GetModifier();
+                if (procSpell->Id == 56641)
+                {
+                    mod->m_amount *= 2;
+                    if (mod->m_amount <= basepoints[0] * 2)
+                        return SPELL_AURA_PROC_OK;
+
+                    CastCustomSpell(this, 53220, &basepoints[0], NULL, NULL, true, NULL, triggeredByAura);
+                }
+
+                mod->m_amount = basepoints[0];
+                return SPELL_AURA_PROC_OK;
+            }
             // Rapid Recuperation
             else if ( dummySpell->SpellIconID == 3560 )
             {
