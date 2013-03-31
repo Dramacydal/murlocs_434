@@ -5442,7 +5442,7 @@ void Spell::EffectForceCastWithValue(SpellEffectEntry const* effect)
     }
 
     int32 bp = damage;
-    unitTarget->CastSpell(unitTarget, spellInfo, true, NULL, NULL, m_originalCasterGUID);
+    unitTarget->CastCustomSpell(unitTarget, spellInfo, &bp, NULL, NULL, true, NULL, NULL, m_originalCasterGUID);
 }
 
 void Spell::EffectTriggerSpell(SpellEffectEntry const* effect)
