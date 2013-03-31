@@ -2696,6 +2696,17 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 mod->m_amount = 15;
                 return SPELL_AURA_PROC_OK;
             }
+            // Sic 'Em!
+            else if (dummySpell->SpellIconID == 5092)
+            {
+                Pet* pet = GetPet();
+                if (!pet)
+                    return SPELL_AURA_PROC_FAILED;
+
+                basepoints[0] = triggerAmount;
+                pet->CastCustomSpell(pet, 83359, &basepoints[0], NULL, NULL, true, NULL, triggeredByAura, GetObjectGuid());
+                return SPELL_AURA_PROC_OK;
+            }
 
             switch(dummySpell->Id)
             {
