@@ -75,6 +75,7 @@ enum SpellSpecific
     SPELL_PRIEST_INNER      = 24,
     SPELL_PRIEST_CHAKRA     = 25,
     SPELL_WARLOCK_BANE      = 26,
+    SPELL_HUNTER_MARK       = 27,
 };
 
 SpellSpecific GetSpellSpecific(uint32 spellId);

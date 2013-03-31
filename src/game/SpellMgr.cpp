@@ -105,6 +105,10 @@ int32 CalculateSpellDuration(SpellEntry const *spellInfo, Unit const* caster)
 
 uint32 GetSpellCastTime(SpellEntry const* spellInfo, Spell const* spell)
 {
+    // Aimed Shot! (Master Marksman)
+    if (spellInfo->Id == 82928)
+        return 0;
+
     if (spell)
     {
         // some triggered spells have data only usable for client
@@ -600,6 +604,10 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
             if (spellInfo->IsFitToFamilyMask(UI64LIT(0x0044000000380000), 0x00001010))
                 return SPELL_ASPECT;
 
+            // Hunter's Mark and Marked for Death
+            if (spellInfo->Id == 1130 || spellInfo->Id == 88691)
+                return SPELL_HUNTER_MARK;
+
             break;
         }
         case SPELLFAMILY_PALADIN:
@@ -670,6 +678,7 @@ bool IsSingleFromSpellSpecificPerTargetPerCaster(SpellSpecific spellSpec1,SpellS
         case SPELL_HAND:
         case SPELL_UA_IMMOLATE:
         case SPELL_WARLOCK_BANE:
+        case SPELL_HUNTER_MARK:
             return spellSpec1==spellSpec2;
         default:
             return false;

@@ -1271,11 +1271,6 @@ void LoadDBCStores(const std::string& dataPath)
                 spell->AttributesEx2 &= ~SPELL_ATTR_EX2_CANT_CRIT;
                 break;
             }
-            case 53209:                         // Chimera Shot
-            {
-                spell->SchoolMask = SPELL_SCHOOL_MASK_NORMAL;
-                break;
-            }
             case 54408:                         // Conjure Mana Gem triggered
             case 54409:
             case 54410:

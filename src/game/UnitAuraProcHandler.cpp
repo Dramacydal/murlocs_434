@@ -2640,6 +2640,15 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 mod->m_amount = basepoints[0];
                 return SPELL_AURA_PROC_OK;
             }
+            // Marked for Death
+            else if (dummySpell->SpellIconID == 3524)
+            {
+                if (!roll_chance_i(triggerAmount))
+                    return SPELL_AURA_PROC_FAILED;
+
+                triggered_spell_id = 88691;
+                break;
+            }
             // Rapid Recuperation
             else if (dummySpell->SpellIconID == 3560)
             {
@@ -2712,6 +2721,12 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 basepoints[0] = triggerAmount;
                 pet->CastCustomSpell(pet, 83359, &basepoints[0], NULL, NULL, true, NULL, triggeredByAura, GetObjectGuid());
                 return SPELL_AURA_PROC_OK;
+            }
+            // Posthaste
+            else if (dummySpell->SpellIconID == 5094)
+            {
+                basepoints[0] = triggerAmount;
+                triggered_spell_id = 83559;
             }
 
             switch(dummySpell->Id)
@@ -4691,6 +4706,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
         }
         case SPELLFAMILY_HUNTER:
         {
+            // Master Marksman
+            if (auraSpellInfo->SpellIconID == 2230)
+            {
+                basepoints[0] = triggerAmount;
+                break;
+            }
             // Piercing Shots
             if (auraSpellInfo->SpellIconID == 3247 && auraSpellInfo->SpellVisual[0] == 0)
             {
