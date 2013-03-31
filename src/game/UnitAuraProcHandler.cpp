@@ -2673,7 +2673,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // modify cooldown of Disengage or Deterrence
                 ((Player*)this)->SendModifyCooldown(triggeredByAura->GetEffIndex() == EFFECT_INDEX_0 ?
                     781 : 19263, -triggerAmount);
-                return;
+                return SPELL_AURA_PROC_OK;
             }
             // Killing Streak
             else if (dummySpell->SpellIconID == 4980)
