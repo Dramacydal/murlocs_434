@@ -4701,10 +4701,6 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Piercing Shots
             if (auraSpellInfo->SpellIconID == 3247 && auraSpellInfo->SpellVisual[0] == 0)
             {
-                if (!procSpell || !procSpell->IsFitToFamilyMask(UI64LIT(0x0000000100020000))    //Aimed Shot & Steady Shot
-                    && !procSpell->IsFitToFamilyMask(UI64LIT(0x0), 0x1))    // Chimera Shot
-                    return SPELL_AURA_PROC_FAILED;
-
                 basepoints[0] = (damage+absorb) * triggerAmount / 100 / 8;
                 trigger_spell_id = 63468;
                 target = pVictim;

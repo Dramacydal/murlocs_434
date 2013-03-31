@@ -951,7 +951,7 @@ void LoadDBCStores(const std::string& dataPath)
             case 2643:                          // Multi-Shot
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
-                    eff->Effect = 0;
+                    eff->Effect = TARGET_CHAIN_DAMAGE;
                 break;
             }
             case 2654:                          // Summon Tamed (TEST) -> Premium NPC Summoner
