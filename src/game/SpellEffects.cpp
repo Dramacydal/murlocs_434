@@ -11985,7 +11985,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     if (!victim)
                         return;
 
-                    unitTarget->CastSpell(victim, damage, true, NULL, NULL, unitTarget->GetObjectGuid(), NULL);
+                    unitTarget->CastSpell(victim, damage, true, NULL, NULL, m_caster->GetObjectGuid(), NULL);
                     return;
                 }
                 case 53209:                                 // Chimera Shot
@@ -12123,11 +12123,8 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                         int32 maxDuration = holder->GetAuraMaxDuration();
                         int32 newDuration = std::min(holder->GetAuraDuration() + damage * IN_MILLISECONDS, maxDuration);
 
-                        if (newDuration != maxDuration)
-                        {
-                            holder->SetAuraDuration(newDuration);
-                            holder->SendAuraUpdate(false);
-                        }
+                        holder->SetAuraDuration(newDuration);
+                        holder->SendAuraUpdate(false);
                     }
                     return;
                 }
