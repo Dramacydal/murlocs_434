@@ -476,6 +476,13 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
     targets.ReadAdditionalData(recvPacket, cast_flags);
 
+    // Multi-Shot hack
+    if (!targets.getUnitTarget() && spellId == 2643)
+    {
+        if (Unit* target = _player->GetMap()->GetUnit(_player->GetSelectionGuid()))
+            targets.setUnitTarget(target);
+    }
+
     DEBUG_LOG("Target mask %u dest: %f %f %f src: %f %f %f",
         targets.m_targetMask, targets.m_destX, targets.m_destY, targets.m_destZ,
         targets.m_srcX, targets.m_srcY, targets.m_srcZ); 

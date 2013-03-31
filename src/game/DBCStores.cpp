@@ -1320,7 +1320,7 @@ void LoadDBCStores(const std::string& dataPath)
             case 56641:                         // Steady Shot
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_2))
-                    eff->EffectImplicitTargetA = 1;
+                    eff->EffectImplicitTargetA = TARGET_CHAIN_DAMAGE;
                 break;
             }
             case 57529:                         // Arcane potency
