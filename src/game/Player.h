@@ -2457,9 +2457,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         }
         void HandleFall(MovementInfo const& movementInfo);
 
-        bool isMoving() const { return m_movementInfo.HasMovementFlag(movementFlagsMask); }
-        bool isMovingOrTurning() const { return m_movementInfo.HasMovementFlag(movementOrTurningFlagsMask); }
-
         AntiCheat* GetAntiCheat() { return m_anticheat; }
 
         bool CanFly() const { return m_movementInfo.HasMovementFlag(MOVEFLAG_CAN_FLY); }

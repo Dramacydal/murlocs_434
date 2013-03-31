@@ -2330,6 +2330,12 @@ void Aura::TriggerSpell()
                     return;
                 break;
             }
+            case 80326:                                     // Camouflage
+            {
+                if (target->isMoving())
+                    return;
+                break;
+            }
             // Power Word: Barrier
             case 81781:
             {
