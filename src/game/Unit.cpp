@@ -8133,6 +8133,21 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                             }
                     }
                 }
+                // Kill Command
+                else if (spellProto->Id == 83381)
+                {
+                    if (Unit* owner = GetOwner())
+                    {
+                        // search Improved Kill Command
+                        Unit::AuraList const& mDummyAuras = owner->GetAurasByType(SPELL_AURA_DUMMY);
+                        for (Unit::AuraList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
+                            if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_HUNTER && (*i)->GetSpellProto()->SpellIconID == 2221)
+                            {
+                                crit_chance += (*i)->GetModifier()->m_amount;
+                                break;
+                            }
+                    }
+                }
             }
             // do not use break here
         case SPELL_DAMAGE_CLASS_RANGED:

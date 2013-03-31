@@ -2185,23 +2185,6 @@ void Pet::CastPetAura(PetAura const* aura)
             CastCustomSpell(this, auraId, &basePoints, NULL, NULL, true);
             break;
         }
-        case 68361:         // Animal Handler
-        {
-            Unit* owner = GetOwner();
-            if (!owner)
-                return;
-
-            int32 basePoints = 0;
-            if (Aura* aura = owner->GetDummyAura(34453))        // Animal Handler (Rank 1)
-                basePoints = aura->GetModifier()->m_amount;
-            else if (Aura* aura = owner->GetDummyAura(34454))   // Animal Handler (Rank 2)
-                basePoints = aura->GetModifier()->m_amount;
-            else
-                return;
-
-            CastCustomSpell(this, auraId, &basePoints, NULL, NULL, true);
-            break;
-        }
         default:
             CastSpell(this, auraId, true);
             break;
