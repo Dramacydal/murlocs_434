@@ -6641,6 +6641,20 @@ SpellCastResult Spell::CheckCast(bool strict)
                     if (!m_targets.getUnitTarget() || m_targets.getUnitTarget()->GetHealth() > m_targets.getUnitTarget()->GetMaxHealth()*0.2 && !m_caster->IsIgnoreUnitState(m_spellInfo, IGNORE_UNIT_TARGET_STATE))
                         return SPELL_FAILED_BAD_TARGETS;
                 }
+                else if (m_spellInfo->Id == 34026)          // Kill Command
+                {
+                    Pet* pet = m_caster->GetPet();
+                    if (!pet)
+                        return SPELL_FAILED_NO_PET;
+
+                    Unit* target = pet->getVictim();
+                    if (!target)
+                        return SPELL_FAILED_NO_VALID_TARGETS;
+
+                    if (pet->GetDistance(target) > 5.0f)
+                        return SPELL_FAILED_OUT_OF_RANGE;
+                    break;
+                }
                 else if (m_spellInfo->Id == 51582)          // Rocket Boots Engaged
                 {
                     if (m_caster->IsInWater())
@@ -7257,20 +7271,6 @@ SpellCastResult Spell::CheckCast(bool strict)
                 //custom check
                 switch(m_spellInfo->Id)
                 {
-                    case 34026:                             // Kill Command
-                    {
-                        Pet* pet = m_caster->GetPet();
-                        if (!pet)
-                            return SPELL_FAILED_NO_PET;
-
-                        Unit* target = pet->getVictim();
-                        if (!target)
-                            return SPELL_FAILED_NO_VALID_TARGETS;
-
-                        if (pet->GetDistance(target) > 5.0f)
-                            return SPELL_FAILED_OUT_OF_RANGE;
-                        break;
-                    }
                     case 61336:                             // Survival Instincts
                         if (m_caster->GetTypeId() != TYPEID_PLAYER || !((Player*)m_caster)->IsInFeralForm())
                             return SPELL_FAILED_ONLY_SHAPESHIFT;
