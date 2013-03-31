@@ -8605,9 +8605,44 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
         }
         case SPELLFAMILY_HUNTER:
         {
-            // Kill Shot
-            if (m_spellInfo->Id == 53351)
-                spell_bonus += int32(0.45f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
+            switch (m_spellInfo->Id)
+            {
+                case 3044:              // Arcane Shot
+                {
+                    spell_bonus += int32(0.0483f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
+                    break;
+                }
+                case 19434:             // Aimed Shot
+                case 82928:
+                {
+                    // "A powerful aimed shot that deals % ranged weapon damage plus (RAP * 0.724)+776."
+                    spell_bonus += int32(0.724f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
+                    break;
+                }
+                case 53351:             // Kill Shot
+                {
+                    spell_bonus += int32(0.45f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
+                    break;
+                }
+                case 53209:             // Chimera Shot
+                {
+                    // "An instant shot that causes ranged weapon damage plus RAP*0.732+1620, refreshing the duration of  your Serpent Sting and healing you for 5% of your total health."
+                    spell_bonus += int32(0.732f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
+                    break;
+                }
+                case 56641:             // Steady Shot
+                {
+                    // "A steady shot that causes % weapon damage plus RAP*0.021+280. Generates 9 Focus."
+                    spell_bonus += int32(0.021f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
+                    break;
+                }
+                case 77767:             // Cobra Shot
+                {
+                    // "Deals weapon damage plus (276 + (RAP * 0.017)) in the form of Nature damage and increases the duration of your Serpent Sting on the target by 6 sec. Generates 9 Focus."
+                    spell_bonus += int32(0.017f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK));
+                    break;
+                }
+            }
             break;
         }
         case SPELLFAMILY_SHAMAN:
