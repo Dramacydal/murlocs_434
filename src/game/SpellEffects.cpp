@@ -11985,7 +11985,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     if (!victim)
                         return;
 
-                    unitTarget->CastSpell(victim, damage, true, NULL, NULL, m_caster->GetObjectGuid(), NULL);
+                    m_caster->CastSpell(victim, damage, true, NULL, NULL, unitTarget->GetObjectGuid(), NULL);
                     return;
                 }
                 case 53209:                                 // Chimera Shot
