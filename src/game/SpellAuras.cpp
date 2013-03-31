@@ -6580,14 +6580,7 @@ void Aura::HandleAuraPeriodicDummy(bool apply, bool Real)
             }
         }
         case SPELLFAMILY_HUNTER:
-        {
-            Unit* caster = GetCaster();
-
-            // Explosive Shot
-            if (apply && !loading && caster)
-                m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(RANGED_ATTACK) * 14 / 100);
             break;
-        }
         case SPELLFAMILY_DEATHKNIGHT:
         {
             // Reaping and Blood Rites
@@ -10280,12 +10273,6 @@ void Aura::PeriodicDummyTick()
             break;
         case SPELLFAMILY_HUNTER:
         {
-            // Explosive Shot
-            if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x8000000000000000))
-            {
-                target->CastCustomSpell(target, 53352, &m_modifier.m_amount, 0, 0, true, 0, this, GetCasterGuid());
-                return;
-            }
             switch (spell->Id)
             {
                 // Harpooner's Mark
