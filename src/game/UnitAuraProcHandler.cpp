@@ -2671,16 +2671,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 58883;
                 break;
             }
-            // Lock and Load
-            else if ( dummySpell->SpellIconID == 3579 )
-            {
-                // Proc only from periodic (from trap activation proc another aura of this spell)
-                if (!(procFlag & PROC_FLAG_ON_DO_PERIODIC) || !roll_chance_i(triggerAmount))
-                    return SPELL_AURA_PROC_FAILED;
-                triggered_spell_id = 56453;
-                target = this;
-                break;
-            }
             // Crouching Tiger, Hidden Chimera
             else if (dummySpell->SpellIconID == 4752)
             {
@@ -4750,8 +4740,35 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             else if (auraSpellInfo->SpellIconID == 3579)
             {
                 // Check for Lock and Load Marker
-                if (HasAura(67544))
+                if (!procSpell || HasAura(67544))
                     return SPELL_AURA_PROC_FAILED;
+
+                int32 chance = 0;
+                if (procFlags & PROC_FLAG_ON_DO_PERIODIC)
+                {
+                    // search T.N.T.
+                    Unit::AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                    for (Unit::AuraList::const_iterator itr = mDummyAuras.begin(); itr != mDummyAuras.end(); ++itr)
+                    {
+                        if ((*itr)->GetSpellProto()->SpellIconID == 355 && (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_HUNTER)
+                        {
+                            chance = (*itr)->GetModifier()->m_amount;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    // only Ice and Freezing Trap Effects
+                    if (!procSpell->IsFitToFamily(SPELLFAMILY_HUNTER, UI64LIT(0x18)))
+                        return SPELL_AURA_PROC_FAILED;
+
+                    chance = triggerAmount;
+                }
+
+                if (!roll_chance_i(chance))
+                    return SPELL_AURA_PROC_FAILED;
+                break;
             }
             // Tamed Pet Passive 07 (DND)
             else if (auraSpellInfo->Id == 20784)
@@ -5220,22 +5237,6 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Need Interrupt or Silenced mechanic
             if (!(GetAllSpellMechanicMask(procSpell) & IMMUNE_TO_INTERRUPT_AND_SILENCE_MASK))
                 return SPELL_AURA_PROC_FAILED;
-            break;
-        }
-        // Lock and Load
-        case 56453:
-        {
-            // Proc only from trap activation (from periodic proc another aura of this spell)
-            // because some spells have both flags (ON_TRAP_ACTIVATION and ON_PERIODIC), but should only proc ON_PERIODIC!!
-            if (!(procFlags & PROC_FLAG_ON_TRAP_ACTIVATION) || !procSpell ||
-                !(procSpell->SchoolMask & (SPELL_SCHOOL_MASK_FROST | SPELL_SCHOOL_MASK_NATURE)) || !roll_chance_i(triggerAmount))
-            {
-                return SPELL_AURA_PROC_FAILED;
-            }
-            // don't proc Explosive Trap on triggering (only on periodic, in other aura proc)
-            else if (procSpell->IsFitToFamilyMask(UI64LIT(0x0000000000000004)))
-                return SPELL_AURA_PROC_FAILED;
-
             break;
         }
         // Druid - Savage Defense
