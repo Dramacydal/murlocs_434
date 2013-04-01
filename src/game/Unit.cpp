@@ -5266,6 +5266,32 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
             }
         }
     }
+    // Wyvern Sting
+    else if (spellId == 19386)
+    {
+        if (Unit* caster = GetMap()->GetUnit(casterGuid))
+        {
+            // search Noxious Stings
+            Unit::AuraList const& auras = caster->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
+            for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
+            {
+                if ((*i)->GetSpellProto()->SpellIconID == 3521 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_HUNTER)
+                {
+                    if (SpellAuraHolder* holder = GetSpellAuraHolder(spellId, casterGuid))
+                    {
+                        int32 duration = std::min(holder->GetAuraDuration() * (*i)->GetModifier()->m_amount / 100, holder->GetAuraMaxDuration());
+                        if (!duration)
+                            break;
+
+                        caster->CastSpell(dispeller, spellId, true);
+                        if (SpellAuraHolder* holder2 = dispeller->GetSpellAuraHolder(spellId, casterGuid))
+                            holder2->SetAuraDuration(duration);
+                    }
+                    break;
+                }
+            }
+        }
+    }
 
     if (dispelCharges)
     {
