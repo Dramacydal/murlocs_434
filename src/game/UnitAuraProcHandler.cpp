@@ -2605,24 +2605,17 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     return SPELL_AURA_PROC_FAILED;
 
                 // mana cost save
-                int32 mana = procSpell->GetManaCost() + procSpell->GetManaCostPercentage() * GetCreateMana() / 100;
+                float focus = procSpell->GetManaCost() + procSpell->GetManaCostPercentage() * GetCreatePowers(POWER_FOCUS) / 100;
 
-                // Explosive Shot returns only 1/3 of 40% per critical
-                if (procSpell->Id == 53352)
-                {
-                    // All ranks have same cost
-                    SpellEntry const* explosiveShot = sSpellStore.LookupEntry(53301);
-                    if (!explosiveShot)
-                        return SPELL_AURA_PROC_FAILED;
-                    mana = explosiveShot->GetManaCost() + explosiveShot->GetManaCostPercentage() * GetCreateMana() / 100;
-                    mana /= 3;
-                }
+                // Black Arrow and Explosive Shot returns only part of $triggerAmount% per critical
+                if (procSpell->Id == 3674 || procSpell->Id == 53301)
+                    if (int32 ticks = GetSpellAuraMaxTicks(procSpell->Id))
+                        focus /= ticks;
 
-                basepoints[0] = mana * 40/100;
+                basepoints[0] = int32(focus * triggerAmount / 100);
                 if (basepoints[0] <= 0)
                     return SPELL_AURA_PROC_FAILED;
 
-                target = this;
                 triggered_spell_id = 34720;
                 break;
             }
@@ -4751,7 +4744,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     return SPELL_AURA_PROC_FAILED;
             }
             // Entrapment correction
-            else if ((auraSpellInfo->Id == 19184 || auraSpellInfo->Id == 19387 || auraSpellInfo->Id == 19388) &&
+            else if ((auraSpellInfo->Id == 19184 || auraSpellInfo->Id == 19387) &&
                 !procSpell->IsFitToFamilyMask(UI64LIT(0x200000000000)) &&   // Snake Trap
                 !procSpell->IsFitToFamilyMask(UI64LIT(0x0), 0x40000))       // Frost Trap
                     return SPELL_AURA_PROC_FAILED;
