@@ -3640,7 +3640,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell, 
     uint32 roll = urand (0, 10000);
     uint32 tmp = 0;
 
-    if(canMiss)
+    if (canMiss)
     {
         uint32 missChance = uint32(MeleeSpellMissChance(pVictim, attType, skillDiff, spell) * 100.0f);
         // Roll miss
@@ -3676,23 +3676,22 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell, 
 
     bool from_behind = !pVictim->HasInArc(M_PI_F,this);
 
+    // only if in front or special ability
+    if (!from_behind || pVictim->HasAuraType(SPELL_AURA_MOD_PARRY_FROM_BEHIND_PERCENT))
+    {
+        int32 deflect_chance = pVictim->GetTotalAuraModifier(SPELL_AURA_DEFLECT_SPELLS) * 100;
+
+        //if (from_behind) -- only 100% currently and not 100% sure way value apply
+        //    deflect_chance = int32(deflect_chance * (pVictim->GetTotalAuraMultiplier(SPELL_AURA_MOD_PARRY_FROM_BEHIND_PERCENT) - 1);
+
+        tmp += deflect_chance;
+        if (roll < tmp)
+            return SPELL_MISS_DEFLECT;
+    }
+
     // Ranged attack cannot be parry/dodge only miss
     if (attType == RANGED_ATTACK)
-    {
-        // only if in front or special ability
-        if (pVictim->HasAuraType(SPELL_AURA_MOD_PARRY_FROM_BEHIND_PERCENT))
-        {
-            int32 deflect_chance = pVictim->GetTotalAuraModifier(SPELL_AURA_DEFLECT_SPELLS)*100;
-
-            //if (from_behind) -- only 100% currently and not 100% sure way value apply
-            //    deflect_chance = int32(deflect_chance * (pVictim->GetTotalAuraMultiplier(SPELL_AURA_MOD_PARRY_FROM_BEHIND_PERCENT) - 1);
-
-            tmp += deflect_chance;
-            if (roll < tmp)
-                return SPELL_MISS_DEFLECT;
-        }
         return SPELL_MISS_NONE;
-    }
 
     // Check for attack from behind
     if (from_behind)
