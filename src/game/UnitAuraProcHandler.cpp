@@ -2609,8 +2609,13 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
 
                 // Black Arrow and Explosive Shot returns only part of $triggerAmount% per critical
                 if (procSpell->Id == 3674 || procSpell->Id == 53301)
+                {
+                    if ((procFlag & PROC_FLAG_ON_DO_PERIODIC) == 0)
+                        return SPELL_AURA_PROC_FAILED;
+
                     if (int32 ticks = GetSpellAuraMaxTicks(procSpell->Id))
                         focus /= ticks;
+                }
 
                 basepoints[0] = int32(focus * triggerAmount / 100);
                 if (basepoints[0] <= 0)
