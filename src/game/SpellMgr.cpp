@@ -939,7 +939,7 @@ bool IsPositiveAura(SpellEntry const * spellproto, SpellEffectIndex effIndex)
                         return false;                       // but all single stun aura spells is negative
 
                     // Hunter traps and Freezing Arrow Effect
-                    if (effIndex == EFFECT_INDEX_0 && spellproto->GetSpellEffectIdByIndex(EFFECT_INDEX_1) == SPELL_EFFECT_APPLY_AURA && spellproto->GetEffectApplyAuraNameByIndex(EFFECT_INDEX_1) == SPELL_AURA_308)
+                    if (effIndex == EFFECT_INDEX_0 && spellproto->GetSpellEffectIdByIndex(EFFECT_INDEX_1) == SPELL_EFFECT_APPLY_AURA && spellproto->GetEffectApplyAuraNameByIndex(EFFECT_INDEX_1) == SPELL_AURA_MOD_CRIT_FROM_CASTER)
                         return false;
 
                     // Petrification
