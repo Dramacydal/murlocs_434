@@ -6160,6 +6160,9 @@ void Unit::SendPeriodicAuraLog(SpellPeriodicAuraLogInfo *pInfo)
 
 void Unit::ProcDamageAndSpell(Unit *pVictim, uint32 procAttacker, uint32 procVictim, uint32 procExtra, uint32 amount, uint32 absorb, WeaponAttackType attType, SpellEntry const *procSpell)
 {
+    DEBUG_LOG("Called Unit::ProcDamageAndSpell source %s victim %s procAttacker %u procVictim %u procExtra %u amount %u absorb %u attType %u procSpell %u",
+        GetGuidStr().c_str(), pVictim ? pVictim->GetGuidStr().c_str() : "NULL", procAttacker, procVictim, procExtra, amount, absorb, attType, procSpell ? procSpell->Id : 0);
+
      // Not much to do if no flags are set.
     if (procAttacker)
         ProcDamageAndSpellFor(false, pVictim, procAttacker, procExtra, attType, procSpell, amount, absorb);

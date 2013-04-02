@@ -2588,7 +2588,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
         case SPELLFAMILY_HUNTER:
         {
             // Improved Serpent Sting
-            if (dummySpell->SpellIconID == 3186)
+            if (dummySpell->SpellIconID == 536)
             {
                 if (!procSpell)
                     return SPELL_AURA_PROC_FAILED;
@@ -4746,6 +4746,10 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 int32 chance = 0;
                 if (procFlags & PROC_FLAG_ON_DO_PERIODIC)
                 {
+                    // only Black Arrow, Immolation Trap and Explosive Traps
+                    if (!procSpell->IsFitToFamily(SPELLFAMILY_HUNTER, UI64LIT(0x800000000000000), 0x4000))
+                        return SPELL_AURA_PROC_FAILED;
+
                     // search T.N.T.
                     Unit::AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
                     for (Unit::AuraList::const_iterator itr = mDummyAuras.begin(); itr != mDummyAuras.end(); ++itr)
