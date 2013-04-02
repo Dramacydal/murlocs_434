@@ -5292,7 +5292,7 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
                         int32 duration = holder->GetAuraDuration() * (*i)->GetModifier()->m_amount / 100;
                         if (duration)
                         {
-                            dispeller->m_nextCustomSpellData.SetFlag(CUSTOM_SPELL_FLAG_NO_COST | CUSTOM_SPELL_FLAG_IGNORE_WEAPON_REQ);
+                            dispeller->m_nextCustomSpellData.SetFlag(CUSTOM_SPELL_FLAG_NO_COST | CUSTOM_SPELL_FLAG_IGNORE_EQUIPPED_ITEM_REQ);
                             dispeller->m_nextCustomSpellData.SetCustomDuration(duration);
                             dispeller->CastSpell(dispeller, spellId, true, NULL, NULL, casterGuid);
                         }

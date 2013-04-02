@@ -268,10 +268,10 @@ enum HitInfo
 
 enum CustomSpellCastFlags
 {
-    CUSTOM_SPELL_FLAG_NONE              = 0x00,
-    CUSTOM_SPELL_FLAG_NO_COST           = 0x01,
-    CUSTOM_SPELL_FLAG_IGNORE_WEAPON_REQ = 0x02,
-    CUSTOM_SPELL_FLAG_AURA_DURATION     = 0x04,
+    CUSTOM_SPELL_FLAG_NONE                      = 0x00,
+    CUSTOM_SPELL_FLAG_NO_COST                   = 0x01,
+    CUSTOM_SPELL_FLAG_IGNORE_EQUIPPED_ITEM_REQ  = 0x02,
+    CUSTOM_SPELL_FLAG_AURA_DURATION             = 0x04,
 };
 
 struct CustomSpellData
