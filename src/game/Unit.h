@@ -266,6 +266,28 @@ enum HitInfo
     HITINFO_UNK22               = 0x00800000
 };
 
+enum CustomSpellCastFlags
+{
+    CUSTOM_SPELL_FLAG_NONE              = 0x00,
+    CUSTOM_SPELL_FLAG_NO_COST           = 0x01,
+    CUSTOM_SPELL_FLAG_IGNORE_WEAPON_REQ = 0x02,
+    CUSTOM_SPELL_FLAG_AURA_DURATION     = 0x03,
+};
+
+struct CustomSpellData
+{
+    CustomSpellData() { Clear(); }
+
+    void SetFlag(uint32 flag) { customCastFlags |= flag; }
+    bool HasFlag(uint32 flag) const { return (customCastFlags & flag) != 0; }
+    void SetCustomDuration(int32 duration) { SetFlag(CUSTOM_SPELL_FLAG_AURA_DURATION); customDuration = duration; }
+    void Clear() { customCastFlags = 0; customDuration = 0; }
+
+    uint32 customCastFlags;
+    int32 customDuration;
+};
+
+
 //i would like to remove this: (it is defined in item.h
 enum InventorySlot
 {
@@ -2127,7 +2149,8 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 
         // haxx here
         time_t m_boneShieldCooldown;
-        uint32 m_nextTriggeredCastFlags;
+
+        CustomSpellData m_nextCustomSpellData;
 
     protected:
         explicit Unit ();

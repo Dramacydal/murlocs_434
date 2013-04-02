@@ -88,13 +88,6 @@ enum SpellNotifyPushType
     PUSH_TARGET_CENTER
 };
 
-enum TriggeredSpellFlags
-{
-    TRIGGERED_CAST_FLAG_NONE                = 0x0,
-    TRIGGERED_CAST_FLAG_NO_COST             = 0x1,
-    TRIGGERED_CAST_FLAG_IGNORE_WEAPON_REQ   = 0x02,
-};
-
 bool IsQuestTameSpell(uint32 spellId);
 
 namespace MaNGOS
@@ -557,7 +550,7 @@ class Spell
 
         int32 GetActiveDuration() { return m_duration; }
 
-        uint32 m_triggeredCastFlags;
+        CustomSpellData m_customSpellData;
 
     protected:
         bool HasGlobalCooldown();

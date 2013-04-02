@@ -603,7 +603,7 @@ Unit::Unit() :
 
     m_boneShieldCooldown = time(NULL);
 
-    m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NONE;
+    m_nextCustomSpellData.Clear();
 }
 
 Unit::~Unit()
@@ -1650,8 +1650,8 @@ void Unit::CastSpell(Unit* Victim, SpellEntry const *spellInfo, bool triggered, 
     }
 
     Spell *spell = new Spell(this, spellInfo, triggered, originalCaster, triggeredBy);
-    spell->m_triggeredCastFlags = m_nextTriggeredCastFlags;
-    m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NONE;
+    spell->m_customSpellData = m_nextCustomSpellData;
+    m_nextCustomSpellData.Clear();
 
     SpellCastTargets targets;
     targets.setUnitTarget( Victim );
@@ -1705,8 +1705,8 @@ void Unit::CastCustomSpell(Unit* Victim, SpellEntry const *spellInfo, int32 cons
     }
 
     Spell *spell = new Spell(this, spellInfo, triggered, originalCaster, triggeredBy);
-    spell->m_triggeredCastFlags = m_nextTriggeredCastFlags;
-    m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NONE;
+    spell->m_customSpellData = m_nextCustomSpellData;
+    m_nextCustomSpellData.Clear();
 
     if(bp0)
         spell->m_currentBasePoints[EFFECT_INDEX_0] = *bp0;
@@ -1771,8 +1771,8 @@ void Unit::CastSpell(float x, float y, float z, SpellEntry const *spellInfo, boo
     }
 
     Spell *spell = new Spell(this, spellInfo, triggered, originalCaster, triggeredBy);
-    spell->m_triggeredCastFlags = m_nextTriggeredCastFlags;
-    m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NONE;
+    spell->m_customSpellData = m_nextCustomSpellData;
+    m_nextCustomSpellData.Clear();
 
     SpellCastTargets targets;
 
@@ -1828,8 +1828,8 @@ void Unit::CastCustomSpell(float x, float y, float z, SpellEntry const *spellInf
     }
 
     Spell *spell = new Spell(this, spellInfo, triggered, originalCaster, triggeredBy);
-    spell->m_triggeredCastFlags = m_nextTriggeredCastFlags;
-    m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NONE;
+    spell->m_customSpellData = m_nextCustomSpellData;
+    m_nextCustomSpellData.Clear();
 
     if(bp0)
         spell->m_currentBasePoints[EFFECT_INDEX_0] = *bp0;
@@ -5287,8 +5287,16 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
             {
                 if ((*i)->GetSpellProto()->SpellIconID == 3521 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_HUNTER)
                 {
-                    dispeller->m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NO_COST | TRIGGERED_CAST_FLAG_IGNORE_WEAPON_REQ;
-                    dispeller->CastSpell(dispeller, spellId, true, NULL, NULL, casterGuid);
+                    if (SpellAuraHolder* holder = GetSpellAuraHolder(spellId, casterGuid))
+                    {
+                        int32 duration = holder->GetAuraDuration() * (*i)->GetModifier()->m_amount / 100;
+                        if (duration)
+                        {
+                            dispeller->m_nextCustomSpellData.SetFlag(CUSTOM_SPELL_FLAG_NO_COST | CUSTOM_SPELL_FLAG_IGNORE_WEAPON_REQ);
+                            dispeller->m_nextCustomSpellData.SetCustomDuration(duration);
+                            dispeller->CastSpell(dispeller, spellId, true, NULL, NULL, casterGuid);
+                        }
+                    }
                     break;
                 }
             }
@@ -10796,6 +10804,9 @@ int32 Unit::CalculateSpellDamage(Unit const* target, SpellEntry const* spellProt
 
 int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMask, int32 duration, Unit const* caster, Spell const* spell /*=NULL*/)
 {
+    if (spell && spell->m_customSpellData.HasFlag(CUSTOM_SPELL_FLAG_AURA_DURATION))
+        return spell->m_customSpellData.customDuration;
+
     if (duration <= 0)
         return duration;
 
@@ -10865,25 +10876,8 @@ int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMas
         }
     }
 
-    // Wyvern Sting
-    if (spellProto->Id == 19386)
-    {
-        if (spell->IsTriggeredSpell())
-        {
-            // search Noxious Stings
-            Unit::AuraList const& auras = spell->GetAffectiveCaster()->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
-            for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
-            {
-                if ((*i)->GetSpellProto()->SpellIconID == 3521 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_HUNTER)
-                {
-                    duration = duration * (*i)->GetModifier()->m_amount / 100;
-                    break;
-                }
-            }
-        }
-    }
     // Kidney Shot and Expose Armor
-    else if (spellProto->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0x280000)))
+    if (spellProto->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0x280000)))
     {
         // Revealig Strike
         if (SpellAuraHolder* holder = GetSpellAuraHolder(84617, caster->GetObjectGuid()))
