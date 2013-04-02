@@ -1448,8 +1448,24 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 
         if (spellProto && GetTypeId() == TYPEID_PLAYER)
         {
+            // Shadowburn
+            if (spellProto->Id == 17877)
+            {
+                // Glyph of Shadowburn
+                if (Aura* glyph = GetAura(56229, EFFECT_INDEX_0))
+                {
+                    if (float(pVictim->GetHealth() + damage) / GetMaxHealth() < glyph->GetModifier()->m_amount)
+                    {
+                        if (!HasAura(91001))
+                        {
+                            CastSpell(this, 91001, true);
+                            ((Player*)this)->RemoveSpellCooldown(17877, true);
+                        }
+                    }
+                }
+            }
             // Shadow Word: Death
-            if (spellProto->Id == 32379)
+            else if (spellProto->Id == 32379)
             {
                 // Glyph of Shadow Word: Death
                 if (Aura* glyph = GetAura(55682, EFFECT_INDEX_0))
@@ -10858,22 +10874,8 @@ int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMas
             case SPELLFAMILY_DRUID:
                 break;
             case SPELLFAMILY_PALADIN:
-                // Blessing of Might
-                if (spellProto->SpellIconID == 298 && spellProto->IsFitToFamilyMask(UI64LIT(0x0000000000000002)))
-                {
-                    // Glyph of Blessing of Might
-                    if (Aura *aur = GetAura(57958, EFFECT_INDEX_0))
-                        duration += aur->GetModifier()->m_amount * MINUTE * IN_MILLISECONDS;
-                }
-                // Blessing of Wisdom
-                else if (spellProto->SpellIconID == 306 && spellProto->IsFitToFamilyMask(UI64LIT(0x0000000000010000)))
-                {
-                    // Glyph of Blessing of Wisdom
-                    if (Aura *aur = GetAura(57979, EFFECT_INDEX_0))
-                        duration += aur->GetModifier()->m_amount * MINUTE * IN_MILLISECONDS;
-                }
                 // Inquisition
-                else if (spellProto->Id == 84963)
+                if (spellProto->Id == 84963)
                 {
                     if (spell && GetPowerIndex(POWER_HOLY_POWER) != INVALID_POWER_INDEX)
                         duration *= spell->GetUsedHolyPower();

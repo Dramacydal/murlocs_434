@@ -999,8 +999,17 @@ void Pet::UpdateMaxHealth()
     float value   = GetModifierValue(unitMod, BASE_VALUE) + GetCreateHealth();
     value  *= GetModifierValue(unitMod, BASE_PCT);
     value  += GetModifierValue(unitMod, TOTAL_VALUE) + stamina * multiplicator;
-    value  *= GetModifierValue(unitMod, TOTAL_PCT);  
-    
+    value  *= GetModifierValue(unitMod, TOTAL_PCT);
+
+    // Voidwalker
+    if (GetEntry() == 417)
+    {
+        if (Unit* owner = GetOwner())
+            // Glyph of Voidwalker
+            if (Aura* glyph = owner->GetAura(56247, EFFECT_INDEX_0))
+                value *= (glyph->GetModifier()->m_amount + 100.0f) / 100.0f;
+    }
+
     SetMaxHealth((uint32)value);
 }
 
