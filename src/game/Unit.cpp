@@ -602,6 +602,8 @@ Unit::Unit() :
         m_damage_counters[i].push_front(0);
 
     m_boneShieldCooldown = time(NULL);
+
+    m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NONE;
 }
 
 Unit::~Unit()
@@ -1648,6 +1650,8 @@ void Unit::CastSpell(Unit* Victim, SpellEntry const *spellInfo, bool triggered, 
     }
 
     Spell *spell = new Spell(this, spellInfo, triggered, originalCaster, triggeredBy);
+    spell->m_triggeredCastFlags = m_nextTriggeredCastFlags;
+    m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NONE;
 
     SpellCastTargets targets;
     targets.setUnitTarget( Victim );
@@ -1701,6 +1705,8 @@ void Unit::CastCustomSpell(Unit* Victim, SpellEntry const *spellInfo, int32 cons
     }
 
     Spell *spell = new Spell(this, spellInfo, triggered, originalCaster, triggeredBy);
+    spell->m_triggeredCastFlags = m_nextTriggeredCastFlags;
+    m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NONE;
 
     if(bp0)
         spell->m_currentBasePoints[EFFECT_INDEX_0] = *bp0;
@@ -1765,6 +1771,8 @@ void Unit::CastSpell(float x, float y, float z, SpellEntry const *spellInfo, boo
     }
 
     Spell *spell = new Spell(this, spellInfo, triggered, originalCaster, triggeredBy);
+    spell->m_triggeredCastFlags = m_nextTriggeredCastFlags;
+    m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NONE;
 
     SpellCastTargets targets;
 
@@ -1820,6 +1828,8 @@ void Unit::CastCustomSpell(float x, float y, float z, SpellEntry const *spellInf
     }
 
     Spell *spell = new Spell(this, spellInfo, triggered, originalCaster, triggeredBy);
+    spell->m_triggeredCastFlags = m_nextTriggeredCastFlags;
+    m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NONE;
 
     if(bp0)
         spell->m_currentBasePoints[EFFECT_INDEX_0] = *bp0;
@@ -5277,7 +5287,8 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
             {
                 if ((*i)->GetSpellProto()->SpellIconID == 3521 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_HUNTER)
                 {
-                    caster->CastSpell(dispeller, spellId, true);
+                    dispeller->m_nextTriggeredCastFlags = TRIGGERED_CAST_FLAG_NO_COST | TRIGGERED_CAST_FLAG_IGNORE_WEAPON_REQ;
+                    dispeller->CastSpell(dispeller, spellId, true, NULL, NULL, casterGuid);
                     break;
                 }
             }

@@ -2127,6 +2127,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 
         // haxx here
         time_t m_boneShieldCooldown;
+        uint32 m_nextTriggeredCastFlags;
 
     protected:
         explicit Unit ();
