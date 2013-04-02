@@ -9194,23 +9194,36 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     // Pyroblast
                     if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(11366, m_caster->GetObjectGuid()))
                         if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_1))
-                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
-                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                        {
+                            int32 bp = aura->GetModifier()->m_amount;
+                            m_caster->m_nextCustomSpellData.SetFlag(CUSTOM_SPELL_FLAG_NO_COST);
+                            m_caster->CastCustomSpell(unitTarget, holder->GetId(), NULL, &bp, NULL, true);
+                        }
+
                     // Ignite
                     if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(12654, m_caster->GetObjectGuid()))
                         if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
-                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
-                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                        {
+                            int32 bp = aura->GetModifier()->m_amount;
+                            m_caster->m_nextCustomSpellData.SetFlag(CUSTOM_SPELL_FLAG_NO_COST);
+                            m_caster->CastCustomSpell(unitTarget, holder->GetId(), &bp, NULL, NULL, true);
+                        }
                     // Living Bomb
                     if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(44457, m_caster->GetObjectGuid()))
                         if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
-                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
-                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                        {
+                            int32 bp = aura->GetModifier()->m_amount;
+                            m_caster->m_nextCustomSpellData.SetFlag(CUSTOM_SPELL_FLAG_NO_COST);
+                            m_caster->CastCustomSpell(unitTarget, holder->GetId(), &bp, NULL, NULL, true);
+                        }
                     // Combustion
                     if (SpellAuraHolder* holder = mainTarget->GetSpellAuraHolder(83853, m_caster->GetObjectGuid()))
                         if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
-                            if (Aura* newAura = unitTarget->_AddAura(holder->GetId(), holder->GetAuraMaxDuration(), m_caster))
-                                newAura->ChangeAmount(aura->GetModifier()->m_amount);
+                        {
+                            int32 bp = aura->GetModifier()->m_amount;
+                            m_caster->m_nextCustomSpellData.SetFlag(CUSTOM_SPELL_FLAG_NO_COST);
+                            m_caster->CastCustomSpell(unitTarget, holder->GetId(), &bp, NULL, NULL, true);
+                        }
                     return;
                 }
                 case 17512:                                 // Piccolo of the Flaming Fire
