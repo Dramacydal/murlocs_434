@@ -1540,11 +1540,19 @@ void Spell::DoSpellHitOnUnit(Unit *unit, uint32 effectMask)
             if (!realCaster->HasAura(54934))
                 effectMask &= ~(1 << 1);
         }
+        // Concussive Shot
         else if (m_spellInfo->Id == 5116)
         {
             // Glyph of Concussive Shot
             if (!realCaster->HasAura(56851))
                 effectMask &= ~(1 << 1);
+        }
+        // Psyhic Scream
+        else if (m_spellInfo->Id == 8122)
+        {
+            // Glyph of Psyhic Scream
+            if (!realCaster->HasAura(55676))
+                effectMask &= ~(1 << 2);
         }
         // Word of Glory
         else if (m_spellInfo->Id == 85673)
@@ -7824,7 +7832,7 @@ SpellCastResult Spell::CheckCasterAuras() const
     // Have to check if there is a stun aura. Otherwise will have problems with ghost aura apply while logging out
     uint32 unitflag = m_caster->GetUInt32Value(UNIT_FIELD_FLAGS);       // Get unit state
     if (unitflag & UNIT_FLAG_STUNNED && (!m_spellInfo->HasAttribute(SPELL_ATTR_EX5_USABLE_WHILE_STUNNED)
-         || m_spellInfo->Id == 33206 && !m_caster->HasAura(63248)))     // Cast Pain Suppression without Glyph of Supression
+         || (m_spellInfo->Id == 33206 || m_spellInfo->Id == 47788) && !m_caster->HasAura(63248)))     // Cast Pain Suppression and Guardian Spirit without Glyph of Desperation
         prevented_reason = SPELL_FAILED_STUNNED;
     else if (unitflag & UNIT_FLAG_CONFUSED && !m_spellInfo->HasAttribute(SPELL_ATTR_EX5_USABLE_WHILE_CONFUSED))
         prevented_reason = SPELL_FAILED_CONFUSED;

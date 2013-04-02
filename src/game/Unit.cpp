@@ -1446,16 +1446,35 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             he->DuelComplete(DUEL_WON);
         }
 
-        // Kill Shot
-        if (spellProto && spellProto->Id == 53351 && GetTypeId() == TYPEID_PLAYER)
+        if (spellProto && GetTypeId() == TYPEID_PLAYER)
         {
-            // Glyph of Kill Shot
-            if (HasAura(63067))
+            // Shadow Word: Death
+            if (spellProto->Id == 32379)
             {
-                if (!HasAura(90967))
+                // Glyph of Shadow Word: Death
+                if (Aura* glyph = GetAura(55682, EFFECT_INDEX_0))
                 {
-                    CastSpell(this, 90967, true);
-                    ((Player*)this)->RemoveSpellCooldown(53351, true);
+                    if (float(pVictim->GetHealth() + damage) / GetMaxHealth() < glyph->GetModifier()->m_amount)
+                    {
+                        if (!HasAura(95652))
+                        {
+                            CastSpell(this, 95652, true);
+                            ((Player*)this)->RemoveSpellCooldown(32379, true);
+                        }
+                    }
+                }
+            }
+            // Kill Shot
+            else if (spellProto->Id == 53351)
+            {
+                // Glyph of Kill Shot
+                if (HasAura(63067))
+                {
+                    if (!HasAura(90967))
+                    {
+                        CastSpell(this, 90967, true);
+                        ((Player*)this)->RemoveSpellCooldown(53351, true);
+                    }
                 }
             }
         }
@@ -4702,7 +4721,6 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
                 // don't reapply aura, just refresh it's duration
                 if (aurSpellInfo->Id == 81782 || aurSpellInfo->Id == 90785)
                 {
-                    DEBUG_LOG(">>>>>>>>>>>>1");
                     foundHolder->RefreshHolder();
                     delete holder;
                     return false;
@@ -7664,18 +7682,6 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
                     if (Aura *aur = GetAura(55692, EFFECT_INDEX_0))
                         DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
             }
-            // Shadow word: Death
-            else if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000000200000000)))
-            {
-                // Glyph of Shadow word: Death
-                if (SpellAuraHolder const* glyph = GetSpellAuraHolder(55682))
-                {
-                    Aura const* hpPct = glyph->GetAuraByEffectIndex(EFFECT_INDEX_0);
-                    Aura const* dmPct = glyph->GetAuraByEffectIndex(EFFECT_INDEX_1);
-                    if (hpPct && dmPct && pVictim->GetHealth() * 100 <= pVictim->GetMaxHealth() * hpPct->GetModifier()->m_amount)
-                        DoneTotalMod *= (dmPct->GetModifier()->m_amount + 100.0f) / 100.0f;
-                }
-            }
             break;
         }
         case SPELLFAMILY_DRUID:
@@ -8046,18 +8052,11 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                         // Flash Heal
                         if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000000000000800)))
                         {
-                            if (pVictim->GetHealth() > pVictim->GetMaxHealth()/2)
-                                break;
-                            AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
-                            for(AuraList::const_iterator i = mDummyAuras.begin(); i!= mDummyAuras.end(); ++i)
+                            // Glyph of Flash Heal
+                            if (Aura* glyph = GetAura(55679, EFFECT_INDEX_0))
                             {
-                                // Improved Flash Heal
-                                if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST &&
-                                    (*i)->GetSpellProto()->SpellIconID == 2542)
-                                {
-                                    crit_chance += (*i)->GetModifier()->m_amount;
-                                    break;
-                                }
+                                if (pVictim->GetHealthPercent() < glyph->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1))
+                                    crit_chance += glyph->GetModifier()->m_amount;
                             }
                         }
 
@@ -8068,7 +8067,7 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                             // Renewed Hope
                             if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST &&
                                 (*i)->GetSpellProto()->SpellIconID == 329 &&
-                                (*i)->isAffectedOnSpell(spellProto))
+                                ((*i)->isAffectedOnSpell(spellProto) || spellProto->IsFitToFamilyMask(UI64LIT(0x0000000000000800))))
                             {
                                 if (pVictim->HasAura(6788) || pVictim->HasAura(47930) || pVictim->HasAura(77613))
                                     crit_chance += (*i)->GetModifier()->m_amount;
@@ -8126,17 +8125,19 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                         // Word of Glory
                         else if (spellProto->SpellIconID == 85673)
                         {
-                            // Search Last Word
-                            AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
-                            for (AuraList::const_iterator i = mDummyAuras.begin(); i!= mDummyAuras.end(); ++i)
+                            if (pVictim->GetHealthPercent() < 35.0f)
                             {
-                                // Renewed Hope
-                                if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PALADIN &&
-                                    (*i)->GetSpellProto()->SpellIconID == 2139 &&
-                                    (*i)->isAffectedOnSpell(spellProto))
+                                // Search Last Word
+                                AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+                                for (AuraList::const_iterator i = mDummyAuras.begin(); i!= mDummyAuras.end(); ++i)
                                 {
-                                    crit_chance += (*i)->GetModifier()->m_amount;
-                                    break;
+                                    // Last Word
+                                    if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PALADIN &&
+                                        (*i)->GetSpellProto()->SpellIconID == 2139)
+                                    {
+                                        crit_chance += (*i)->GetModifier()->m_amount;
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -8467,13 +8468,6 @@ uint32 Unit::SpellHealingBonusDone(Unit *pVictim, SpellEntry const *spellProto, 
                     break;
                 }
         }
-    }
-
-    // Glyph of Lightwell
-    if (spellProto->IsFitToFamily(SPELLFAMILY_PRIEST, UI64LIT(0x0), 0x4000))
-    {
-        if (owner->HasAura(55673))
-            DoneTotalMod *= 1.2f;
     }
 
     // Lifebloom final heal

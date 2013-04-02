@@ -8587,28 +8587,6 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                 target->CastSpell(target, 31643, true);
             return;
         }
-        // Ranger: Glyph of Guardian Spirit (http://getmangos.com/community/post/119077/)
-        else if (spellProto->Id == 47788)
-        {
-            if (m_removeMode != AURA_REMOVE_BY_EXPIRE)
-                return;
-
-            if (target->IsInWorld() && GetStackAmount() > 0)
-            {
-                if (caster && caster->IsInWorld() && caster->GetTypeId()==TYPEID_PLAYER)
-                    if (caster->HasAura(63231))
-                    {
-                        ((Player*)caster)->RemoveSpellCooldown(47788, true); //server CD set
-                        ((Player*)caster)->AddSpellCooldown(47788, 0, time(NULL) + 60);
-                        WorldPacket data(SMSG_SPELL_COOLDOWN,8+1+4+4); //client CD set
-                        data << caster->GetObjectGuid();
-                        data << uint8(0x0);
-                        data << uint32(spellProto->Id);
-                        data << uint32(60000);
-                        ((Player*)caster)->GetSession()->SendPacket(&data);
-                    }
-            }
-        }
         // Shield of Runes (Runemaster Molgeim: Ulduar)
         else if ((GetId() == 62274 || GetId() == 63489) && m_removeMode == AURA_REMOVE_BY_SHIELD_BREAK)
         {
