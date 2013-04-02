@@ -4731,6 +4731,11 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 if (!(procClassOptions && procClassOptions->SpellFamilyFlags & UI64LIT(0x0000000000000020)))
                     return SPELL_AURA_PROC_FAILED;
             }
+            // Glyph of Silencing Shot
+            else if (auraSpellInfo->Id == 56836)
+            {
+                return SPELL_AURA_PROC_FAILED;      // done in other way
+            }
             // Entrapment correction
             else if ((auraSpellInfo->Id == 19184 || auraSpellInfo->Id == 19387) &&
                 !procSpell->IsFitToFamilyMask(UI64LIT(0x200000000000)) &&   // Snake Trap
