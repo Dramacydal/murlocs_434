@@ -5277,16 +5277,7 @@ void Unit::RemoveAuraHolderDueToSpellByDispel(uint32 spellId, uint32 stackAmount
             {
                 if ((*i)->GetSpellProto()->SpellIconID == 3521 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_HUNTER)
                 {
-                    if (SpellAuraHolder* holder = GetSpellAuraHolder(spellId, casterGuid))
-                    {
-                        int32 duration = std::min(holder->GetAuraDuration() * (*i)->GetModifier()->m_amount / 100, holder->GetAuraMaxDuration());
-                        if (!duration)
-                            break;
-
-                        caster->CastSpell(dispeller, spellId, true);
-                        if (SpellAuraHolder* holder2 = dispeller->GetSpellAuraHolder(spellId, casterGuid))
-                            holder2->SetAuraDuration(duration);
-                    }
+                    dispeller->CastSpell(dispeller, spellId, true, NULL, NULL, casterGuid);
                     break;
                 }
             }
@@ -10860,8 +10851,25 @@ int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMas
         }
     }
 
+    // Wyvern Sting
+    if (spellProto->Id == 19386)
+    {
+        if (spell->GetAffectiveCaster() && caster != spell->GetAffectiveCaster())
+        {
+            // search Noxious Stings
+            Unit::AuraList const& auras = spell->GetAffectiveCaster()->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
+            for (Unit::AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
+            {
+                if ((*i)->GetSpellProto()->SpellIconID == 3521 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_HUNTER)
+                {
+                    duration = duration * (*i)->GetModifier()->m_amount / 100;
+                    break;
+                }
+            }
+        }
+    }
     // Kidney Shot and Expose Armor
-    if (spellProto->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0x280000)))
+    else if (spellProto->IsFitToFamily(SPELLFAMILY_ROGUE, UI64LIT(0x280000)))
     {
         // Revealig Strike
         if (SpellAuraHolder* holder = GetSpellAuraHolder(84617, caster->GetObjectGuid()))
