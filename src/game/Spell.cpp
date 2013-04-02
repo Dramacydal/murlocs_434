@@ -4268,9 +4268,10 @@ void Spell::cast(bool skipCheck)
             // Lay on Hands
             else if (classOpt && classOpt->SpellFamilyFlags & UI64LIT(0x0000000000008000))
             {
-                // only for self cast
-                if (m_caster == m_targets.getUnitTarget())
-                    AddPrecastSpell(25771);                     // Forbearance
+                AddPrecastSpell(25771);                     // Forbearance
+                // Glyph of Divinity
+                if (m_caster->HasAura(54939))
+                    AddTriggeredSpell(54986);
             }
             break;
         }
