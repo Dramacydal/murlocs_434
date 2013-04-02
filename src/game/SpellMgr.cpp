@@ -2745,6 +2745,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if (spellInfo_1->SpellIconID == 500 && spellInfo_2->SpellIconID == 513 ||
                     spellInfo_2->SpellIconID == 500 && spellInfo_1->SpellIconID == 513)
                     return false;
+
+                // Hemorrhage vs. Glyph of Hemorrhage
+                if (spellInfo_1->SpellIconID == 153 && spellInfo_2->SpellIconID == 153)
+                    return false;
             }
 
             //Overkill

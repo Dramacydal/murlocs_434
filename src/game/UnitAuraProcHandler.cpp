@@ -2344,35 +2344,11 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     triggered_spell_id = 32747;
                     break;
                 }
-                // Glyph of Backstab
-                case 56800:
+                // Glyph of Hemorrhage
+                case 56807:
                 {
-                    if (!procSpell || procSpell->GetSpellFamilyName() != SPELLFAMILY_ROGUE || procSpell->SpellIconID != 243) // Amaru: e?eaua oeaae o aaenoaaa!
-                        return SPELL_AURA_PROC_FAILED;
-
-                    if (Aura* rupture = target->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_ROGUE, UI64LIT(0x00100000), 0, GetGUID()))
-                    {
-                        // Rupture's max duration, note: spells which modifies Rupture's duration also counted like Glyph of Backstab
-                        int32 CountMin = rupture->GetAuraMaxDuration();
-
-                        // just Rupture's max duration without other spells
-                        int32 CountMax = GetSpellMaxDuration(rupture->GetSpellProto());
-
-                        // add possible auras' and Glyph of Backstab's max duration
-                        CountMax += 3 * triggerAmount * 1000;       // Glyph of Backstab            -> +6 seconds
-                        CountMax += HasAura(56801) ? 4 * 1000 : 0;  // Glyph of Rupture             -> +4 seconds
-
-                        // if min < max -> that means caster didn't cast 3 backstabs yet
-                        // so set Rupture's duration and max duration
-                        if (CountMin < CountMax)
-                        {
-                            rupture->GetHolder()->SetAuraDuration(rupture->GetAuraDuration() + triggerAmount * 1000);
-                            rupture->GetHolder()->SetAuraMaxDuration(CountMin + triggerAmount * 1000);
-                            rupture->GetHolder()->SendAuraUpdate(false);
-                            return SPELL_AURA_PROC_OK;
-                        }
-                    }
-                    return SPELL_AURA_PROC_FAILED;
+                    basepoints[0] = damage * triggerAmount / 100;
+                    break;
                 }
                 // Tricks of the trade
                 case 57934:
@@ -2398,6 +2374,17 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     // Check procSpell for Eviscerate, Envenom, Expose Armor, Kidney Shot and Rupture
                     if (!procSpell || !NeedsComboPoints(procSpell))
                         return SPELL_AURA_PROC_FAILED;
+                    break;
+                }
+                case 91299:                                 // Glyph of Blind
+                {
+                    if (!pVictim || !pVictim->isAlive())
+                        return SPELL_AURA_PROC_FAILED;
+
+                    // except shadow word: death periodic
+                    pVictim->RemoveSpellsCausingAura(SPELL_AURA_PERIODIC_DAMAGE, pVictim->GetSpellAuraHolder(32409));
+                    pVictim->RemoveSpellsCausingAura(SPELL_AURA_PERIODIC_DAMAGE_PERCENT);
+                    pVictim->RemoveSpellsCausingAura(SPELL_AURA_PERIODIC_LEECH);
                     break;
                 }
             }
