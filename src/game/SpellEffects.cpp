@@ -5026,17 +5026,6 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                             damage = int32(owner->SpellHealingBonusDone(unitTarget, m_triggeredBySpellInfo, damage, HEAL));
                             damage = int32(unitTarget->SpellHealingBonusTaken(owner, m_triggeredBySpellInfo, damage, HEAL));
                         }
-
-                        // Restorative Totems
-                        Unit::AuraList const& mDummyAuras = owner->GetAurasByType(SPELL_AURA_DUMMY);
-                        for(Unit::AuraList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
-                            // only its have dummy with specific icon
-                            if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_SHAMAN && (*i)->GetSpellProto()->SpellIconID == 338)
-                                damage += (*i)->GetModifier()->m_amount * damage / 100;
-
-                        // Glyph of Healing Stream Totem
-                        if (Aura *dummy = owner->GetDummyAura(55456))
-                            damage += dummy->GetModifier()->m_amount * damage / 100;
                     }
                     m_caster->CastCustomSpell(unitTarget, 52042, &damage, NULL, NULL, true, 0, 0, m_originalCasterGUID);
                 }
@@ -8725,7 +8714,7 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
                         // Searing Flames
                         if (SpellAuraHolder* flames = unitTarget->GetSpellAuraHolder(77661, m_caster->GetObjectGuid()))
                         {
-                            m_damage = int32(m_damage * (flames->GetStackAmount() * spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) + 100.0f) / 100.0f);
+                            totalDamagePercentMod *= (flames->GetStackAmount() * spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) + 100.0f) / 100.0f;
                             unitTarget->RemoveSpellAuraHolder(flames);
                         }
 

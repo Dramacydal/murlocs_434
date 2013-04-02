@@ -104,6 +104,24 @@ void Totem::Summon(Unit* owner)
     if (!GetSpell())
         return;
 
+    // Healing Stream Totem
+    if (GetEntry() == 3527)
+    {
+        // Glyph of Healing Stream Totem
+        if (owner->HasAura(55456))
+            CastSpell(this, 8185, true);    // Elemental Resistance
+    }
+    // Grounding Totem
+    else if (GetEntry() == 5925)
+    {
+        // Glyph of Grounding Totem
+        if (owner->HasAura(55441))
+        {
+            owner->CastSpell(owner, 89523, true);
+            return;
+        }
+    }
+
     switch(m_type)
     {
         case TOTEM_PASSIVE:
