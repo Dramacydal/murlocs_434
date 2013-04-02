@@ -5491,6 +5491,14 @@ void Spell::EffectTriggerSpell(SpellEffectEntry const* effect)
     // special cases
     switch (triggered_spell_id)
     {
+        // Intimidating Shout
+        case 5246:
+        {
+            // Glyph of Intimidating Shout
+            if (!m_caster->HasAura(63327))
+                return;
+            break;
+        }
         // Vanish (not exist)
         case 18461:
         {

@@ -1565,18 +1565,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 26654;
                 break;
             }
-            // Glyph of Devastate
-            else if (dummySpell->Id == 58388)
-            {
-                triggered_spell_id = 58567;
-                break;
-            }
-            // Glyph of Blocking
-            else if (dummySpell->Id == 58375)
-            {
-                triggered_spell_id = 58374;
-                break;
-            }
             // Vengeance (warrior)
             else if (dummySpell->Id == 93098)
                 return HandleVengeanceProc(pVictim, damage, triggerAmount);

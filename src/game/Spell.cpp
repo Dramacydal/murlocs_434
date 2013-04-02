@@ -4095,12 +4095,6 @@ void Spell::cast(bool skipCheck)
         }
         case SPELLFAMILY_WARRIOR:
         {
-            // Shield Slam
-            if (classOpt && (classOpt->SpellFamilyFlags & UI64LIT(0x0000020000000000)) && m_spellInfo->GetCategory()==1209)
-            {
-                if (m_caster->HasAura(58375))               // Glyph of Blocking
-                    AddTriggeredSpell(58374);               // Glyph of Blocking
-            }
             // Bloodrage
             if (classOpt && (classOpt->SpellFamilyFlags & UI64LIT(0x0000000000000100)))
             {
@@ -4146,6 +4140,13 @@ void Spell::cast(bool skipCheck)
                         AddPrecastSpell(gcd_spell);
                     }
                 }
+            }
+            // Colossus Smash
+            else if (m_spellInfo->Id == 86346 || m_spellInfo->Id == 108126)
+            {
+                // Glyph of Colossus Smash
+                if (m_caster->HasAura(89003))
+                    AddTriggeredSpell(58567);
             }
             break;
         }
@@ -7547,7 +7548,6 @@ SpellCastResult Spell::CheckCast(bool strict)
         case 7384:      // Overpower
         {
             if (m_caster->GetTypeId() == TYPEID_PLAYER && m_caster->GetComboPoints() == 0 &&
-                !m_caster->HasAura(68051) &&    // Glyph of Overpower
                 !m_caster->HasAura(60503))      // Taste For Blood talent proc
                 return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
             break;
