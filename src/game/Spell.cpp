@@ -2161,6 +2161,13 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 unMaxTargets = 2;
             break;
         }
+        case SPELLFAMILY_HUNTER:
+        {
+            // Multi-Shot
+            if (m_spellInfo->Id == 2643)
+                unMaxTargets = 3;
+            break;
+        }
         case SPELLFAMILY_PALADIN:
             if (m_spellInfo->Id == 20424)                   // Seals of Command (2 more targets for Seal of Righteousness Proc)
             {
