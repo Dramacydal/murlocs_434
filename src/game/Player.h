@@ -57,6 +57,7 @@ class Spell;
 class Item;
 struct AreaTrigger;
 class OutdoorPvP;
+class PhaseMgr;
 
 typedef std::deque<Mail*> PlayerMails;
 
@@ -1353,7 +1354,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         void RemovePet(PetSaveMode mode);
 
-        uint32 GetPhaseMaskForSpawn() const;                // used for proper set phase for DB at GM-mode creature/GO spawn
+        PhaseMgr* GetPhaseMgr() { return phaseMgr; }
 
         void Say(const std::string& text, const uint32 language);
         void Yell(const std::string& text, const uint32 language);
@@ -2062,7 +2063,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetSession(WorldSession *s) { m_session = s; }
 
         void BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target) const override;
-        void SetPhaseAndMap(Player* target) const;
         void DestroyForPlayer(Player* target, bool anim = false) const override;
         void SendLogXPGain(uint32 GivenXP, Unit* victim, uint32 RestXP, bool ReferAFriend);
 
@@ -2512,8 +2512,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         void HandleStealthedUnitsDetection();
 
         Camera& GetCamera() { return m_camera; }
-
-        virtual void SetPhaseMask(uint32 newPhaseMask, bool update) override;// overwrite Unit::SetPhaseMask
 
         uint8 m_forced_speed_changes[MAX_MOVE_TYPE];
 
@@ -3117,6 +3115,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SendItemRefundResult(Item* item, uint32 result);
 
         uint32 m_rootTimes;
+
+        PhaseMgr* phaseMgr;
 };
 
 void AddItemsSetItem(Player*player,Item *item);

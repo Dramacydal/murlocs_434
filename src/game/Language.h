@@ -1183,6 +1183,14 @@ enum MangosStrings
     LANG_MMR_RESET_FOR_TYPE             = 11134,
     LANG_YOUR_NXN_MMR                   = 11135,
 
+    LANG_PHASING_REPORT_STATUS          = 11136,
+    LANG_PHASING_NO_DEFINITIONS         = 11137,
+    LANG_PHASING_SUCCESS                = 11138,
+    LANG_PHASING_FAILED                 = 11139,
+    LANG_PHASING_LAST_PHASE             = 11140,
+    LANG_PHASING_LIST                   = 11141,
+    LANG_PHASING_PHASEMASK              = 11142,
+
     // Strand of the Ancients
     LANG_BG_SA_START_TWO_MINUTE                     = 20000,
     LANG_BG_SA_START_ONE_MINUTE                     = 20001,

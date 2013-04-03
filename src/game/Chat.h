@@ -264,6 +264,7 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleDebugSendQuestInvalidMsgCommand(char* args);
         bool HandleDebugSendSellErrorCommand(char* args);
         bool HandleDebugSendSetPhaseShiftCommand(char* args);
+        bool HandleDebugPhaseCommand(char* args);
         bool HandleDebugSendSpellFailCommand(char* args);
 
         bool HandleDebugAuraCommand(char* args);
@@ -706,6 +707,8 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleMmapStatsCommand(char* args);
         bool HandleMmap(char* args);
         bool HandleMmapTestArea(char* args);
+
+        bool HandleReloadPhaseDefinitionsCommand(char* /*args*/);
 
         //! Development Commands
         bool HandleSaveAllCommand(char* args);

@@ -47,6 +47,7 @@
 #include "GuildMgr.h"
 #include "DB2Structure.h"
 #include "DB2Stores.h"
+#include "PhaseMgr.h"
 
 #include <limits>
 
@@ -7586,50 +7587,6 @@ void ObjectMgr::LoadQuestPOI()
     sLog.outString(">> Loaded %u quest POI definitions", count);
 }
 
-void ObjectMgr::LoadQuestPhaseMaps()
-{
-    mQuestPhaseMap.clear();                              // need for reload case
-
-    uint32 count = 0;
-
-    //                                                0        1 
-    QueryResult *result = WorldDatabase.Query("SELECT questId, map, phase FROM quest_phase_maps");
-
-    if (!result)
-    {
-        BarGoLink bar(1);
-
-        bar.step();
-
-        sLog.outString();
-        sLog.outErrorDb(">> Loaded 0 quest phase maps definitions. DB table `quest_phase_maps` is empty.");
-        return;
-    }
-
-    BarGoLink bar(result->GetRowCount());
-
-    do
-    {
-        Field *fields = result->Fetch();
-        bar.step();
-
-        uint32 questId          = fields[0].GetUInt32();
-        uint16 mapId            = fields[1].GetUInt16();
-        uint32 phase            = fields[2].GetUInt32();
-
-        QuestPhaseMaps QuestPhase(mapId, phase);
-
-        mQuestPhaseMap[questId].push_back(QuestPhase);
-
-        ++count;
-    } while (result->NextRow());
-
-    delete result;
-
-    sLog.outString();
-    sLog.outString(">> Loaded %u quest phase maps definitions", count);
-}
-
 void ObjectMgr::LoadNPCSpellClickSpells()
 {
     uint32 count = 0;
@@ -8429,6 +8386,25 @@ bool ObjectMgr::IsPlayerMeetToCondition(Player const* pPlayer, uint16 conditionI
         return condition->Meets(pPlayer);
 
     return false;
+}
+
+
+void ObjectMgr::GetConditions(uint32 conditionId, std::vector<PlayerCondition const*>& out) const
+{
+    const PlayerCondition* condition = sConditionStorage.LookupEntry<PlayerCondition>(conditionId);
+    if (condition->m_condition == CONDITION_OR || condition->m_condition == CONDITION_AND)
+    {
+        GetConditions(condition->m_value1, out);
+        GetConditions(condition->m_value2, out);
+        return;
+    }
+    else if (condition->m_condition == CONDITION_NOT)
+    {
+        GetConditions(condition->m_value1, out);
+        return;
+    }
+
+    out.push_back(condition);
 }
 
 bool ObjectMgr::CheckDeclinedNames( std::wstring mainpart, DeclinedName const& names )
@@ -10498,3 +10474,105 @@ void ObjectMgr::LoadHotfixData()
     sLog.outString();
     sLog.outString(">> Loaded %u hotfix info entries.", count);
 }
+
+void ObjectMgr::LoadPhaseDefinitions()
+{
+    _PhaseDefinitionStore.clear();
+
+    //                                                0       1      2          3        4               5      6
+    QueryResult* result = WorldDatabase.Query("SELECT zoneId, entry, phasemask, phaseId, terrainswapmap, flags, condition_id FROM `phase_definitions` ORDER BY `entry` ASC");
+
+    if (!result)
+    {
+        sLog.outString(">> Loaded 0 phasing definitions. DB table `phase_definitions` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        PhaseDefinition PhaseDefinition;
+
+        PhaseDefinition.zoneId                = fields[0].GetUInt32();
+        PhaseDefinition.entry                 = fields[1].GetUInt32();
+        PhaseDefinition.phasemask             = fields[2].GetUInt32();
+        PhaseDefinition.phaseId               = fields[3].GetUInt32();
+        PhaseDefinition.terrainswapmap        = fields[4].GetUInt32();
+        PhaseDefinition.flags                 = fields[5].GetUInt32();
+        PhaseDefinition.conditionId           = fields[6].GetUInt16();
+
+        // Checks
+        if ((PhaseDefinition.flags & PHASE_FLAG_OVERWRITE_EXISTING) && (PhaseDefinition.flags & PHASE_FLAG_NEGATE_PHASE))
+        {
+            sLog.outError("Flags defined in phase_definitions in zoneId %d and entry %u does contain PHASE_FLAG_OVERWRITE_EXISTING and PHASE_FLAG_NEGATE_PHASE. Setting flags to PHASE_FLAG_OVERWRITE_EXISTING", PhaseDefinition.zoneId, PhaseDefinition.entry);
+            PhaseDefinition.flags &= ~PHASE_FLAG_NEGATE_PHASE;
+        }
+
+        if (!sConditionStorage.LookupEntry<PlayerCondition>(PhaseDefinition.conditionId))
+        {
+            sLog.outError("Condition id  defined in phase_definitions in zoneId %d and entry %u does not exists. Skipping condition.", PhaseDefinition.zoneId, PhaseDefinition.entry);
+            PhaseDefinition.conditionId = 0;
+        }
+
+        _PhaseDefinitionStore[PhaseDefinition.zoneId].push_back(PhaseDefinition);
+
+        ++count;
+    }
+    while (result->NextRow());
+
+    delete result;
+
+    sLog.outString(">> Loaded %u phasing definitions.", count);
+}
+
+void ObjectMgr::LoadSpellPhaseInfo()
+{
+    _SpellPhaseStore.clear();
+
+    //                                                0   1          2
+    QueryResult* result = WorldDatabase.Query("SELECT id, phasemask, terrainswapmap FROM `spell_phase`");
+
+    if (!result)
+    {
+        sLog.outString(">> Loaded 0 spell dbc infos. DB table `spell_phase` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+    do
+    {
+        Field* fields = result->Fetch();
+
+        SpellPhaseInfo spellPhaseInfo;
+        spellPhaseInfo.spellId = fields[0].GetUInt32();
+
+        SpellEntry const* spell = sSpellStore.LookupEntry(spellPhaseInfo.spellId);
+        if (!spell)
+        {
+            sLog.outError("Spell %u defined in `spell_phase` does not exists, skipped.", spellPhaseInfo.spellId);
+            continue;
+        }
+
+        if (!IsSpellHaveAura(spell, SPELL_AURA_PHASE))
+        {
+            sLog.outError("Spell %u defined in `spell_phase` does not have aura effect type SPELL_AURA_PHASE, useless value.", spellPhaseInfo.spellId);
+            continue;
+        }
+
+        spellPhaseInfo.phasemask              = fields[1].GetUInt32();
+        spellPhaseInfo.terrainswapmap         = fields[2].GetUInt32();
+
+        _SpellPhaseStore[spellPhaseInfo.spellId] = spellPhaseInfo;
+
+        ++count;
+    }
+    while (result->NextRow());
+
+    delete result;
+
+    sLog.outString(">> Loaded %u spell dbc infos in %u ms.", count);
+}
+

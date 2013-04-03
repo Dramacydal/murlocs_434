@@ -30,6 +30,7 @@
 #include "ScriptMgr.h"
 #include "Group.h"
 #include "Chat.h"
+#include "PhaseMgr.h"
 
 void WorldSession::HandleQuestgiverStatusQueryOpcode(WorldPacket & recv_data)
 {
@@ -350,6 +351,11 @@ void WorldSession::HandleQuestLogRemoveQuest(WorldPacket& recv_data)
             }
 
             _player->SetQuestStatus(quest, QUEST_STATUS_NONE);
+
+            PhaseUpdateData phaseUdateData;
+            phaseUdateData.AddQuestUpdate(quest);
+
+            _player->GetPhaseMgr()->NotifyConditionChanged(phaseUdateData);
         }
 
         _player->SetQuestSlot(slot, 0);

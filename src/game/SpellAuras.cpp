@@ -51,6 +51,7 @@
 #include "MapManager.h"
 #include "SpellAuras.h"
 #include "Weather.h"
+#include "PhaseMgr.h"
 
 #define NULL_AURA_SLOT 0xFF
 
@@ -10666,26 +10667,36 @@ void Aura::HandlePhase(bool apply, bool Real)
 
     Unit* target = GetTarget();
 
-    uint32 phaseMask = 0;
-    if (apply)
+    if (target->GetTypeId() == TYPEID_PLAYER)
     {
-        phaseMask = target->GetPhaseMask();
-        if (target->GetAurasByType(SPELL_AURA_PHASE).size() == 1)
-            phaseMask &= ~PHASEMASK_NORMAL;
-
-        phaseMask |= GetMiscValue();
+        if (apply)
+            ((Player*)target)->GetPhaseMgr()->RegisterPhasingAuraEffect(this);
+        else
+            ((Player*)target)->GetPhaseMgr()->UnRegisterPhasingAuraEffect(this);
     }
     else
     {
-        Unit::AuraList const& phases = target->GetAurasByType(SPELL_AURA_PHASE);
-        for (Unit::AuraList::const_iterator itr = phases.begin(); itr != phases.end(); ++itr)
-            phaseMask |= (*itr)->GetMiscValue();
+        uint32 phaseMask = 0;
+        if (apply)
+        {
+            phaseMask = target->GetPhaseMask();
+            if (target->GetAurasByType(SPELL_AURA_PHASE).size() == 1)
+                phaseMask &= ~PHASEMASK_NORMAL;
+
+            phaseMask |= GetMiscValue();
+        }
+        else
+        {
+            Unit::AuraList const& phases = target->GetAurasByType(SPELL_AURA_PHASE);
+            for (Unit::AuraList::const_iterator itr = phases.begin(); itr != phases.end(); ++itr)
+                phaseMask |= (*itr)->GetMiscValue();
+        }
+
+        if (!phaseMask)
+            phaseMask = PHASEMASK_NORMAL;
+
+        target->SetPhaseMask(phaseMask, true);
     }
-
-    if (!phaseMask)
-        phaseMask = PHASEMASK_NORMAL;
-
-    target->SetPhaseMask(phaseMask, true);
     // no-phase is also phase state so same code for apply and remove
     if (GetEffIndex() == EFFECT_INDEX_0 && target->GetTypeId() == TYPEID_PLAYER)
     {

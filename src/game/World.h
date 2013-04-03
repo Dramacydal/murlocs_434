@@ -760,6 +760,8 @@ class World
 
         bool mtmapsEnable() const {return getConfig(CONFIG_UINT32_NUMTHREADS) > 0;}
 
+        void UpdatePhaseDefinitions();
+
     protected:
         void _UpdateGameTime();
         // callback for UpdateRealmCharacters

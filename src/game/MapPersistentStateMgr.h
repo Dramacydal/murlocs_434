@@ -236,6 +236,8 @@ class MANGOS_DLL_DECL DungeonPersistentState : public MapPersistentState
         /* Delete respawn data at dungeon reset */
         void DeleteRespawnTimes();
 
+        void UpdatePhasing();
+
     protected:
         bool CanBeUnload() const override;                      // overwrite MapPersistentState::CanBeUnload
         bool HasBounds() const { return !m_playerList.empty() || !m_groupList.empty(); }
