@@ -1283,6 +1283,12 @@ void LoadDBCStores(const std::string& dataPath)
                     pow->manaCost = 0;
                 break;
             }
+            case 54831:                         // Glyph of Hurricane
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectApplyAuraName = SPELL_AURA_ADD_FLAT_MODIFIER;
+                break;
+            }
             case 54833:                         // Innervate and Glyph of Innervate
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))

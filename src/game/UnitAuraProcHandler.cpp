@@ -2112,23 +2112,26 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     triggered_spell_id = 32747;
                     break;
                 }
-                // Glyph of Rejuvenation
-                case 54754:
+                // Glyph of Regrowth
+                case 54743:
                 {
-                    // less 50% health
-                    if (pVictim->GetMaxHealth() < 2 * pVictim->GetHealth())
+                    if (!pVictim || damage + pVictim->GetHealth() < triggerAmount * GetMaxHealth() / 100)
                         return SPELL_AURA_PROC_FAILED;
-                    basepoints[0] = triggerAmount * damage / 100;
-                    triggered_spell_id = 54755;
+
+                    // Regrowth Refresh
+                    triggered_spell_id = 93036;
                     break;
                 }
-                // Glyph of Rake
-                case 54821:
+                // Glyph of Healing Touch
+                case 54825:
                 {
-                    triggered_spell_id = 54820;
-                    break;
+                    if (!pVictim || pVictim->GetTypeId() != TYPEID_PLAYER)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    ((Player*)this))->SendModifyCooldown(17116, -triggerAmount * IN_MILLISECONDS);
+                    return SPELL_AURA_PROC_OK;
                 }
-                // Glyph of  Starfire
+                // Glyph of Starfire
                 case 54845:
                 {
                     if (Aura* moonfire = target->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_DRUID, UI64LIT(0x00000002), 0, GetGUID()))
@@ -2142,7 +2145,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         // add possible auras' and Glyph of Starfire's max duration
                         CountMax += 3 * triggerAmount * 1000;       // Glyph of Starfire            -> +9 seconds
                         CountMax += HasAura(38414) ? 3 * 1000 : 0;  // Moonfire duration            -> +3 seconds
-                        CountMax += HasAura(57865) ? 3 * 1000 : 0;  // Nature's Splendor            -> +3 seconds
 
                         // if min < max -> that means caster didn't cast 3 starfires yet
                         // so set Moonfire's duration and max duration
@@ -2156,7 +2158,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     }
                     return SPELL_AURA_PROC_FAILED;
                 }
-                // Glyph of Shred
+                // Glyph of Bloodletting
                 case 54815:
                 {
                     if (Aura* rip = target->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_DRUID, UI64LIT(0x00800000), 0, GetGUID()))
@@ -2169,7 +2171,6 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
 
                         // add possible auras' and Glyph of Shred's max duration
                         CountMax += 3 * triggerAmount * 1000;       // Glyph of Shred               -> +6 seconds
-                        CountMax += HasAura(54818) ? 4 * 1000 : 0;  // Glyph of Rip                 -> +4 seconds
                         CountMax += HasAura(60141) ? 4 * 1000 : 0;  // Rip Duration/Lacerate Damage -> +4 seconds
 
                         // if min < max -> that means caster didn't cast 3 shred yet
@@ -2183,6 +2184,16 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         }
                     }
                     return SPELL_AURA_PROC_FAILED;
+                }
+                // Glyph of Starsurge
+                case 62971:
+                {
+                    if (GetTypeId() != TYPEID_PLAYER)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    // modify Starfall cooldown
+                    ((Player*)this)->SendModifyCooldown(48505, -triggerAmount * IN_MILLISECONDS);
+                    return SPELL_AURA_PROC_OK;
                 }
                 // Item - Druid T10 Restoration 4P Bonus (Rejuvenation)
                 case 70664:

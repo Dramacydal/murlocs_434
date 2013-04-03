@@ -383,11 +383,6 @@ void Spell::EffectResurrectNew(SpellEffectEntry const* effect)
             health = uint32(health * m_caster->GetTotalAuraMultiplier(SPELL_AURA_MOD_RESURRECTED_HEALTH_BY_GUILD_MEMBER));
     }
 
-    // Glyph of Rebirth
-    if (m_spellInfo->IsFitToFamily(SPELLFAMILY_DRUID, UI64LIT(0x11000000)) &&
-        m_caster->HasAura(54733, EFFECT_INDEX_0))
-        health = pTarget->GetMaxHealth();
-
     pTarget->setResurrectRequestData(m_caster->GetObjectGuid(), m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), health, mana, 0);
     SendResurrectRequest(pTarget);
 }
@@ -1159,10 +1154,25 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                 if (classOptions && (classOptions->SpellFamilyFlags & UI64LIT(0x000800000)) && m_spellInfo->SpellVisual[0] == 6587)
                 {
                     // converts up to 35 points to up to 100% damage
-                    int32 energy = std::min(m_caster->GetPower(POWER_ENERGY), 35);
-                    damage += int32(damage * energy / 35);
+                    if (int32 energy = std::min(m_caster->GetPower(POWER_ENERGY), 35))
+                    {
+                        // Glyph of Ferocious Bite
+                        if (Aura* glyph = m_caster->GetAura(67598, EFFECT_INDEX_0))
+                            if (int32 bp = glyph->GetModifier()->m_amount * energy / 10)
+                                m_caster->CastCustomSpell(m_caster, 101024, &bp, NULL, NULL, true);
 
-                    m_caster->ModifyPower(POWER_ENERGY, -energy);
+                        damage += int32(damage * energy / 35);
+
+                        m_caster->ModifyPower(POWER_ENERGY, -energy);
+                    }
+                }
+
+                // Maul
+                if (m_spellInfo->Id == 6807)
+                {
+                    // Maul does 1/2 damage to secondary target (Glyph of Maul)
+                    if (m_targets.getUnitTarget() != unitTarget)
+                        damage /= 2;
                 }
                 break;
             }
@@ -11974,6 +11984,21 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     // get Unstable Affliction
                     if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(30108, m_caster->GetObjectGuid()))
                         holder->RefreshHolder();
+
+                    return;
+                }
+                case 93036:                                 // Regrowth Refresh
+                {
+                    if (!unitTarget)
+                        return;
+
+                    // get Regrowth
+                    if (SpellAuraHolder* holder = unitTarget->GetSpellAuraHolder(8936, m_caster->GetObjectGuid()))
+                        if (holder->GetAuraDuration() < damage * IN_MILLISECONDS)
+                        {
+                            holder->SetAuraDuration(damage * IN_MILLISECONDS);
+                            holder->SendAuraUpdate(false);
+                        }
 
                     return;
                 }

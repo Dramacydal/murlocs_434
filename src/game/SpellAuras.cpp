@@ -10120,6 +10120,10 @@ void Aura::PeriodicDummyTick()
                     if (target->getPowerType() != POWER_RAGE)
                         return;
 
+                    // Glyph of Frenzied Regeneration
+                    if (target->HasAura(54810))
+                        return;
+
                     int32 rage = std::min(target->GetPower(POWER_RAGE), 100);
 
                     // Nothing todo
@@ -12122,14 +12126,21 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     spellId1 = 80879;
                     spellId2 = 80886;
                 }
+
+                // Berserk
+                if (GetId() == 50334)
+                    spellId3 = 58923;                       // Berserk (Mangle (Bear) modifier)
                 break;
             }
             // Bear Form (Passive2)
             else if (GetId() == 21178)
                 spellId1 = 57339;
             // Barkskin
-            else if (GetId()==22812 && m_target->HasAura(63057)) // Glyph of Barkskin
-                spellId1 = 63058;                           // Glyph - Barkskin 01
+            else if (GetId()==22812)                        // Glyph of Barkskin
+            {
+                if (!apply || m_target->HasAura(63057))
+                    spellId1 = 63058;                       // Glyph of Amberskin Protection
+            }
             // Item - Druid T10 Feral 4P Bonus
             else if (GetId() == 5229)                       // Enrage (Druid Bear)
             {
@@ -12141,9 +12152,6 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             // Eclipse (Solar)
             else if (GetId() == 48517)
                 spellId1 = 94338;
-            // Berserk
-            else if (GetId() == 50334)
-                spellId1 = 58923;                           // Berserk (Mangle (Bear) modifier)
             // Stampede
             else if (GetId() == 81021 || GetId() == 81022)
                 spellId1 = 109881;                          // Stampede Ravage Marker

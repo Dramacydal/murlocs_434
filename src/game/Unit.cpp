@@ -13520,6 +13520,7 @@ uint32 Unit::GetModelForForm(ShapeshiftForm form)
                 return 8571;
         case FORM_TREE:
         {
+            // Glyph of the Treant
             if (HasAura(95212))
                 return 9590;
             else
