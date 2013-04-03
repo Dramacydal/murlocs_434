@@ -4721,7 +4721,8 @@ bool Unit::AddSpellAuraHolder(SpellAuraHolder *holder)
             if (foundHolder->GetCasterGuid() == holder->GetCasterGuid())
             {
                 // Aura can stack on self -> Stack it;
-                if (aurSpellInfo->GetStackAmount())
+                // except Frostfire Bolt without Glyph of Frostfire
+                if (aurSpellInfo->GetStackAmount() && (holder->GetId() != 44614 || !holder->GetCaster() || holder->GetCaster()->HasAura(61205)))
                 {
                     // can be created with >1 stack by some spell mods
                     foundHolder->ModStackAmount(holder->GetStackAmount());

@@ -4542,8 +4542,12 @@ void Aura::HandleAuraTransform(bool apply, bool Real)
             // Polymorph (sheep/penguin case)
             if (GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_MAGE && GetSpellProto()->SpellIconID == 82)
                 if (Unit* caster = GetCaster())
+                {
                     if (caster->HasAura(52648))             // Glyph of the Penguin
                         model_id = 26452;
+                    else if (caster->HasAura(57927))        // Glyph of the Monkey
+                        model_id = 21362;
+                }
 
             target->SetDisplayId(model_id);
 
@@ -8515,8 +8519,10 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                     {
                         //+80.67% from +spell bonus
                         DoneActualBenefit = caster->SpellBaseDamageBonusDone(GetSpellSchoolMask(spellProto)) * 0.8067f;
+                        customModifier = DoneActualBenefit + m_modifier.m_amount;
+                        // Glyph of Ice Barrier
                         if (Aura* glyph = caster->GetAura(63095, EFFECT_INDEX_0))
-                            DoneActualBenefit *= (glyph->GetModifier()->m_amount + 100.0f) / 100.0f;
+                            customModifier *= (glyph->GetModifier()->m_amount + 100.0f) / 100.0f;
                     }
                     break;
                 case SPELLFAMILY_WARLOCK:
@@ -11793,16 +11799,20 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             {
                 case 32612:                                 // Invisibility
                 {
+                    // Glyph of Invisibility
+                    if (!apply || m_target->HasAura(56366))
+                        spellId1 = 87833;
+
                     Pet* pet = m_target->GetPet();
                     if (!pet)
-                        return;
+                        break;
 
                     if (apply)
                         pet->CastSpell(pet, 32612, true);
                     else
                         pet->RemoveAurasDueToSpell(32612);
 
-                    return;
+                    break;
                 }
                 case 44614:                                 // Frostfire Bolt (Rank 1)
                 case 47610:                                 // Frostfire Bolt (Rank 2)
