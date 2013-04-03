@@ -2128,7 +2128,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     if (!pVictim || pVictim->GetTypeId() != TYPEID_PLAYER)
                         return SPELL_AURA_PROC_FAILED;
 
-                    ((Player*)this))->SendModifyCooldown(17116, -triggerAmount * IN_MILLISECONDS);
+                    ((Player*)this)->SendModifyCooldown(17116, -triggerAmount * IN_MILLISECONDS);
                     return SPELL_AURA_PROC_OK;
                 }
                 // Glyph of Starfire
