@@ -11405,6 +11405,16 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
         {
             switch(GetId())
             {
+                case 3714:                                  // Path of Frost
+                {
+                    if (!apply)
+                        spellId1 = 93061;
+                    else if (Unit* caster = GetCaster())
+                        // Glyph of Path of Frost
+                        if (caster == m_target && caster->HasAura(59307))
+                            spellId1 = 93061;
+                    break;
+                }
                 case 7376:                                  // Defensive Stance Passive
                 {
                     spellId1 = 57339;
@@ -11500,11 +11510,6 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                         return;
                     break;
                 }
-                case 57447: spellId1 = 57485; break;        // Kindred Spirits (Rank 1)
-                case 57452: spellId1 = 57484; break;        // Kindred Spirits (Rank 2)
-                case 57453: spellId1 = 57483; break;        // Kindred Spirits (Rank 3)
-                case 57457: spellId1 = 57482; break;        // Kindred Spirits (Rank 4)
-                case 57458: spellId1 = 57475; break;        // Kindred Spirits (Rank 5)
                 case 61716:                                 // Rabbit Costume
                 case 61734:                                 // Noblegarden Bunny
                 {
@@ -11620,7 +11625,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     }
                     break;
                 }
-                case 70867:                                 // Soul of Blood Qween
+                case 70867:                                 // Essence of the Blood Queen
                 case 71473:
                 case 71532:
                 case 71533:

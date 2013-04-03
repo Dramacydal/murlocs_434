@@ -4950,14 +4950,6 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     return SPELL_AURA_PROC_FAILED;
                 break;
             }
-            // Glyph of Death Grip
-            if (auraSpellInfo->Id == 62259)
-            {
-                // remove cooldown of Death Grip
-                if (GetTypeId()==TYPEID_PLAYER)
-                    ((Player*)this)->RemoveSpellCooldown(49576, true);
-                return SPELL_AURA_PROC_OK;
-            }
             // Rune Strike enable proc
             else if (auraSpellInfo->Id == 56816)
             {

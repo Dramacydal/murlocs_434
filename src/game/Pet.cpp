@@ -2274,7 +2274,7 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                     // just dk scaling aura here
                     scale = 0.678f;
 
-                    // "Glyph of Ghoul"
+                    // Glyph of Raise Dead
                     if (Aura* glyph = owner->GetDummyAura(58686))
                         scale *= float(glyph->GetModifier()->m_amount + 100) / 100.0f;
                     break;
@@ -2332,7 +2332,7 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                             if (GetEntry() == 27829)
                                 break;
 
-                            // "Glyph of Ghoul"
+                            // Glyph of Raise Dead
                             if (Aura* glyph = owner->GetDummyAura(58686))
                                 scale *= float(glyph->GetModifier()->m_amount + 100) / 100.0f;
                             break;

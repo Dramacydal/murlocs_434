@@ -1379,6 +1379,11 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
             if (Player *attackedPlayer = unit->GetCharmerOrOwnerPlayerOrPlayerItself())
                 real_caster->SetContestedPvP(attackedPlayer);
         }
+
+        // Glyph of Resilient Grip
+        if (m_spellInfo->Id == 49575 && missInfo == SPELL_MISS_IMMUNE)
+            if (real_caster->HasAura(59309))
+                real_caster->CastSpell(real_caster, 90289, true);
     }
 
     // All calculated do it!
@@ -4000,6 +4005,9 @@ void Spell::cast(bool skipCheck)
             // Bandages
             if (m_spellInfo->GetMechanic() == MECHANIC_BANDAGE)
                 AddPrecastSpell(11196);                     // Recently Bandaged
+            // Stoneclaw Totem
+            else if (m_spellInfo->Id == 5728)
+                AddTriggeredSpell(55328);
             // Stoneskin
             else if (m_spellInfo->Id == 20594)
                 AddTriggeredSpell(65116);                   // Stoneskin - armor 10% for 8 sec
@@ -4031,22 +4039,6 @@ void Spell::cast(bool skipCheck)
                 AddTriggeredSpell(62148);                  // visual effect
             else if (m_spellInfo->Id == 58672)             // Impale, damage and loose threat effect (Vault of Archavon, Archavon the Stone Watcher)
                 AddPrecastSpell(m_caster->GetMap()->IsRegularDifficulty() ? 58666 : 60882);
-
-            // Ranger: Stoneclaw Totem & Glyph - patch by laise
-            switch(m_spellInfo->Id)
-            {
-                case 5728: AddTriggeredSpell(55328); break;// Stoneclaw Totem, rank 1
-                case 6397: AddTriggeredSpell(55329); break;// Stoneclaw Totem, rank 2
-                case 6398: AddTriggeredSpell(55330); break;// Stoneclaw Totem, rank 3
-                case 6399: AddTriggeredSpell(55332); break;// Stoneclaw Totem, rank 4
-                case 10425: AddTriggeredSpell(55333); break;// Stoneclaw Totem, rank 5
-                case 10426: AddTriggeredSpell(55335); break;// Stoneclaw Totem, rank 6
-                case 25513: AddTriggeredSpell(55278); break;// Stoneclaw Totem, rank 7
-                case 58583: AddTriggeredSpell(58589); break;// Stoneclaw Totem, rank 8
-                case 58584: AddTriggeredSpell(58590); break;// Stoneclaw Totem, rank 9
-                case 58585: AddTriggeredSpell(58591); break;// Stoneclaw Totem, rank 10
-                default:break;
-            }
             break;
         }
         case SPELLFAMILY_MAGE:
@@ -4171,15 +4163,7 @@ void Spell::cast(bool skipCheck)
 
             switch(m_spellInfo->Id)
             {
-                case 15237: AddTriggeredSpell(23455); break;// Holy Nova, rank 1
-                case 15430: AddTriggeredSpell(23458); break;// Holy Nova, rank 2
-                case 15431: AddTriggeredSpell(23459); break;// Holy Nova, rank 3
-                case 27799: AddTriggeredSpell(27803); break;// Holy Nova, rank 4
-                case 27800: AddTriggeredSpell(27804); break;// Holy Nova, rank 5
-                case 27801: AddTriggeredSpell(27805); break;// Holy Nova, rank 6
-                case 25331: AddTriggeredSpell(25329); break;// Holy Nova, rank 7
-                case 48077: AddTriggeredSpell(48075); break;// Holy Nova, rank 8
-                case 48078: AddTriggeredSpell(48076); break;// Holy Nova, rank 9
+                case 15237: AddTriggeredSpell(23455); break;// Holy Nova
                 case 81206:                                 // Chakra: Sanctuary
                     AddTriggeredSpell(81207);               // Chakra: Sanctuary
                     break;
@@ -4299,6 +4283,14 @@ void Spell::cast(bool skipCheck)
             // Chains of Ice
             if (m_spellInfo->Id == 45524)
                 AddTriggeredSpell(55095);                   // Frost Fever
+            // Strangulate
+            if (m_spellInfo->Id == 47476)
+            {
+                if (Unit* target = m_targets.getUnitTarget())
+                    if (target->GetTypeId() != TYPEID_PLAYER)
+                        AddTriggeredSpell(32747);           // Interrupt
+                break;
+            }
             // Dancing Rune Weapon
             else if (m_spellInfo->Id == 49028)              // Dancing Rune Weapon (parry)
                 AddTriggeredSpell(81256);

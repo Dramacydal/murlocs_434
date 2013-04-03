@@ -1372,6 +1372,14 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                     damage += damage / 2;
                     damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)* 0.035f);
                 }
+                // Chains of Ice
+                else if (m_spellInfo->Id == 45524)
+                {
+                    // Glyph of Chains of Ice
+                    if (m_caster->HasAura(58620))
+                        damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.08f);
+                    break;
+                }
                 // Howling Blast
                 else if (m_spellInfo->Id == 49143)
                 {
@@ -8837,13 +8845,6 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
                 int32 count = CalculateDamage(EFFECT_INDEX_2, unitTarget);
                 spell_bonus += int32(count * m_caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100.0f);
             }
-            // Glyph of Blood Strike
-            if( classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000400000) &&
-                m_caster->HasAura(59332) &&
-                unitTarget->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED))
-            {
-                totalDamagePercentMod *= 1.2f;              // 120% if snared
-            }
             // Glyph of Death Strike
             if( classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000000010) &&
                 m_caster->HasAura(59336))
@@ -8854,12 +8855,6 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
                 rp /= 5;
 
                 totalDamagePercentMod *= 1.0f + 2.0f * rp / 100.0f;
-            }
-            // Glyph of Plague Strike
-            if( classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000000001) &&
-                m_caster->HasAura(58657) )
-            {
-                totalDamagePercentMod *= 1.2f;
             }
             break;
         }
@@ -10880,16 +10875,8 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     unitTarget->RemoveSpellsCausingAura(SPELL_AURA_MOD_STUN);
                     return;
                 }
-                case 55278:                                 // Ranger: Stoneclaw Totem & Glyph - patch by laise: Stoneclaw Totem absorb
+                // Ranger: Stoneclaw Totem & Glyph - patch by laise: Stoneclaw Totem absorb
                 case 55328:
-                case 55329:
-                case 55330:
-                case 55332:
-                case 55333:
-                case 55335:
-                case 58589:
-                case 58590:
-                case 58591:
                 {
                     if(!unitTarget)
                         return;
@@ -12342,6 +12329,15 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                         holder->SendAuraUpdate(false);
                     }
                 }
+                return;
+            }
+            // Glyph of Resilient Grip
+            case 90289:
+            {
+                if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                    return;
+
+                ((Player*)unitTarget)->RemoveSpellCooldown(49576, true);
                 return;
             }
             break;
