@@ -263,6 +263,13 @@ ObjectMgr::~ObjectMgr()
 
     for (CacheTrainerSpellMap::iterator itr = m_mCacheTrainerSpellMap.begin(); itr != m_mCacheTrainerSpellMap.end(); ++itr)
         itr->second.Clear();
+
+    for (PhaseDefinitionStore::iterator itr = _PhaseDefinitionStore.begin(); itr != _PhaseDefinitionStore.end(); ++itr)
+        for (PhaseDefinitionContainer::iterator itr2 = itr->second.begin(); itr2 != itr->second.end(); ++itr2)
+            delete *itr2;
+
+    for (SpellPhaseStore::iterator itr = _SpellPhaseStore.begin(); itr != _SpellPhaseStore.end(); ++itr)
+        delete itr->second;
 }
 
 Group* ObjectMgr::GetGroupById(uint32 id) const
@@ -10477,6 +10484,10 @@ void ObjectMgr::LoadHotfixData()
 
 void ObjectMgr::LoadPhaseDefinitions()
 {
+    for (PhaseDefinitionStore::iterator itr = _PhaseDefinitionStore.begin(); itr != _PhaseDefinitionStore.end(); ++itr)
+        for (PhaseDefinitionContainer::iterator itr2 = itr->second.begin(); itr2 != itr->second.end(); ++itr2)
+            delete *itr2;
+
     _PhaseDefinitionStore.clear();
 
     //                                                0       1      2          3        4               5      6
@@ -10494,30 +10505,30 @@ void ObjectMgr::LoadPhaseDefinitions()
     {
         Field* fields = result->Fetch();
 
-        PhaseDefinition PhaseDefinition;
+        PhaseDefinition* phaseDefinition = new PhaseDefinition();
 
-        PhaseDefinition.zoneId                = fields[0].GetUInt32();
-        PhaseDefinition.entry                 = fields[1].GetUInt32();
-        PhaseDefinition.phasemask             = fields[2].GetUInt32();
-        PhaseDefinition.phaseId               = fields[3].GetUInt32();
-        PhaseDefinition.terrainswapmap        = fields[4].GetUInt32();
-        PhaseDefinition.flags                 = fields[5].GetUInt32();
-        PhaseDefinition.conditionId           = fields[6].GetUInt16();
+        phaseDefinition->zoneId                = fields[0].GetUInt32();
+        phaseDefinition->entry                 = fields[1].GetUInt32();
+        phaseDefinition->phasemask             = fields[2].GetUInt32();
+        phaseDefinition->phaseId               = fields[3].GetUInt32();
+        phaseDefinition->terrainswapmap        = fields[4].GetUInt32();
+        phaseDefinition->flags                 = fields[5].GetUInt32();
+        phaseDefinition->conditionId           = fields[6].GetUInt16();
 
         // Checks
-        if ((PhaseDefinition.flags & PHASE_FLAG_OVERWRITE_EXISTING) && (PhaseDefinition.flags & PHASE_FLAG_NEGATE_PHASE))
+        if ((phaseDefinition->flags & PHASE_FLAG_OVERWRITE_EXISTING) && (phaseDefinition->flags & PHASE_FLAG_NEGATE_PHASE))
         {
-            sLog.outError("Flags defined in phase_definitions in zoneId %d and entry %u does contain PHASE_FLAG_OVERWRITE_EXISTING and PHASE_FLAG_NEGATE_PHASE. Setting flags to PHASE_FLAG_OVERWRITE_EXISTING", PhaseDefinition.zoneId, PhaseDefinition.entry);
-            PhaseDefinition.flags &= ~PHASE_FLAG_NEGATE_PHASE;
+            sLog.outError("Flags defined in phase_definitions in zoneId %d and entry %u does contain PHASE_FLAG_OVERWRITE_EXISTING and PHASE_FLAG_NEGATE_PHASE. Setting flags to PHASE_FLAG_OVERWRITE_EXISTING", phaseDefinition->zoneId, phaseDefinition->entry);
+            phaseDefinition->flags &= ~PHASE_FLAG_NEGATE_PHASE;
         }
 
-        if (!sConditionStorage.LookupEntry<PlayerCondition>(PhaseDefinition.conditionId))
+        if (!sConditionStorage.LookupEntry<PlayerCondition>(phaseDefinition->conditionId))
         {
-            sLog.outError("Condition id  defined in phase_definitions in zoneId %d and entry %u does not exists. Skipping condition.", PhaseDefinition.zoneId, PhaseDefinition.entry);
-            PhaseDefinition.conditionId = 0;
+            sLog.outError("Condition id  defined in phase_definitions in zoneId %d and entry %u does not exists. Skipping condition.", phaseDefinition->zoneId, phaseDefinition->entry);
+            phaseDefinition->conditionId = 0;
         }
 
-        _PhaseDefinitionStore[PhaseDefinition.zoneId].push_back(PhaseDefinition);
+        _PhaseDefinitionStore[phaseDefinition->zoneId].push_back(phaseDefinition);
 
         ++count;
     }
@@ -10530,6 +10541,9 @@ void ObjectMgr::LoadPhaseDefinitions()
 
 void ObjectMgr::LoadSpellPhaseInfo()
 {
+    for (SpellPhaseStore::iterator itr = _SpellPhaseStore.begin(); itr != _SpellPhaseStore.end(); ++itr)
+        delete itr->second;
+
     _SpellPhaseStore.clear();
 
     //                                                0   1          2
@@ -10546,26 +10560,28 @@ void ObjectMgr::LoadSpellPhaseInfo()
     {
         Field* fields = result->Fetch();
 
-        SpellPhaseInfo spellPhaseInfo;
-        spellPhaseInfo.spellId = fields[0].GetUInt32();
+        SpellPhaseInfo* spellPhaseInfo = new SpellPhaseInfo();
+        spellPhaseInfo->spellId = fields[0].GetUInt32();
 
-        SpellEntry const* spell = sSpellStore.LookupEntry(spellPhaseInfo.spellId);
+        SpellEntry const* spell = sSpellStore.LookupEntry(spellPhaseInfo->spellId);
         if (!spell)
         {
-            sLog.outError("Spell %u defined in `spell_phase` does not exists, skipped.", spellPhaseInfo.spellId);
+            sLog.outError("Spell %u defined in `spell_phase` does not exists, skipped.", spellPhaseInfo->spellId);
+            delete spellPhaseInfo;
             continue;
         }
 
         if (!IsSpellHaveAura(spell, SPELL_AURA_PHASE))
         {
-            sLog.outError("Spell %u defined in `spell_phase` does not have aura effect type SPELL_AURA_PHASE, useless value.", spellPhaseInfo.spellId);
+            sLog.outError("Spell %u defined in `spell_phase` does not have aura effect type SPELL_AURA_PHASE, useless value.", spellPhaseInfo->spellId);
+            delete spellPhaseInfo;
             continue;
         }
 
-        spellPhaseInfo.phasemask              = fields[1].GetUInt32();
-        spellPhaseInfo.terrainswapmap         = fields[2].GetUInt32();
+        spellPhaseInfo->phasemask              = fields[1].GetUInt32();
+        spellPhaseInfo->terrainswapmap         = fields[2].GetUInt32();
 
-        _SpellPhaseStore[spellPhaseInfo.spellId] = spellPhaseInfo;
+        _SpellPhaseStore[spellPhaseInfo->spellId] = spellPhaseInfo;
 
         ++count;
     }

@@ -75,17 +75,17 @@ void PhaseMgr::Recalculate()
     PhaseDefinitionStore::const_iterator itr = _PhaseDefinitionStore->find(player->GetZoneId());
     if (itr != _PhaseDefinitionStore->end())
         for (PhaseDefinitionContainer::const_iterator phase = itr->second.begin(); phase != itr->second.end(); ++phase)
-            if (CheckDefinition(&(*phase)))
+            if (CheckDefinition(*phase))
             {
-                phaseData->AddPhaseDefinition(&(*phase));
+                phaseData->AddPhaseDefinition(*phase);
 
-                if (phase->phasemask)
+                if ((*phase)->phasemask)
                     _UpdateFlags |= PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED;
 
-                if (phase->phaseId || phase->terrainswapmap)
+                if ((*phase)->phaseId || (*phase)->terrainswapmap)
                     _UpdateFlags |= PHASE_UPDATE_FLAG_CLIENTSIDE_CHANGED;
 
-                if (phase->IsLastDefinition())
+                if ((*phase)->IsLastDefinition())
                     break;
             }
 }
@@ -103,7 +103,7 @@ bool PhaseMgr::NeedsPhaseUpdateWithData(PhaseUpdateData const updateData)
         for (PhaseDefinitionContainer::const_iterator phase = itr->second.begin(); phase != itr->second.end(); ++phase)
         {
             std::vector<PlayerCondition const*> conditions;
-            sObjectMgr.GetConditions(phase->conditionId, conditions);
+            sObjectMgr.GetConditions((*phase)->conditionId, conditions);
 
             for (std::vector<PlayerCondition const*>::const_iterator itr = conditions.begin(); itr != conditions.end(); ++itr)
                 if (updateData.IsConditionRelated(*itr))
@@ -130,14 +130,14 @@ void PhaseMgr::RegisterPhasingAuraEffect(Aura const* auraEffect)
         SpellPhaseStore::const_iterator itr = _SpellPhaseStore->find(auraEffect->GetHolder()->GetId());
         if (itr != _SpellPhaseStore->end())
         {
-            if (itr->second.phasemask)
+            if (itr->second->phasemask)
             {
                 _UpdateFlags |= PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED;
-                phaseInfo->phasemask = itr->second.phasemask;
+                phaseInfo->phasemask = itr->second->phasemask;
             }
 
-            if (itr->second.terrainswapmap)
-                phaseInfo->terrainswapmap = itr->second.terrainswapmap;
+            if (itr->second->terrainswapmap)
+                phaseInfo->terrainswapmap = itr->second->terrainswapmap;
         }
     }
 
@@ -172,14 +172,14 @@ void PhaseMgr::SendDebugReportToPlayer(Player* const debugger)
     {
         for (PhaseDefinitionContainer::const_iterator phase = itr->second.begin(); phase != itr->second.end(); ++phase)
         {
-            if (CheckDefinition(&(*phase)))
-                ChatHandler(debugger->GetSession()).PSendSysMessage(LANG_PHASING_SUCCESS, phase->entry, phase->IsNegatingPhasemask() ? "negated Phase" : "Phase", phase->phasemask);
+            if (CheckDefinition(*phase))
+                ChatHandler(debugger->GetSession()).PSendSysMessage(LANG_PHASING_SUCCESS, (*phase)->entry, (*phase)->IsNegatingPhasemask() ? "negated Phase" : "Phase", (*phase)->phasemask);
             else
-                ChatHandler(debugger).PSendSysMessage(LANG_PHASING_FAILED, phase->phasemask, phase->entry, phase->zoneId);
+                ChatHandler(debugger).PSendSysMessage(LANG_PHASING_FAILED, (*phase)->phasemask, (*phase)->entry, (*phase)->zoneId);
 
-            if (phase->IsLastDefinition())
+            if ((*phase)->IsLastDefinition())
             {
-                ChatHandler(debugger).PSendSysMessage(LANG_PHASING_LAST_PHASE, phase->phasemask, phase->entry, phase->zoneId);
+                ChatHandler(debugger).PSendSysMessage(LANG_PHASING_LAST_PHASE, (*phase)->phasemask, (*phase)->entry, (*phase)->zoneId);
                 break;
             }
         }

@@ -49,10 +49,10 @@ class SQLStorage;
 struct PhaseDefinition;
 struct SpellPhaseInfo;
 
-typedef std::list<PhaseDefinition> PhaseDefinitionContainer;
+typedef std::list<PhaseDefinition*> PhaseDefinitionContainer;
 typedef UNORDERED_MAP<uint32 /*zoneId*/, PhaseDefinitionContainer> PhaseDefinitionStore;
 
-typedef UNORDERED_MAP<uint32 /*spellId*/, SpellPhaseInfo> SpellPhaseStore;
+typedef UNORDERED_MAP<uint32 /*spellId*/, SpellPhaseInfo*> SpellPhaseStore;
 
 struct GameTele
 {
