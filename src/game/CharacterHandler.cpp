@@ -1385,21 +1385,7 @@ void WorldSession::HandleCharFactionOrRaceChangeOpcode(WorldPacket& recv_data)
         CharacterDatabase.PExecute("DELETE FROM `character_spell` WHERE `spell` IN (668, 7340, 671, 672, 814, 29932, 17737, 816, 7341, 669, 813, 670) AND guid = '%u'", guid.GetCounter());
 
         // Search each faction is targeted
-        TeamIndex team;
-        switch(race)
-        {
-            case RACE_ORC:
-            case RACE_TAUREN:
-            case RACE_UNDEAD:
-            case RACE_TROLL:
-            case RACE_BLOODELF:
-            //case RACE_GOBLIN: for cataclysm
-                team = TEAM_INDEX_HORDE;
-                break;
-            default:
-                team = TEAM_INDEX_ALLIANCE;
-                break;
-        }
+        TeamIndex team = ((1 << (race - 1)) & RACEMASK_ALLIANCE) ? TEAM_INDEX_ALLIANCE : TEAM_INDEX_HORDE;
 
         float newX, newY, newZ;
         uint32 newMap, newZone;

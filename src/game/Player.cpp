@@ -1838,8 +1838,15 @@ bool Player::BuildEnumData(QueryResult* result, ByteBuffer* data, ByteBuffer* bu
     *buffer << uint32(petLevel);                            // pet level
     buffer->WriteGuidBytes<3>(guid);
     *buffer << fields[11].GetFloat();                       // y
-    // character customize flags
-    *buffer << uint32(atLoginFlags & AT_LOGIN_CUSTOMIZE ? CHAR_CUSTOMIZE_FLAG_CUSTOMIZE : CHAR_CUSTOMIZE_FLAG_NONE);
+    // character customize/faction/race change flags
+    if (atLoginFlags & AT_LOGIN_CHANGE_FACTION)
+        *buffer << uint32(CHAR_CUSTOMIZE_FLAG_FACTION);
+    else if (atLoginFlags & AT_LOGIN_CHANGE_RACE)
+        *buffer << uint32(CHAR_CUSTOMIZE_FLAG_RACE);
+    else if (atLoginFlags & AT_LOGIN_CUSTOMIZE)
+        *buffer << uint32(CHAR_CUSTOMIZE_FLAG_CUSTOMIZE);
+    else
+        *buffer << uint32(CHAR_CUSTOMIZE_FLAG_NONE);
 
     uint32 playerBytes2 = fields[6].GetUInt32();
     *buffer << uint8(playerBytes2 & 0xFF);                  // facial hair
