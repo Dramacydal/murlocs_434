@@ -92,7 +92,7 @@ void PhaseMgr::Recalculate()
 
 inline bool PhaseMgr::CheckDefinition(PhaseDefinition const* phaseDefinition)
 {
-    return sObjectMgr.IsPlayerMeetToCondition(player, phaseDefinition->conditionId);
+    return !phaseDefinition->conditionId || sObjectMgr.IsPlayerMeetToCondition(player, phaseDefinition->conditionId);
 }
 
 bool PhaseMgr::NeedsPhaseUpdateWithData(PhaseUpdateData const updateData)
