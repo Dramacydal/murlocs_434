@@ -292,7 +292,7 @@ void PhaseData::AddAuraInfo(uint32 const spellId, PhaseInfo* phaseInfo)
 
 uint32 PhaseData::RemoveAuraInfo(uint32 const spellId)
 {
-    PhaseInfoContainer::const_iterator rAura = spellPhaseInfo.find(spellId);
+    PhaseInfoContainer::iterator rAura = spellPhaseInfo.find(spellId);
     if (rAura != spellPhaseInfo.end())
     {
         uint32 updateflag = 0;
