@@ -1299,7 +1299,7 @@ bool ChatHandler::HandleDebugSpellModsCommand(char* args)
     data << uint32(1);
     data << uint8(spellmodop);
     data << uint8(effidx);
-    data << int32(value);
+    data << float(value);
     chr->GetSession()->SendPacket(&data);
 
     return true;
