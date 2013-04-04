@@ -61,7 +61,7 @@ struct PhaseInfo
     bool NeedsClientSideUpdate() const { return terrainswapmap || phaseId; }
 };
 
-typedef UNORDERED_MAP<uint32 /*spellId*/, PhaseInfo> PhaseInfoContainer;
+typedef UNORDERED_MAP<uint32 /*spellId*/, PhaseInfo*> PhaseInfoContainer;
 
 struct PhaseData
 {
@@ -78,7 +78,7 @@ struct PhaseData
         void AddPhaseDefinition(PhaseDefinition const* phaseDefinition);
         bool HasActiveDefinitions() const { return !activePhaseDefinitions.empty(); }
 
-        void AddAuraInfo(uint32 const spellId, PhaseInfo phaseInfo);
+        void AddAuraInfo(uint32 const spellId, PhaseInfo* phaseInfo);
         uint32 RemoveAuraInfo(uint32 const spellId);
 
         void SendPhaseMaskToPlayer();
@@ -106,10 +106,10 @@ class PhaseMgr
 {
     public:
         PhaseMgr(Player* _player);
-        ~PhaseMgr() {}
+        ~PhaseMgr() { delete phaseData; }
 
-        uint32 GetCurrentPhasemask() { return phaseData.GetCurrentPhasemask(); };
-        inline uint32 GetPhaseMaskForSpawn() { return phaseData.GetCurrentPhasemask(); }
+        uint32 GetCurrentPhasemask() { return phaseData->GetCurrentPhasemask(); };
+        inline uint32 GetPhaseMaskForSpawn() { return phaseData->GetCurrentPhasemask(); }
 
         // Phase definitions update handling
         void NotifyConditionChanged(PhaseUpdateData const& updateData);
@@ -146,7 +146,7 @@ class PhaseMgr
         SpellPhaseStore const* _SpellPhaseStore;
 
         Player* player;
-        PhaseData phaseData;
+        PhaseData* phaseData;
         uint8 _UpdateFlags;
 };
 

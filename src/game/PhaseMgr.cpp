@@ -8,8 +8,9 @@
 //////////////////////////////////////////////////////////////////
 // Updating
 
-PhaseMgr::PhaseMgr(Player* _player) : player(_player), phaseData(_player), _UpdateFlags(0)
+PhaseMgr::PhaseMgr(Player* _player) : player(_player), _UpdateFlags(0)
 {
+    phaseData = new PhaseData(_player);
     _PhaseDefinitionStore = sObjectMgr.GetPhaseDefinitionStore();
     _SpellPhaseStore = sObjectMgr.GetSpellPhaseStore();
 }
@@ -20,10 +21,10 @@ void PhaseMgr::Update()
         return;
 
     if (_UpdateFlags & PHASE_UPDATE_FLAG_CLIENTSIDE_CHANGED)
-        phaseData.SendPhaseshiftToPlayer();
+        phaseData->SendPhaseshiftToPlayer();
 
     if (_UpdateFlags & PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED)
-        phaseData.SendPhaseMaskToPlayer();
+        phaseData->SendPhaseMaskToPlayer();
 
     _UpdateFlags = 0;
 }
@@ -35,9 +36,9 @@ void PhaseMgr::RemoveUpdateFlag(PhaseUpdateFlag updateFlag)
     if (updateFlag == PHASE_UPDATE_FLAG_ZONE_UPDATE)
     {
         // Update zone changes
-        if (phaseData.HasActiveDefinitions())
+        if (phaseData->HasActiveDefinitions())
         {
-            phaseData.ResetDefinitions();
+            phaseData->ResetDefinitions();
             _UpdateFlags |= (PHASE_UPDATE_FLAG_CLIENTSIDE_CHANGED | PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED);
         }
 
@@ -65,9 +66,9 @@ void PhaseMgr::NotifyConditionChanged(PhaseUpdateData const& updateData)
 
 void PhaseMgr::Recalculate()
 {
-    if (phaseData.HasActiveDefinitions())
+    if (phaseData->HasActiveDefinitions())
     {
-        phaseData.ResetDefinitions();
+        phaseData->ResetDefinitions();
         _UpdateFlags |= (PHASE_UPDATE_FLAG_CLIENTSIDE_CHANGED | PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED);
     }
 
@@ -76,7 +77,7 @@ void PhaseMgr::Recalculate()
         for (PhaseDefinitionContainer::const_iterator phase = itr->second.begin(); phase != itr->second.end(); ++phase)
             if (CheckDefinition(&(*phase)))
             {
-                phaseData.AddPhaseDefinition(&(*phase));
+                phaseData->AddPhaseDefinition(&(*phase));
 
                 if (phase->phasemask)
                     _UpdateFlags |= PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED;
@@ -117,12 +118,12 @@ bool PhaseMgr::NeedsPhaseUpdateWithData(PhaseUpdateData const updateData)
 
 void PhaseMgr::RegisterPhasingAuraEffect(Aura const* auraEffect)
 {
-    PhaseInfo phaseInfo;
+    PhaseInfo* phaseInfo = new PhaseInfo();
 
     if (auraEffect->GetMiscValue())
     {
         _UpdateFlags |= PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED;
-        phaseInfo.phasemask = auraEffect->GetMiscValue();
+        phaseInfo->phasemask = auraEffect->GetMiscValue();
     }
     else
     {
@@ -132,27 +133,27 @@ void PhaseMgr::RegisterPhasingAuraEffect(Aura const* auraEffect)
             if (itr->second.phasemask)
             {
                 _UpdateFlags |= PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED;
-                phaseInfo.phasemask = itr->second.phasemask;
+                phaseInfo->phasemask = itr->second.phasemask;
             }
 
             if (itr->second.terrainswapmap)
-                phaseInfo.terrainswapmap = itr->second.terrainswapmap;
+                phaseInfo->terrainswapmap = itr->second.terrainswapmap;
         }
     }
 
-    phaseInfo.phaseId = auraEffect->GetMiscBValue();
+    phaseInfo->phaseId = auraEffect->GetMiscBValue();
 
-    if (phaseInfo.NeedsClientSideUpdate())
+    if (phaseInfo->NeedsClientSideUpdate())
         _UpdateFlags |= PHASE_UPDATE_FLAG_CLIENTSIDE_CHANGED;
 
-    phaseData.AddAuraInfo(auraEffect->GetHolder()->GetId(), phaseInfo);
+    phaseData->AddAuraInfo(auraEffect->GetHolder()->GetId(), phaseInfo);
 
     Update();
 }
 
 void PhaseMgr::UnRegisterPhasingAuraEffect(Aura const* auraEffect)
 {
-    _UpdateFlags |= phaseData.RemoveAuraInfo(auraEffect->GetHolder()->GetId());
+    _UpdateFlags |= phaseData->RemoveAuraInfo(auraEffect->GetHolder()->GetId());
 
     Update();
 }
@@ -162,11 +163,11 @@ void PhaseMgr::UnRegisterPhasingAuraEffect(Aura const* auraEffect)
 
 void PhaseMgr::SendDebugReportToPlayer(Player* const debugger)
 {
-    ChatHandler(debugger->GetSession()).PSendSysMessage(LANG_PHASING_REPORT_STATUS, player->GetName(), player->GetZoneId(), player->getLevel(), player->GetTeam(), _UpdateFlags);
+    ChatHandler(debugger).PSendSysMessage(LANG_PHASING_REPORT_STATUS, player->GetName(), player->GetZoneId(), player->getLevel(), player->GetTeam(), _UpdateFlags);
 
     PhaseDefinitionStore::const_iterator itr = _PhaseDefinitionStore->find(player->GetZoneId());
     if (itr == _PhaseDefinitionStore->end())
-        ChatHandler(debugger->GetSession()).PSendSysMessage(LANG_PHASING_NO_DEFINITIONS, player->GetZoneId());
+        ChatHandler(debugger).PSendSysMessage(LANG_PHASING_NO_DEFINITIONS, player->GetZoneId());
     else
     {
         for (PhaseDefinitionContainer::const_iterator phase = itr->second.begin(); phase != itr->second.end(); ++phase)
@@ -174,24 +175,24 @@ void PhaseMgr::SendDebugReportToPlayer(Player* const debugger)
             if (CheckDefinition(&(*phase)))
                 ChatHandler(debugger->GetSession()).PSendSysMessage(LANG_PHASING_SUCCESS, phase->entry, phase->IsNegatingPhasemask() ? "negated Phase" : "Phase", phase->phasemask);
             else
-                ChatHandler(debugger->GetSession()).PSendSysMessage(LANG_PHASING_FAILED, phase->phasemask, phase->entry, phase->zoneId);
+                ChatHandler(debugger).PSendSysMessage(LANG_PHASING_FAILED, phase->phasemask, phase->entry, phase->zoneId);
 
             if (phase->IsLastDefinition())
             {
-                ChatHandler(debugger->GetSession()).PSendSysMessage(LANG_PHASING_LAST_PHASE, phase->phasemask, phase->entry, phase->zoneId);
+                ChatHandler(debugger).PSendSysMessage(LANG_PHASING_LAST_PHASE, phase->phasemask, phase->entry, phase->zoneId);
                 break;
             }
         }
     }
 
-    ChatHandler(debugger->GetSession()).PSendSysMessage(LANG_PHASING_LIST, phaseData._PhasemaskThroughDefinitions, phaseData._PhasemaskThroughAuras, phaseData._CustomPhasemask);
+    ChatHandler(debugger).PSendSysMessage(LANG_PHASING_LIST, phaseData->_PhasemaskThroughDefinitions, phaseData->_PhasemaskThroughAuras, phaseData->_CustomPhasemask);
 
-    ChatHandler(debugger->GetSession()).PSendSysMessage(LANG_PHASING_PHASEMASK, phaseData.GetPhaseMaskForSpawn(), player->GetPhaseMask());
+    ChatHandler(debugger).PSendSysMessage(LANG_PHASING_PHASEMASK, phaseData->GetPhaseMaskForSpawn(), player->GetPhaseMask());
 }
 
 void PhaseMgr::SetCustomPhase(uint32 const phaseMask)
 {
-    phaseData._CustomPhasemask = phaseMask;
+    phaseData->_CustomPhasemask = phaseMask;
 
     // phase auras normally not expected at BG but anyway better check
     if (BattleGround *bg = player->GetBattleGround())
@@ -243,11 +244,11 @@ void PhaseData::SendPhaseshiftToPlayer()
 
     for (PhaseInfoContainer::const_iterator itr = spellPhaseInfo.begin(); itr != spellPhaseInfo.end(); ++itr)
     {
-        if (itr->second.terrainswapmap)
-            terrainswaps.insert(itr->second.terrainswapmap);
+        if (itr->second->terrainswapmap)
+            terrainswaps.insert(itr->second->terrainswapmap);
 
-        if (itr->second.phaseId)
-            phaseIds.insert(itr->second.phaseId);
+        if (itr->second->phaseId)
+            phaseIds.insert(itr->second->phaseId);
     }
 
     // Phase Definitions
@@ -281,10 +282,10 @@ void PhaseData::AddPhaseDefinition(PhaseDefinition const* phaseDefinition)
     activePhaseDefinitions.push_back(phaseDefinition);
 }
 
-void PhaseData::AddAuraInfo(uint32 const spellId, PhaseInfo phaseInfo)
+void PhaseData::AddAuraInfo(uint32 const spellId, PhaseInfo* phaseInfo)
 {
-    if (phaseInfo.phasemask)
-        _PhasemaskThroughAuras |= phaseInfo.phasemask;
+    if (phaseInfo->phasemask)
+        _PhasemaskThroughAuras |= phaseInfo->phasemask;
 
     spellPhaseInfo[spellId] = phaseInfo;
 }
@@ -296,10 +297,10 @@ uint32 PhaseData::RemoveAuraInfo(uint32 const spellId)
     {
         uint32 updateflag = 0;
 
-        if (rAura->second.NeedsClientSideUpdate())
+        if (rAura->second->NeedsClientSideUpdate())
             updateflag |= PHASE_UPDATE_FLAG_CLIENTSIDE_CHANGED;
 
-        if (rAura->second.NeedsServerSideUpdate())
+        if (rAura->second->NeedsServerSideUpdate())
         {
             _PhasemaskThroughAuras = 0;
 
@@ -308,7 +309,7 @@ uint32 PhaseData::RemoveAuraInfo(uint32 const spellId)
             spellPhaseInfo.erase(rAura);
 
             for (PhaseInfoContainer::const_iterator itr = spellPhaseInfo.begin(); itr != spellPhaseInfo.end(); ++itr)
-                _PhasemaskThroughAuras |= itr->second.phasemask;
+                _PhasemaskThroughAuras |= itr->second->phasemask;
         }
 
         return updateflag;

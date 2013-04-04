@@ -664,8 +664,7 @@ Player::~Player ()
     for (uint8 i = 0; i < VOID_STORAGE_MAX_SLOT; ++i)
         delete m_voidStorageItems[i];
 
-    if (phaseMgr)
-        delete phaseMgr;
+    delete phaseMgr;
 }
 
 void Player::CleanupsBeforeDelete()
