@@ -1318,6 +1318,16 @@ void LoadDBCStores(const std::string& dataPath)
                     opt->SpellFamilyFlags.Flags &= ~(UI64LIT(0x1));
                 break;
             }
+            case 56244:                         // Glyph of Fear
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                {
+                    eff->EffectBasePoints = 5000;
+                    eff->EffectApplyAuraName = SPELL_AURA_ADD_FLAT_MODIFIER;
+                    eff->EffectMiscValue = 11;  // SPELLMOD_COOLDOWN
+                }
+                break;
+            }
             case 56641:                         // Steady Shot
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_2))
