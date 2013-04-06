@@ -130,6 +130,10 @@ void Object::BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target) c
     if(!target)
         return;
 
+    // temp hack: don't send corpse updates to client
+    if (target->GetObjectGuid().IsCorpse() && ((Corpse*)target)->GetType() == CORPSE_BONES)
+        return;
+
     uint8  updatetype   = UPDATETYPE_CREATE_OBJECT;
     uint16 updateFlags  = m_updateFlag;
 
