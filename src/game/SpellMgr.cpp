@@ -859,7 +859,7 @@ bool IsPositiveAura(SpellEntry const * spellproto, SpellEffectIndex effIndex)
                         case 49759:                         // Teleport
                         case 54643:                         // Teleport
                         case 58600:                         // Restricted Flight Area
-                        case 58730:                         // Restricted Flight Area
+                        case 91604:                         // Restricted Flight Area
                         case 66233:                         // Ardent Defender
                             return false;
                         // some spells have unclear target modes for selection, so just make effect positive
@@ -4544,6 +4544,44 @@ void SpellMgr::LoadSpellAreas()
     sLog.outString(">> Loaded %u spell area requirements", count);
 }
 
+SpellCastResult SpellMgr::CheckBgAndArenaCast(SpellEntry const *spellInfo, uint32 map_id, uint32 zone_id, uint32 area_id, Player const* player)
+{
+    // bg spell checks
+    bool isArena = player && player->InArena();
+    bool isBg = player && player->InBattleGround();
+    bool isRatedBg = false;     // TODO: implement
+
+    if ((isArena || isRatedBg) && spellInfo->HasAttribute(SPELL_ATTR_EX4_NOT_USABLE_IN_ARENA_OR_RATED_BG))
+        return isArena ? SPELL_FAILED_NOT_IN_ARENA : SPELL_FAILED_NOT_IN_RATED_BG;
+
+    if (isArena)
+    {
+        // do not allow spells to be cast in arenas
+        // - with SPELL_ATTR_EX9_NOT_USABLE_IN_ARENA flag
+        // - with greater than 10 min CD
+        if (spellInfo->HasAttribute(SPELL_ATTR_EX9_NOT_USABLE_IN_ARENA) ||
+            (GetSpellRecoveryTime(spellInfo) > 10 * MINUTE * IN_MILLISECONDS) &&
+            !spellInfo->HasAttribute(SPELL_ATTR_EX4_USABLE_IN_ARENA))
+            return SPELL_FAILED_NOT_IN_ARENA;
+    }
+
+    if (isRatedBg)
+    {
+        // do not allow spells to be cast in rated battlegrounds
+        // - with greater than 10 min CD
+        if (GetSpellRecoveryTime(spellInfo) > 15 * MINUTE * IN_MILLISECONDS &&
+            !spellInfo->HasAttribute(SPELL_ATTR_EX9_USABLE_IN_RATED_BATTLEGROUNDS))
+            return SPELL_FAILED_NOT_IN_RATED_BG;
+    }
+
+    // Spell casted only on battleground
+    if (spellInfo->HasAttribute(SPELL_ATTR_EX3_BATTLEGROUND))
+        if (!isBg)
+            return SPELL_FAILED_ONLY_BATTLEGROUNDS;
+
+    return SPELL_CAST_OK;
+}
+
 SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spellInfo, uint32 map_id, uint32 zone_id, uint32 area_id, Player const* player)
 {
     // normal case
@@ -4596,20 +4634,9 @@ SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spell
         return SPELL_FAILED_INCORRECT_AREA;
     }
 
-    // bg spell checks
-
-    // do not allow spells to be cast in arenas
-    // - with SPELL_ATTR_EX4_NOT_USABLE_IN_ARENA flag
-    // - with greater than 10 min CD
-    if (spellInfo->HasAttribute(SPELL_ATTR_EX4_NOT_USABLE_IN_ARENA) ||
-         (GetSpellRecoveryTime(spellInfo) > 10 * MINUTE * IN_MILLISECONDS && !spellInfo->HasAttribute(SPELL_ATTR_EX4_USABLE_IN_ARENA)))
-        if (player && player->InArena())
-            return SPELL_FAILED_NOT_IN_ARENA;
-
-    // Spell casted only on battleground
-    if (spellInfo->HasAttribute(SPELL_ATTR_EX3_BATTLEGROUND))
-        if (!player || !player->InBattleGround())
-            return SPELL_FAILED_ONLY_BATTLEGROUNDS;
+    SpellCastResult bgCheck = CheckBgAndArenaCast(spellInfo, map_id, zone_id, area_id, player);
+    if (bgCheck != SPELL_CAST_OK)
+        return bgCheck;
 
     switch(spellInfo->Id)
     {
@@ -4722,7 +4749,7 @@ SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spell
         case 56618:
         case 58045:
         case 58549:
-        case 58730:
+        case 91604:
         case 59911:
         case 60027:
         case 60028:

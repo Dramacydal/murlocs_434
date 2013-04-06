@@ -2625,7 +2625,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         Spell::SelectMountByAreaAndSkill(target, GetSpellProto(), 0, 0, 54726, 54727, 0);
                         return;
                     case 58600:                             // Restricted Flight Area
-                    case 58730:                             // Restricted Flight Area
+                    case 91604:                             // Restricted Flight Area
                         target->MonsterWhisper(LANG_NO_FLY_ZONE, target, true);
                         return;
                     case 58983:                             // Big Blizzard Bear
@@ -3362,7 +3362,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 }
                 return;
             }
-            case 58730:                                     //  Restricted Flight Area
+            case 91604:                                     //  Restricted Flight Area
             {
                 if (target->GetTypeId() != TYPEID_PLAYER)
                     return;
