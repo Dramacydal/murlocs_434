@@ -10902,21 +10902,18 @@ class AuraSorter
         }
 };
 
-typedef std::priority_queue<Aura*, Unit::AuraList, AuraSorter> PriorAuraQueque;
-
 void SpellAuraHolder::ApplyAuraModifiers(bool apply, bool real)
 {
-    PriorAuraQueque q;
+    std::vector<Aura*> auras;
     for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
         if (Aura *aur = GetAuraByEffectIndex(SpellEffectIndex(i)))
-            q.push(aur);
+            auras.push_back(aur);
 
-    while (!q.empty() && !IsDeleted())
-    {
-        q.top()->ApplyModifier(apply, real);
+    AuraSorter sorter;
+    std::sort(auras.begin(), auras.end(), sorter);
 
-        q.pop();
-    }
+    for (uint32 i = 0; i < auras.size() && !IsDeleted(); ++i)
+        auras[i]->ApplyModifier(apply, real);
 }
 
 void SpellAuraHolder::_AddSpellAuraHolder()
