@@ -8399,6 +8399,9 @@ bool ObjectMgr::IsPlayerMeetToCondition(Player const* pPlayer, uint16 conditionI
 void ObjectMgr::GetConditions(uint32 conditionId, std::vector<PlayerCondition const*>& out) const
 {
     const PlayerCondition* condition = sConditionStorage.LookupEntry<PlayerCondition>(conditionId);
+    if (!condition)
+        return;
+
     if (condition->m_condition == CONDITION_OR || condition->m_condition == CONDITION_AND)
     {
         GetConditions(condition->m_value1, out);
