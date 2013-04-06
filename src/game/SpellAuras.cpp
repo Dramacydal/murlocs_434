@@ -10889,41 +10889,31 @@ void SpellAuraHolder::RemoveAura(SpellEffectIndex index)
     m_auraFlags &= ~(1 << index);
 }
 
-struct EffAuraPair
-{
-    EffAuraPair(uint32 _effIdx, AuraType _aura) : effIdx(_effIdx), aura(_aura) { }
-
-    uint32 effIdx;
-    AuraType aura;
-};
-
-typedef std::vector<EffAuraPair> EffAuraList;
-typedef std::priority_queue<EffAuraPair, EffAuraList, EffAuraListSorter> PriorEffAuraPairQueque;
-
-class EffAuraListSorter
+class AuraSorter
 {
     public:
-        bool operator() (EffAuraPair const& left, EffAuraPair const& right) const
+        bool operator() (Aura* const& left, Aura* const& right) const
         {
-            if (left.aura == SPELL_AURA_MOD_ROOT || left.aura == SPELL_AURA_MOD_STUN)
+            if ((right->GetModifier()->m_auraname == SPELL_AURA_MOD_ROOT || right->GetModifier()->m_auraname == SPELL_AURA_MOD_STUN) &&
+                (left->GetModifier()->m_auraname != SPELL_AURA_MOD_ROOT && left->GetModifier()->m_auraname != SPELL_AURA_MOD_STUN))
                 return false;
 
             return true;
         }
 };
 
+typedef std::priority_queue<Aura*, Unit::AuraList, AuraSorter> PriorAuraQueque;
 
 void SpellAuraHolder::ApplyAuraModifiers(bool apply, bool real)
 {
-    PriorEffAuraPairQueque q;
+    PriorAuraQueque q;
     for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
         if (Aura *aur = GetAuraByEffectIndex(SpellEffectIndex(i)))
-            q.push(EffAuraPair(i, aur->GetModifier()->m_auraname));
+            q.push(aur);
 
     while (!q.empty() && !IsDeleted())
     {
-        if (Aura *aur = GetAuraByEffectIndex(SpellEffectIndex(q.top().effIdx)))
-            aur->ApplyModifier(apply, real);
+        q.top()->ApplyModifier(apply, real);
 
         q.pop();
     }
