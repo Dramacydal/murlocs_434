@@ -3912,19 +3912,25 @@ void Aura::HandleAuraMounted(bool apply, bool Real)
 
     if(apply)
     {
-        CreatureInfo const* ci = ObjectMgr::GetCreatureTemplate(m_modifier.m_miscvalue);
-        if(!ci)
+        // Running Wild
+        if (GetId() == 87840)
+            target->Mount(target->getGender() == GENDER_MALE ? 29422 : 29423, GetId(), 0, GetMiscValue());
+        else
         {
-            sLog.outErrorDb("AuraMounted: `creature_template`='%u' not found in database (only need it modelid)", m_modifier.m_miscvalue);
-            return;
+            CreatureInfo const* ci = ObjectMgr::GetCreatureTemplate(m_modifier.m_miscvalue);
+            if(!ci)
+            {
+                sLog.outErrorDb("AuraMounted: `creature_template`='%u' not found in database (only need it modelid)", m_modifier.m_miscvalue);
+                return;
+            }
+
+            uint32 display_id = Creature::ChooseDisplayId(ci);
+            CreatureModelInfo const *minfo = sObjectMgr.GetCreatureModelRandomGender(display_id);
+            if (minfo)
+                display_id = minfo->modelid;
+
+            target->Mount(display_id, GetId(), ci->vehicleId, GetMiscValue());
         }
-
-        uint32 display_id = Creature::ChooseDisplayId(ci);
-        CreatureModelInfo const *minfo = sObjectMgr.GetCreatureModelRandomGender(display_id);
-        if (minfo)
-            display_id = minfo->modelid;
-
-        target->Mount(display_id, GetId(), ci->vehicleId, GetMiscValue());
 
         // cast speed aura
         if (MountCapabilityEntry const* mountCapability = target->GetMountCapability(uint32(GetSpellEffect()->EffectMiscValueB)))
