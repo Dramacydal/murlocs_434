@@ -12286,7 +12286,22 @@ void Unit::SetFeared(bool apply, ObjectGuid casterGuid, uint32 spellID, uint32 t
         Unit* caster = IsInWorld() ?  GetMap()->GetUnit(casterGuid) : NULL;
 
         if (GetMotionMaster()->GetCurrentMovementGeneratorType() != FLEEING_MOTION_TYPE)
-            GetMotionMaster()->MoveFleeing(caster, time);       // caster==NULL processed in MoveFleeing
+        {
+            bool setFear = true;
+            if (caster)
+            {
+                // Intimidating Shout vs. Glyph of Intimidating Shout
+                if (spellID == 5246 && caster->HasAura(63327) ||
+                    // Fear vs. Glyph of Fear
+                    spellID == 5782 && caster->HasAura(56244) ||
+                    // Psyhic Scream vs. Glyph of Psyhic Scream
+                    spellID == 8122 && caster->HasAura(55676))
+                setFear = false;
+            }
+
+            if (setFear)
+                GetMotionMaster()->MoveFleeing(caster, time);   // caster==NULL processed in MoveFleeing
+        }
 
         if (GetTypeId() == TYPEID_PLAYER && !GetVehicle())
             ((Player*)this)->SetClientControl(this, 0);
