@@ -145,6 +145,10 @@ void Totem::UnSummon()
         owner->_RemoveTotem(this);
         owner->RemoveAurasDueToSpell(GetSpell());
 
+        if (GetEntry() == 5925)
+            // Glyph of Grounding Totem
+            owner->RemoveAurasDueToSpell(89523);
+
         //remove aura all party members too
         if (owner->GetTypeId() == TYPEID_PLAYER)
         {
