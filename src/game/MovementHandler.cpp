@@ -779,7 +779,9 @@ void WorldSession::HandleMoverRelocation(MovementInfo& movementInfo)
 
     if (plMover)
     {
-        if(movementInfo.GetPos()->z < -500.0f)
+        AreaTableEntry const* zone = GetAreaEntryByAreaID(plMover->GetAreaId());
+
+        if(movementInfo.GetPos()->z < (zone ? zone->MaxDepth : -500.0f))
         {
             if (plMover->GetBattleGround()
                     && plMover->GetBattleGround()->HandlePlayerUnderMap(_player))

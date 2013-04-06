@@ -21,7 +21,7 @@
 
 const char Achievementfmt[]="niiissiiiiisii";
 const char AchievementCriteriafmt[]="niiiiiiiixsiiiiixxxxxxx";
-const char AreaTableEntryfmt[]="iiinixxxxxisixxxxxxxxxxxxx";
+const char AreaTableEntryfmt[]="iiinixxxxxisixxxxfxxxxxxxx";
 const char AreaGroupEntryfmt[]="niiiiiii";
 const char AreaTriggerEntryfmt[]="nifffxxxfffff";
 const char ArmorLocationfmt[]="nfffff";
