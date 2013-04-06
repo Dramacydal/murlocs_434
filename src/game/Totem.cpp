@@ -97,13 +97,6 @@ void Totem::Summon(Unit* owner)
     if (owner->GetTypeId() == TYPEID_UNIT && ((Creature*)owner)->AI())
         ((Creature*)owner)->AI()->JustSummoned((Creature*)this);
 
-    if (GetBonusSpell())
-        CastSpell(this, GetBonusSpell(), true);
-
-    // there are some totems, which exist just for their visual appeareance
-    if (!GetSpell())
-        return;
-
     // Healing Stream Totem
     if (GetEntry() == 3527)
     {
@@ -121,6 +114,13 @@ void Totem::Summon(Unit* owner)
             return;
         }
     }
+
+    if (GetBonusSpell())
+        CastSpell(this, GetBonusSpell(), true);
+
+    // there are some totems, which exist just for their visual appeareance
+    if (!GetSpell())
+        return;
 
     switch(m_type)
     {
