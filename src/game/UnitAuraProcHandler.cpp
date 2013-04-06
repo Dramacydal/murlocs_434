@@ -1784,7 +1784,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 // Sin and Punishment
                 case 1869:
                 {
-                    if (GetTypeId() != TYPEID_PLAYER)
+                    if (GetTypeId() != TYPEID_PLAYER || triggeredByAura->GetEffIndex() != EFFECT_INDEX_1)
                         return SPELL_AURA_PROC_FAILED;
 
                     // modify Shadowfiend cooldown
