@@ -1454,7 +1454,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
                 // Glyph of Shadowburn
                 if (Aura* glyph = GetAura(56229, EFFECT_INDEX_0))
                 {
-                    if (float(pVictim->GetHealth() + damage) / GetMaxHealth() < glyph->GetModifier()->m_amount)
+                    if (float(pVictim->GetHealth() + damage) / GetMaxHealth() < glyph->GetModifier()->m_amount / 100.0f)
                     {
                         if (!HasAura(91001))
                         {
@@ -1470,7 +1470,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
                 // Glyph of Shadow Word: Death
                 if (Aura* glyph = GetAura(55682, EFFECT_INDEX_0))
                 {
-                    if (float(pVictim->GetHealth() + damage) / GetMaxHealth() < glyph->GetModifier()->m_amount)
+                    if (float(pVictim->GetHealth() + damage) / GetMaxHealth() < glyph->GetModifier()->m_amount / 100.0f)
                     {
                         if (!HasAura(95652))
                         {
