@@ -3430,6 +3430,10 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             else if(m_caster->GetTypeId() == TYPEID_PLAYER)
                 pTarget = ObjectAccessor::GetUnit(*m_caster, ((Player*)m_caster)->GetSelectionGuid());
 
+            // hack Guardian of Ancient Kings target
+            if (!pTarget && (m_spellInfo->Id == 86659 || m_spellInfo->Id == 86669 || m_spellInfo->Id == 86698))
+                pTarget = m_caster;
+
             if(pTarget)
             {
                 float angle = 0.0f;
@@ -6700,6 +6704,14 @@ SpellCastResult Spell::CheckCast(bool strict)
                 {
                     if (m_caster->isInCombat())
                         return SPELL_FAILED_AFFECTING_COMBAT;
+                }
+                else if (m_spellInfo->Id == 86150)          // Guardian of Ancient Kings
+                {
+                    // do not cast when not specced
+                    // check Holy Shock, Avenger's Shield and Templar's Verdict
+                    if (!m_caster->HasSpell(20473) && !m_caster->HasSpell(31935) && !m_caster->HasSpell(85256))
+                        return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+                    break;
                 }
                 else if (m_spellInfo->SpellIconID == 156)   // Holy Shock
                 {

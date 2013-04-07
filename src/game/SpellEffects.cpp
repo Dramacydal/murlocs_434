@@ -702,6 +702,31 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                         else damage = 0;
                         break;
                     }
+                    case 86704:                             // Ancient Fury
+                    {
+                        int32 stacks = 0;
+                        // Ancient Power
+                        if (SpellAuraHolder* holder = m_caster->GetSpellAuraHolder(86700, m_caster->GetObjectGuid()))
+                            stacks = holder->GetStackAmount();
+
+                        uint32 count = 0;
+                        bool last = false;
+
+                        for(TargetList::const_iterator ihit = m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
+                            if(ihit->effectMask & (1<<effect->EffectIndex))
+                            {
+                                ++count;
+                                last = ihit->targetGUID == unitTarget->GetObjectGuid();
+                            }
+
+                        damage += damage * stacks;
+                        damage /= count;                    // divide to all targets
+
+                        // remove Ancient Power buff after last target is processed
+                        if (last)
+                            m_caster->RemoveAurasDueToSpell(86700);
+                        break;
+                    }
                 }
                 break;
             }
@@ -5020,6 +5045,19 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     m_caster->CastSpell(m_caster, spell_id, true);
                     return;
                 }
+                case 86150:                                 // Guardian of Ancient Kings
+                {
+                    if (!unitTarget)
+                        return;
+
+                    if (m_caster->HasSpell(20473))          // Holy Shock
+                        m_caster->CastSpell(m_caster, 86669, true);
+                    else if (m_caster->HasSpell(31935))     // Avenger's Shield
+                        m_caster->CastSpell(m_caster, 86659, true);
+                    else if (m_caster->HasSpell(85256))     // Templar's Verdict
+                        m_caster->CastSpell(m_caster, 86698, true);
+                    return;
+                }
             }
             break;
         }
@@ -7179,9 +7217,6 @@ void Spell::DoSummonPet(SpellEffectEntry const * effect)
 
     uint32 level = m_caster->getLevel();
     Pet* spawnCreature = new Pet(SUMMON_PET);
-
-    if (pet_entry == 37994)     // Mage: Water Elemental from Glyph
-        m_duration = 86400000;  // 24 hours
 
     if (m_caster->GetTypeId()==TYPEID_PLAYER && spawnCreature->LoadPetFromDB((Player*)m_caster, pet_entry))
     {

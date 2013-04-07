@@ -3090,6 +3090,40 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                         basepoints[0] = maxAmt;
                     break;
                 }
+                // Ancient Healer
+                case 86674:
+                {
+                    Unit* guard = FindGuardianWithEntry(46499);
+                    if (!guard)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    basepoints[0] = int32(damage * triggerAmount / 100);
+                    guard->CastCustomSpell(pVictim, 86678, &basepoints[0], &basepoints[0], NULL, true, NULL, triggeredByAura, GetObjectGuid());
+
+                    Modifier* mod = triggeredByAura->GetModifier();
+                    mod -= 10;
+                    if (mod <= 0)
+                        RemoveAurasDueToSpell(86674);
+
+                    return SPELL_AURA_PROC_OK;
+                }
+                // Ancient Crusader
+                case 86701:
+                {
+                    triggered_spell_id = 86700;     // Ancient Power
+                    break;
+                }
+                // Ancient Crusader
+                case 86703:
+                {
+                    Unit* creator = GetCreator();
+                    if (!creator)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    // Ancient Power
+                    creator->CastSpell(creator, 86700, true);
+                    return SPELL_AURA_PROC_OK;
+                }
                 // Judgements of the Bold
                 case 89901:
                     // triggered only at casted Judgement spells, not at additional Judgement effects
