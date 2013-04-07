@@ -1955,7 +1955,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
                 damageInfo->HitInfo|= SPELL_HIT_TYPE_CRIT;
                 damage = SpellCriticalDamageBonus(spellInfo, damage, pVictim);
                 // Resilience - reduce crit damage
-                damage -= pVictim->GetCritDamageReduction(damage);
+                //damage -= pVictim->GetCritDamageReduction(damage);
             }
         }
         break;
@@ -1973,7 +1973,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
                 damageInfo->HitInfo|= SPELL_HIT_TYPE_CRIT;
                 damage = SpellCriticalDamageBonus(spellInfo, damage, pVictim);
                 // Resilience - reduce crit damage
-                damage -= pVictim->GetCritDamageReduction(damage);
+                //damage -= pVictim->GetCritDamageReduction(damage);
             }
         }
         break;
@@ -1982,7 +1982,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
     // only from players and pets
     if (GetTypeId() == TYPEID_PLAYER || GetTypeId() == TYPEID_UNIT && ((Creature*)this)->IsPet())
     {
-        damage -= pVictim->GetCritDamageReduction(damage);
+        damage -= pVictim->GetDamageReduction(damage);
     }
 
     // damage mitigation
@@ -2154,7 +2154,8 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
                 damageInfo->damage = int32((damageInfo->damage) * float((100.0f + mod)/100.0f));
 
             // Resilience - reduce crit damage
-            uint32 resilienceReduction = pVictim->GetCritDamageReduction(damageInfo->damage);
+            //uint32 resilienceReduction = pVictim->GetCritDamageReduction(damageInfo->damage);
+            uint32 resilienceReduction = 0;
 
             damageInfo->damage      -= resilienceReduction;
             damageInfo->cleanDamage += resilienceReduction;

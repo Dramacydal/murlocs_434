@@ -8811,7 +8811,7 @@ void Aura::PeriodicTick()
             {
                 cleanDamage.hitOutCome = MELEE_HIT_CRIT;
                 // Resilience - reduce crit damage
-                pdamage -= target->GetCritDamageReduction(pdamage);
+                //pdamage -= target->GetCritDamageReduction(pdamage);
             }
 
             // only from players
@@ -8909,7 +8909,7 @@ void Aura::PeriodicTick()
             {
                 cleanDamage.hitOutCome = MELEE_HIT_CRIT;
                 // Resilience - reduce crit damage
-                pdamage -= target->GetCritDamageReduction(pdamage);
+                //pdamage -= target->GetCritDamageReduction(pdamage);
             }
 
             // only from players
