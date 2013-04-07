@@ -12113,7 +12113,7 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit * pTarget, uint32 procFlag,
                 // Glyph of Lightning Shield
                 if (caster->HasAura(55448))
                 {
-                    if (triggeredByHolder->GetStackAmount() < triggeredByHolder->GetSpellProto()->GetStackAmount() + 1)
+                    if (triggeredByHolder->GetAuraCharges() < triggeredByHolder->GetSpellProto()->GetProcCharges() + 1)
                         useCharges = false;
                 }
             }
