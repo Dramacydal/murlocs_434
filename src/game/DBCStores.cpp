@@ -1498,6 +1498,12 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectImplicitTargetA = TARGET_CURRENT_ENEMY_COORDINATES;
                 break;
             }
+            case 86150:                         // Guardian of Ancient Kings
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectImplicitTargetA = TARGET_SELF;
+                break;
+            }
             case 88611:                         // Smoke Bomb
             {
                 spell->Attributes |= SPELL_ATTR_CANT_CANCEL;
