@@ -4222,8 +4222,6 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     m_caster->CastSpell(m_caster, 58831, true); // Image 1
                     m_caster->CastSpell(m_caster, 58833, true); // Image 2
                     m_caster->CastSpell(m_caster, 58834, true); // Image 3
-
-                    // TODO: Glyph of Mirror Image, 65047 - Image 4
                     return;
                 }
                 case 32826:                                 // Polymorph Cast Visual

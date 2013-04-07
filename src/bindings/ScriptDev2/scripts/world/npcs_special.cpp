@@ -1496,15 +1496,14 @@ enum MirrorImageSpells
     SPELL_CLONE_CASTER_1    = 69837,
 //    SPELL_CLONE_CASTER_1  = 58836,
     SPELL_CLONE_THREAT      = 58838,
-    SPELL_FIREBLAST         = 59637,
+
     SPELL_FROSTBOLT         = 59638,
+    SPELL_FIREBOLT          = 88082,
+    SPELL_ARCANE_BLAST      = 88084,
 
-    SPELL_FROSTARMOR        = 43008,
-    SPELL_MAGEARMOR         = 43024,
-    SPELL_MOLTENARMOR       = 43046,
-
-    SPELL_ICEBLOCK          = 65802,
-    SPELL_ICERING           = 42917,
+    SPELL_MAGEARMOR         = 6117,
+    SPELL_FROSTARMOR        = 7302,
+    SPELL_MOLTENARMOR       = 30482,
 
     SPELL_INVISIBILITY      = 32612,
 
@@ -1515,15 +1514,12 @@ struct MANGOS_DLL_DECL npc_mirror_imageAI : public ScriptedAI
 {
     npc_mirror_imageAI(Creature* pCreature) : ScriptedAI(pCreature) { Reset(); }
 
-    uint32 m_uiFrostboltTimer;
-    uint32 m_uiFrostringTimer;
-    uint32 m_uiFireblastTimer;
     bool inCombat;
     Unit *owner;
     float angle;
-    bool blocked;
     bool movement;
     uint32 m_auraCheckTimer;
+    uint32 m_spell;
 
     void Reset() 
     {
@@ -1550,14 +1546,10 @@ struct MANGOS_DLL_DECL npc_mirror_imageAI : public ScriptedAI
         m_creature->SetMaxPower(POWER_MANA, owner->GetMaxPower(POWER_MANA) / 2);
         m_creature->SetPower(POWER_MANA, owner->GetMaxPower(POWER_MANA) / 2);
 
-        m_uiFrostboltTimer = urand(0, 3000);
-        m_uiFrostringTimer = urand(2000, 6000);
-        m_uiFireblastTimer = urand(0, 3000);
         inCombat = false;
-        blocked = false;
         movement = false;
 
-        if (owner && !m_creature->hasUnitState(UNIT_STAT_FOLLOW))
+        if (!m_creature->hasUnitState(UNIT_STAT_FOLLOW))
         {
             angle = m_creature->GetAngle(owner);
             m_creature->GetMotionMaster()->Clear(false);
@@ -1568,6 +1560,21 @@ struct MANGOS_DLL_DECL npc_mirror_imageAI : public ScriptedAI
             m_creature->SetPvP(true);
         if (owner->IsFFAPvP())
             m_creature->SetFFAPvP(true);
+
+        m_spell = SPELL_FROSTBOLT;
+        // Glyph of Mirror Image
+        if (owner->GetTypeId() == TYPEID_PLAYER && owner->HasAura(63093))
+        {
+            switch (((Player*)owner)->GetPrimaryTalentTree(((Player*)owner)->GetActiveSpec()))
+            {
+                case 799:
+                    m_spell = SPELL_ARCANE_BLAST;
+                    break;
+                case 851:
+                    m_spell = SPELL_FIREBOLT;
+                    break;
+            }
+        }
     }
 
     void AttackStart(Unit* pWho)
@@ -1663,46 +1670,14 @@ struct MANGOS_DLL_DECL npc_mirror_imageAI : public ScriptedAI
             return;
         }
 
-        if (!inCombat) 
+        if (!inCombat)
             return;
-
-        /*if (!blocked && m_creature->GetHealthPercent() < 10.0f)
-        {
-            if (DoCastSpellIfCan(m_creature,SPELL_ICEBLOCK) == CAST_OK)
-                blocked = true;
-        }*/
 
         if (m_creature->IsWithinDistInMap(m_creature->getVictim(), 30.0f))
         {
             movement = false;
-            if (m_uiFrostboltTimer <= diff)
-            {
-                DoCastSpellIfCan(m_creature->getVictim(),SPELL_FROSTBOLT);
-                m_uiFrostboltTimer = urand(1000, 6000);
-            }
-            else
-                m_uiFrostboltTimer -= diff;
-
-            if (m_uiFireblastTimer <= diff)
-            {
-                DoCastSpellIfCan(m_creature->getVictim(), SPELL_FIREBLAST);
-                m_uiFireblastTimer = urand(1000, 6000);
-            }
-            else
-                m_uiFireblastTimer -= diff;
-
-            /*if (m_uiFrostringTimer <= diff)
-            {
-                if (m_creature->IsWithinDistInMap(m_creature->getVictim(),5.0f))
-                {
-                    if (DoCastSpellIfCan(m_creature->getVictim(),SPELL_ICERING) == CAST_OK)
-                        m_uiFrostringTimer = urand(4000,8000);
-                }
-                else
-                    m_uiFrostringTimer = urand(4000,8000);
-            }
-            else
-                m_uiFrostringTimer -= diff;*/
+            if (!m_creature->IsNonMeleeSpellCasted(false))
+                DoCastSpellIfCan(m_creature->getVictim(), m_spell);
         }
         else
         {

@@ -4078,9 +4078,6 @@ void Spell::cast(bool skipCheck)
                 if (IsTriggeredSpell())
                     AddPrecastSpell(86262);     // Nether Vortex
             }
-            // Glyph of Mirror Image
-            else if (m_spellInfo->Id == 55342 && m_caster->HasAura(63093))
-                AddPrecastSpell(65047); // Mirror Image (summon 4th immage)
 
             // Polymorph
             if (m_caster->GetTypeId() == TYPEID_PLAYER && m_spellInfo->IsFitToFamilyMask(UI64LIT(0x1000000)) &&
