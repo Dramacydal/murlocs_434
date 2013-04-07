@@ -13270,7 +13270,7 @@ float Unit::GetCombatRatingReduction(CombatRating cr) const
     {
         // resilience formula for non 85 lvl is unknown
         if (getLevel() == 85)
-            return (1.0f - std::powf(0.99f, GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + cr) / 79.12785f)) * 100.0f;
+            return (1.0f - std::pow(0.99f, GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + cr) / 79.12785f)) * 100.0f;
         else
             return ((Player const*)this)->GetRatingBonusValue(cr);
     }
@@ -13282,7 +13282,7 @@ float Unit::GetCombatRatingReduction(CombatRating cr) const
             {
                 // resilience formula for non 85 lvl is unknown
                 if (owner->getLevel() == 85)
-                    return (1.0f - std::powf(0.99f, GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + cr) / 79.12785f)) * 100.0f;
+                    return (1.0f - std::pow(0.99f, GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + cr) / 79.12785f)) * 100.0f;
                 else
                     return ((Player*)owner)->GetRatingBonusValue(cr);
             }
