@@ -59,7 +59,10 @@ struct MANGOS_DLL_DECL npc_guardian_of_the_ancient_kingsAI : public ScriptedAI
     {
         if (summonedBySpell == SPELL_GUARDIAN_RETRO)
             if (Unit* owner = m_creature->GetCreator())
-                owner->CastSpell(owner, 86704, true);
+            {
+                owner->CastSpell(owner, SPELL_ANCIENT_FURY, true);
+                owner->RemoveAurasDueToSpell(SPELL_ANCIENT_CRUSADER_PLAYER);
+            }
     }
 
     void MoveInLineOfSight(Unit* pWho)
@@ -74,6 +77,12 @@ struct MANGOS_DLL_DECL npc_guardian_of_the_ancient_kingsAI : public ScriptedAI
             CreatureAI::AttackedBy(pAttacker);
     }
 
+    void EnterCombat(Unit* pEnemy)
+    {
+        if (summonedBySpell == SPELL_GUARDIAN_RETRO)
+            ScriptedAI::EnterCombat(pEnemy);
+    }
+
     void UpdateAI(const uint32 diff)
     {
         if (!init)
@@ -85,11 +94,14 @@ struct MANGOS_DLL_DECL npc_guardian_of_the_ancient_kingsAI : public ScriptedAI
 
             summonedBySpell = m_creature->GetUInt32Value(UNIT_CREATED_BY_SPELL);
 
+            m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+
             if (summonedBySpell == SPELL_GUARDIAN_PROT)
             {
-
                 m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
                 m_creature->StopMoving();
+                m_creature->SetTargetGuid(owner->GetObjectGuid());
                 m_creature->CastSpell(owner, SPELL_ANCIENT_GUARDIAN, true);
             }
             else if (summonedBySpell == SPELL_GUARDIAN_RETRO)
@@ -102,8 +114,24 @@ struct MANGOS_DLL_DECL npc_guardian_of_the_ancient_kingsAI : public ScriptedAI
         }
         else
         {
-            if (summonedBySpell == SPELL_GUARDIAN_RETRO && m_creature->SelectHostileTarget() && m_creature->getVictim())
-                DoMeleeAttackIfReady();
+            if (summonedBySpell == SPELL_GUARDIAN_RETRO)
+            {
+                Unit* owner = m_creature->GetOwner();
+                Unit* ownerVictim = owner ? owner->getVictim() : NULL;
+
+                if (m_creature->getVictim())
+                {
+                    if (m_creature->getVictim()->hasUnitState(UNIT_STAT_NO_FREE_MOVE))
+                    {
+                        m_creature->AttackStop();
+                        return;
+                    }
+                    else if (ownerVictim && m_creature->getVictim() != ownerVictim && !ownerVictim->hasUnitState(UNIT_STAT_NO_FREE_MOVE))
+                        AttackStart(ownerVictim);
+                }
+                else if (ownerVictim && !ownerVictim->hasUnitState(UNIT_STAT_NO_FREE_MOVE))
+                    AttackStart(ownerVictim);
+            }
         }
     }
 };

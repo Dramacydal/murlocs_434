@@ -3097,7 +3097,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     if (!guard)
                         return SPELL_AURA_PROC_FAILED;
 
-                    basepoints[0] = int32(damage * triggerAmount / 100);
+                    basepoints[0] = int32(damage * 10 / 100);
                     guard->CastCustomSpell(pVictim, 86678, &basepoints[0], &basepoints[0], NULL, true, NULL, triggeredByAura, GetObjectGuid());
 
                     Modifier* mod = triggeredByAura->GetModifier();

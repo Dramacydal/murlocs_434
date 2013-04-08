@@ -3051,6 +3051,10 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 FillRaidOrPartyHealthPriorityTargets(targetUnitMap, m_caster, m_targets.getUnitTarget(), radius, 1, true, false, true);
             else
                 FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_FRIENDLY);
+
+            // Ancient Healer
+            if (m_spellInfo->Id == 86678)
+                targetUnitMap.remove(m_targets.getUnitTarget());
             break;
         // TARGET_SINGLE_PARTY means that the spells can only be casted on a party member and not on the caster (some seals, fire shield from imp, etc..)
         case TARGET_SINGLE_PARTY:
