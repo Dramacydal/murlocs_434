@@ -98,9 +98,6 @@ void LoadRandomEnchantmentsTable()
     }
 }
 
-uint32 GetItemRandomPropertyMod(uint32 entry) { return GetItemEnchantMod(entry); }
-uint32 GetItemRandomSuffixMod(uint32 entry) { return GetItemEnchantMod(-int32(entry)); }
-
 uint32 GetItemEnchantMod(int32 entry)
 {
     if (!entry)
@@ -151,6 +148,9 @@ uint32 GetItemEnchantMod(int32 entry)
 
     return 0;
 }
+
+uint32 GetItemRandomPropertyMod(uint32 entry) { return GetItemEnchantMod(entry); }
+uint32 GetItemRandomSuffixMod(uint32 entry) { return GetItemEnchantMod(-int32(entry)); }
 
 uint32 GenerateEnchSuffixFactor(uint32 item_id)
 {
