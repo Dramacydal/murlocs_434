@@ -1252,6 +1252,17 @@ struct ItemDamageEntry
   uint32    Id2;                                            // 8 item level
 };
 
+struct ItemDisenchantLootEntry
+{
+    uint32      Id;                                         // 0
+    uint32      ItemClass;                                  // 1
+    int32       ItemSubClass;                               // 2
+    uint32      ItemQuality;                                // 3
+    uint32      MinItemLevel;                               // 4
+    uint32      MaxItemLevel;                               // 5
+    uint32      RequiredDisenchantSkill;                    // 6
+};
+
 struct ItemLimitCategoryEntry
 {
     uint32      ID;                                         // 0 Id     m_ID
