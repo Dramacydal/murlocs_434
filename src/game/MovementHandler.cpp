@@ -306,7 +306,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     // fall damage generation (ignore in flight case that can be triggered also at lags in moment teleportation to another map).
     if (opcode == CMSG_MOVE_FALL_LAND && plMover && !plMover->IsTaxiFlying())
         plMover->HandleFall(movementInfo);
- 
+
     /* process anticheat check */
     GetPlayer()->GetAntiCheat()->DoAntiCheatCheck(CHECK_MOVEMENT,movementInfo, opcode);
 
@@ -324,6 +324,9 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     data << movementInfo;
 
     mover->SendMessageToSetExcept(&data, _player);
+
+    if (opcode ==  CMSG_MOVE_JUMP && plMover)
+        plMover->ProcDamageAndSpell(plMover, PROC_FLAG_NONE, PROC_FLAG_ON_JUMP, PROC_EX_NONE, 0);
 
     //if (mover && _player->GetObjectGuid() != mover->GetObjectGuid())
     //    if (opcode == CMSG_MOVE_SET_WALK_MODE)
