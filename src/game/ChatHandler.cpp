@@ -769,6 +769,8 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
         if (!_player->hasUnitState(UNIT_STAT_DIED))
             _player->HandleEmote(emote->Id);
     }
+    else
+        _player->HandleEmote(EMOTE_ONESHOT_NONE);
 
     Unit* unit = GetPlayer()->GetMap()->GetUnit(guid);
 
