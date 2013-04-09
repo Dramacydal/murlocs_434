@@ -900,7 +900,7 @@ void Transport::LoadTransportAccessory()
 
         map->Add(pCreature);
         if (data.emote)
-            pCreature->HandleEmoteState(data.emote);
+            pCreature->HandleEmote(data.emote);
 
         if (!EnterThisTransport(pCreature, data.position_x, data.position_y, data.position_z, data.orientation, data.guid))
             pCreature->ForcedDespawn();

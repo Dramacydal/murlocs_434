@@ -9350,7 +9350,7 @@ void Aura::PeriodicTick()
             if ( spellProto->GetAuraInterruptFlags() & AURA_INTERRUPT_FLAG_NOT_SEATED )
             {
                 // eating anim
-                target->HandleEmoteCommand(EMOTE_ONESHOT_EAT);
+                target->HandleEmote(EMOTE_ONESHOT_EAT);
             }
             else if( GetId() == 20577 )
             {

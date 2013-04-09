@@ -7571,7 +7571,7 @@ void Player::DuelComplete(DuelCompleteType type)
         if (duel->opponent)
         {
             duel->opponent->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_WIN_DUEL, 1);
-            duel->opponent->HandleEmoteCommand(EMOTE_ONESHOT_CHEER);
+            duel->opponent->HandleEmote(EMOTE_ONESHOT_CHEER);
         }
     }
 
