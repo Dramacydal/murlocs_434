@@ -735,16 +735,16 @@ namespace MaNGOS
 
 void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 {
-    if(!GetPlayer()->isAlive())
+    if (!_player->isAlive())
         return;
 
-    if (GetPlayer()->IsSpectator())
+    if (_player->IsSpectator())
     {
         ChatHandler(this).SendSysMessage(LANG_CANT_DO_THAT_WHILE_SPECTATING);
         return;
     }
 
-    if (!GetPlayer()->CanSpeak())
+    if (!_player->CanSpeak())
     {
         std::string timeStr = secsToTimeString(m_muteTime - time(NULL));
         SendNotification(GetMangosString(LANG_WAIT_BEFORE_SPEAKING), timeStr.c_str());
@@ -758,34 +758,28 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
     recv_data >> emoteNum;
     recv_data >> guid;
 
-    EmotesTextEntry const *em = sEmotesTextStore.LookupEntry(text_emote);
+    EmotesTextEntry const* em = sEmotesTextStore.LookupEntry(text_emote);
     if (!em)
         return;
 
     uint32 emote_id = em->textid;
 
-    switch(emote_id)
-    {
-        // in feign death state allowed only text emotes.
-        if (GetPlayer()->hasUnitState(UNIT_STAT_DIED))
-            break;
-
-        GetPlayer()->HandleEmote(emote_id);
-        break;
-    }
+    // in feign death state allowed only text emotes.
+    if (!_player->hasUnitState(UNIT_STAT_DIED))
+        _player->HandleEmote(emote_id);
 
     Unit* unit = GetPlayer()->GetMap()->GetUnit(guid);
 
     MaNGOS::EmoteChatBuilder emote_builder(*GetPlayer(), text_emote, emoteNum, unit);
     MaNGOS::LocalizedPacketDo<MaNGOS::EmoteChatBuilder > emote_do(emote_builder);
     MaNGOS::CameraDistWorker<MaNGOS::LocalizedPacketDo<MaNGOS::EmoteChatBuilder > > emote_worker(GetPlayer(), sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_TEXTEMOTE), emote_do);
-    Cell::VisitWorldObjects(GetPlayer(), emote_worker,  sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_TEXTEMOTE));
+    Cell::VisitWorldObjects(_player, emote_worker,  sWorld.getConfig(CONFIG_FLOAT_LISTEN_RANGE_TEXTEMOTE));
 
-    GetPlayer()->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE, text_emote, 0, unit);
+    _player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE, text_emote, 0, unit);
 
     //Send scripted event call
     if (unit && unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->AI())
-        ((Creature*)unit)->AI()->ReceiveEmote(GetPlayer(), text_emote);
+        ((Creature*)unit)->AI()->ReceiveEmote(_player, text_emote);
 }
 
 void WorldSession::HandleChatIgnoredOpcode(WorldPacket& recv_data )
