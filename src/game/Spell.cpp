@@ -3847,6 +3847,9 @@ void Spell::prepare(SpellCastTargets const* targets, Aura* triggeredByAura)
     if ((!m_IsTriggeredSpell || m_spellInfo->Id == SPELL_ID_AUTOSHOT) && isSpellBreakStealth(m_spellInfo) && m_casttime > 0)
     {
         m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_CAST);
+        // clear unit emote state
+        if (m_caster->GetTypeId() == TYPEID_PLAYER)
+            m_caster->HandleEmote(EMOTE_ONESHOT_NONE);
 
         for (uint32 i = 0; i < MAX_EFFECT_INDEX; ++i)
             if (SpellEffectEntry const* eff = m_spellInfo->GetSpellEffect(SpellEffectIndex(i)))
@@ -4002,6 +4005,9 @@ void Spell::cast(bool skipCheck)
     if ((!m_IsTriggeredSpell || m_spellInfo->Id == SPELL_ID_AUTOSHOT) && isSpellBreakStealth(m_spellInfo) && m_casttime == 0)
     {
         m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_CAST);
+        // clear unit emote state
+        if (m_caster->GetTypeId() == TYPEID_PLAYER)
+            m_caster->HandleEmote(EMOTE_ONESHOT_NONE);
 
         for (uint32 i = 0; i < MAX_EFFECT_INDEX; ++i)
             if (SpellEffectEntry const* eff = m_spellInfo->GetSpellEffect(SpellEffectIndex(i)))

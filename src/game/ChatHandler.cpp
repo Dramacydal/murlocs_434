@@ -758,15 +758,17 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
     recv_data >> emoteNum;
     recv_data >> guid;
 
-    EmotesTextEntry const* em = sEmotesTextStore.LookupEntry(text_emote);
-    if (!em)
+    EmotesTextEntry const* textEmote = sEmotesTextStore.LookupEntry(text_emote);
+    if (!textEmote)
         return;
 
-    uint32 emote_id = em->textid;
-
-    // in feign death state allowed only text emotes.
-    if (!_player->hasUnitState(UNIT_STAT_DIED))
-        _player->HandleEmote(emote_id);
+    EmotesEntry const* emote = sEmotesStore.LookupEntry(textEmote->textid);
+    if (emote && !emote->UnitStandState)
+    {
+        // in feign death state allowed only text emotes.
+        if (!_player->hasUnitState(UNIT_STAT_DIED))
+            _player->HandleEmote(emote->Id);
+    }
 
     Unit* unit = GetPlayer()->GetMap()->GetUnit(guid);
 

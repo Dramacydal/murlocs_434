@@ -782,6 +782,9 @@ void WorldSession::HandleMoverRelocation(MovementInfo& movementInfo)
 
     if (plMover)
     {
+        // clear unit emote state
+        plMover->HandleEmote(EMOTE_ONESHOT_NONE);
+
         AreaTableEntry const* zone = GetAreaEntryByAreaID(plMover->GetAreaId());
 
         if(movementInfo.GetPos()->z < (zone ? zone->MaxDepth : -500.0f))

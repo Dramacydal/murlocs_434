@@ -1013,6 +1013,12 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
     uint32 health = pVictim->GetHealth();
     DEBUG_FILTER_LOG(LOG_FILTER_DAMAGE, "deal dmg: %u to health: %u ", damage, health);
 
+    // clear unit emote state
+    if (GetTypeId() == TYPEID_PLAYER)
+        HandleEmote(EMOTE_ONESHOT_NONE);
+    if (pVictim != this && pVictim->GetTypeId() == TYPEID_PLAYER)
+        pVictim->HandleEmote(EMOTE_ONESHOT_NONE);
+
     // duel ends when player has 1 or less hp
     bool duel_hasEnded = false;
     if (pVictim->GetTypeId() == TYPEID_PLAYER && ((Player*)pVictim)->duel && damage >= (health-1))
@@ -2497,7 +2503,7 @@ void Unit::HandleEmoteState(uint32 emote_id)
 void Unit::HandleEmote(uint32 emote_id)
 {
     if (!emote_id)
-        HandleEmoteState(0);
+        HandleEmoteState(EMOTE_ONESHOT_NONE);
     else if (EmotesEntry const* emoteEntry = sEmotesStore.LookupEntry(emote_id))
     {
         if (emoteEntry->EmoteType)                          // 1,2 states, 0 command
@@ -9375,6 +9381,12 @@ void Unit::SetInCombatState(bool PvP, Unit* enemy)
         if (Spell* spell = GetCurrentSpell(CurrentSpellTypes(i)))
             if (IsNonCombatSpell(spell->m_spellInfo))
                 InterruptSpell(CurrentSpellTypes(i),false);
+
+    // clear unit emote state
+    if (GetTypeId() == TYPEID_PLAYER)
+        HandleEmote(EMOTE_ONESHOT_NONE);
+    if (enemy && enemy->GetTypeId() == TYPEID_PLAYER)
+        enemy->HandleEmote(EMOTE_ONESHOT_NONE);
 
     if (getRace() == RACE_WORGEN && !IsInWorgenForm(true) && HasWorgenForm())
         CastSpell(this, 97709, true);   // cast Altered Form

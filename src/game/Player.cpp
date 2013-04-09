@@ -1995,6 +1995,9 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
         m_movementInfo.ClearTransportData();
     }
 
+    // clear unit emote state
+    HandleEmote(EMOTE_ONESHOT_NONE);
+
     if (GetVehicleKit())
         GetVehicleKit()->RemoveAllPassengers();
 
@@ -4516,6 +4519,7 @@ void Player::InitVisibleBits()
     updateVisualBits.SetBit(UNIT_DYNAMIC_FLAGS);
     updateVisualBits.SetBit(UNIT_CHANNEL_SPELL);
     updateVisualBits.SetBit(UNIT_MOD_CAST_SPEED);
+    updateVisualBits.SetBit(UNIT_NPC_EMOTESTATE);
     updateVisualBits.SetBit(UNIT_FIELD_BASE_MANA);
     updateVisualBits.SetBit(UNIT_FIELD_BYTES_2);
     updateVisualBits.SetBit(UNIT_FIELD_HOVERHEIGHT);
