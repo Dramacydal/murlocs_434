@@ -1439,4 +1439,5 @@ void InitializeOpcodes()
     OPCODE(SMSG_MOVE_SET_ACTIVE_MOVER,                   STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
     OPCODE(CMSG_SET_PET_SLOT,                            STATUS_LOGGEDIN, PROCESS_INPLACE,      &WorldSession::HandleSetPetSlotOpcode          );
     OPCODE(SMSG_PET_SLOT_UPDATED,                        STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
+    OPCODE(SMSG_PLAY_ONE_SHOT_ANIM_KIT,                  STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
 };

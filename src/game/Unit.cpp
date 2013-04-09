@@ -2482,7 +2482,7 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
 
 void Unit::HandleEmoteCommand(uint32 emote_id)
 {
-    DEBUG_LOG("SMSG_EMOTE %u");
+    DEBUG_LOG("SMSG_EMOTE %u", emote_id);
     WorldPacket data(SMSG_EMOTE, 4 + 8);
     data << uint32(emote_id);
     data << GetObjectGuid();
@@ -14579,4 +14579,14 @@ void Unit::RemoveRootsAndSnares(ShapeshiftForm form, SpellAuraHolder* except)
 
     for (std::set<uint32>::iterator i = toRemoveSpellList.begin(); i != toRemoveSpellList.end(); ++i)
         RemoveAurasDueToSpellByCancel(*i);
+}
+
+
+void Unit::PlayOneShotAnimKit(uint32 id)
+{
+    WorldPacket data(SMSG_PLAY_ONE_SHOT_ANIM_KIT, 7 + 2);
+    data << GetObjectGuid().WriteAsPacked();
+    data << uint16(id);
+
+    SendMessageToSet(&data, true);
 }

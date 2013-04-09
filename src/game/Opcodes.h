@@ -1457,6 +1457,7 @@ enum Opcodes
     SMSG_MOVE_SET_ACTIVE_MOVER                            = 0x11B3, // 4.3.4 15595
     CMSG_SET_PET_SLOT                                     = 0x3A04, // 4.3.4 15595
     SMSG_PET_SLOT_UPDATED                                 = 0x51A3, // 4.3.4 15595
+    SMSG_PLAY_ONE_SHOT_ANIM_KIT                           = 0x4A35, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF
