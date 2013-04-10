@@ -618,6 +618,9 @@ void WorldSession::SendNotification(int32 string_id,...)
 
 void WorldSession::SendSetPhaseShift(std::set<uint32> const& phaseIds, std::set<uint32> const& terrainswaps)
 {
+    if (PlayerLoading())
+        return;
+
     ObjectGuid guid = _player->GetObjectGuid();
 
     WorldPacket data(SMSG_SET_PHASE_SHIFT, 1 + 8 + 4 + 4 + 4 + 4 + 2 * phaseIds.size() + 4 + terrainswaps.size() * 2);
