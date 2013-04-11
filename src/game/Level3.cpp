@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2009-2013 300murlocs <http://300murlocs.com/>
  * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
