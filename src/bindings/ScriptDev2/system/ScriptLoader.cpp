@@ -537,6 +537,13 @@ extern void AddSC_shattrath_city();
 extern void AddSC_terokkar_forest();
 extern void AddSC_zangarmarsh();
 
+extern void AddSC_stonecore();
+extern void AddSC_instance_stonecore();
+extern void AddSC_boss_ozruk();
+extern void AddSC_boss_slabhide();
+extern void AddSC_boss_azil();
+extern void AddSC_boss_corborus();
+
 void AddScripts()
 {
     // battlegrounds
@@ -1070,4 +1077,11 @@ void AddScripts()
     AddSC_shattrath_city();
     AddSC_terokkar_forest();
     AddSC_zangarmarsh();
+
+    AddSC_stonecore();
+    AddSC_instance_stonecore();
+    AddSC_boss_ozruk();
+    AddSC_boss_slabhide();
+    AddSC_boss_azil();
+    AddSC_boss_corborus();
 }

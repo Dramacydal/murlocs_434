@@ -183,6 +183,22 @@ void ScriptedAI::DoCastSpell(Unit* pTarget, SpellEntry const* pSpellInfo, bool b
     m_creature->CastSpell(pTarget, pSpellInfo, bTriggered);
 }
 
+void ScriptedAI::DoCastVictim(uint32 spellId, bool triggered)
+{
+    if (!m_creature->getVictim() || m_creature->IsNonMeleeSpellCasted(false) && !triggered)
+        return;
+
+    m_creature->CastSpell(m_creature->getVictim(), spellId, triggered);
+}
+
+void ScriptedAI::DoCastAOE(uint32 spellId, bool triggered)
+{
+    if (!triggered && m_creature->IsNonMeleeSpellCasted(false))
+        return;
+
+    m_creature->CastSpell((Unit*)NULL, spellId, triggered);
+}
+
 void ScriptedAI::DoPlaySoundToSet(WorldObject* pSource, uint32 uiSoundId)
 {
     if (!pSource)
@@ -604,4 +620,9 @@ void Scripted_NoMovementAI::AttackStart(Unit* pWho)
 
         DoStartNoMovement(pWho);
     }
+}
+
+bool ScriptedAI::UpdateVictim() const
+{
+    return m_creature->SelectHostileTarget() && m_creature->getVictim();
 }

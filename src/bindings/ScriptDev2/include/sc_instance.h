@@ -17,6 +17,22 @@ enum EncounterState
     SPECIAL       = 4
 };
 
+enum EncounterFrameType
+{
+    ENCOUNTER_FRAME_UNK0                    = 0,
+    ENCOUNTER_FRAME_UNK1                    = 1,
+    ENCOUNTER_FRAME_ENGAGE                  = 2,
+    ENCOUNTER_FRAME_DISENGAGE               = 3,
+    ENCOUNTER_FRAME_UPDATE_PRIORITY         = 4,
+    ENCOUNTER_FRAME_ADD_TIMER               = 5,
+    ENCOUNTER_FRAME_ENABLE_OBJECTIVE        = 6,
+    ENCOUNTER_FRAME_UPDATE_OBJECTIVE        = 7,
+    ENCOUNTER_FRAME_DISABLE_OBJECTIVE       = 8,
+    ENCOUNTER_FRAME_SORT_ENCOUNTER_LIST     = 9,    // Seems to have something to do with sorting the encounter units
+    ENCOUNTER_FRAME_UNK7                    = 10,
+    ENCOUNTER_UNK10                         = 11
+};
+
 #define OUT_SAVE_INST_DATA             debug_log("SD2: Saving Instance Data for Instance %s (Map %d, Instance Id %d)", instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
 #define OUT_SAVE_INST_DATA_COMPLETE    debug_log("SD2: Saving Instance Data for Instance %s (Map %d, Instance Id %d) completed.", instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
 #define OUT_LOAD_INST_DATA(a)          debug_log("SD2: Loading Instance Data for Instance %s (Map %d, Instance Id %d). Input is '%s'", instance->GetMapName(), instance->GetId(), instance->GetInstanceId(), a)
@@ -84,6 +100,9 @@ class MANGOS_DLL_DECL ScriptedInstance : public InstanceData
         }
 
         void SendGMEncounterNotification(Unit* who, uint32 encounter);
+
+        virtual bool SetBossState(uint32 id, EncounterState state) { return true; }
+        void SendEncounterUnit(uint32 type, Unit* unit = NULL, uint8 param1 = 0, uint8 param2 = 0) { }
 
     protected:
         // Storage for GO-Guids and NPC-Guids
