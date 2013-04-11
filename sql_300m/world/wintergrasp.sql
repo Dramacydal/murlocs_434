@@ -23,6 +23,18 @@
 -- +turret faction
 -- quests
 
+-- cleanup spell_area
+-- Essence of Wintergrasp
+DELETE FROM `spell_area` WHERE `spell` = 58045;
+-- Alliance Controls Factory Phase Shift
+DELETE FROM `spell_area` WHERE `spell` = 56617;
+-- Horde Controls Factory Phase Shift
+DELETE FROM `spell_area` WHERE `spell` = 56618;
+-- Alliance Control Phase Shift
+DELETE FROM `spell_area` WHERE `spell` = 60027;
+-- Horde Control Phase Shift
+DELETE FROM `spell_area` WHERE `spell` = 60028;
+
 -- Delete wrong GOs
 -- Titan Relic
 DELETE FROM `gameobject` WHERE `map` = 571 AND `id` = 192829;
@@ -35,6 +47,11 @@ DELETE FROM `creature` WHERE `id` IN (28319, 32629);
 
 -- Guards have no static spawn data
 DELETE FROM `creature` WHERE `id` IN (32308, 32307);
+
+-- Wintergrasp vehicles
+DELETE FROM creature WHERE id In (27881, 28094, 28312, 32627, 28319, 32629);
+-- Delete template addons
+DELETE FROM creature_template_addon WHERE entry IN (27881, 28094, 28312, 32627, 28319, 32629, 28366);
 
 DELETE FROM `creature` WHERE `map` = 571 AND `id` IN (30739, 30740);
 DELETE FROM `creature` WHERE `guid` BETWEEN 707000 AND 707308;
