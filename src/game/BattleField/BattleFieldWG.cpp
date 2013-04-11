@@ -1334,7 +1334,7 @@ void BattleFieldWG::RewardPlayersAtEnd(TeamIndex winner)
             if (!amount)
                 continue;
 
-            plr->CastCustomSpell(plr, SPELL_VICTORY_REWARD, NULL, &amount, NULL, true);
+            plr->CastSpell(plr, SPELL_VICTORY_REWARD, true);
             plr->AreaExploredOrEventHappens(teamIdx == TEAM_INDEX_ALLIANCE ? WG_QUEST_VICTORY_IN_WINTERGRASP_A : WG_QUEST_VICTORY_IN_WINTERGRASP_H);
         }
         else
