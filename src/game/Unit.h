@@ -1564,6 +1564,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void SendPeriodicAuraLog(SpellPeriodicAuraLogInfo *pInfo);
         void SendSpellMiss(Unit *target, uint32 spellID, SpellMissInfo missInfo);
 
+        void SendTeleportPacket(float oldX, float oldY, float oldZ, float oldO);
         void NearTeleportTo(float x, float y, float z, float orientation, bool casting = false);
         void MonsterMoveWithSpeed(float x, float y, float z, float speed, bool generatePath = false, bool forceDestination = false);
         void MonsterMoveJump(float x, float y, float z, float speed, float height);

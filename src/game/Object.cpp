@@ -1216,7 +1216,8 @@ void WorldObject::Relocate(float x, float y, float z)
 
 void WorldObject::SetOrientation(float orientation)
 {
-    m_position.o = NormalizeOrientation(orientation);
+    orientation = NormalizeOrientation(orientation);
+    m_position.o = orientation;
 
     if (isType(TYPEMASK_UNIT))
         ((Unit*)this)->m_movementInfo.ChangeOrientation(orientation);

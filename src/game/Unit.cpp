@@ -12982,6 +12982,38 @@ void Unit::SetPhaseMask(uint32 newPhaseMask, bool update)
     WorldObject::SetPhaseMask(newPhaseMask, update);
 }
 
+void Unit::SendTeleportPacket(float oldX, float oldY, float oldZ, float oldO)
+{
+    ObjectGuid guid = GetObjectGuid();
+    ObjectGuid transportGuid = m_movementInfo.GetTransportGuid();
+
+    WorldPacket data(SMSG_MOVE_TELEPORT, 38);
+    data.WriteGuidMask<6, 0, 3, 2>(guid);
+    data.WriteBit(0);       // unknown
+    data.WriteBit(!transportGuid.IsEmpty());
+    data.WriteGuidMask<1>(guid);
+    if (transportGuid)
+        data.WriteGuidMask<1, 3, 2, 5, 0, 7, 6, 4>(transportGuid);
+
+    data.WriteGuidMask<4, 7, 5>(guid);
+
+    if (transportGuid)
+        data.WriteGuidBytes<5, 6, 1, 7, 0, 2, 4, 3>(transportGuid);
+
+    data << uint32(0);  // counter
+    data.WriteGuidBytes<1, 2, 3, 5>(guid);
+    data << float(GetPositionX());
+    data.WriteGuidBytes<4>(guid);
+    data << float(GetOrientation());
+    data.WriteGuidBytes<7>(guid);
+    data << float(GetPositionZ());
+    data.WriteGuidBytes<0, 6>(guid);
+    data << float(GetPositionY());
+
+    Relocate(oldX, oldY, oldZ, oldO);
+    SendMessageToSet(&data, true);
+}
+
 void Unit::NearTeleportTo( float x, float y, float z, float orientation, bool casting /*= false*/ )
 {
     DisableSpline();
@@ -12997,9 +13029,13 @@ void Unit::NearTeleportTo( float x, float y, float z, float orientation, bool ca
             if (MovementGenerator *movgen = c->GetMotionMaster()->top())
                 movgen->Interrupt(*c);
 
+        WorldLocation oldLoc;
+        GetPosition(oldLoc);
         SetPosition(x, y, z, orientation, true);
 
-        SendHeartBeat();
+        //SendHeartBeat();
+        SendTeleportPacket(oldLoc.coord_x, oldLoc.y, oldLoc.z, oldLoc.orientation);
+
         // finished relocation, movegen can different from top before creature relocation,
         // but apply Reset expected to be safe in any case
         if (!c->GetMotionMaster()->empty())
