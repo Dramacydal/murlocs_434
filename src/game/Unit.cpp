@@ -13035,7 +13035,7 @@ void Unit::NearTeleportTo( float x, float y, float z, float orientation, bool ca
         SetPosition(x, y, z, orientation, true);
 
         //SendHeartBeat();
-        SendTeleportPacket(oldLoc.coord_x, oldLoc.y, oldLoc.z, oldLoc.orientation);
+        SendTeleportPacket(oldLoc.coord_x, oldLoc.coord_y, oldLoc.coord_z, oldLoc.orientation);
 
         // finished relocation, movegen can different from top before creature relocation,
         // but apply Reset expected to be safe in any case
