@@ -141,7 +141,8 @@ void PhaseMgr::RegisterPhasingAuraEffect(Aura const* auraEffect)
         }
     }
 
-    phaseInfo->phaseId = auraEffect->GetMiscBValue();
+    // this is not Phase.dbc id...
+    //phaseInfo->phaseId = auraEffect->GetMiscBValue();
 
     if (phaseInfo->NeedsClientSideUpdate())
         _UpdateFlags |= PHASE_UPDATE_FLAG_CLIENTSIDE_CHANGED;
