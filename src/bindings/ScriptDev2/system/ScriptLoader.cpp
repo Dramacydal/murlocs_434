@@ -537,12 +537,21 @@ extern void AddSC_shattrath_city();
 extern void AddSC_terokkar_forest();
 extern void AddSC_zangarmarsh();
 
+// Stonecore
 extern void AddSC_stonecore();
 extern void AddSC_instance_stonecore();
 extern void AddSC_boss_ozruk();
 extern void AddSC_boss_slabhide();
 extern void AddSC_boss_azil();
 extern void AddSC_boss_corborus();
+
+// Blackrock Caverns
+extern void AddSC_instance_blackrock_caverns();
+extern void AddSC_boss_beauty();
+extern void AddSC_boss_corla();
+extern void AddSC_boss_karsh_steelbender();
+extern void AddSC_boss_lord_obsidius();
+extern void AddSC_boss_romogg();
 
 void AddScripts()
 {
@@ -1084,4 +1093,11 @@ void AddScripts()
     AddSC_boss_slabhide();
     AddSC_boss_azil();
     AddSC_boss_corborus();
+
+    AddSC_instance_blackrock_caverns();
+    AddSC_boss_beauty();
+    AddSC_boss_corla();
+    AddSC_boss_karsh_steelbender();
+    AddSC_boss_lord_obsidius();
+    AddSC_boss_romogg();
 }

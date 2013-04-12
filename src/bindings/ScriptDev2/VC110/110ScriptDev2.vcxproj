@@ -236,6 +236,12 @@
     <ClCompile Include="..\scripts\custom\teleguy.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\alterac_mountains.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\arathi_highlands.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\blackrock_caverns\boss_beauty.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\blackrock_caverns\boss_corla.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\blackrock_caverns\boss_karsh_steelbender.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\blackrock_caverns\boss_lord_obsidius.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\blackrock_caverns\boss_romogg.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\blackrock_caverns\instance_blackrock_caverns.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\blackrock_depths\blackrock_depths.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\blackrock_depths\boss_ambassador_flamelash.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\blackrock_depths\boss_anubshiah.cpp" />
@@ -771,6 +777,7 @@
     <ClInclude Include="..\include\sc_gossip.h" />
     <ClInclude Include="..\include\sc_grid_searchers.h" />
     <ClInclude Include="..\include\sc_instance.h" />
+    <ClInclude Include="..\scripts\eastern_kingdoms\blackrock_caverns\blackrock_caverns.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\blackrock_depths\blackrock_depths.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\blackrock_spire\blackrock_spire.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\blackwing_lair\blackwing_lair.h" />

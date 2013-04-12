@@ -27,14 +27,6 @@ enum Summons
     MOB_GRAVITY_WELL = 42499,
 };
 
-struct Position2
-{
-    float coord_x;
-    float coord_y;
-    float coord_z;
-    float coord_o;
-};
-
 Position2 addSpawnLocations[3] =
 {
     {1387.417725f, 1020.721863f, 211.693954f, 3.581235f},
@@ -198,15 +190,15 @@ public:
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                 DoCast(pTarget, SPELL_SEISMIC_SHARD);
 
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].coord_x,addSpawnLocations[1].coord_y,addSpawnLocations[1].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].coord_x,addSpawnLocations[1].coord_y,addSpawnLocations[1].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].coord_x,addSpawnLocations[1].coord_y,addSpawnLocations[1].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].coord_x,addSpawnLocations[1].coord_y,addSpawnLocations[1].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].x,addSpawnLocations[1].y,addSpawnLocations[1].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].x,addSpawnLocations[1].y,addSpawnLocations[1].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].x,addSpawnLocations[1].y,addSpawnLocations[1].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].x,addSpawnLocations[1].y,addSpawnLocations[1].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
             Phase2EndTimer = 60000;
         }
 
@@ -222,15 +214,15 @@ public:
             DoCast(m_creature, m_bIsRegularMode ? SPELL_ENERGY_SHIELD_N : SPELL_ENERGY_SHIELD_H);
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                 DoCast(pTarget, SPELL_SEISMIC_SHARD);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN,0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].coord_x,addSpawnLocations[1].coord_y,addSpawnLocations[1].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN,0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN,0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].coord_x,addSpawnLocations[1].coord_y,addSpawnLocations[1].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN,0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN,0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].coord_x,addSpawnLocations[1].coord_y,addSpawnLocations[1].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN,0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN,0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].coord_x,addSpawnLocations[1].coord_y,addSpawnLocations[1].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN,0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN,0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN,0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].x,addSpawnLocations[1].y,addSpawnLocations[1].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN,0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN,0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].x,addSpawnLocations[1].y,addSpawnLocations[1].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN,0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN,0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].x,addSpawnLocations[1].y,addSpawnLocations[1].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN,0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN,0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].x,addSpawnLocations[1].y,addSpawnLocations[1].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN,0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN,0);
             Phase2EndTimer = 60000;
         }
 
@@ -258,8 +250,8 @@ public:
 
         if (SummonDevoutTimer <= diff && Phase == PHASE_NORMAL)
         {
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].coord_x,addSpawnLocations[0].coord_y,addSpawnLocations[0].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
-            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].coord_x,addSpawnLocations[1].coord_y,addSpawnLocations[1].coord_z, addSpawnLocations[0].coord_o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[0].x,addSpawnLocations[0].y,addSpawnLocations[0].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
+            m_creature->SummonCreature(MOB_DEVOUT_FOLLOWER, addSpawnLocations[1].x,addSpawnLocations[1].y,addSpawnLocations[1].z, addSpawnLocations[0].o, TEMPSUMMON_CORPSE_DESPAWN, 0);
             SummonDevoutTimer = urand(19000,27000);
         } else SummonDevoutTimer -= diff;
 

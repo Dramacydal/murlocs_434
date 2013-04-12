@@ -280,6 +280,9 @@ class MANGOS_DLL_SPEC CreatureAI
 
         // called when creature is about to despawn
         virtual void BeforeDespawn() { }
+
+        // method to pass actions between AI's
+        virtual void DoAction(int32 action) { }
 };
 
 struct SelectableAI : public FactoryHolder<CreatureAI>, public Permissible<Creature>

@@ -33,6 +33,19 @@ enum EncounterFrameType
     ENCOUNTER_UNK10                         = 11
 };
 
+struct Position2
+{
+    float x;
+    float y;
+    float z;
+    float o;
+
+    float GetPositionX() const { return x; }
+    float GetPositionY() const { return y; }
+    float GetPositionZ() const { return z; }
+    float GetOrientation() const { return o; }
+};
+
 #define OUT_SAVE_INST_DATA             debug_log("SD2: Saving Instance Data for Instance %s (Map %d, Instance Id %d)", instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
 #define OUT_SAVE_INST_DATA_COMPLETE    debug_log("SD2: Saving Instance Data for Instance %s (Map %d, Instance Id %d) completed.", instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
 #define OUT_LOAD_INST_DATA(a)          debug_log("SD2: Loading Instance Data for Instance %s (Map %d, Instance Id %d). Input is '%s'", instance->GetMapName(), instance->GetId(), instance->GetInstanceId(), a)

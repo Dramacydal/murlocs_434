@@ -1468,6 +1468,22 @@ bool WorldObject::IsInRange3d(float x, float y, float z, float minRange, float m
     return distsq < maxdist * maxdist;
 }
 
+bool WorldObject::IsInBetween(WorldObject const* obj1, WorldObject const* obj2, float size) const
+{
+    if (GetPositionX() > std::max(obj1->GetPositionX(), obj2->GetPositionX()) ||
+        GetPositionX() < std::min(obj1->GetPositionX(), obj2->GetPositionX()) ||
+        GetPositionY() > std::max(obj1->GetPositionY(), obj2->GetPositionY()) ||
+        GetPositionY() < std::min(obj1->GetPositionY(), obj2->GetPositionY()))
+        return false;
+
+    if (!size)
+        size = GetObjectBoundingRadius() / 2;
+
+    float angle = obj1->GetAngle(this) - obj1->GetAngle(obj2);
+    return fabs(sin(angle))
+        * GetExactDistance2d(obj1->GetPositionX(), obj1->GetPositionY(), GetPositionX(), GetPositionY()) < size;
+}
+
 float WorldObject::GetAngle(const WorldObject* obj) const
 {
     if (!obj)

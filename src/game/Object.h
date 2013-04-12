@@ -537,6 +537,7 @@ class MANGOS_DLL_SPEC WorldObject : public Object
         bool IsInRange(WorldObject const* obj, float minRange, float maxRange, bool is3D = true) const;
         bool IsInRange2d(float x, float y, float minRange, float maxRange) const;
         bool IsInRange3d(float x, float y, float z, float minRange, float maxRange) const;
+        bool IsInBetween(WorldObject const* obj1, WorldObject const* obj2, float size) const;
 
         float GetAngle( const WorldObject* obj ) const;
         float GetAngle( const float x, const float y ) const;
