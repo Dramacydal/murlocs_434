@@ -1930,7 +1930,7 @@ bool BattleFieldWG::GetKickPosition(Player* plr, float& x, float& y, float& z)
         }
     }
     x = WGKickPositions[idx].x;
-    y = WGKickPositions[idx].x;
+    y = WGKickPositions[idx].y;
     z = WGKickPositions[idx].radius;
     return true;
 }
