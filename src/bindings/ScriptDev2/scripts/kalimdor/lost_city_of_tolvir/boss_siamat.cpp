@@ -268,10 +268,12 @@ struct MANGOS_DLL_DECL boss_siamatAI : public ScriptedAI
                     }
                     break;
                 case EVENT_SUMMON_NPC_MINION_OF_SIAMAT:
+                {
                     //Talk(SAY_EVENT_2);
                     uint8 id = urand(3,5);
                     m_creature->SummonCreature(NPC_MINION_OF_SIAMAT, SummonPositions[id].x, SummonPositions[id].y,SummonPositions[id].z,SummonPositions[id].o, TEMPSUMMON_MANUAL_DESPAWN, 0);
                     break;
+                }
                 case EVENT_STORM_BOLT_RANDOM:
                     if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                         DoCast(pTarget, m_bIsRegularMode ? SPELL_STORM_BOLT_RANDOM : H_SPELL_STORM_BOLT_RANDOM, true);
@@ -484,18 +486,18 @@ struct MANGOS_DLL_DECL npc_cloud_burstAI : public Scripted_NoMovementAI
     }
 };
 
-struct MANGOS_DLL_DECL mob_shokwave_spike_visualAI : public Scripted_NoMovementAI
-{
-    mob_shokwave_spike_visualAI(Creature *c) : Scripted_NoMovementAI(c)
-    {
-        Reset();
-    }
-
-    void Reset()
-    {
-        m_creature->CastSpell(m_creature, SPELL_VISUAL_WIND, true);
-    }
-};
+//struct MANGOS_DLL_DECL mob_shokwave_spike_visualAI : public Scripted_NoMovementAI
+//{
+//    mob_shokwave_spike_visualAI(Creature *c) : Scripted_NoMovementAI(c)
+//    {
+//        Reset();
+//    }
+//
+//    void Reset()
+//    {
+//        m_creature->CastSpell(m_creature, SPELL_VISUAL_WIND, true);
+//    }
+//};
 
 CreatureAI* GetAI_boss_siamat(Creature* pCreature)
 {
@@ -517,11 +519,10 @@ CreatureAI* GetAI_npc_cloud_burst(Creature* pCreature)
     return new npc_cloud_burstAI(pCreature);
 }
 
-CreatureAI* GetAI_mob_shokwave_spike_visual(Creature* pCreature)
-{
-    return new mob_shokwave_spike_visualAI(pCreature);
-}
-
+//CreatureAI* GetAI_mob_shokwave_spike_visual(Creature* pCreature)
+//{
+//    return new mob_shokwave_spike_visualAI(pCreature);
+//}
 
 void AddSC_boss_siamat()
 {
@@ -547,8 +548,8 @@ void AddSC_boss_siamat()
     pNewScript->GetAI = &GetAI_npc_cloud_burst;
     pNewScript->RegisterSelf();
 
-    pNewScript = new Script;
-    pNewScript->Name = "mob_shokwave_spike_visual";
-    pNewScript->GetAI = &GetAI_mob_shokwave_spike_visual;
-    pNewScript->RegisterSelf();
+    //pNewScript = new Script;
+    //pNewScript->Name = "mob_shokwave_spike_visual";
+    //pNewScript->GetAI = &GetAI_mob_shokwave_spike_visual;
+    //pNewScript->RegisterSelf();
 }

@@ -453,7 +453,7 @@ CreatureAI* GetAI_npc_blaze_of_heavens_egg(Creature* pCreature)
     return new npc_blaze_of_heavens_eggAI(pCreature);
 }
 
-void AddSC_boss_general_husam()
+void AddSC_boss_prophet_barim()
 {
     Script* pNewScript;
 
