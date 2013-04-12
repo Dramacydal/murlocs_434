@@ -199,6 +199,13 @@ void ScriptedAI::DoCastAOE(uint32 spellId, bool triggered)
     m_creature->CastSpell((Unit*)NULL, spellId, triggered);
 }
 
+void ScriptedAI::DoCastSpellOnPlayers(uint32 spellId)
+{
+    Map::PlayerList const &PlayerList = m_creature->GetMap()->GetPlayers();
+    for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+        m_creature->CastSpell(i->getSource(),spellId, true);
+}
+
 void ScriptedAI::DoPlaySoundToSet(WorldObject* pSource, uint32 uiSoundId)
 {
     if (!pSource)

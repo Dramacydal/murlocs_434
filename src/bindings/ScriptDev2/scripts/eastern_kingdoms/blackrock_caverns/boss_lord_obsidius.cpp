@@ -80,6 +80,7 @@ struct MANGOS_DLL_DECL boss_lord_obsidiusAI : public ScriptedAI
 
     void Aggro(Unit* pWho) override
     {
+        m_creature->SetInCombatWithZone();
         if (m_pInstance)
             m_pInstance->SetData(TYPE_OBSIDIUS, IN_PROGRESS);
     }

@@ -423,3 +423,9 @@ void ScriptedInstance::UpdateAchievementCriteria(uint32 type, uint32 miscvalue1,
         debug_log("BSW: UpdateAchievementCriteria attempt set data, but no players in map.");
 }
 
+void ScriptedInstance::DoRemoveAurasDueToSpellOnPlayers(uint32 spellId)
+{
+    Map::PlayerList const &PlayerList = instance->GetPlayers();
+    for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+        i->getSource()->RemoveAurasDueToSpell(spellId);
+}

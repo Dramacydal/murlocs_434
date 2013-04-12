@@ -77,6 +77,7 @@ struct MANGOS_DLL_DECL boss_romoggAI : public ScriptedAI
 
     void Aggro(Unit* pWho) override
     {
+        m_creature->SetInCombatWithZone();
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ROMOGG, IN_PROGRESS);
 

@@ -70,12 +70,12 @@ struct MANGOS_DLL_DECL boss_beautyAI : public ScriptedAI
 
     void EnterCombat(Unit* who) override
     {
-        m_creature->SetInCombatWithZone();
         //me->MonsterYell(SAY_AGGRO, LANG_UNIVERSAL, NULL);
     }
 
     void Aggro(Unit* pWho) override
     {
+        m_creature->SetInCombatWithZone();
         if (m_pInstance)
             m_pInstance->SetData(TYPE_BEAUTY, IN_PROGRESS);
     }
@@ -110,7 +110,7 @@ struct MANGOS_DLL_DECL boss_beautyAI : public ScriptedAI
         }
         else
             magma -= diff; 
-           
+
         if (cassure <= diff)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))

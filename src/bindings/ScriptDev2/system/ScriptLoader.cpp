@@ -553,6 +553,13 @@ extern void AddSC_boss_karsh_steelbender();
 extern void AddSC_boss_lord_obsidius();
 extern void AddSC_boss_romogg();
 
+// Lost City of Tol'Vir
+extern void AddSC_instance_lost_city_of_tolvir();
+extern void AddSC_boss_general_husam();
+extern void AddSC_boss_prophet_barim();
+extern void AddSC_boss_lockmaw();
+extern void AddSC_boss_siamat();
+
 void AddScripts()
 {
     // battlegrounds
@@ -1100,4 +1107,10 @@ void AddScripts()
     AddSC_boss_karsh_steelbender();
     AddSC_boss_lord_obsidius();
     AddSC_boss_romogg();
+
+    AddSC_instance_lost_city_of_tolvir();
+    AddSC_boss_general_husam();
+    AddSC_boss_prophet_barim();
+    AddSC_boss_lockmaw();
+    AddSC_boss_siamat();
 }
