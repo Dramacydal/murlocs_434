@@ -122,6 +122,8 @@ struct MANGOS_DLL_DECL boss_ozrukAI : public ScriptedAI
         events.ScheduleEvent(EVENT_GROUND_SLAM, 7000);
         events.ScheduleEvent(EVENT_ELEM_BULKWAR, 4000);
         events.ScheduleEvent(EVENT_ELEM_SPIKE, 12000);
+
+        m_creature->SetInCombatWithZone();
     }
 
     void UpdateAI(const uint32 diff)

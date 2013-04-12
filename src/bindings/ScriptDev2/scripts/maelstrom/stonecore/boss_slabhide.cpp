@@ -161,6 +161,8 @@ struct MANGOS_DLL_DECL boss_slabhideAI : public ScriptedAI
             //m_pInstance->HandleGameObject(0000000, false);
         }
 
+        m_creature->SetInCombatWithZone();
+
         phase = PHASE_GROUND;
         events.SetPhase(PHASE_GROUND);
         inCombat = true;

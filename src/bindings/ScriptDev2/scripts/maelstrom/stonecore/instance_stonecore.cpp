@@ -19,7 +19,7 @@ public:
     uint32 Encounter[MAX_ENCOUNTER];
     std::string m_strInstData;
 
-    void Initialize()
+    void Initialize() override
     {
         for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             Encounter[i] = NOT_STARTED;
@@ -30,7 +30,7 @@ public:
         HighPriestessAzil = 0;
     }
 
-    bool IsEncounterInProgress() const
+    bool IsEncounterInProgress() const override
     {
         for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             if (Encounter[i] == IN_PROGRESS)
@@ -39,15 +39,15 @@ public:
             return false;
     }
 
-    void OnCreatureCreate(Creature* creature, bool /*add*/)
+    void OnCreatureCreate(Creature* creature) override
     {
-        Map::PlayerList const &players = instance->GetPlayers();
+        //Map::PlayerList const &players = instance->GetPlayers();
 
-        if (!players.isEmpty())
-        {
-            if (Player* player = players.begin()->getSource())
-                TeamInInstance = player->GetTeam();
-        }
+        //if (!players.isEmpty())
+        //{
+        //    if (Player* player = players.begin()->getSource())
+        //        TeamInInstance = player->GetTeam();
+        //}
 
         switch (creature->GetEntry())
         {
@@ -60,7 +60,7 @@ public:
         }
     }
 
-    void SetData(uint32 type, uint32 data)
+    void SetData(uint32 type, uint32 data) override
     {
         switch (type)
         {
@@ -92,7 +92,7 @@ public:
         }
     }
 
-    uint32 GetData(uint32 type)
+    uint32 GetData(uint32 type) override
     {
         if (type < MAX_ENCOUNTER)
             return Encounter[type];
@@ -100,7 +100,7 @@ public:
         return 0;
     }
 
-    void Load(const char* in)
+    void Load(const char* in) override
     {
         if (!in)
         {
