@@ -173,7 +173,7 @@ struct MANGOS_DLL_DECL boss_karsh_steelbenderAI : public ScriptedAI
                         DoCastAOE(SPELL_HEAT_WAVE);
                     }
 
-                    events.ScheduleEvent(EVENT_CHECK_ARMOR_STATE, 1000);
+                    events.ScheduleEvent(EVENT_CHECK_ARMOR_STATE, 3000);
                     break;
             }
         }
