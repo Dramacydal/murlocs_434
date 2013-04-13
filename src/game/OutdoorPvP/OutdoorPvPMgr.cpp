@@ -49,14 +49,26 @@ OutdoorPvPMgr::~OutdoorPvPMgr()
     if (sWorld.getConfig(CONFIG_BOOL_OUTDOORPVP_##a##_ENABLED))     \
     {                                                               \
         m_scripts[OPVP_ID_##a] = new OutdoorPvP##a(OPVP_ID_##a);    \
-        ++counter;                                                  \
+        if (!m_scripts[OPVP_ID_##a]->InitOutdoorPvPArea())          \
+        {                                                           \
+            delete m_scripts[OPVP_ID_##a];                          \
+            m_scripts[OPVP_ID_##a] = NULL;                          \
+        }                                                           \
+        else                                                        \
+            ++counter;                                              \
     }
 
 #define LOAD_BATTLEFIELD(a)                                         \
     if (sWorld.getConfig(CONFIG_BOOL_BATTLEFIELD_##a##_ENABLED))    \
     {                                                               \
         m_scripts[OPVP_ID_##a] = new BattleField##a(OPVP_ID_##a);   \
-        ++counter;                                                  \
+        if (!m_scripts[OPVP_ID_##a]->InitOutdoorPvPArea())          \
+        {                                                           \
+            delete m_scripts[OPVP_ID_##a];                          \
+            m_scripts[OPVP_ID_##a] = NULL;                          \
+        }                                                           \
+        else                                                        \
+            ++counter;                                              \
     }
 /**
    Function which loads all outdoor pvp scripts

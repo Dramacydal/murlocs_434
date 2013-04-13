@@ -111,6 +111,8 @@ class MANGOS_DLL_SPEC OutdoorPvP
 
         virtual bool IsMember(ObjectGuid guid) { return true; }
 
+        virtual bool InitOutdoorPvPArea() { return true; }
+
     protected:
 
         // Player related stuff

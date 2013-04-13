@@ -53,7 +53,10 @@ BattleFieldWG::BattleFieldWG(uint32 id) : BattleField(id)
 
     bAboutSend = false;
     b10MinAchiev = false;
+}
 
+bool BattleFieldWG::InitOutdoorPvPArea()
+{
     for (uint8 i = 0; i < WG_WORKSHOP_COUNT; ++i)
     {
         WGWorkShop* ws = new WGWorkShop(i, this);

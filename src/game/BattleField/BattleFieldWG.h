@@ -799,6 +799,8 @@ class MANGOS_DLL_SPEC BattleFieldWG : public BattleField
         void OnPlayerGroupDisband(Player* plr) override;
         bool CriteriaMeets(uint32 criteriaId, Player* plr) override;
 
+        bool InitOutdoorPvPArea() override;
+
         std::list<std::string> GetPlayerDebugInfo(Player* plr);
         std::list<std::string> GetStatusDebugInfo();
         std::list<std::string> GetTowerDebugInfo();
