@@ -168,6 +168,8 @@ bool BattleFieldWG::InitOutdoorPvPArea()
         for (float y = minY; y <= maxY; y += yStep)
             map->LoadGrid(Cell(MaNGOS::ComputeCellPair(x, y)), true);
     DEBUG_LOG("Finished loading cells for Wintergrasp");
+
+    return true;
 }
 
 BattleFieldWG::~BattleFieldWG()
