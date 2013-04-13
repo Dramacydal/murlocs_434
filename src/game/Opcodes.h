@@ -1225,7 +1225,7 @@ enum Opcodes
     CMSG_START_QUEST                                      = 0x148A,
     CMSG_DUMP_OBJECTS                                     = 0x148C,
     SMSG_DUMP_OBJECTS_DATA                                = 0x148D,
-    CMSG_DISMISS_CRITTER                                  = 0x148E,
+    CMSG_DISMISS_CRITTER                                  = 0x4227, // 4.3.4 15595
     SMSG_NOTIFY_DEST_LOC_SPELL_CAST                       = 0x148F,
     CMSG_AUCTION_LIST_PENDING_SALES                       = 0x2C17, // 4.3.4 15595
     SMSG_AUCTION_LIST_PENDING_SALES                       = 0x6A27, // 4.3.4 15595
