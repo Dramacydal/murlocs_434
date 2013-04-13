@@ -56,7 +56,7 @@ struct MANGOS_DLL_DECL boss_lord_obsidiusAI : public ScriptedAI
 
     ScriptedInstance* m_pInstance;
     bool m_bIsRegularMode;
-    Creature* ShadowOfObsidiusList[3];
+    ObjectGuid ShadowOfObsidiusList[3];
     EventMap events;
     uint8 Phase;
 
@@ -67,14 +67,11 @@ struct MANGOS_DLL_DECL boss_lord_obsidiusAI : public ScriptedAI
         // Spawns his Shadows and Respawns
         for(uint8 i = 0; i <= (m_bIsRegularMode ? 1 : 2); i++)
         {
-            if(ShadowOfObsidiusList[i] == NULL)
-                ShadowOfObsidiusList[i] = m_creature->SummonCreature(NPC_SHADOW_OF_OBSIDIUS,summonPositions[i].x,summonPositions[i].y,summonPositions[i].z,summonPositions[i].o,TEMPSUMMON_MANUAL_DESPAWN, 0);
+            if (Creature* shadow = m_creature->GetMap()->GetAnyTypeCreature(ShadowOfObsidiusList[i]))
+                shadow->ForcedDespawn();
 
-            if (ShadowOfObsidiusList[i]->isDead())
-            {
-                ShadowOfObsidiusList[i]->Respawn();
-                ShadowOfObsidiusList[i]->GetMotionMaster()->MoveTargetedHome();
-            }
+            if (Creature* shadow = m_creature->SummonCreature(NPC_SHADOW_OF_OBSIDIUS,summonPositions[i].x,summonPositions[i].y,summonPositions[i].z,summonPositions[i].o,TEMPSUMMON_MANUAL_DESPAWN, 0))
+                ShadowOfObsidiusList[i] = shadow->GetObjectGuid();
         }
     }
 
@@ -96,7 +93,8 @@ struct MANGOS_DLL_DECL boss_lord_obsidiusAI : public ScriptedAI
         Phase = 0;
 
         for(uint8 i = 0; i <= (m_bIsRegularMode ? 1 : 2); i++)
-            ShadowOfObsidiusList[i]->Attack(m_creature->getVictim(),false);
+            if (Creature* shadow = m_creature->GetMap()->GetAnyTypeCreature(ShadowOfObsidiusList[i]))
+                shadow->Attack(m_creature->getVictim(),false);
 
         m_creature->MonsterYell("You come seeking answers? Then have them! Look upon your answer to living!", LANG_UNIVERSAL, NULL);
     }
@@ -107,11 +105,8 @@ struct MANGOS_DLL_DECL boss_lord_obsidiusAI : public ScriptedAI
             m_pInstance->SetData(TYPE_OBSIDIUS, DONE);
 
         for(uint8 i = 0; i <= (m_bIsRegularMode ? 1 : 2); i++)
-        {
-            ShadowOfObsidiusList[i]->ForcedDespawn();
-
-            ShadowOfObsidiusList[i] = NULL;
-        }
+            if (Creature* shadow = m_creature->GetMap()->GetAnyTypeCreature(ShadowOfObsidiusList[i]))
+                shadow->ForcedDespawn();
 
         m_creature->MonsterYell("I cannot be destroyed... Only... de... layed...", LANG_UNIVERSAL, NULL);
     }
@@ -138,14 +133,17 @@ struct MANGOS_DLL_DECL boss_lord_obsidiusAI : public ScriptedAI
 
             // Switch Position with a random Shadow of Obsidius and empty Threat list
 
-            Creature* target = ShadowOfObsidiusList[urand(0, (m_bIsRegularMode ? 1 : 2))];
+            Creature* target = m_creature->GetMap()->GetAnyTypeCreature(ShadowOfObsidiusList[urand(0, (m_bIsRegularMode ? 1 : 2))]);
             WorldLocation telePos;
 
             m_creature->GetPosition(telePos);
 
             // Switch Positions
-            m_creature->NearTeleportTo(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(),0);
-            target->NearTeleportTo(telePos.coord_x,telePos.coord_y,telePos.coord_z, 0);
+            if (target)
+            {
+                m_creature->NearTeleportTo(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(),0);
+                target->NearTeleportTo(telePos.coord_x,telePos.coord_y,telePos.coord_z, 0);
+            }
 
             // Resetts Aggro
             m_creature->getThreatManager().clearReferences();
@@ -161,25 +159,25 @@ struct MANGOS_DLL_DECL boss_lord_obsidiusAI : public ScriptedAI
         {
             switch (eventId)
             {
-            case EVENT_THUNDERCLAP:
-                DoCastAOE(SPELL_THUNDERCLAP);
-                events.ScheduleEvent(EVENT_THUNDERCLAP, 7000);
-                break;
+                case EVENT_THUNDERCLAP:
+                    DoCastAOE(SPELL_THUNDERCLAP);
+                    events.ScheduleEvent(EVENT_THUNDERCLAP, 7000);
+                    break;
 
-            case EVENT_TWILIGHT_CORRUPTION:
-                if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                    DoCast(pTarget,SPELL_TWILIGHT_CORRUPTION);
+                case EVENT_TWILIGHT_CORRUPTION:
+                    if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                        DoCast(pTarget,SPELL_TWILIGHT_CORRUPTION);
 
-                events.ScheduleEvent(EVENT_TWILIGHT_CORRUPTION, 10000);
-                break;
+                    events.ScheduleEvent(EVENT_TWILIGHT_CORRUPTION, 10000);
+                    break;
 
-            case EVENT_STONE_BLOW:
-                DoCastVictim(SPELL_STONE_BLOW);
-                events.ScheduleEvent(EVENT_STONE_BLOW, 13000);
-                break;
+                case EVENT_STONE_BLOW:
+                    DoCastVictim(SPELL_STONE_BLOW);
+                    events.ScheduleEvent(EVENT_STONE_BLOW, 13000);
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
             }
         }
 
