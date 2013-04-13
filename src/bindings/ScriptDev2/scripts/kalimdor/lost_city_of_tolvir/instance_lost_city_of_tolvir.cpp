@@ -50,7 +50,12 @@ void instance_lost_city_of_tolvir::OnCreatureCreate(Creature* pCreature)
 
 void instance_lost_city_of_tolvir::OnObjectCreate(GameObject* pGo)
 {
-    // ToDo: add Gameobject references here
+    if (pGo->GetEntry() == GO_SIAMAT_PLATFORM)
+    {
+        if (m_auiEncounter[TYPE_HUSAM] == DONE && m_auiEncounter[TYPE_BARIM] == DONE && m_auiEncounter[TYPE_LOCKMAW] == DONE)
+            pGo->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
+        m_mGoEntryGuidStore[pGo->GetEntry()] = pGo->GetObjectGuid();
+    }
 }
 
 void instance_lost_city_of_tolvir::SetData(uint32 uiType, uint32 uiData)
@@ -67,6 +72,10 @@ void instance_lost_city_of_tolvir::SetData(uint32 uiType, uint32 uiData)
 
     if (uiData == DONE)
     {
+        if (m_auiEncounter[TYPE_HUSAM] == DONE && m_auiEncounter[TYPE_BARIM] == DONE && m_auiEncounter[TYPE_LOCKMAW] == DONE)
+            if (GameObject* pGo = GetSingleGameObjectFromStorage(GO_SIAMAT_PLATFORM))
+                pGo->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
+
         OUT_SAVE_INST_DATA;
 
         std::ostringstream saveStream;

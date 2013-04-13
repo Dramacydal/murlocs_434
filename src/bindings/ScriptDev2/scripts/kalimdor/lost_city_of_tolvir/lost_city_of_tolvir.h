@@ -47,6 +47,8 @@ enum
 
     NPC_CAPTAIN_HADAN           = 50038,
     NPC_WIND_TUNNEL             = 48092,
+
+    GO_SIAMAT_PLATFORM          = 205365,
 };
 
 class MANGOS_DLL_DECL instance_lost_city_of_tolvir : public ScriptedInstance
