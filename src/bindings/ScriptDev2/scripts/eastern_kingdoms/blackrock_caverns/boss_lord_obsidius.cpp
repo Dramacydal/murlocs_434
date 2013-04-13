@@ -29,6 +29,8 @@ enum Spells
     SPELL_THUNDERCLAP = 76186,
     SPELL_TWILIGHT_CORRUPTION = 93613,
     SPELL_STONE_BLOW = 76185,
+
+    SPELL_SHADOWY_CORRUPTION = 75054,
 };
 
 enum Events
@@ -84,6 +86,8 @@ struct MANGOS_DLL_DECL boss_lord_obsidiusAI : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
+        m_creature->RemoveAurasDueToSpell(SPELL_SHADOWY_CORRUPTION);
+
         events.ScheduleEvent(EVENT_TWILIGHT_CORRUPTION, 10000);
         events.ScheduleEvent(EVENT_STONE_BLOW, 13000);
 
@@ -120,6 +124,8 @@ struct MANGOS_DLL_DECL boss_lord_obsidiusAI : public ScriptedAI
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_OBSIDIUS, FAIL);
+
+        m_creature->CastSpell(m_creature, SPELL_SHADOWY_CORRUPTION, true);
     }
 
     void UpdateAI(const uint32 diff) override
