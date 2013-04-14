@@ -2735,6 +2735,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         int32 m_pyromaniacCounter;
         int32 m_naturesBountyCounter;
 
+        GameObject* debugObg;
+
     private:
         void CreateOrDeletePremiumItem(bool create);
         void ApplyPremiumSpells(bool apply);

@@ -1389,6 +1389,36 @@ bool ChatHandler::HandleDebugResistanceCommand(char* args)
 
 bool ChatHandler::HandleDebugTransportCommand(char* args)
 {
+    {
+        Player* plr = m_session->GetPlayer();
+        if (*args)
+        {
+            m_session->GetPlayer()->debugObg = NULL;
+            return;
+        }
+
+        if (!m_session->GetPlayer()->debugObg)
+        {
+            GameObject* go = new GameObject;
+            if (!go->Create(plr->GetMap()->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), 193182, plr->GetMap(),
+                PHASEMASK_NORMAL, plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation(), 0.0f, 0.0f, 1.0f, 0.0f))
+            {
+                delete go;
+                return;
+            }
+
+            m_session->GetPlayer()->debugObg = go;
+            return;
+        }
+
+        UpdateData transData(plr->GetMapId());
+        m_session->GetPlayer()->debugObg->BuildValuesUpdateBlockForPlayer(&transData, plr);
+
+        WorldPacket packet;
+        transData.BuildPacket(&packet);
+        plr->SendDirectMessage(&packet);
+        return true;
+    }
     Unit* target = getSelectedUnit();
     if (!target || target->GetTypeId() != TYPEID_PLAYER)
     {

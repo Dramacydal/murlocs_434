@@ -612,6 +612,8 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
     m_naturesBountyCounter = 0;
 
     phaseMgr = new PhaseMgr(this);
+
+    debugObg = NULL;
 }
 
 Player::~Player ()
@@ -25202,6 +25204,7 @@ Object* Player::GetObjectByTypeMask(ObjectGuid guid, TypeMask typemask)
                 return ObjectAccessor::FindPlayer(guid);
             break;
         case HIGHGUID_GAMEOBJECT:
+        case HIGHGUID_TRANSPORT:
             if ((typemask & TYPEMASK_GAMEOBJECT) && IsInWorld())
                 return GetMap()->GetGameObject(guid);
             break;
@@ -25218,7 +25221,6 @@ Object* Player::GetObjectByTypeMask(ObjectGuid guid, TypeMask typemask)
             if ((typemask & TYPEMASK_DYNAMICOBJECT) && IsInWorld())
                 return GetMap()->GetDynamicObject(guid);
             break;
-        case HIGHGUID_TRANSPORT:
         case HIGHGUID_CORPSE:
         case HIGHGUID_MO_TRANSPORT:
         case HIGHGUID_GROUP:
