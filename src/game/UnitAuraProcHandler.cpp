@@ -3798,10 +3798,10 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                             IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_PET) ||
                             IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_ALL_TOTEMS) ||
                             IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_DEAD_PET) ||
-                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_OBJECT_SLOT1) ||
-                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_OBJECT_SLOT2) ||
-                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_OBJECT_SLOT3) ||
-                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_OBJECT_SLOT4) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_OBJECT_SLOT) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SURVEY) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_RAID_MARKER) ||
+                            IsSpellHaveEffect(spellInfo, SPELL_EFFECT_LOOT_CORPSE) ||
                             IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_CHANGE_ITEM) ||
                             IsSpellHaveEffect(spellInfo, SPELL_EFFECT_SUMMON_DEAD_PET))
                             return SPELL_AURA_PROC_FAILED;

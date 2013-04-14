@@ -20,6 +20,7 @@
 #include "Opcodes.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
+#include "DynamicObject.h"
 #include "Player.h"
 #include "World.h"
 #include "ObjectMgr.h"
@@ -466,6 +467,9 @@ void Group::Disband(bool hideDestroy)
         player = sObjectMgr.GetPlayer(citr->guid);
         if(!player)
             continue;
+
+        // remove all raid markers
+        SetRaidMarker(RAID_MARKER_COUNT, player, ObjectGuid(), false);
 
         //we cannot call _removeMember because it would invalidate member iterator
         //if we are removing player from battleground raid
@@ -1026,6 +1030,60 @@ void Group::SetTargetIcon(uint8 id, ObjectGuid whoGuid, ObjectGuid targetGuid)
     data << uint8(id);
     data << targetGuid;
     BroadcastPacket(&data, true);
+}
+
+void Group::SetRaidMarker(uint8 id, Player* who, ObjectGuid targetGuid, bool update /*=true*/)
+{
+    if (!who)
+        return;
+
+    if (id >= RAID_MARKER_COUNT)
+    {
+        // remove all markers
+        for (uint8 i = 0; i < RAID_MARKER_COUNT; ++i)
+        {
+            if (DynamicObject* object = who->GetMap()->GetDynamicObject(m_raidMarkers[i]))
+            {
+                object->Delete();
+                m_raidMarkers[i].Clear();
+            }
+        }
+    }
+    else
+    {
+        if (DynamicObject* object = who->GetMap()->GetDynamicObject(m_raidMarkers[id]))
+            object->Delete();
+
+        m_raidMarkers[id] = targetGuid;
+    }
+
+    if (update)
+        SendRaidMarkerUpdate();
+}
+
+void Group::SendRaidMarkerUpdate()
+{
+    WorldPacket data(SMSG_RAID_MARKERS_CHANGED, 4);
+    uint32 mask = 0;
+    for (uint8 i = 0; i < RAID_MARKER_COUNT; ++i)
+        if (m_raidMarkers[i])
+            mask |= 1 << i;
+    data << uint32(mask);
+
+    BroadcastPacket(&data, false);
+}
+
+void Group::ClearRaidMarker(ObjectGuid guid)
+{
+    for (uint8 i = 0; i < RAID_MARKER_COUNT; ++i)
+    {
+        if (m_raidMarkers[i] == guid)
+        {
+            m_raidMarkers[i].Clear();
+            SendRaidMarkerUpdate();
+            break;
+        }
+    }
 }
 
 static void GetDataForXPAtKill_helper(Player* player, Unit const* victim, uint32& sum_level, Player* & member_with_max_level, Player* & not_gray_member_with_max_level)

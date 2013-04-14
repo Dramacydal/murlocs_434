@@ -46,6 +46,7 @@ class BattleField;
 #define MAX_RAID_SIZE 40
 #define MAX_RAID_SUBGROUPS (MAX_RAID_SIZE / MAX_GROUP_SIZE)
 #define TARGET_ICON_COUNT 8
+#define RAID_MARKER_COUNT 5
 
 enum LootMethod
 {
@@ -352,6 +353,9 @@ class MANGOS_DLL_SPEC Group
         void SetGroupUniqueFlag(ObjectGuid guid, GroupFlagsAssignment assignment, uint8 apply);
 
         void SetTargetIcon(uint8 id, ObjectGuid whoGuid, ObjectGuid targetGuid);
+        void SetRaidMarker(uint8 id, Player* who, ObjectGuid targetGuid, bool update = true);
+        void SendRaidMarkerUpdate();
+        void ClearRaidMarker(ObjectGuid guid);
 
         Difficulty GetDifficulty(bool isRaid) const { return isRaid ? m_raidDifficulty : m_dungeonDifficulty; }
         Difficulty GetDungeonDifficulty() const { return m_dungeonDifficulty; }
@@ -478,6 +482,7 @@ class MANGOS_DLL_SPEC Group
         BattleGround*       m_bgGroup;
         BattleField*        m_bfGroup;
         ObjectGuid          m_targetIcons[TARGET_ICON_COUNT];
+        ObjectGuid          m_raidMarkers[RAID_MARKER_COUNT];
         LootMethod          m_lootMethod;
         ItemQualities       m_lootThreshold;
         ObjectGuid          m_looterGuid;

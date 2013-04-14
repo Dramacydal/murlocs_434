@@ -30,7 +30,7 @@
 
 class WorldSession;
 class WorldPacket;
-class DynamicObj;
+class DynamicObject;
 class Item;
 class GameObject;
 class Group;
@@ -331,6 +331,7 @@ class Spell
         void EffectApplyGlyph(SpellEffectEntry const* effect);
         void EffectEnchantHeldItem(SpellEffectEntry const* effect);
         void EffectSummonObject(SpellEffectEntry const* effect);
+        void EffectSummonRaidMarker(SpellEffectEntry const* effect);
         void EffectResurrect(SpellEffectEntry const* effect);
         void EffectParry(SpellEffectEntry const* effect);
         void EffectBlock(SpellEffectEntry const* effect);

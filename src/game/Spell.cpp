@@ -5366,10 +5366,7 @@ void Spell::SendLogExecute()
                 case SPELL_EFFECT_SUMMON_OBJECT_WILD:
                 case SPELL_EFFECT_CREATE_HOUSE:
                 case SPELL_EFFECT_DUEL:
-                case SPELL_EFFECT_SUMMON_OBJECT_SLOT1:
-                //case SPELL_EFFECT_SUMMON_OBJECT_SLOT2:
-                //case SPELL_EFFECT_SUMMON_OBJECT_SLOT3:
-                //case SPELL_EFFECT_SUMMON_OBJECT_SLOT4:
+                case SPELL_EFFECT_SUMMON_OBJECT_SLOT:
                 case SPELL_EFFECT_171:
                     if (Unit* unit = m_targets.getUnitTarget())
                         data << unit->GetPackGUID();
@@ -7128,10 +7125,9 @@ SpellCastResult Spell::CheckCast(bool strict)
 
                 break;
             }
-            case SPELL_EFFECT_SUMMON_OBJECT_SLOT1:
-            case SPELL_EFFECT_SUMMON_OBJECT_SLOT2:
-            case SPELL_EFFECT_SUMMON_OBJECT_SLOT3:
-            case SPELL_EFFECT_SUMMON_OBJECT_SLOT4:
+            case SPELL_EFFECT_SUMMON_OBJECT_SLOT:
+            case SPELL_EFFECT_SURVEY:
+            case SPELL_EFFECT_SUMMON_RAID_MARKER:
             {
                 if (m_caster->GetTypeId() == TYPEID_PLAYER)
                 {

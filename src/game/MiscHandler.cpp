@@ -1920,11 +1920,3 @@ void WorldSession::HandleObjectUpdateFailedOpcode(WorldPacket& recv_data)
     }
 }
 
-void WorldSession::HandleClearRaidMarkerOpcode(WorldPacket& recv_data)
-{
-    int8 unk;
-    recv_data >> unk;
-
-    DEBUG_LOG("WORLD: Received CMSG_CLEAR_RAID_MARKER from %s (%u) unk: %i",
-        GetPlayerName(), GetAccountId(), unk);
-}

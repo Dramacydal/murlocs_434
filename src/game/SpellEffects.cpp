@@ -175,10 +175,10 @@ pEffect SpellEffects[TOTAL_SPELL_EFFECTS]=
     &Spell::EffectFeedPet,                                  //101 SPELL_EFFECT_FEED_PET
     &Spell::EffectDismissPet,                               //102 SPELL_EFFECT_DISMISS_PET
     &Spell::EffectReputation,                               //103 SPELL_EFFECT_REPUTATION
-    &Spell::EffectSummonObject,                             //104 SPELL_EFFECT_SUMMON_OBJECT_SLOT1
-    &Spell::EffectSummonObject,                             //105 SPELL_EFFECT_SUMMON_OBJECT_SLOT2
-    &Spell::EffectSummonObject,                             //106 SPELL_EFFECT_SUMMON_OBJECT_SLOT3
-    &Spell::EffectSummonObject,                             //107 SPELL_EFFECT_SUMMON_OBJECT_SLOT4
+    &Spell::EffectSummonObject,                             //104 SPELL_EFFECT_SUMMON_OBJECT_SLOT
+    &Spell::EffectSummonObject,                             //105 SPELL_EFFECT_SURVEY
+    &Spell::EffectSummonRaidMarker,                         //106 SPELL_EFFECT_SUMMON_RAID_MARKER
+    &Spell::EffectNULL,                                     //107 SPELL_EFFECT_LOOT_CORPSE
     &Spell::EffectDispelMechanic,                           //108 SPELL_EFFECT_DISPEL_MECHANIC
     &Spell::EffectSummonDeadPet,                            //109 SPELL_EFFECT_SUMMON_DEAD_PET
     &Spell::EffectDestroyAllTotems,                         //110 SPELL_EFFECT_DESTROY_ALL_TOTEMS
@@ -13073,21 +13073,18 @@ void Spell::EffectDismissPet(SpellEffectEntry const* /*effect*/)
 void Spell::EffectSummonObject(SpellEffectEntry const* effect)
 {
     uint32 go_id = effect->EffectMiscValue;
+    uint8 slot = effect->EffectMiscValueB;
+    if (effect->Effect == SPELL_EFFECT_SURVEY)
+        slot = 4;
 
-    uint8 slot = 0;
-    switch(effect->Effect)
-    {
-        case SPELL_EFFECT_SUMMON_OBJECT_SLOT1: slot = 0; break;
-        case SPELL_EFFECT_SUMMON_OBJECT_SLOT2: slot = 1; break;
-        case SPELL_EFFECT_SUMMON_OBJECT_SLOT3: slot = 2; break;
-        case SPELL_EFFECT_SUMMON_OBJECT_SLOT4: slot = 3; break;
-        default: return;
-    }
+    if (slot >= MAX_OBJECT_SLOT)
+        return;
 
     if (ObjectGuid guid = m_caster->m_ObjectSlotGuid[slot])
     {
         if (GameObject* obj = m_caster ? m_caster->GetMap()->GetGameObject(guid) : NULL)
             obj->SetLootState(GO_JUST_DEACTIVATED);
+
         m_caster->m_ObjectSlotGuid[slot].Clear();
     }
 
@@ -13100,12 +13097,13 @@ void Spell::EffectSummonObject(SpellEffectEntry const* effect)
     // Summon in random point all other units if location present
     else
     {
+        // Demonic Circle: Summon
         if(m_spellInfo->Id == 48018)
-       {
+        {
             x = m_caster->GetPositionX();
             y = m_caster->GetPositionY();
             z = m_caster->GetPositionZ();
-       }
+        }
         else
             m_caster->GetClosePoint(x, y, z, DEFAULT_WORLD_OBJECT_SIZE);
     }
@@ -13133,6 +13131,53 @@ void Spell::EffectSummonObject(SpellEffectEntry const* effect)
         ((Creature*)m_caster)->AI()->JustSummoned(pGameObj);
     if (m_originalCaster && m_originalCaster != m_caster && m_originalCaster->GetTypeId() == TYPEID_UNIT && ((Creature*)m_originalCaster)->AI())
         ((Creature*)m_originalCaster)->AI()->JustSummoned(pGameObj);
+}
+
+void Spell::EffectSummonRaidMarker(SpellEffectEntry const* effect)
+{
+    Unit* caster = GetAffectiveCaster();
+    // FIXME: in case wild GO will used wrong affective caster (target in fact) as dynobject owner
+    if (!caster)
+        caster = m_caster;
+
+    if (!caster->GetTypeId() != TYPEID_PLAYER)
+        return;
+
+    Player* pCaster = (Player*)caster;
+
+    Group* group = pCaster->GetGroup();
+    if (!group)
+        return;
+
+    if (!group->IsAssistant(pCaster->GetObjectGuid()) && !group->IsLeader(pCaster->GetObjectGuid()))
+        return;
+
+    uint32 go_id = effect->EffectMiscValue;
+
+    uint8 slot = damage;
+
+    float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(effect->GetRadiusIndex()));
+
+    if (Player* modOwner = pCaster->GetSpellModOwner())
+        modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RADIUS, radius);
+
+    float x, y, z;
+    if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+        m_targets.getDestination(x, y, z);
+    else if (Unit* target = m_targets.getUnitTarget())
+        target->GetPosition(x, y, z);
+    else
+        pCaster->GetPosition(x, y, z);
+
+    DynamicObject* dynObj = new DynamicObject;
+    if (!dynObj->Create(pCaster->GetMap()->GenerateLocalLowGuid(HIGHGUID_DYNAMICOBJECT), pCaster, m_spellInfo->Id, SpellEffectIndex(effect->EffectIndex), x, y, z, m_duration, radius, DYNAMIC_OBJECT_RAID_MARKER))
+    {
+        delete dynObj;
+        return;
+    }
+
+    group->SetRaidMarker(slot, pCaster, dynObj->GetObjectGuid());
+    pCaster->GetMap()->Add(dynObj);
 }
 
 void Spell::EffectResurrect(SpellEffectEntry const* /*effect*/)

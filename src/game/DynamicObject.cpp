@@ -82,7 +82,14 @@ bool DynamicObject::Create(uint32 guidlow, Unit *caster, uint32 spellId, SpellEf
     SetEntry(spellId);
     SetObjectScale(DEFAULT_OBJECT_SCALE);
 
-    SetGuidValue(DYNAMICOBJECT_CASTER, caster->GetObjectGuid());
+    if (type == DYNAMIC_OBJECT_RAID_MARKER)
+    {
+        MANGOS_ASSERT(caster->GetTypeId() == TYPEID_PLAYER && ((Player*)caster)->GetGroup()
+            && "DYNAMIC_OBJECT_RAID_MARKER must only be casted by players and that are in group.");
+        SetGuidValue(DYNAMICOBJECT_CASTER, ((Player*)caster)->GetGroup()->GetObjectGuid());
+    }
+    else
+        SetGuidValue(DYNAMICOBJECT_CASTER, caster->GetObjectGuid());
 
     SetUInt32Value(DYNAMICOBJECT_BYTES, spellProto->SpellVisual[0] | (type << 28));
     SetUInt32Value(DYNAMICOBJECT_SPELLID, spellId);
@@ -131,8 +138,16 @@ void DynamicObject::Update(uint32 /*update_diff*/, uint32 p_time)
 
     if (deleteThis)
     {
-        DEBUG_LOG("DynObject %s removed from caster %s", GetGuidStr().c_str(), caster->GetGuidStr().c_str());
-        caster->RemoveDynObjectWithGUID(GetObjectGuid());
+        DEBUG_LOG("DynObject %s type %u removed from caster %s", GetGuidStr().c_str(), GetType(), caster->GetGuidStr().c_str());
+
+        if (GetType() == DYNAMIC_OBJECT_RAID_MARKER)
+        {
+            if (Group* group = sObjectMgr.GetGroup(GetCasterGuid()))
+                group->ClearRaidMarker(GetObjectGuid());
+        }
+        else
+            caster->RemoveDynObjectWithGUID(GetObjectGuid());
+
         Delete();
     }
 }
