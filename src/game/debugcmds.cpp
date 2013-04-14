@@ -1394,7 +1394,7 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
         if (*args)
         {
             m_session->GetPlayer()->debugObg = NULL;
-            return;
+            return true;
         }
 
         if (!m_session->GetPlayer()->debugObg)
@@ -1404,11 +1404,11 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
                 PHASEMASK_NORMAL, plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation(), 0.0f, 0.0f, 1.0f, 0.0f))
             {
                 delete go;
-                return;
+                return true;
             }
 
             m_session->GetPlayer()->debugObg = go;
-            return;
+            return true;
         }
 
         UpdateData transData(plr->GetMapId());
