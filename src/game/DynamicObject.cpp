@@ -113,12 +113,24 @@ Unit* DynamicObject::GetCaster() const
 
 void DynamicObject::Update(uint32 /*update_diff*/, uint32 p_time)
 {
-    // caster can be not in world at time dynamic object update, but dynamic object not yet deleted in Unit destructor
     Unit* caster = GetCaster();
-    if (!caster)
+
+    if (GetType() == DYNAMIC_OBJECT_RAID_MARKER)
     {
-        Delete();
-        return;
+        if (!sObjectMgr.GetGroup(GetCasterGuid()))
+        {
+            Delete();
+            return;
+        }
+    }
+    else
+    {
+        // caster can be not in world at time dynamic object update, but dynamic object not yet deleted in Unit destructor
+        if (!caster)
+        {
+            Delete();
+            return;
+        }
     }
 
     bool deleteThis = false;
