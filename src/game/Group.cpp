@@ -1044,21 +1044,10 @@ void Group::SetRaidMarker(uint8 id, Player* who, ObjectGuid targetGuid, bool upd
     {
         // remove all markers
         for (uint8 i = 0; i < RAID_MARKER_COUNT; ++i)
-        {
-            if (DynamicObject* object = who->GetMap()->GetDynamicObject(m_raidMarkers[i]))
-            {
-                object->Delete();
-                m_raidMarkers[i].Clear();
-            }
-        }
+            m_raidMarkers[i].Clear();
     }
     else
-    {
-        if (DynamicObject* object = who->GetMap()->GetDynamicObject(m_raidMarkers[id]))
-            object->Delete();
-
         m_raidMarkers[id] = targetGuid;
-    }
 
     if (update)
         SendRaidMarkerUpdate();
@@ -1087,6 +1076,15 @@ void Group::ClearRaidMarker(ObjectGuid guid)
             break;
         }
     }
+}
+
+bool Group::HasRaidMarker(ObjectGuid guid) const
+{
+    for (uint8 i = 0; i < RAID_MARKER_COUNT; ++i)
+        if (m_raidMarkers[i] == guid)
+            return true;
+
+    return false;
 }
 
 static void GetDataForXPAtKill_helper(Player* player, Unit const* victim, uint32& sum_level, Player* & member_with_max_level, Player* & not_gray_member_with_max_level)

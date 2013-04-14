@@ -116,7 +116,8 @@ void DynamicObject::Update(uint32 /*update_diff*/, uint32 p_time)
     Unit* caster = NULL;
     if (GetType() == DYNAMIC_OBJECT_RAID_MARKER)
     {
-        if (!sObjectMgr.GetGroup(GetCasterGuid()))
+        Group* group = sObjectMgr.GetGroup(GetCasterGuid());
+        if (!group || !group->HasRaidMarker(GetObjectGuid()))
         {
             Delete();
             return;

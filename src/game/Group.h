@@ -411,6 +411,7 @@ class MANGOS_DLL_SPEC Group
         void SetGroupRoles(ObjectGuid guid, uint8 roles);
         uint8 GetGroupRoles(ObjectGuid guid);
         ObjectGuid GetRaidMarker(uint8 id) const { return m_raidMarkers[id]; }
+        bool HasRaidMarker(ObjectGuid guid) const;
 
     protected:
         bool _addMember(ObjectGuid guid, const char* name);
