@@ -7715,7 +7715,8 @@ SpellCastResult Spell::CheckCast(bool strict)
 
     if (!m_IsTriggeredSpell && !m_caster->GetObjectGuid().IsVehicle() &&
         VMAP::VMapFactory::checkSpellForLoS(m_spellInfo->Id) &&
-        !m_targets.getUnitTarget() && !m_targets.getGOTarget() && !m_targets.getItemTarget())
+        !m_targets.getUnitTarget() && !m_targets.getGOTarget() && !m_targets.getItemTarget() &&
+        !m_spellInfo->HasAttribute(SPELL_ATTR_EX8_RAID_MARKER))
     {
         if (m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ && !m_caster->IsWithinLOS(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ))
             return SPELL_FAILED_LINE_OF_SIGHT;
