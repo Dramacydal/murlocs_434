@@ -64,6 +64,7 @@ static DumpTable dumpTables[] =
     { "character_gifts",                  DTT_ITEM_GIFT  }, //                  <- item guids
     { "item_instance",                    DTT_ITEM       }, //                  <- item guids
     { "item_loot",                        DTT_ITEM_LOOT  }, //                  <- item guids
+    { "queuedGifts",                      DTT_CHAR_TABLE },
     { NULL,                               DTT_CHAR_TABLE }, // end marker
 };
 
@@ -203,30 +204,45 @@ bool changetokGuid(std::string &str, int n, std::map<uint32, uint32> &guidMap, u
     return changetoknth(str, n, chritem, false, nonzero);
 }
 
-std::string CreateDumpString(char const* tableName, QueryResult *result)
+std::string CreateDumpString(char const* tableName, QueryNamedResult *result)
 {
     if (!tableName || !result)
         return "";
 
-    std::ostringstream ss;
-    ss << "INSERT INTO "<< _TABLE_SIM_ << tableName << _TABLE_SIM_ << " VALUES (";
+    bool isQueuedGiftsTable = strcmp(tableName, "queuedGifts") == 0;
+
+    QueryFieldNames const& names = result->GetFieldNames();
+    std::ostringstream ss, ss2;
+    ss << "INSERT INTO "<< _TABLE_SIM_ << tableName << _TABLE_SIM_ << " (";
+    ss2 << "(";
     Field *fields = result->Fetch();
     for(uint32 i = 0; i < result->GetFieldCount(); ++i)
     {
-        if (i != 0)
-            ss << ", ";
+        if (isQueuedGiftsTable && i == 0)
+            continue;
 
+        if (i > (isQueuedGiftsTable ? 1 : 0))
+        {
+            ss << ", ";
+            ss2 << ", ";
+        }
+
+        ss << names[i];
         if (fields[i].IsNULL())
-            ss << "NULL";
+        {
+            ss2 << "NULL";
+        }
         else
         {
             std::string s =  fields[i].GetCppString();
             CharacterDatabase.escape_string(s);
 
-            ss << "'" << s << "'";
+            ss2 << "'" << s << "'";
         }
     }
-    ss << ");";
+    ss << ") VALUES ";
+    ss2 << ");";
+    ss << ss2.str();
     return ss.str();
 }
 
@@ -259,7 +275,7 @@ std::string PlayerDumpWriter::GenerateWhereStr(char const* field, GUIDs const& g
     return wherestr.str();
 }
 
-void StoreGUID(QueryResult *result,uint32 field,std::set<uint32>& guids)
+void StoreGUID(QueryNamedResult *result,uint32 field,std::set<uint32>& guids)
 {
     Field* fields = result->Fetch();
     uint32 guid = fields[field].GetUInt32();
@@ -267,7 +283,7 @@ void StoreGUID(QueryResult *result,uint32 field,std::set<uint32>& guids)
         guids.insert(guid);
 }
 
-void StoreGUID(QueryResult *result,uint32 data,uint32 field, std::set<uint32>& guids)
+void StoreGUID(QueryNamedResult *result,uint32 data,uint32 field, std::set<uint32>& guids)
 {
     Field* fields = result->Fetch();
     std::string dataStr = fields[data].GetCppString();
@@ -295,6 +311,9 @@ void PlayerDumpWriter::DumpTableContent(std::string& dump, uint32 guid, char con
         default:            fieldname = "guid";                      break;
     }
 
+    if (strcmp(tableFrom, "queuedGifts") == 0)
+        fieldname = "charGuid";
+
     // for guid set stop if set is empty
     if (guids && guids->empty())
         return;                                             // nothing to do
@@ -313,7 +332,7 @@ void PlayerDumpWriter::DumpTableContent(std::string& dump, uint32 guid, char con
         else                                                // not set case, get single guid string
             wherestr = GenerateWhereStr(fieldname,guid);
 
-        QueryResult *result = CharacterDatabase.PQuery("SELECT * FROM %s WHERE %s", tableFrom, wherestr.c_str());
+        QueryNamedResult *result = CharacterDatabase.PQueryNamed("SELECT * FROM %s WHERE %s", tableFrom, wherestr.c_str());
         if (!result)
             return;
 
