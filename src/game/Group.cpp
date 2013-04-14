@@ -374,6 +374,7 @@ bool Group::AddMember(ObjectGuid guid, const char* name)
         if(isRaidGroup())
             player->UpdateForQuestWorldObjects();
 
+        player->UpdateForRaidMarkers(this);
     }
 
     return true;
@@ -391,6 +392,8 @@ uint32 Group::RemoveMember(ObjectGuid guid, uint8 method)
             // quest related GO state dependent from raid membership
             if (isRaidGroup())
                 player->UpdateForQuestWorldObjects();
+
+            player->UpdateForRaidMarkers(this);
 
             WorldPacket data;
 

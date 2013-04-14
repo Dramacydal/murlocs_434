@@ -410,6 +410,7 @@ class MANGOS_DLL_SPEC Group
         bool isLFRGroup()  const { return (m_groupType & GROUPTYPE_LFD && m_groupType & GROUPTYPE_RAID) ; }
         void SetGroupRoles(ObjectGuid guid, uint8 roles);
         uint8 GetGroupRoles(ObjectGuid guid);
+        ObjectGuid GetRaidMarker(uint8 id) const { return m_raidMarkers[id]; }
 
     protected:
         bool _addMember(ObjectGuid guid, const char* name);
