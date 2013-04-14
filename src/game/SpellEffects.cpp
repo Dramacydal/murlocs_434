@@ -13140,7 +13140,7 @@ void Spell::EffectSummonRaidMarker(SpellEffectEntry const* effect)
     if (!caster)
         caster = m_caster;
 
-    if (!caster->GetTypeId() != TYPEID_PLAYER)
+    if (caster->GetTypeId() != TYPEID_PLAYER)
         return;
 
     Player* pCaster = (Player*)caster;
