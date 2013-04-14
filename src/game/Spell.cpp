@@ -3704,6 +3704,9 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                                 targetUnitMap.push_back(owner);
                     }
                     break;
+                case SPELL_EFFECT_SUMMON_RAID_MARKER:
+                    targetUnitMap.push_back(m_caster);
+                    break;
                 default:
                     break;
             }
