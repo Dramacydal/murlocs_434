@@ -221,6 +221,16 @@ bool DynamicObject::isVisibleForInState(Player const* u, WorldObject const* view
     if (GetCasterGuid() == u->GetObjectGuid())
         return true;
 
+    if (GetType() == DYNAMIC_OBJECT_RAID_MARKER)
+    {
+        Group const* group = u->GetGroup();
+        if (!group)
+            return false;
+
+        if (GetCasterGuid() != group->GetObjectGuid())
+            return false;
+    }
+
     // normal case
     return IsWithinDistInMap(viewPoint, GetMap()->GetVisibilityDistance() + (inVisibleList ? World::GetVisibleObjectGreyDistance() : 0.0f), false);
 }
