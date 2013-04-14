@@ -2154,9 +2154,6 @@ void GameObject::SetCapturePointSlider(float value)
 
 void GameObject::TickCapturePoint()
 {
-    if (GetMap()->IsBattleGroundOrArena())
-        return;
-
     // TODO: On retail: Ticks every 5.2 seconds. slider value increase when new player enters on tick
 
     GameObjectInfo const* info = GetGOInfo();
