@@ -113,8 +113,7 @@ Unit* DynamicObject::GetCaster() const
 
 void DynamicObject::Update(uint32 /*update_diff*/, uint32 p_time)
 {
-    Unit* caster = GetCaster();
-
+    Unit* caster = NULL;
     if (GetType() == DYNAMIC_OBJECT_RAID_MARKER)
     {
         if (!sObjectMgr.GetGroup(GetCasterGuid()))
@@ -125,6 +124,7 @@ void DynamicObject::Update(uint32 /*update_diff*/, uint32 p_time)
     }
     else
     {
+        caster = GetCaster();
         // caster can be not in world at time dynamic object update, but dynamic object not yet deleted in Unit destructor
         if (!caster)
         {
@@ -141,7 +141,7 @@ void DynamicObject::Update(uint32 /*update_diff*/, uint32 p_time)
         deleteThis = true;
 
     // have radius and work as persistent effect
-    if (m_radius)
+    if (m_radius && caster)
     {
         // TODO: make a timer and update this in larger intervals
         MaNGOS::DynamicObjectUpdater notifier(*this, caster, m_positive);
