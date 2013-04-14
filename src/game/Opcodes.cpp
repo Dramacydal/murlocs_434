@@ -1435,9 +1435,10 @@ void InitializeOpcodes()
     OPCODE(SMSG_VOID_STORAGE_FAILED,                     STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
     OPCODE(SMSG_VOID_STORAGE_TRANSFER_CHANGES,           STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
     OPCODE(SMSG_VOID_TRANSFER_RESULT,                    STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
-    OPCODE(CMSG_OBJECT_UPDATE_FAILED,                    STATUS_LOGGEDIN, PROCESS_INPLACE,      &WorldSession::HandleObjectUpdateFailedOpcode  );
+    OPCODE(CMSG_OBJECT_UPDATE_FAILED,                    STATUS_LOGGEDIN, PROCESS_THREADUNSAFE, &WorldSession::HandleObjectUpdateFailedOpcode  );
     OPCODE(SMSG_MOVE_SET_ACTIVE_MOVER,                   STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
     OPCODE(CMSG_SET_PET_SLOT,                            STATUS_LOGGEDIN, PROCESS_INPLACE,      &WorldSession::HandleSetPetSlotOpcode          );
     OPCODE(SMSG_PET_SLOT_UPDATED,                        STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
     OPCODE(SMSG_PLAY_ONE_SHOT_ANIM_KIT,                  STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
+    OPCODE(CMSG_CLEAR_RAID_MARKER,                       STATUS_LOGGEDIN, PROCESS_THREADUNSAFE, &WorldSession::HandleClearRaidMarkerOpcode     );
 };

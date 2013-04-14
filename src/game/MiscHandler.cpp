@@ -1919,3 +1919,12 @@ void WorldSession::HandleObjectUpdateFailedOpcode(WorldPacket& recv_data)
         ERROR_LOG("WorldSession::HandleObjectUpdateFailedOpcode: received from player not in map");
     }
 }
+
+void WorldSession::HandleClearRaidMarkerOpcode(WorldPacket& recv_data)
+{
+    int8 unk;
+    recv_data >> unk;
+
+    DEBUG_LOG("WORLD: Received CMSG_CLEAR_RAID_MARKER from %s (%u) unk: %i",
+        GetPlayerName(), GetAccountId(), unk);
+}
