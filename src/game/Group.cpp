@@ -1498,7 +1498,7 @@ bool Group::_setMembersGroup(ObjectGuid guid, uint8 group)
     return true;
 }
 
-void Group::SetGroupUniqueFlag(ObjectGuid guid, GroupFlagsAssignment assignment, uint8 apply)
+void Group::SetGroupUniqueFlag(ObjectGuid guid, GroupFlagsAssignment assignment, uint8 apply, bool update /*= true*/)
 {
     static SqlStatementID updGgoupMember;
 

@@ -1460,6 +1460,7 @@ enum Opcodes
     SMSG_PLAY_ONE_SHOT_ANIM_KIT                           = 0x4A35, // 4.3.4 15595
     CMSG_CLEAR_RAID_MARKER                                = 0x7300, // 4.3.4 15595
     SMSG_RAID_MARKERS_CHANGED                             = 0x10A1, // 4.3.4 15595
+    CMSG_SET_EVERYONE_IS_ASSISTANT                        = 0x2530, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF

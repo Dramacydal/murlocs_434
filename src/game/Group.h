@@ -350,7 +350,7 @@ class MANGOS_DLL_SPEC Group
         void ChangeMembersGroup(ObjectGuid guid, uint8 group);
         void ChangeMembersGroup(Player *player, uint8 group);
 
-        void SetGroupUniqueFlag(ObjectGuid guid, GroupFlagsAssignment assignment, uint8 apply);
+        void SetGroupUniqueFlag(ObjectGuid guid, GroupFlagsAssignment assignment, uint8 apply, bool update = true);
 
         void SetTargetIcon(uint8 id, ObjectGuid whoGuid, ObjectGuid targetGuid);
         void SetRaidMarker(uint8 id, Player* who, ObjectGuid targetGuid, bool update = true);
