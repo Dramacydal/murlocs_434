@@ -878,6 +878,9 @@ void Object::_SetUpdateBits(UpdateMask *updateMask, Player* target) const
             updateMask->SetBit(index);
     }
 
+    if (GetTypeId() == TYPEID_GAMEOBJECT)
+        updateMask->SetBit(GAMEOBJECT_DISPLAYID);
+
     if (GetTypeId() == TYPEID_PLAYER)
         updateMask->SetBit(UNIT_FIELD_BYTES_2);
 }
@@ -893,6 +896,9 @@ void Object::_SetCreateBits(UpdateMask *updateMask, Player* target) const
         if(GetUInt32Value(index) != 0)
             updateMask->SetBit(index);
     }
+
+    if (GetTypeId() == TYPEID_GAMEOBJECT)
+        updateMask->SetBit(GAMEOBJECT_DISPLAYID);
 }
 
 void Object::SetInt32Value( uint16 index, int32 value )
