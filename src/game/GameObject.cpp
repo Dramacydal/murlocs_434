@@ -170,7 +170,8 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
 
     if (goinfo->type == GAMEOBJECT_TYPE_TRANSPORT)
     {
-        SetUInt32Value(GAMEOBJECT_LEVEL, goinfo->transport.pause);
+        //SetUInt32Value(GAMEOBJECT_LEVEL, goinfo->transport.pause);
+        SetUInt32Value(GAMEOBJECT_LEVEL, WorldTimer::getMSTime());
         if (goinfo->transport.startOpen)
             SetGoState(GO_STATE_ACTIVE);
     }
