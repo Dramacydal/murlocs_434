@@ -1400,13 +1400,17 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
         if (!m_session->GetPlayer()->debugObg)
         {
             GameObject* go = new GameObject;
-            if (!go->Create(plr->GetMap()->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), 193182, plr->GetMap(),
+            HighGuid high = HIGHGUID_GAMEOBJECT;
+            uint32 entry = 207547;
+            if (!go->Create(plr->GetMap()->GenerateLocalLowGuid(high), entry, plr->GetMap(),
                 PHASEMASK_NORMAL, plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation(), 0.0f, 0.0f, 1.0f, 0.0f))
             {
                 delete go;
                 return true;
             }
-             go->AddToWorld();
+
+            plr->GetMap()->Add(go);
+
             m_session->GetPlayer()->debugObg = go;
             return true;
         }
