@@ -1406,7 +1406,7 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
                 delete go;
                 return true;
             }
-
+             go->AddToWorld();
             m_session->GetPlayer()->debugObg = go;
             return true;
         }
