@@ -1397,9 +1397,10 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
             return true;
         }
 
+        GameObject* go = NULL;
         if (!m_session->GetPlayer()->debugObg)
         {
-            GameObject* go = new GameObject;
+            go = new GameObject;
             HighGuid high = HIGHGUID_GAMEOBJECT;
             uint32 entry = 207547;
             if (!go->Create(plr->GetMap()->GenerateLocalLowGuid(high), entry, plr->GetMap(),
@@ -1416,7 +1417,12 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
         }
 
         UpdateData transData(plr->GetMapId());
-        m_session->GetPlayer()->debugObg->BuildValuesUpdateBlockForPlayer(&transData, plr);
+
+        go = m_session->GetPlayer()->debugObg;
+        //go->BuildValuesUpdateBlockForPlayer(&transData, plr);
+
+        go->BuildOutOfRangeUpdateBlock(&transData);
+        go->BuildCreateUpdateBlockForPlayer(&transData, plr);
 
         WorldPacket packet;
         transData.BuildPacket(&packet);
