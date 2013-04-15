@@ -749,7 +749,7 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask *
                     else
                     {
                         // disable quest object
-                        *data << uint16(0);
+                        *data << uint16(m_uint32Values[index] & 0xFFFF);
                         *data << uint16(-1);
                     }
                 }
