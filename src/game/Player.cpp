@@ -22682,10 +22682,10 @@ void Player::UpdateForRaidMarkers(Group* group)
         if (DynamicObject* obj = GetMap()->GetDynamicObject(group->GetRaidMarker(i)))
             if (group == GetGroup())
             {
-                if (!HaveAtClient(obj) && obj->GetMapId() == GetMapId())
+                if (obj->GetMapId() == GetMapId())
                     obj->BuildCreateUpdateBlockForPlayer(&udata, this);
             }
-            else if (HaveAtClient(obj))
+            else
                 obj->BuildOutOfRangeUpdateBlock(&udata);
     }
 
