@@ -282,10 +282,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
     data->WriteBit(updateFlags & UPDATEFLAG_SELF);
     data->WriteBit(updateFlags & UPDATEFLAG_VEHICLE);
     data->WriteBit(updateFlags & UPDATEFLAG_LIVING);
-    if (GetEntry() == 207547)
-        data->WriteBits(2, 24);
-    else
-        data->WriteBits(0, 24);                                     // Byte Counter
+    data->WriteBits(0, 24);                                     // Byte Counter
     data->WriteBit(false);
     data->WriteBit(updateFlags & UPDATEFLAG_POSITION);                // flags & UPDATEFLAG_HAS_POSITION Game Object Position
     data->WriteBit(updateFlags & UPDATEFLAG_HAS_POSITION);            // Stationary Position
@@ -408,12 +405,6 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
     }
 
     data->FlushBits();
-
-    if (GetEntry() == 207547)
-    {
-        *data << int32(10000);
-        *data << int32(16667);
-    }
 
     if (updateFlags & UPDATEFLAG_LIVING)
     {
