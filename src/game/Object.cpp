@@ -273,23 +273,38 @@ void Object::DestroyForPlayer( Player *target, bool anim ) const
 void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
 {
     ObjectGuid Guid = GetObjectGuid();
+    bool unkFlag = false;
 
     data->WriteBit(false);
     data->WriteBit(false);
     data->WriteBit(updateFlags & UPDATEFLAG_ROTATION);
-    data->WriteBit(updateFlags & UPDATEFLAG_ANIM_KITS);               // AnimKits
+    data->WriteBit(updateFlags & UPDATEFLAG_ANIM_KITS);
     data->WriteBit(updateFlags & UPDATEFLAG_HAS_ATTACKING_TARGET);
     data->WriteBit(updateFlags & UPDATEFLAG_SELF);
     data->WriteBit(updateFlags & UPDATEFLAG_VEHICLE);
     data->WriteBit(updateFlags & UPDATEFLAG_LIVING);
-    if (GetEntry() == 207547)
-        data->WriteBits(2, 24);
-    else
-        data->WriteBits(0, 24);                                     // Byte Counter
+
+    std::vector<uint32> transportFrames;
+    if (updateFlags & UPDATEFLAG_TRANSPORT_ARR)
+    {
+        const GameObjectInfo* goInfo = ((GameObject const*)this)->GetGOInfo();
+        if (goInfo->type == GAMEOBJECT_TYPE_TRANSPORT)
+        {
+            if (goInfo->transport.startFrame)
+                transportFrames.push_back(goInfo->transport.startFrame);
+            if (goInfo->transport.nextFrame1)
+                transportFrames.push_back(goInfo->transport.nextFrame1);
+            //if (goInfo->transport.nextFrame2)
+            //    transportFrames.push_back(goInfo->transport.nextFrame2);
+            //if (goInfo->transport.nextFrame3)
+            //    transportFrames.push_back(goInfo->transport.nextFrame3);
+        }
+    }
+    data->WriteBits(transportFrames.size(), 24);
     data->WriteBit(false);
     data->WriteBit(updateFlags & UPDATEFLAG_POSITION);                // flags & UPDATEFLAG_HAS_POSITION Game Object Position
     data->WriteBit(updateFlags & UPDATEFLAG_HAS_POSITION);            // Stationary Position
-    data->WriteBit(updateFlags & UPDATEFLAG_TRANSPORT_ARR);
+    data->WriteBit(unkFlag);
     data->WriteBit(false);
     data->WriteBit(updateFlags & UPDATEFLAG_TRANSPORT);
 
@@ -409,11 +424,8 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
 
     data->FlushBits();
 
-    if (GetEntry() == 207547)
-    {
-        *data << int32(10000);
-        *data << int32(16667);
-    }
+    for (int i = 0; i < transportFrames.size(); ++i)
+        *data << uint32(transportFrames[i]);
 
     if (updateFlags & UPDATEFLAG_LIVING)
     {
@@ -528,7 +540,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
     if (updateFlags & UPDATEFLAG_ROTATION)
         *data << int64(((GameObject*)this)->GetRotation());
 
-    if (updateFlags & UPDATEFLAG_TRANSPORT_ARR)
+    if (unkFlag)
     {
         *data << float(0.0f);
         *data << float(0.0f);
@@ -758,9 +770,16 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask *
                     else
                     {
                         // disable quest object
-                        *data << uint16(m_uint32Values[index] & 0xFFFF);
+                        *data << uint16(0);
                         *data << uint16(-1);
                     }
+                }
+                else if (index == GAMEOBJECT_BYTES_1)
+                {
+                    if (((GameObject*)this)->GetGOInfo()->type == GAMEOBJECT_TYPE_TRANSPORT)
+                        *data << uint32(m_uint32Values[index] | GO_STATE_TRANSPORT_SPEC);
+                    else
+                        *data << uint32(m_uint32Values[index]);
                 }
                 else
                     *data << m_uint32Values[index];         // other cases

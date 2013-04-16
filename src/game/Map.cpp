@@ -1874,6 +1874,7 @@ WorldObject* Map::GetWorldObject(ObjectGuid guid)
     switch(guid.GetHigh())
     {
         case HIGHGUID_PLAYER:       return GetPlayer(guid);
+        case HIGHGUID_TRANSPORT:
         case HIGHGUID_GAMEOBJECT:   return GetGameObject(guid);
         case HIGHGUID_UNIT:
         case HIGHGUID_VEHICLE:      return GetCreature(guid);
@@ -1886,7 +1887,6 @@ WorldObject* Map::GetWorldObject(ObjectGuid guid)
             return corpse && corpse->IsInWorld() ? corpse : NULL;
         }
         case HIGHGUID_MO_TRANSPORT:
-        case HIGHGUID_TRANSPORT:
         default:                    break;
     }
 
