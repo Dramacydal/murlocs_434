@@ -1410,6 +1410,8 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
                 return true;
             }
 
+            go->SetManualAnim(true);
+
             plr->GetMap()->Add(go);
 
             m_session->GetPlayer()->debugObg = go;
@@ -1419,6 +1421,7 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
         UpdateData transData(plr->GetMapId());
 
         go = m_session->GetPlayer()->debugObg;
+        go->SetGoState(GOState(go->GetGoState() ^ 1));
         go->BuildValuesUpdateBlockForPlayer(&transData, plr);
 
         WorldPacket packet;
