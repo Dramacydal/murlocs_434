@@ -1402,7 +1402,7 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
         {
             go = new GameObject;
             HighGuid high = HIGHGUID_GAMEOBJECT;
-            uint32 entry = 207547;
+            uint32 entry = 208468;
             if (!go->Create(plr->GetMap()->GenerateLocalLowGuid(high), entry, plr->GetMap(),
                 PHASEMASK_NORMAL, plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation(), 0.0f, 0.0f, 1.0f, 0.0f))
             {
@@ -1419,10 +1419,7 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
         UpdateData transData(plr->GetMapId());
 
         go = m_session->GetPlayer()->debugObg;
-        //go->BuildValuesUpdateBlockForPlayer(&transData, plr);
-
-        go->BuildOutOfRangeUpdateBlock(&transData);
-        go->BuildCreateUpdateBlockForPlayer(&transData, plr);
+        go->BuildValuesUpdateBlockForPlayer(&transData, plr);
 
         WorldPacket packet;
         transData.BuildPacket(&packet);
