@@ -138,6 +138,10 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
         return false;
     }
 
+    if (goinfo->type == GAMEOBJECT_TYPE_TRANSPORT)
+        if (sTransportAnimationsByEntry.find(goinfo->id) == sTransportAnimationsByEntry.end())
+            return false;
+
     SetObjectScale(goinfo->size);
 
     SetFloatValue(GAMEOBJECT_PARENTROTATION+0, rotation0);
