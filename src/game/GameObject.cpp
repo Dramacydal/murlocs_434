@@ -1987,6 +1987,14 @@ bool GameObject::IsFriendlyTo(Unit const* unit) const
     return tester_faction->IsFriendlyTo(*target_faction);
 }
 
+void GameObject::SetGoState(GOState state)
+{
+    GOState oldState = GetGoState();
+    SetByteValue(GAMEOBJECT_BYTES_1, 0, state);
+    if (oldState != state && (m_updateFlag & UPDATEFLAG_TRANSPORT_ARR))
+        SetUInt32Value(GAMEOBJECT_LEVEL, WorldTimer::getMSTime());
+}
+
 void GameObject::SetDisplayId(uint32 modelId)
 {
     SetUInt32Value(GAMEOBJECT_DISPLAYID, modelId);

@@ -306,7 +306,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
     data->WriteBit(updateFlags & UPDATEFLAG_HAS_POSITION);            // Stationary Position
     data->WriteBit(unkFlag);
     data->WriteBit(false);
-    data->WriteBit(updateFlags & (UPDATEFLAG_TRANSPORT | UPDATEFLAG_TRANSPORT_ARR));
+    data->WriteBit(updateFlags & UPDATEFLAG_TRANSPORT);
 
     bool hasTransport = false,
         isSplineEnabled = false,
@@ -583,8 +583,6 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
 
     if (updateFlags & UPDATEFLAG_TRANSPORT)
         *data << uint32(WorldTimer::getMSTime());
-    else if (updateFlags & UPDATEFLAG_TRANSPORT_ARR)
-        *data << uint32(GetUInt32Value(GAMEOBJECT_LEVEL));
 }
 
 void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask *updateMask, Player *target) const

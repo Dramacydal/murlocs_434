@@ -731,13 +731,7 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
         GameobjectTypes GetGoType() const { return GameobjectTypes(GetByteValue(GAMEOBJECT_BYTES_1, 1)); }
         void SetGoType(GameobjectTypes type) { SetByteValue(GAMEOBJECT_BYTES_1, 1, type); }
         GOState GetGoState() const { return GOState(GetByteValue(GAMEOBJECT_BYTES_1, 0)); }
-        void SetGoState(GOState state)
-        {
-            GOState oldState = GetGoState();
-            SetByteValue(GAMEOBJECT_BYTES_1, 0, state);
-            if (oldState != state && (m_updateFlag & UPDATEFLAG_TRANSPORT_ARR))
-                SetUInt32Value(GAMEOBJECT_LEVEL, WorldTimer::getMSTime());
-        }
+        void SetGoState(GOState state);
         uint8 GetGoArtKit() const { return GetByteValue(GAMEOBJECT_BYTES_1, 2); }
         void SetGoArtKit(uint8 artkit) { SetByteValue(GAMEOBJECT_BYTES_1, 2, artkit); }
         uint8 GetGoAnimProgress() const { return GetByteValue(GAMEOBJECT_BYTES_1, 3); }
