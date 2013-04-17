@@ -1653,7 +1653,7 @@ void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
     }
 }
 
-bool BattleGround::AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 /*respawnTime*/)
+bool BattleGround::AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 /*respawnTime*/, bool manualAnim)
 {
     // must be created this way, adding to godatamap would add it to the base map of the instance
     // and when loading it (in go::LoadFromDB()), a new guid would be assigned to the object, and a new object would be created
@@ -1689,6 +1689,9 @@ bool BattleGround::AddObject(uint32 type, uint32 entry, float x, float y, float 
     data.animprogress   = 100;
     data.go_state       = 1;
 */
+
+    go->SetManualAnim(manualAnim);
+
     // add to world, so it can be later looked up from HashMapHolder
     go->AddToWorld();
     m_BgObjects[type] = go->GetObjectGuid();

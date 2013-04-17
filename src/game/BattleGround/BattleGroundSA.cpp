@@ -493,7 +493,7 @@ bool BattleGroundSA::SetupShips()
     for (uint8 i = 0; i < 2; ++i)
     {
         uint8 offset = m_defender == ALLIANCE ? 2 : 0;
-        if (!AddObject(i, boats[i + offset], BG_SA_BOAT_LOCATIONS[i][0], BG_SA_BOAT_LOCATIONS[i][1], BG_SA_BOAT_LOCATIONS[i][2]+ (offset ? -3.750f: 0) , BG_SA_BOAT_LOCATIONS[i][3], 0, 0, 1.0f, i == 0 ? 0.0002f : 0.00001f, RESPAWN_ONE_DAY))
+        if (!AddObject(i, boats[i + offset], BG_SA_BOAT_LOCATIONS[i][0], BG_SA_BOAT_LOCATIONS[i][1], BG_SA_BOAT_LOCATIONS[i][2]+ (offset ? -3.750f: 0) , BG_SA_BOAT_LOCATIONS[i][3], 0, 0, 1.0f, i == 0 ? 0.0002f : 0.00001f, RESPAWN_ONE_DAY, true))
         {
             ERROR_LOG("SA_ERROR: Can't spawn ships!");
             return false;
@@ -965,6 +965,9 @@ void BattleGroundSA::SendTransportsInit(Player* player)
             DEBUG_LOG("SendTransportsInit for %u for player %s NOT FOUND!!!", i, player->GetGuidStr().c_str());
     }
 
+    if (!transData.HasData())
+        return;
+
     WorldPacket packet;
     transData.BuildPacket(&packet);
     player->SendDirectMessage(&packet);
@@ -984,6 +987,9 @@ void BattleGroundSA::SendTransportsRemove(Player* player)
             DEBUG_LOG("SendTransportsRemove for %u for player %s NOT FOUND!!!", i, player->GetGuidStr().c_str());
     }
 
+    if (!transData.HasData())
+        return;
+
     WorldPacket packet;
     transData.BuildPacket(&packet);
     player->SendDirectMessage(&packet);
@@ -1002,6 +1008,9 @@ void BattleGroundSA::SendTransportsUpdate(Player* player)
         else
             DEBUG_LOG("SendTransportsUpdate for %u for player %s NOT FOUND!!!", i, player->GetGuidStr().c_str());
     }
+
+    if (!transData.HasData())
+        return;
 
     WorldPacket packet;
     transData.BuildPacket(&packet);
