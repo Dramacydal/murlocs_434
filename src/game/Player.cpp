@@ -2098,7 +2098,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
                 // send transfer packet to display load screen
                 WorldPacket data(SMSG_TRANSFER_PENDING, (4 + 4 + 4));
                 data.WriteBit(0);       // unknown
-                if (m_transport && m_transport->GetGOInfo()->type == GAMEOBJECT_TYPE_MO_TRANSPORT)
+                if (m_transport && m_transport->GetObjectGuid().IsMOTransport())
                 {
                     data.WriteBit(1);   // has transport
                     data << uint32(GetMapId());
@@ -2144,7 +2144,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
             {
                 // transfer finished, inform client to start load
                 WorldPacket data(SMSG_NEW_WORLD, 20);
-                if (m_transport && m_transport->GetGOInfo()->type == GAMEOBJECT_TYPE_MO_TRANSPORT)
+                if (m_transport && m_transport->GetObjectGuid().IsMOTransport())
                 {
                     data << float(m_movementInfo.GetTransportPos()->x);
                     data << float(m_movementInfo.GetTransportPos()->o);
@@ -2159,7 +2159,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
 
                 data << uint32(mapid);
 
-                if (m_transport && m_transport->GetGOInfo()->type == GAMEOBJECT_TYPE_MO_TRANSPORT)
+                if (m_transport && m_transport->GetObjectGuid().IsMOTransport())
                     data << float(m_movementInfo.GetTransportPos()->y);
                 else
                     data << float(final_y);

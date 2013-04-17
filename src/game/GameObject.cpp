@@ -128,9 +128,9 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
         return false;
     }
 
-    m_goInfo = goinfo;
+    Object::_Create(guidlow, goinfo->id, HIGHGUID_GAMEOBJECT);
 
-    Object::_Create(guidlow, goinfo->id, IsTransport() ? HIGHGUID_MO_TRANSPORT : HIGHGUID_GAMEOBJECT);
+    m_goInfo = goinfo;
 
     if (goinfo->type >= MAX_GAMEOBJECT_TYPE)
     {
@@ -197,7 +197,7 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
 
 void GameObject::Update(uint32 update_diff, uint32 p_time)
 {
-    if (m_goInfo->type == GAMEOBJECT_TYPE_MO_TRANSPORT)
+    if (GetObjectGuid().IsMOTransport())
     {
         //((Transport*)this)->Update(update_diff);
         return;
