@@ -1958,9 +1958,10 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
         grp->SetPlayerMap(GetObjectGuid(), mapid);
 
     // if we were on a transport, leave
-    if (!(options & TELE_TO_NOT_LEAVE_TRANSPORT) && GetTransport())
+    if (!(options & TELE_TO_NOT_LEAVE_TRANSPORT) && !m_movementInfo.GetTransportGuid().IsEmpty())
     {
-        GetTransport()->RemovePassenger(GetObjectGuid());
+        if (GetTransport())
+            GetTransport()->RemovePassenger(GetObjectGuid());
         SetTransport(NULL);
         m_movementInfo.ClearTransportData();
     }
