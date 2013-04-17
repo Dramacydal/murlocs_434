@@ -9422,34 +9422,30 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
             else
             {
                 // 1-3 A defend, 4-6 H defend, 7-9 unk defend, 1 - ok, 2 - half destroyed, 3 - destroyed
-                data << uint32(0xf09) << uint32(0x4);       // 7  3849 Gate of Temple
-                data << uint32(0xe36) << uint32(0x4);       // 8  3638 Gate of Yellow Moon
-                data << uint32(0xe27) << uint32(0x4);       // 9  3623 Gate of Green Emerald
-                data << uint32(0xe24) << uint32(0x4);       // 10 3620 Gate of Blue Sapphire
-                data << uint32(0xe21) << uint32(0x4);       // 11 3617 Gate of Red Sun
+                FillInitialWorldState(data,count,0xf09,0x4);    // 3849 Gate of Temple
+                FillInitialWorldState(data,count,0xe36,0x4);    // 3638 Gate of Yellow Moon
+                FillInitialWorldState(data,count,0xe27,0x4);    // 3623 Gate of Green Emerald
+                FillInitialWorldState(data,count,0xe24,0x4);    // 3620 Gate of Blue Sapphire
+                FillInitialWorldState(data,count,0xe21,0x4);    // 3617 Gate of Red Sun
 
-                data << uint32(0xe1e) << uint32(0x4);       // 12 3614 Gate of Purple Ametyst
+                FillInitialWorldState(data,count,0xe1e,0x4);    // 3614 Gate of Purple Ametyst
 
-                data << uint32(0xdf3) << uint32(0x0);       // 13 3571 bonus timer (1 - on, 0 - off)
-                data << uint32(0xded) << uint32(0x0);       // 14 3565 Horde Attacker
-                data << uint32(0xdec) << uint32(0x1);       // 15 3564 Alliance Attacker
-                // End Round (timer), better explain this by example, eg. ends in 19:59 -> A:BC
-                data << uint32(0xde9) << uint32(0x9);       // 16 3561 C
-                data << uint32(0xde8) << uint32(0x5);       // 17 3560 B
-                data << uint32(0xde7) << uint32(0x19);      // 18 3559 A
-                data << uint32(0xe35) << uint32(0x1);       // 19 3637 East g - Horde control
-                data << uint32(0xe34) << uint32(0x1);       // 20 3636 West g - Horde control
-                data << uint32(0xe33) << uint32(0x1);       // 21 3635 South g - Horde control
-                data << uint32(0xe32) << uint32(0x0);       // 22 3634 East g - Alliance control
-                data << uint32(0xe31) << uint32(0x0);       // 23 3633 West g - Alliance control
-                data << uint32(0xe30) << uint32(0x0);       // 24 3632 South g - Alliance control
-                data << uint32(0xe2f) << uint32(0x1);       // 25 3631 Chamber of Ancients - Horde control
-                data << uint32(0xe2e) << uint32(0x0);       // 26 3630 Chamber of Ancients - Alliance control
-                data << uint32(0xe2d) << uint32(0x0);       // 27 3629 Beach1 - Horde control
-                data << uint32(0xe2c) << uint32(0x0);       // 28 3628 Beach2 - Horde control
-                data << uint32(0xe2b) << uint32(0x1);       // 29 3627 Beach1 - Alliance control
-                data << uint32(0xe2a) << uint32(0x1);       // 30 3626 Beach2 - Alliance control
-                // and many unks...
+                FillInitialWorldState(data,count,0xdf3,0x0);    // 3571 bonus timer (1 - on, 0 - off)
+                FillInitialWorldState(data,count,0xded,0x0);    // 3565 Horde Attacker
+                FillInitialWorldState(data,count,0xdec,0x1);    // 3564 Alliance Attacker
+                FillInitialWorldState(data,count,0xde5,uint32(time(NULL) + 600));  // timer value
+                FillInitialWorldState(data,count,0xe35,0x1);    // 3637 East g - Horde control
+                FillInitialWorldState(data,count,0xe34,0x1);    // 3636 West g - Horde control
+                FillInitialWorldState(data,count,0xe33,0x1);    // 3635 South g - Horde control
+                FillInitialWorldState(data,count,0xe32,0x0);    // 3634 East g - Alliance control
+                FillInitialWorldState(data,count,0xe31,0x0);    // 3633 West g - Alliance control
+                FillInitialWorldState(data,count,0xe30,0x0);    // 3632 South g - Alliance control
+                FillInitialWorldState(data,count,0xe2f,0x1);    // 3631 Chamber of Ancients - Horde control
+                FillInitialWorldState(data,count,0xe2e,0x0);    // 3630 Chamber of Ancients - Alliance control
+                FillInitialWorldState(data,count,0xe2d,0x0);    // 3629 Beach1 - Horde control
+                FillInitialWorldState(data,count,0xe2c,0x0);    // 3628 Beach2 - Horde control
+                FillInitialWorldState(data,count,0xe2b,0x1);    // 3627 Beach1 - Alliance control
+                FillInitialWorldState(data,count,0xe2a,0x1);    // 3626 Beach2 - Alliance control
             }
             break;
         case 4710:
@@ -9457,25 +9453,25 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 bg->FillInitialWorldStates(data, count);
             else
             {
-                data << uint32(4221) << uint32(1); // 7
-                data << uint32(4222) << uint32(1); // 8
-                data << uint32(4226) << uint32(300); // 9
-                data << uint32(4227) << uint32(300); // 10
-                data << uint32(4322) << uint32(1); // 11
-                data << uint32(4321) << uint32(1); // 12
-                data << uint32(4320) << uint32(1); // 13
-                data << uint32(4323) << uint32(1); // 14
-                data << uint32(4324) << uint32(1); // 15
-                data << uint32(4325) << uint32(1); // 16
-                data << uint32(4317) << uint32(1); // 17
+                FillInitialWorldState(data,count,4221,1); // 7
+                FillInitialWorldState(data,count,4222,1); // 8
+                FillInitialWorldState(data,count,4226,300); // 9
+                FillInitialWorldState(data,count,4227,300); // 10
+                FillInitialWorldState(data,count,4322,1); // 11
+                FillInitialWorldState(data,count,4321,1); // 12
+                FillInitialWorldState(data,count,4320,1); // 13
+                FillInitialWorldState(data,count,4323,1); // 14
+                FillInitialWorldState(data,count,4324,1); // 15
+                FillInitialWorldState(data,count,4325,1); // 16
+                FillInitialWorldState(data,count,4317,1); // 17
 
-                data << uint32(4301) << uint32(1); // 18
-                data << uint32(4296) << uint32(1); // 19
-                data << uint32(4306) << uint32(1); // 20
-                data << uint32(4311) << uint32(1); // 21
-                data << uint32(4294) << uint32(1); // 22
-                data << uint32(4243) << uint32(1); // 23
-                data << uint32(4345) << uint32(1); // 24
+                FillInitialWorldState(data,count,4301,1); // 18
+                FillInitialWorldState(data,count,4296,1); // 19
+                FillInitialWorldState(data,count,4306,1); // 20
+                FillInitialWorldState(data,count,4311,1); // 21
+                FillInitialWorldState(data,count,4294,1); // 22
+                FillInitialWorldState(data,count,4243,1); // 23
+                FillInitialWorldState(data,count,4345,1); // 24
             }
             break;
         default:

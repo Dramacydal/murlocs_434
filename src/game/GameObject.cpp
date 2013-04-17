@@ -1037,10 +1037,13 @@ void GameObject::UseDoorOrButton(uint32 time_to_restore, bool alternative /* = f
 
 void GameObject::SwitchDoorOrButton(bool activate, bool alternative /* = false */)
 {
-    if(activate)
-        SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
-    else
-        RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
+    if (m_goInfo->type != GAMEOBJECT_TYPE_TRANSPORT)
+    {
+        if (activate)
+            SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
+        else
+            RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
+    }
 
     if(GetGoState() == GO_STATE_READY)                      //if closed -> open
         SetGoState(alternative ? GO_STATE_ACTIVE_ALTERNATIVE : GO_STATE_ACTIVE);

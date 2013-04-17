@@ -175,7 +175,6 @@ class MANGOS_DLL_SPEC ObjectGuid
                 case HIGHGUID_GAMEOBJECT:   return TYPEID_GAMEOBJECT;
                 case HIGHGUID_DYNAMICOBJECT:return TYPEID_DYNAMICOBJECT;
                 case HIGHGUID_CORPSE:       return TYPEID_CORPSE;
-                case HIGHGUID_TRANSPORT:    return TYPEID_GAMEOBJECT;
                 case HIGHGUID_MO_TRANSPORT: return TYPEID_GAMEOBJECT;
                 case HIGHGUID_VEHICLE:      return TYPEID_UNIT;
                 // unknown

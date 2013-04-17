@@ -53,7 +53,6 @@ BattleGroundSA::BattleGroundSA()
     m_SecondRoundStartDelay = BG_SA_ROUND_START_DELAY + 5 * IN_MILLISECONDS;
     m_Round_Timer = 0;
     m_TimerCap = BG_SA_ROUNDLENGTH;
-    m_TimerUpdateTimer = 0;
     m_Round = BG_SA_ROUND_ONE;
 
     m_relicGateDestroyed = false;
@@ -69,6 +68,8 @@ BattleGroundSA::BattleGroundSA()
     m_summonedBombs.clear();
 
     m_spawnTurretsTimer = 0;
+
+    m_roundStartTime = time(NULL);
 }
 
 BattleGroundSA::~BattleGroundSA()
@@ -97,9 +98,7 @@ void BattleGroundSA::FillInitialWorldStates(WorldPacket &data, uint32 &count)
 
     // Time will be sent on first update...
     FillInitialWorldState(data, count, BG_SA_WS_ENABLE_TIMER,   m_TimerEnabled ? uint32(1) : uint32(0));
-    FillInitialWorldState(data, count, BG_SA_WS_TIMER_MINUTES,  uint32(0));
-    FillInitialWorldState(data, count, BG_SA_WS_TIMER_10SEC,    uint32(0));
-    FillInitialWorldState(data, count, BG_SA_WS_TIMER_SEC,      uint32(0));
+    FillInitialWorldState(data, count, BG_SA_WS_TIMER_VALUE,  uint32(m_roundStartTime) + m_TimerCap / IN_MILLISECONDS);
 }
 
 void BattleGroundSA::StartShips()
@@ -122,6 +121,8 @@ void BattleGroundSA::ToggleTimer()
 {
     m_TimerEnabled = !m_TimerEnabled;
     UpdateWorldState(BG_SA_WS_ENABLE_TIMER, m_TimerEnabled ? 1 : 0);
+    m_roundStartTime = time(NULL);
+    UpdateWorldState(BG_SA_WS_TIMER_VALUE,  uint32(m_roundStartTime) + m_TimerCap / IN_MILLISECONDS);
 }
 
 void BattleGroundSA::EndBattleGround(Team winner)
@@ -203,14 +204,6 @@ void BattleGroundSA::Update(uint32 diff)
                 }
             }
         }
-
-        if (m_TimerUpdateTimer >= BG_SA_TIMER_UPDATE_INTERVAL)
-        {
-            m_TimerUpdateTimer = 0;
-            UpdateTimerWS();
-        }
-        else
-            m_TimerUpdateTimer += diff;
 
         for (int i = 0; i < BG_SA_GY_COUNT - 1; ++i)
         {
@@ -314,14 +307,6 @@ void BattleGroundSA::ResetWorldStates()
     }
 }
 
-void BattleGroundSA::UpdateTimerWS()
-{
-    uint32 end_of_round = (m_TimerCap - m_Round_Timer);
-    UpdateWorldState(BG_SA_WS_TIMER_MINUTES, end_of_round/60000);
-    UpdateWorldState(BG_SA_WS_TIMER_10SEC, (end_of_round%60000)/10000);
-    UpdateWorldState(BG_SA_WS_TIMER_SEC, ((end_of_round%60000)%10000)/1000);
-}
-
 void BattleGroundSA::StartingEventCloseDoors()
 {
 }
@@ -408,7 +393,6 @@ void BattleGroundSA::StartSecondRound(bool prepare)
         m_shipsStarted = false;
         m_shipsTimer = BG_SA_BOAT_START_TIMER + 5 * IN_MILLISECONDS;
         SetStartTime(0);
-        m_TimerUpdateTimer = 0;
         m_Round_Timer = 0;
         SetStatus(STATUS_WAIT_JOIN);
 

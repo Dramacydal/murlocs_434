@@ -41,10 +41,6 @@ enum BG_SA_XP_Reward
 
 enum BG_SA_WorldStates
 {
-    BG_SA_WS_TIMER_MINUTES              = 3559,
-    BG_SA_WS_TIMER_10SEC                = 3560,
-    BG_SA_WS_TIMER_SEC                  = 3561,
-
     BG_SA_WS_ALLY_ATTACKS               = 4352,
     BG_SA_WS_HORDE_ATTACKS              = 4353,
 
@@ -71,7 +67,8 @@ enum BG_SA_WorldStates
     BG_SA_WS_ALLIANCE_DEFENCE_TAKEN     = 3630,
 
     BG_SA_WS_BONUS_TIMER                = 0xDF3,
-    BG_SA_WS_ENABLE_TIMER               = 3564
+    BG_SA_WS_ENABLE_TIMER               = 3564,
+    BG_SA_WS_TIMER_VALUE                = 3557,
 };
 
 #define BG_SA_GATE_COUNT    6
@@ -147,7 +144,6 @@ enum BG_SA_Timers
     BG_SA_BOAT_START_TIMER      = 60 * IN_MILLISECONDS,
     BG_SA_ROUND_START_DELAY     = 120 * IN_MILLISECONDS,
     BG_SA_BANNER_DELAY          = 3 * IN_MILLISECONDS,
-    BG_SA_TIMER_UPDATE_INTERVAL = 1 * IN_MILLISECONDS
 };
 
 enum BG_SA_GateStatus
@@ -319,7 +315,6 @@ class BattleGroundSA : public BattleGround
         uint32              m_Round;
         uint32              m_Round_Timer;
         uint32              m_TimerCap;
-        uint32              m_TimerUpdateTimer;
         uint32              m_SecondRoundStartDelay;
         uint32              m_spawnTurretsTimer;
         bool                m_shipsStarted;
@@ -330,6 +325,7 @@ class BattleGroundSA : public BattleGround
         bool                round2StartPreparation;
         bool                m_TimerEnabled;
         std::set<ObjectGuid> m_summonedBombs;
+        time_t              m_roundStartTime;
 
         /* Gameobject spawning/despawning */
         uint32              m_BannerTimers[BG_SA_GY_COUNT];
@@ -358,7 +354,6 @@ class BattleGroundSA : public BattleGround
 
         void SendGraveYardCaptured(uint8 graveId, Team team);
         void StartSecondRound(bool prepare);
-        void UpdateTimerWS();
         void ResetRound();
         bool SetupShips();
 };
