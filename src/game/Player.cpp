@@ -2159,7 +2159,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
 
                 data << uint32(mapid);
 
-                if (m_transport && m_transport->GetObjectGuid().IsMOTransport())
+                if (m_transport &&  && m_transport->GetGOInfo()->type == GAMEOBJECT_TYPE_MO_TRANSPORT)
                     data << float(m_movementInfo.GetTransportPos()->y);
                 else
                     data << float(final_y);
