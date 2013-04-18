@@ -1139,9 +1139,9 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                             continue;
 
                         // Except Shadow Word: Death periodic
-                        if (IsSpellAppliesAura(spellProto, SPELL_AURA_PERIODIC_DAMAGE) && spellProto->Id != 32409 ||
-                            IsSpellAppliesAura(spellProto, SPELL_AURA_PERIODIC_DAMAGE_PERCENT) ||
-                            IsSpellAppliesAura(spellProto, SPELL_AURA_PERIODIC_LEECH))
+                        if (IsSpellHaveAura(spellProto, SPELL_AURA_PERIODIC_DAMAGE) && spellProto->Id != 32409 ||
+                            IsSpellHaveAura(spellProto, SPELL_AURA_PERIODIC_DAMAGE_PERCENT) ||
+                            IsSpellHaveAura(spellProto, SPELL_AURA_PERIODIC_LEECH))
                             toRemoveSpellList.insert(spellProto->Id);
                     }
 
