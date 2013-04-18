@@ -141,7 +141,7 @@ const uint32 BG_SA_GraveyardIds[2]  = {1349, 1350}; // 0 - relic, 1 - beach
 enum BG_SA_Timers
 {
     BG_SA_ROUNDLENGTH           = 10 * MINUTE * IN_MILLISECONDS,
-    BG_SA_BOAT_START_TIMER      = 60 * IN_MILLISECONDS,
+    BG_SA_BOAT_START_TIMER      = 55 * IN_MILLISECONDS,
     BG_SA_ROUND_START_DELAY     = 120 * IN_MILLISECONDS,
     BG_SA_BANNER_DELAY          = 3 * IN_MILLISECONDS,
 };
