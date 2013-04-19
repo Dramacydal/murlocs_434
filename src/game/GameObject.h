@@ -815,6 +815,8 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
         void SetCooldownTime(time_t time) { m_cooldownTime = time; }
         time_t GetCooldownTime() { return m_cooldownTime; }
 
+        void SetWorldRotationAngles(float z_rot, float y_rot, float x_rot);
+
     protected:
         uint32      m_spellId;
         time_t      m_respawnTime;                          // (secs) time of next respawn (or despawn if GO have owner()),

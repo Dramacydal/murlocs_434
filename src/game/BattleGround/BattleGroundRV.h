@@ -38,6 +38,14 @@ enum BattlegroundRVData
     BG_RV_LIFT_TIME             = 15 * IN_MILLISECONDS,
 };
 
+enum
+{
+    BG_RV_GO_PILLAR             = 208469,
+    BG_RV_GO_LIGHTNING_PILLAR   = 208470,
+    BG_RV_GO_IVORY_PILLAR       = 208471,
+    BG_RV_GO_AXE_PILLAR         = 208468,
+};
+
 class BattleGroundRVScore : public BattleGroundScore
 {
     public:
@@ -68,6 +76,8 @@ class BattleGroundRV : public BattleGround
         bool HandlePlayerUnderMap(Player * plr) override;
 
         bool IsWithinLOSInBG(float x1, float y1, float z1, float x2, float y2, float z2);
+
+        void HandleGameObjectCreate(GameObject* go) override;
     private:
         void UpdatePlayerVisibilities();
         void CheckBuggers();
@@ -79,6 +89,6 @@ class BattleGroundRV : public BattleGround
         bool m_bHorizontalPillarsUp;
         bool m_bVerticalPillarsUp;
         bool m_bGearsSwitched;
-        bool m_bLiftsStarted;
 };
+
 #endif

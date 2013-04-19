@@ -41,6 +41,7 @@
 #include "Util.h"
 #include "ScriptMgr.h"
 #include "SQLStorages.h"
+#include <G3D/Quat.h>
 
 GameObject::GameObject() : WorldObject(),
     m_goInfo(NULL),
@@ -2382,3 +2383,19 @@ void GameObject::TickCapturePoint()
             GetMap()->ScriptsStart(sEventScripts, eventId, this, this);
     }
 }
+
+void GameObject::SetWorldRotationAngles(float z_rot, float y_rot, float x_rot)
+{
+    G3D::Quat quat(G3D::Matrix3::fromEulerAnglesZYX(z_rot, y_rot, x_rot));
+
+    // Temporary solution for gameobjects that has no rotation data in DB:
+    if (quat.z == 0.f && quat.w == 0.f)
+        quat = G3D::Quat::fromAxisAngleRotation(G3D::Vector3::unitZ(), GetOrientation());
+
+    quat.unitize();
+    //m_worldRotation.x = quat.x;
+    //m_worldRotation.y = quat.y;
+    //m_worldRotation.z = quat.z;
+    //m_worldRotation.w = quat.w;
+}
+
