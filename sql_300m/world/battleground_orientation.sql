@@ -16,5 +16,3 @@ UPDATE `battleground_template` SET `AllianceStartO` = 3.6324, `HordeStartO` = 1.
 UPDATE `battleground_template` SET `AllianceStartO` = 3.14, `HordeStartO` = 0 WHERE `id` = 7;
 -- Isle of Conquest
 UPDATE `battleground_template` SET `AllianceStartO` = 0, `HordeStartO` = 3.14 WHERE `id` = 30;
--- Ring of Valor
-UPDATE `battleground_template` SET `AllianceStartO` = 4.71, `HordeStartO` = 1.57 WHERE `id` = 11;

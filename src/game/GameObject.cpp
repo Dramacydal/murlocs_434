@@ -2088,14 +2088,14 @@ bool GameObject::BlocksLineOfSight(float x1, float y1, float z1, float x2, float
         case 194395:
             radius = 5.75f;
             break;
-        case 194583:    // Ring of Valor horizontal pillars
-        case 194585:
+        case 208468:    // Ring of Valor horizontal pillars
+        case 208470:
             radius = 2.1481f;
             checkzvalue = 32.0f;
             checkz = true;
             break;
-        case 194584:    // Ring of Valor vertical pillars
-        case 194587:
+        case 208469:    // Ring of Valor vertical pillars
+        case 208471:
             radius = 4.50f;
             checkzvalue = 35.0f;
             checkz = true;

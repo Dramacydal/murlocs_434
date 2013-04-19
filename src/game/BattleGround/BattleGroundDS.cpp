@@ -77,8 +77,30 @@ void BattleGroundDS::Update(uint32 diff)
                         if (!IsWaterfallSprout(creature))
                             creature->CastSpell(creature, BG_DS_SPELL_FLUSH, true);
                 }
+
                 ++m_pipeKnockbacks;
             }
+
+            // remove this when spell_dbc is implemented
+            for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+            {
+                Player * plr = sObjectMgr.GetPlayer(itr->first);
+                if (plr && !plr->isDead())
+                {
+                    if (plr->IsWithinLOS(1214.0f, 765.0f, 14.0f) && plr->GetDistance2d(1214.0f, 765.0f) <= 40.0f)
+                    {
+                        plr->KnockBackWithAngle(6.2f, 35.0f, 7.0f);
+                        plr->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
+                    }
+
+                    if (plr->IsWithinLOS(1369.0f, 817.0f, 14.0f) && plr->GetDistance2d(1369.0f, 817.0f) <= 40.0f)
+                    {
+                        plr->KnockBackWithAngle(3.06f, 35.0f, 7.0f);
+                        plr->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
+                    }
+                }
+            }
+
             m_uiPipeKnockback = 3000;
         }
         else

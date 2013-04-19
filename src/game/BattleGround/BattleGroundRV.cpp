@@ -205,12 +205,12 @@ bool BattleGroundRV::IsWithinLOSInBG(float x1, float y1, float z1, float x2, flo
             if (GameObject* obj = GetBgMap()->GetGameObject(*itr))
             {
                 DEBUG_LOG("Dynamic LOS: Ring of Valor: Found BG Object %s", itr->GetString().c_str());
-                if (obj->GetEntry() == 194583 || obj->GetEntry() == 194585)
+                if (obj->GetEntry() == 208468 || obj->GetEntry() == 208470)
                 {
                     if (!m_bHorizontalPillarsUp && !m_uiHorizontalLosDelay)
                         continue;
                 }
-                else if (obj->GetEntry() == 194584 || obj->GetEntry() == 194587)
+                else if (obj->GetEntry() == 208469 || obj->GetEntry() == 208471)
                 {
                     if (!m_bVerticalPillarsUp && !m_uiVerticalLosDelay)
                         continue;

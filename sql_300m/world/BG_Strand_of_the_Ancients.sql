@@ -1,5 +1,7 @@
 SET NAMES 'utf8';
 
+UPDATE `gameobject_template` SET `faction` = 0 WHERE `entry` = 192829;
+
 DELETE FROM `gameobject` WHERE `map` = 607;
 DELETE FROM `creature` WHERE `map` = 607;
 
