@@ -46,15 +46,6 @@ void BattleGroundRV::Update(uint32 diff)
 {
     BattleGround::Update(diff);
 
-    if (GetStatus() == STATUS_WAIT_JOIN)
-    {
-        if ((m_Events & BG_STARTING_EVENT_1) && GetStartDelayTime() <= BG_RV_LIFT_TIME && !m_bLiftsStarted)
-        {
-            OpenDoorEvent(RV_EVENT_OP_DOOR);
-            UpdatePlayerVisibilities();
-            m_bLiftsStarted = true;
-        }
-    }
     if (GetStatus() == STATUS_IN_PROGRESS)
     {
         if (m_uiHorizontalLosDelay)
@@ -108,6 +99,7 @@ void BattleGroundRV::StartingEventCloseDoors()
 
 void BattleGroundRV::StartingEventOpenDoors()
 {
+    OpenDoorEvent(RV_EVENT_OP_DOOR);
 }
 
 void BattleGroundRV::AddPlayer(Player* plr)
@@ -193,7 +185,6 @@ void BattleGroundRV::Reset()
     m_bHorizontalPillarsUp = true;
     m_bVerticalPillarsUp = false;
     m_bGearsSwitched = false;
-    m_bLiftsStarted = false;
 
     m_uiVerticalLosDelay = BG_RV_LOS_DELAY;
     m_uiHorizontalLosDelay = BG_RV_LOS_DELAY;
@@ -271,5 +262,18 @@ void BattleGroundRV::CheckBuggers()
                     plr->TeleportTo(GetMapId(), plr->GetPositionX(), plr->GetPositionY(), 29.0f, plr->GetOrientation());
             }
         }
+    }
+}
+
+void BattleGroundRV::HandleGameObjectCreate(GameObject* go)
+{
+    switch (go->GetEntry())
+    {
+        case BG_RV_GO_PILLAR:
+        case BG_RV_GO_LIGHTNING_PILLAR:
+        case BG_RV_GO_IVORY_PILLAR:
+        case BG_RV_GO_AXE_PILLAR:
+            go->SetManualAnim(true);
+            break;
     }
 }
