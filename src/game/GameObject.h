@@ -591,10 +591,7 @@ struct GameObjectData
     float posY;
     float posZ;
     float orientation;
-    float rotation0;
-    float rotation1;
-    float rotation2;
-    float rotation3;
+    QuaternionData rotation;
     int32  spawntimesecs;
     uint32 animprogress;
     GOState go_state;
@@ -656,7 +653,7 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
         void RemoveFromWorld() override;
 
         bool Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMask, float x, float y, float z, float ang,
-            float rotation0 = 0.0f, float rotation1 = 0.0f, float rotation2 = 0.0f, float rotation3 = 0.0f, uint8 animprogress = GO_ANIMPROGRESS_DEFAULT, GOState go_state = GO_STATE_READY);
+            QuaternionData rotation = QuaternionData(), uint8 animprogress = GO_ANIMPROGRESS_DEFAULT, GOState go_state = GO_STATE_READY);
         void Update(uint32 update_diff, uint32 p_time) override;
         GameObjectInfo const* GetGOInfo() const;
 
@@ -665,12 +662,11 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
 
         bool HasStaticDBSpawnData() const;                  // listed in `gameobject` table and have fixed in DB guid
 
-        void UpdateRotationFields(float rotation2 = 0.0f, float rotation3 = 0.0f);
         // z_rot, y_rot, x_rot - rotation angles around z, y and x axes
-        //void SetWorldRotationAngles(float z_rot, float y_rot, float x_rot);
-        //void SetWorldRotation(float qx, float qy, float qz, float qw);
-        //void SetTransportPathRotation(QuaternionData rotation);      // transforms(rotates) transport's path
-        //int64 GetPackedWorldRotation() const { return m_packedRotation; }
+        void SetWorldRotationAngles(float z_rot, float y_rot, float x_rot);
+        void SetWorldRotation(float qx, float qy, float qz, float qw);
+        void SetTransportPathRotation(QuaternionData rotation);      // transforms(rotates) transport's path
+        int64 GetPackedWorldRotation() const { return m_packedRotation; }
 
         // overwrite WorldObject function for proper name localization
         const char* GetNameForLocaleIdx(int32 locale_idx) const override;
@@ -810,12 +806,8 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
 
         bool BlocksLineOfSight(float x1, float y1, float z1, float x2, float y2, float z2) const;
 
-        uint64 GetRotation() const { return m_rotation; }
-
         void SetCooldownTime(time_t time) { m_cooldownTime = time; }
         time_t GetCooldownTime() { return m_cooldownTime; }
-
-        void SetWorldRotationAngles(float z_rot, float y_rot, float x_rot);
 
     protected:
         uint32      m_spellId;
@@ -842,7 +834,10 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
 
         GameObjectInfo const* m_goInfo;
         GameObjectDisplayInfoEntry const* m_displayInfo;
-        uint64 m_rotation;
+
+        int64 m_packedRotation;
+        QuaternionData m_worldRotation;
+
     private:
         void SwitchDoorOrButton(bool activate, bool alternative = false);
         void TickCapturePoint();

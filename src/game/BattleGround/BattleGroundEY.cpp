@@ -344,9 +344,9 @@ bool BattleGroundEY::SetupBattleGround()
             sLog.outError("BattleGroundEY: Unknown trigger: %u", eyTriggers[i]);
             continue;
         }
-        if (!AddObject(EY_OBJECT_SPEEDBUFF_FEL_REAVER_RUINS + i * 3, Buff_Entries[0], at->x, at->y, at->z, 0.907571f, 0, 0, 0.438371f, 0.898794f, RESPAWN_ONE_DAY)
-                || !AddObject(EY_OBJECT_SPEEDBUFF_FEL_REAVER_RUINS + i * 3 + 1, Buff_Entries[1], at->x, at->y, at->z, 0.907571f, 0, 0, 0.438371f, 0.898794f, RESPAWN_ONE_DAY)
-                || !AddObject(EY_OBJECT_SPEEDBUFF_FEL_REAVER_RUINS + i * 3 + 2, Buff_Entries[2], at->x, at->y, at->z, 0.907571f, 0, 0, 0.438371f, 0.898794f, RESPAWN_ONE_DAY))
+        if (!AddObject(EY_OBJECT_SPEEDBUFF_FEL_REAVER_RUINS + i * 3, Buff_Entries[0], at->x, at->y, at->z, 0.907571f, QuaternionData(0, 0, 0.438371f, 0.898794f), RESPAWN_ONE_DAY)
+                || !AddObject(EY_OBJECT_SPEEDBUFF_FEL_REAVER_RUINS + i * 3 + 1, Buff_Entries[1], at->x, at->y, at->z, 0.907571f, QuaternionData(0, 0, 0.438371f, 0.898794f), RESPAWN_ONE_DAY)
+                || !AddObject(EY_OBJECT_SPEEDBUFF_FEL_REAVER_RUINS + i * 3 + 2, Buff_Entries[2], at->x, at->y, at->z, 0.907571f, QuaternionData(0, 0, 0.438371f, 0.898794f), RESPAWN_ONE_DAY))
             sLog.outError("BattleGroundEY: Cannot spawn buff");
     }
 

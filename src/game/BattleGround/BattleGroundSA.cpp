@@ -477,16 +477,16 @@ bool BattleGroundSA::SetupShips()
     for (uint8 i = 0; i < 2; ++i)
     {
         uint8 offset = m_defender == ALLIANCE ? 2 : 0;
-        if (!AddObject(i, boats[i + offset], BG_SA_BOAT_LOCATIONS[i][0], BG_SA_BOAT_LOCATIONS[i][1], BG_SA_BOAT_LOCATIONS[i][2]+ (offset ? -3.750f: 0) , BG_SA_BOAT_LOCATIONS[i][3], 0, 0, 1.0f, i == 0 ? 0.0002f : 0.00001f, RESPAWN_ONE_DAY, true))
+        if (!AddObject(i, boats[i + offset], BG_SA_BOAT_LOCATIONS[i][0], BG_SA_BOAT_LOCATIONS[i][1], BG_SA_BOAT_LOCATIONS[i][2]+ (offset ? -3.750f: 0) , BG_SA_BOAT_LOCATIONS[i][3], QuaternionData(0, 0, 1.0f, i == 0 ? 0.0002f : 0.00001f), RESPAWN_ONE_DAY, true))
         {
             ERROR_LOG("SA_ERROR: Can't spawn ships!");
             return false;
         }
 
         if (i == 0)
-            GetBGObject(i)->UpdateRotationFields(1.0f, 0.0002f);
+            GetBGObject(i)->SetTransportPathRotation(QuaternionData(0.0f, 0.0f, 1.0f, 0.0002f));
         else
-            GetBGObject(i)->UpdateRotationFields(1.0f, 0.00001f);
+            GetBGObject(i)->SetTransportPathRotation(QuaternionData(0, 0, 1.0f, 0.00001f));
 
         SpawnBGObject(m_BgObjects[i], RESPAWN_IMMEDIATELY);
     }

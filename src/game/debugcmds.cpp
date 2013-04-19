@@ -1404,7 +1404,7 @@ bool ChatHandler::HandleDebugTransportCommand(char* args)
             HighGuid high = HIGHGUID_GAMEOBJECT;
             uint32 entry = 208468;
             if (!go->Create(plr->GetMap()->GenerateLocalLowGuid(high), entry, plr->GetMap(),
-                PHASEMASK_NORMAL, plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation(), 0.0f, 0.0f, 1.0f, 0.0f))
+                PHASEMASK_NORMAL, plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation(), QuaternionData(0.0f, 0.0f, 1.0f, 0.0f)))
             {
                 delete go;
                 return true;

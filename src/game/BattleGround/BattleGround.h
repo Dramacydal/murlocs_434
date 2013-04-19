@@ -618,7 +618,7 @@ class BattleGround
         GuidVector m_BgObjects;
         void SpawnBGObject(ObjectGuid guid, uint32 respawntime, uint32 faction = 0);
         void SpawnBGObject(uint32 type, uint32 respawntime, uint32 faction = 0);
-        bool AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 respawnTime = 0, bool manualAnim = false);
+        bool AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, QuaternionData rotation, uint32 respawnTime = 0, bool manualAnim = false);
         void SpawnBGCreature(ObjectGuid guid, uint32 respawntime, uint32 faction = 0);
         bool DelObject(uint32 type);
 
