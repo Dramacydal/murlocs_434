@@ -62,7 +62,7 @@ enum CastFlags
 class MANGOS_DLL_SPEC CreatureAI
 {
     public:
-        explicit CreatureAI(Creature* creature) : m_creature(creature) {}
+        explicit CreatureAI(Creature* creature) : m_creature(creature), me(creature) {}
 
         virtual ~CreatureAI();
 
@@ -275,13 +275,19 @@ class MANGOS_DLL_SPEC CreatureAI
         ///== Fields =======================================
 
         /// Pointer to the Creature controlled by this AI
-        Creature* const m_creature;
+        union
+        {
+            Creature* const m_creature;
+            Creature* const me;
+        };
 
         // called when creature is about to despawn
         virtual void BeforeDespawn() { }
 
         // method to pass actions between AI's
         virtual void DoAction(int32 action) { }
+        virtual void SetData(uint32 type, uint32 data) { }
+        virtual uint32 GetData (uint32 id) { return 0; }
 };
 
 struct SelectableAI : public FactoryHolder<CreatureAI>, public Permissible<Creature>
