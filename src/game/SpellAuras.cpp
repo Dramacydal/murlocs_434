@@ -2365,16 +2365,6 @@ void Aura::TriggerSpell()
                 }
                 break;
             }
-            // Molting
-            case 99464:
-            case 99504:
-            case 100698:
-            case 100699:
-            {
-                target->SummonCreature(53089,target->GetPositionX()-urand(5,30),target->GetPositionY()-urand(-5,-30),56.500f, target->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN, 0);
-                return;
-            }
-
             default:
                 break;
         }
@@ -8765,19 +8755,6 @@ void Aura::PeriodicTick()
                 case 72443:
                     target->CastSpell(target, 72202, true); // Blood Link
                     break;*/
-                // Gushing Wound
-                case 100024:
-                case 100721:
-                case 100722:
-                case 100723:
-                {
-                    if (target->GetHealthPercent() < 50.0f)
-                    {
-                        target->RemoveAurasDueToSpell(GetId());
-                        return;
-                    }
-                    break;
-                }
                 default:
                     break;
             }
@@ -11736,38 +11713,6 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                         // remove haster buff from target on remove from caster
                         if (Unit* target = m_target->GetSingleCastSpellTarget(85767))
                             target->RemoveAurasByCasterSpell(85767, m_target->GetObjectGuid());
-                    }
-                    return;
-                }
-                case 97128:                                 // Molten Feather
-                {
-                    if (!apply)
-                    {
-                        GetTarget()->SetPower(POWER_ALTERNATIVE, 0);
-
-                        GetTarget()->RemoveAurasDueToSpell(98761);
-                        GetTarget()->RemoveAurasDueToSpell(98762);
-                        GetTarget()->RemoveAurasDueToSpell(98763);
-                        GetTarget()->RemoveAurasDueToSpell(98764);
-                        GetTarget()->RemoveAurasDueToSpell(98765);
-                        GetTarget()->RemoveAurasDueToSpell(98766);
-                        GetTarget()->RemoveAurasDueToSpell(98767);
-                        GetTarget()->RemoveAurasDueToSpell(98768);
-                        GetTarget()->RemoveAurasDueToSpell(98769);
-                        GetTarget()->RemoveAurasDueToSpell(98770);
-                        GetTarget()->RemoveAurasDueToSpell(98771);
-                    }
-                    return;
-                }
-                case 101223:                                // Fieroblast
-                case 101294:
-                case 101295:
-                case 101296:
-                {
-                    if (apply)
-                    {
-                        if (Unit* caster =GetCaster())
-                            caster->CastSpell(caster, 100093, true);
                     }
                     return;
                 }

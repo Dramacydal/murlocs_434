@@ -20464,7 +20464,7 @@ void Player::SetArenaTeamInfoField(uint8 slot, ArenaTeamInfoType type, uint32 va
         for (int i = 0; i < 3; ++i)
         {
             PlayerCurrenciesMap::iterator itr = m_currencies.find(curr[i]);
-            if (itr == m_currencies.end())
+            if (itr == m_currencies.end)
                 continue;
 
             uint32 newCap = GetCurrencyWeekCap(itr->second.currencyEntry);

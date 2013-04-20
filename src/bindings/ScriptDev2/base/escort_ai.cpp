@@ -412,12 +412,12 @@ void npc_escortAI::MovementInform(uint32 uiMoveType, uint32 uiPointId)
     }
 }
 
-void npc_escortAI::AddWaypoint(uint32 id, float x, float y, float z, uint32 WaitTimeMs)
+/*void npc_escortAI::AddWaypoint(uint32 id, float x, float y, float z, uint32 WaitTimeMs)
 {
     Escort_Waypoint t(id, x, y, z, WaitTimeMs);
 
     WaypointList.push_back(t);
-}
+}*/
 
 void npc_escortAI::FillPointMovementListForCreature()
 {
