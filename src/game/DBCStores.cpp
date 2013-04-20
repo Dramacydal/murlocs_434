@@ -1516,7 +1516,7 @@ void LoadDBCStores(const std::string& dataPath)
             }
             case 87178:                         // Mind Spike
             {
-                if (SpellAuraOptionsEntry* opts = (SpellAuraOptionsEntry*)spell->GetSpellAuraOptions()s)
+                if (SpellAuraOptionsEntry* opts = (SpellAuraOptionsEntry*)spell->GetSpellAuraOptions())
                     opts->procCharges = 1;
                 break;
             }
