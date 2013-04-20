@@ -477,7 +477,7 @@ bool BattleGroundSA::SetupShips()
     for (uint8 i = 0; i < 2; ++i)
     {
         uint8 offset = m_defender == ALLIANCE ? 2 : 0;
-        if (!AddObject(i, boats[i + offset], BG_SA_BOAT_LOCATIONS[i][0], BG_SA_BOAT_LOCATIONS[i][1], BG_SA_BOAT_LOCATIONS[i][2]+ (offset ? -3.750f: 0) , BG_SA_BOAT_LOCATIONS[i][3], QuaternionData(0, 0, 1.0f, i == 0 ? 0.0002f : 0.00001f), RESPAWN_ONE_DAY, true))
+        if (!AddObject(i, boats[i + offset], BG_SA_BOAT_LOCATIONS[i][0], BG_SA_BOAT_LOCATIONS[i][1], BG_SA_BOAT_LOCATIONS[i][2]+ (offset ? -3.750f: 0) , BG_SA_BOAT_LOCATIONS[i][3], QuaternionData(0.0f, 0.0f, 0.0f, 0.0f), RESPAWN_ONE_DAY, true))
         {
             ERROR_LOG("SA_ERROR: Can't spawn ships!");
             return false;
@@ -889,7 +889,7 @@ void BattleGroundSA::TeleportPlayerToCorrectLoc(Player* plr)
     else if (!m_shipsStarted)
     {
         uint8 idx = urand(0, 1);
-        if (GameObject* obj = GetBGObject(idx))
+        /*if (GameObject* obj = GetBGObject(idx))
         {
             float xOffset = BG_SA_Trans_Offset[m_defender == ALLIANCE ? 1 : 0][idx].x;
             float yOffset = BG_SA_Trans_Offset[m_defender == ALLIANCE ? 1 : 0][idx].y;
@@ -900,7 +900,7 @@ void BattleGroundSA::TeleportPlayerToCorrectLoc(Player* plr)
             plr->TeleportTo(607, obj->GetPositionX() + xOffset, obj->GetPositionY() + yOffset, obj->GetPositionZ() + zOffset,
                 obj->GetOrientation() + oOffset, TELE_TO_NOT_LEAVE_TRANSPORT);
         }
-        else if (idx == 0)
+        else*/ if (idx == 0)
             plr->TeleportTo(607, 2682.936f, -830.368f, 30.0f, 2.895f);
         else
             plr->TeleportTo(607, 2580.96f, 984.56f, 30.0f, 0.807f);

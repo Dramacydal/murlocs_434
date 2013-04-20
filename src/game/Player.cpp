@@ -9422,13 +9422,12 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
             else
             {
                 // 1-3 A defend, 4-6 H defend, 7-9 unk defend, 1 - ok, 2 - half destroyed, 3 - destroyed
-                FillInitialWorldState(data,count,0xf09,0x4);    // 3849 Gate of Temple
-                FillInitialWorldState(data,count,0xe36,0x4);    // 3638 Gate of Yellow Moon
-                FillInitialWorldState(data,count,0xe27,0x4);    // 3623 Gate of Green Emerald
-                FillInitialWorldState(data,count,0xe24,0x4);    // 3620 Gate of Blue Sapphire
-                FillInitialWorldState(data,count,0xe21,0x4);    // 3617 Gate of Red Sun
-
-                FillInitialWorldState(data,count,0xe1e,0x4);    // 3614 Gate of Purple Ametyst
+                FillInitialWorldState(data,count,0xf09,1);      // 3849 Gate of Temple
+                FillInitialWorldState(data,count,0xe36,1);      // 3638 Gate of Yellow Moon
+                FillInitialWorldState(data,count,0xe27,1);      // 3623 Gate of Green Emerald
+                FillInitialWorldState(data,count,0xe24,1);      // 3620 Gate of Blue Sapphire
+                FillInitialWorldState(data,count,0xe21,1);      // 3617 Gate of Red Sun
+                FillInitialWorldState(data,count,0xe1e,1);      // 3614 Gate of Purple Ametyst
 
                 FillInitialWorldState(data,count,0xdf3,0x0);    // 3571 bonus timer (1 - on, 0 - off)
                 FillInitialWorldState(data,count,0xded,0x0);    // 3565 Horde Attacker
