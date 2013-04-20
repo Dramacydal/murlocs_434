@@ -1514,6 +1514,12 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectImplicitTargetA = TARGET_SELF;
                 break;
             }
+            case 87178:                         // Mind Spike
+            {
+                if (SpellAuraOptionsEntry* opts = (SpellAuraOptionsEntry*)spell->GetSpellAuraOptions()s)
+                    opts->procCharges = 1;
+                break;
+            }
             case 88611:                         // Smoke Bomb
             {
                 spell->Attributes |= SPELL_ATTR_CANT_CANCEL;
