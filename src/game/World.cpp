@@ -686,7 +686,6 @@ void World::LoadConfigSettings(bool reload)
     setConfigMin(CONFIG_UINT32_CURRENCY_RESET_INTERVAL, "Currency.ResetInterval", 7, 1);
     setConfig(CONFIG_UINT32_CURRENCY_START_CONQUEST_POINTS, "Currency.StartConquestPoints", 0);
     setConfig(CONFIG_UINT32_CURRENCY_START_HONOR_POINTS, "Currency.StartHonorPoints", 0);
-    setConfig(CONFIG_UINT32_CURRENCY_CONQUEST_POINTS_DEFAULT_WEEK_CAP, "Currency.ConquestPointsDefaultWeekCap", 1350 * 100);  // with precision
     setConfig(CONFIG_UINT32_CURRENCY_ARENA_CONQUEST_POINTS_REWARD, "Currency.ConquestPointsArenaReward", 120 * 100);          // with precision
 
     setConfig(CONFIG_BOOL_ALL_TAXI_PATHS, "AllFlightPaths", false);

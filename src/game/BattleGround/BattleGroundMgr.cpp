@@ -2074,18 +2074,31 @@ void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket* data, ObjectGuid 
         return;
 
     float honorMod = plr->IsPremiumActive() ? plr->GetPremiumHonorModifier() : 1.0f;
-    uint32 win_kills = uint32(honorMod * (plr->GetRandomWinner() ? BG_REWARD_WINNER_HONOR_LAST : BG_REWARD_WINNER_HONOR_FIRST));
-    uint32 win_arena = plr->GetRandomWinner() ? BG_REWARD_WINNER_CONQUEST_LAST : BG_REWARD_WINNER_CONQUEST_FIRST;
-    uint32 loos_kills = uint32(honorMod * (plr->GetRandomWinner() ? BG_REWARD_LOOSER_HONOR_LAST : BG_REWARD_LOOSER_HONOR_FIRST));
+    uint32 win_kills, win_arena, loose_kills;
+    if (plr->getLevel() == sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL))
+    {
+        win_kills = plr->GetRandomWinner() ? BG_REWARD_WINNER_HONOR_LAST : BG_REWARD_WINNER_HONOR_FIRST;
+        win_arena = plr->GetRandomWinner() ? BG_REWARD_WINNER_CONQUEST_LAST : BG_REWARD_WINNER_CONQUEST_FIRST;
+        loose_kills = plr->GetRandomWinner() ? BG_REWARD_LOOSER_HONOR_LAST : BG_REWARD_LOOSER_HONOR_FIRST;
+    }
+    else
+    {
+        win_kills = plr->GetRandomWinner() ? BG_REWARD_WINNER_HONOR_LAST_LOW : BG_REWARD_WINNER_HONOR_FIRST_LOW;
+        win_arena = 0;
+        loose_kills = plr->GetRandomWinner() ? BG_REWARD_LOOSER_HONOR_LAST_LOW : BG_REWARD_LOOSER_HONOR_FIRST_LOW;
+    }
+
+    win_kills = uint32(honorMod * win_kills);
+    loose_kills = uint32(honorMod * loose_kills);
 
     BattleGround* bgTemplate = sBattleGroundMgr.GetBattleGroundTemplate(bgTypeId);
 
     data->Initialize(SMSG_BATTLEFIELD_LIST);
     *data << uint32(win_arena);             // 4.3.4 winConquest weekend
     *data << uint32(win_arena);             // 4.3.4 winConquest random
-    *data << uint32(loos_kills);            // 4.3.4 lossHonor weekend
+    *data << uint32(loose_kills);           // 4.3.4 lossHonor weekend
     *data << uint32(bgTypeId);              // battleground id
-    *data << uint32(loos_kills);            // 4.3.4 lossHonor random
+    *data << uint32(loose_kills);           // 4.3.4 lossHonor random
     *data << uint32(win_kills);             // 4.3.4 winHonor random
     *data << uint32(win_kills);             // 4.3.4 winHonor weekend
     *data << uint8(0);                      // max level

@@ -202,6 +202,7 @@ struct PlayerCurrency
     uint32 totalCount;
     uint32 weekCount;
     uint32 seasonCount;
+    uint32 customWeekCap;
     uint8 flags;
     CurrencyTypesEntry const * currencyEntry;
 };
@@ -1979,10 +1980,7 @@ class MANGOS_DLL_SPEC Player : public Unit
             SetArenaTeamInfoField(slot, ARENA_TEAM_ID, ArenaTeamId);
             SetArenaTeamInfoField(slot, ARENA_TEAM_TYPE, type);
         }
-        void SetArenaTeamInfoField(uint8 slot, ArenaTeamInfoType type, uint32 value)
-        {
-            SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (slot * ARENA_TEAM_END) + type, value);
-        }
+        void SetArenaTeamInfoField(uint8 slot, ArenaTeamInfoType type, uint32 value);
         uint32 GetArenaTeamId(uint8 slot) { return GetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (slot * ARENA_TEAM_END) + ARENA_TEAM_ID); }
         uint32 GetArenaPersonalRating(uint8 slot) { return GetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (slot * ARENA_TEAM_END) + ARENA_TEAM_PERSONAL_RATING); }
         static uint32 GetArenaTeamIdFromDB(ObjectGuid guid, ArenaType type);
@@ -2188,8 +2186,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool HasCurrencyCount(uint32 id, uint32 count) const { return GetCurrencyCount(id) >= count; }
         bool HasCurrencySeasonCount(uint32 id, uint32 count) const { return GetCurrencySeasonCount(id) >= count; }
         void SetCurrencyCount(uint32 id, uint32 count);
-        void SendCurrencyWeekCap(uint32 id) const;
-        void SendCurrencyWeekCap(CurrencyTypesEntry const * currency) const;
+        void SendCurrencyWeekCap(CurrencyTypesEntry const * currency, uint32 newCap) const;
         void SetCurrencyFlags(uint32 currencyId, uint8 flags);
         void ResetCurrencyWeekCounts();
 
@@ -2202,6 +2199,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SendRatedBGStats();
 
         uint32 GetMaxPersonalArenaRatingRequirement(uint32 minarenaslot);
+
+        uint32 m_maxPersonalRatedRating;
 
         //End of PvP System
 
@@ -2845,6 +2844,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         /*********************************************************/
         PlayerCurrenciesMap m_currencies;
         uint32 GetCurrencyWeekCap(CurrencyTypesEntry const * currency) const;
+        uint32 GetCurrencyWeekCap(uint32 currencyId) const;
+        uint32 GetCurrencyWeekCap(PlayerCurrency currencyId) const;
         uint32 GetCurrencyTotalCap(CurrencyTypesEntry const * currency) const;
         void _LoadCurrencies(QueryResult* result);
         void _SaveCurrencies();

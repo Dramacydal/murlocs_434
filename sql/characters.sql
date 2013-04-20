@@ -431,6 +431,7 @@ CREATE TABLE `character_currencies` (
   `totalCount` int(11) unsigned NOT NULL DEFAULT '0',
   `weekCount` int(11) unsigned NOT NULL DEFAULT '0',
   `seasonCount` int(11) unsigned NOT NULL DEFAULT '0',
+  `customWeekCap` int(11) unsigned NOT NULL DEFAULT '0',
   `flags` tinyint(2) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
