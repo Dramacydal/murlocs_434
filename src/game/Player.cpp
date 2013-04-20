@@ -20465,7 +20465,21 @@ void Player::SetArenaTeamInfoField(uint8 slot, ArenaTeamInfoType type, uint32 va
         {
             PlayerCurrenciesMap::iterator itr = m_currencies.find(curr[i]);
             if (itr == m_currencies.end())
-                continue;
+            {
+                CurrencyTypesEntry const* currency = sCurrencyTypesStore.LookupEntry(curr[i]);
+                MANGOS_ASSERT(currency);
+
+                PlayerCurrency cur;
+                cur.state = PLAYERCURRENCY_NEW;
+                cur.totalCount = 0;
+                cur.weekCount = 0;
+                cur.seasonCount = 0;
+                cur.flags = 0;
+                cur.currencyEntry = currency;
+                cur.customWeekCap = 0;
+                m_currencies[curr[i]] = cur;
+                itr = m_currencies.find(curr[i]);
+            }
 
             uint32 newCap = GetCurrencyWeekCap(itr->second.currencyEntry);
             if (newCap <= itr->second.customWeekCap)
@@ -26828,6 +26842,7 @@ void Player::ModifyCurrencyCount(uint32 id, int32 count, bool modifyWeek, bool m
         cur.seasonCount = 0;
         cur.flags = 0;
         cur.currencyEntry = currency;
+        cur.customWeekCap = 0;
         m_currencies[id] = cur;
         initWeek = true;
         itr = m_currencies.find(id);
