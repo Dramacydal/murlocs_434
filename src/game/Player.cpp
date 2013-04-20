@@ -22203,6 +22203,9 @@ void Player::SendInitialPacketsAfterAddToMap()
 
     // fix client movement freeze after teleport?
     GetMap()->PlayerRelocation(this, GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
+    UpdateSpeed(MOVE_RUN, true);
+    UpdateSpeed(MOVE_SWIM, true);
+    UpdateSpeed(MOVE_FLIGHT, true);
 }
 
 void Player::SendUpdateToOutOfRangeGroupMembers()
