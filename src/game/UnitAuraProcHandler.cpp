@@ -1349,7 +1349,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             // Improved Hot Streak
             else if (dummySpell->Id == 44446 || dummySpell->Id == 44448)
             {
-                if (effIndex != EFFECT_INDEX_0)
+                if (effIndex != EFFECT_INDEX_1)
                     return SPELL_AURA_PROC_OK;
 
                 Aura *counter = GetAura(triggeredByAura->GetId(), EFFECT_INDEX_1);
@@ -1364,7 +1364,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     if (mod->m_amount < 100) // not enough
                         return SPELL_AURA_PROC_OK;
                     // Critical counted -> roll chance
-                    if (roll_chance_i(triggerAmount))
+                    if (roll_chance_i(dummySpell->CalculateSimpleValue(EFFECT_INDEX_0)))
                         CastSpell(this, 48108, true, castItem, triggeredByAura);
                 }
                 mod->m_amount = 25;
