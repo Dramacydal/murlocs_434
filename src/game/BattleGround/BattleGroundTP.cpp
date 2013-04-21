@@ -757,16 +757,16 @@ void BattleGroundTP::CheckBuggers()
                     continue;
 
                 // horde buggers
-                if (plr->GetPositionX() < 1222.06f)
+                if (plr->GetPositionX() < 1840.0f)
                 {
-                    if (plr->GetPositionX() > 961.98f)
-                        plr->TeleportTo(GetMapId(), 933.33f, 1433.72f, 346.53f, plr->GetOrientation());
+                    if (plr->GetPositionX() > 1590.0f || plr->GetPositionY() < 310.0f || plr->GetPositionY() > 386.0f)
+                        plr->TeleportTo(GetMapId(), 1551.34f, 346.769f, 1.288f, plr->GetOrientation());
                 }
                 // alliance buggers
                 else
                 {
-                    if (plr->GetPositionX() < 1482.16)
-                        plr->TeleportTo(GetMapId(), 1523.81f, 1481.757568f, 352.99f, plr->GetOrientation());
+                    if (plr->GetPositionX() < 2123.0f || plr->GetPositionY() < 145.0f || plr->GetPositionY() > 223.0f)
+                        plr->TeleportTo(GetMapId(), 2139.429f, 179.093f, 43.498f, plr->GetOrientation());
                 }
             }
         }
