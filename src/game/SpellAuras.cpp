@@ -8501,18 +8501,19 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                         int32 IMP = 0;
                         int32 SD = 0;
 
-                        uint8 counter = 0;
                         Unit::AuraList const& ipwstd = caster->GetAurasByType(SPELL_AURA_DUMMY);
                         for (Unit::AuraList::const_iterator itr = ipwstd.begin(); itr != ipwstd.end(); ++itr)
                         {
-                            switch (spellProto->Id)
+                            switch ((*itr)->GetId())
                             {
                                 case 14748:     // Improved Power Word: Shield
                                 case 14768:
-                                    IMP = (*itr)->GetModifier()->m_amount;
+                                    if ((*itr)->GetEffIndex() == EFFECT_INDEX_0)
+                                        IMP = (*itr)->GetModifier()->m_amount;
                                     break;
                                 case 77484:     // Shield Discipline
-                                    SD = (*itr)->GetModifier()->m_amount;
+                                    if ((*itr)->GetEffIndex() == EFFECT_INDEX_0)
+                                        SD = (*itr)->GetModifier()->m_amount;
                                     break;
                             }
                         }
