@@ -25,8 +25,15 @@
 class Guild;
 class ObjectGuid;
 
-struct GuildReward;
-typename GuildRewards;
+struct GuildReward
+{
+    int32 Racemask;
+    uint64 Price;
+    uint32 AchievementId;
+    uint8 Standing;
+};
+
+typedef std::map<uint32, GuildReward> GuildRewards;
 
 class GuildMgr
 {
