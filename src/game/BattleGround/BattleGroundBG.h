@@ -139,7 +139,7 @@ enum BG_BG_Objectives
 #define BG_EVENT_START_BATTLE           9158
 
 // Tick intervals and given points: case 0,1,2,3 captured nodes
-const uint32 BG_BG_TickIntervals[4] = {0, 12000, 6000, 1000};
+const uint32 BG_BG_TickIntervals[4] = {0, 9000, 3000, 1000};
 const uint32 BG_BG_TickPoints[4] = {0, 10, 10, 30};
 
 // WorldSafeLocs ids for 3 nodes, and for ally, and horde starting location
