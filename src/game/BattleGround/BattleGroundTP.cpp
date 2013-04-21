@@ -611,11 +611,11 @@ void BattleGroundTP::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
     {
         case SCORE_FLAG_CAPTURES:                           // flags captured
             ((BattleGroundTPScore*)itr->second)->FlagCaptures += value;
-            achCriId = WS_OBJECTIVE_CAPTURE_FLAG;
+            achCriId = TP_OBJECTIVE_CAPTURE_FLAG;
             break;
         case SCORE_FLAG_RETURNS:                            // flags returned
             ((BattleGroundTPScore*)itr->second)->FlagReturns += value;
-            achCriId = WS_OBJECTIVE_RETURN_FLAG;
+            achCriId = TP_OBJECTIVE_RETURN_FLAG;
             break;
         default:
             BattleGround::UpdatePlayerScore(Source, type, value);
