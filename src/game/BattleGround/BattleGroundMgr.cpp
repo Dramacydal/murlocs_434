@@ -24,6 +24,7 @@
 #include "BattleGroundAB.h"
 #include "BattleGroundBG.h"
 #include "BattleGroundEY.h"
+#include "BattleGroundTP.h"
 #include "BattleGroundWS.h"
 #include "BattleGroundNA.h"
 #include "BattleGroundBE.h"
@@ -1512,12 +1513,12 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
                 break;
             case BATTLEGROUND_AB:
                 data->WriteBits(2, 24);                     // count of next fields
-                buffer << uint32(((BattleGroundABScore*)itr->second)->BasesAssaulted);      // bases asssulted
+                buffer << uint32(((BattleGroundABScore*)itr->second)->BasesAssaulted);      // bases assaulted
                 buffer << uint32(((BattleGroundABScore*)itr->second)->BasesDefended);       // bases defended
                 break;
             case BATTLEGROUND_BG:
                 data->WriteBits(2, 24);
-                *data << uint32(((BattleGroundBGScore*)itr->second)->BasesAssaulted);       // bases asssulted
+                *data << uint32(((BattleGroundBGScore*)itr->second)->BasesAssaulted);       // bases assaulted
                 *data << uint32(((BattleGroundBGScore*)itr->second)->BasesDefended);        // bases defended
                 break;  
             case BATTLEGROUND_EY:
@@ -1526,19 +1527,19 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
                 break;
             case BATTLEGROUND_SA:                           // wotlk
                 data->WriteBits(2, 24);                     // count of next fields
-                *data << (uint32)((BattleGroundSAScore*)itr->second)->DemolishersDestroyed; // demolishers destroyed
-                *data << (uint32)((BattleGroundSAScore*)itr->second)->GatesDestroyed;       // gates destroyed
+                buffer << (uint32)((BattleGroundSAScore*)itr->second)->DemolishersDestroyed; // demolishers destroyed
+                buffer << (uint32)((BattleGroundSAScore*)itr->second)->GatesDestroyed;       // gates destroyed
                 break;
             case BATTLEGROUND_IC:                           // wotlk
                 data->WriteBits(2, 24);                     // count of next fields
-                *data << uint32(((BattleGroundICScore*)itr->second)->BasesAssaulted);       // bases asssulted
-                *data << uint32(((BattleGroundICScore*)itr->second)->BasesDefended);        // bases defended
+                buffer << uint32(((BattleGroundICScore*)itr->second)->BasesAssaulted);       // bases asssulted
+                buffer << uint32(((BattleGroundICScore*)itr->second)->BasesDefended);        // bases defended
                 break;
-            //case BATTLEGROUND_TP:
-            //    data->WriteBits(0x00000002, 24);
-            //    *data << uint32(((BattlegroundTPScore*)itr2->second)->FlagCaptures);         // flag captures
-            //    *data << uint32(((BattlegroundTPScore*)itr2->second)->FlagReturns);          // flag returns
-            //    break; 
+            case BATTLEGROUND_TP:
+                data->WriteBits(2, 24);
+                buffer << uint32(((BattleGroundTPScore*)itr->second)->FlagCaptures);         // flag captures
+                buffer << uint32(((BattleGroundTPScore*)itr->second)->FlagReturns);          // flag returns
+                break; 
             case BATTLEGROUND_NA:
             case BATTLEGROUND_BE:
             case BATTLEGROUND_AA:
@@ -1816,7 +1817,8 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
                 BATTLEGROUND_AV, BATTLEGROUND_SA,
                 BATTLEGROUND_WS, BATTLEGROUND_WS,
                 BATTLEGROUND_AB, BATTLEGROUND_AB,
-                //BATTLEGROUND_BG, BATTLEGROUND_BG,
+                BATTLEGROUND_BG, BATTLEGROUND_BG,
+                BATTLEGROUND_TP, BATTLEGROUND_TP,
                 BATTLEGROUND_EY, BATTLEGROUND_EY
             };
             bgTypeId = random_bgs[urand(0, 7)];
@@ -1851,6 +1853,9 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
             break;
         case BATTLEGROUND_BG:
             bg = new BattleGroundBG(*(BattleGroundBG*)bg_template);
+            break;
+        case BATTLEGROUND_TP:
+            bg = new BattleGroundTP(*(BattleGroundTP*)bg_template);
             break;
         case BATTLEGROUND_NA:
             bg = new BattleGroundNA(*(BattleGroundNA*)bg_template);
@@ -1933,6 +1938,7 @@ uint32 BattleGroundMgr::CreateBattleGround(BattleGroundTypeId bgTypeId, bool IsA
         case BATTLEGROUND_DS: bg = new BattleGroundDS; break;
         case BATTLEGROUND_RV: bg = new BattleGroundRV; break;
         case BATTLEGROUND_BG: bg = new BattleGroundBG; break;
+        case BATTLEGROUND_TP: bg = new BattleGroundTP; break;
         case BATTLEGROUND_IC: bg = new BattleGroundIC; break;
         case BATTLEGROUND_RB: bg = new BattleGroundRB; break;
         default:              bg = new BattleGround;   break;                           // placeholder for non implemented BG

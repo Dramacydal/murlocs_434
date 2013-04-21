@@ -45,6 +45,7 @@
 #include "BattleGround/BattleGroundMgr.h"
 #include "BattleGround/BattleGround.h"
 #include "BattleGround/BattleGroundEY.h"
+#include "BattleGround/BattleGroundTP.h"
 #include "BattleGround/BattleGroundWS.h"
 #include "BattleGround/BattleGroundSA.h"
 #include "OutdoorPvP/OutdoorPvPMgr.h"
@@ -9231,7 +9232,7 @@ void Spell::EffectSummonObjectWild(SpellEffectEntry const* effect)
             {
                 if(bg && bg->GetTypeID(true)==BATTLEGROUND_TP && bg->GetStatus() == STATUS_IN_PROGRESS)
                 {
-                    //((BattleGroundTP*)bg)->SetDroppedFlagGuid(pGameObj->GetObjectGuid());
+                    ((BattleGroundTP*)bg)->SetDroppedFlagGuid(pGameObj->GetObjectGuid());
                 }
                 break;
             }

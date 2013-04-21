@@ -1275,6 +1275,21 @@ enum MangosStrings
 
     LANG_BG_BG_NODE_TAKEN                           = 20093,
 
+    LANG_BG_TP_START_ONE_MINUTE                     = 20094,
+    LANG_BG_TP_START_HALF_MINUTE                    = 20095,
+    LANG_BG_TP_HAS_BEGUN                            = 20096,
+    LANG_BG_TP_F_PLACED                             = 20097,
+    LANG_BG_TP_ALLIANCE_FLAG_RESPAWNED              = 20098,
+    LANG_BG_TP_HORDE_FLAG_RESPAWNED                 = 20099,
+    LANG_BG_TP_CAPTURED_HF                          = 20100,
+    LANG_BG_TP_CAPTURED_AF                          = 20101,
+    LANG_BG_TP_DROPPED_H                            = 20102,
+    LANG_BG_TP_DROPPED_AF                           = 20103,
+    LANG_BG_TP_RETURNED_HF                          = 20104,
+    LANG_BG_TP_PICKEDUP_HF                          = 20105,
+    LANG_BG_TP_PICKEDUP_AF                          = 20106,
+    LANG_BG_TP_RETURNED_AF                          = 20107,
+
     // NOT RESERVED IDS                   12000-1999999999
     // `db_script_string` table index     2000000000-2000009999 (MIN_DB_SCRIPT_STRING_ID-MAX_DB_SCRIPT_STRING_ID)
     // For other tables maybe             2000010000-2147483647 (max index)

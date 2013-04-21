@@ -9475,6 +9475,10 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 FillInitialWorldState(data,count,4345,1); // 24
             }
             break;
+        case 5031:                                          // Twin Peaks
+            if (bg && bg->GetTypeID(true) == BATTLEGROUND_TP)
+                bg->FillInitialWorldStates(data, count);
+            break;
         case 5449:                                          // The Battle for Gilneas
             if (bg && bg->GetTypeID(true) == BATTLEGROUND_BG)
                 bg->FillInitialWorldStates(data, count);
