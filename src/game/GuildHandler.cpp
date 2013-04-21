@@ -1488,19 +1488,18 @@ void WorldSession::HandleGuildRewardsQueryOpcode(WorldPacket& recv_data)
 
     if (Guild* guild = sGuildMgr.GetGuildById(_player->GetGuildId()))
     {
-        std::vector<GuildReward> const& rewards = sGuildMgr.GetGuildRewards();
-
+        GuildRewards const& rewards = sGuildMgr.GetGuildRewards();
         WorldPacket data(SMSG_GUILD_REWARDS_LIST, 3 + rewards.size() * (4 + 4 + 4 + 8 + 4 + 4));
         data.WriteBits(rewards.size(), 21);
 
-        for (uint32 i = 0; i < rewards.size(); ++i)
+        for (GuildRewards::const_iterator i = rewards.begin(); i != rewards.end(); ++i)
         {
-            data << uint32(rewards[i].Standing);
-            data << int32(rewards[i].Racemask);
-            data << uint32(rewards[i].Entry);
-            data << uint64(rewards[i].Price);
+            data << uint32(i->second.Standing);
+            data << int32(i->second.Racemask);
+            data << uint32(i->first);
+            data << uint64(i->second.Price);
             data << uint32(0);  // faction standing?
-            data << uint32(rewards[i].AchievementId);
+            data << uint32(i->second.AchievementId);
         }
         data << uint32(time(NULL));
         SendPacket(&data);

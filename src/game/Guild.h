@@ -242,12 +242,13 @@ struct GuildNewsEventLogEntry
 
 struct GuildReward
 {
-    uint32 Entry;
     int32 Racemask;
     uint64 Price;
     uint32 AchievementId;
     uint8 Standing;
 };
+
+typedef std::map<uint32, GuildReward> GuildRewards;
 
 uint32 const MinNewsItemLevel[MAX_CONTENT] = { 61, 90, 200, 353 };
 

@@ -294,15 +294,15 @@ void GuildMgr::LoadGuildRewards()
     {
         GuildReward reward;
         Field* fields = result->Fetch();
-        reward.Entry         = fields[0].GetUInt32();
+        uint32 Entry         = fields[0].GetUInt32();
         reward.Standing      = fields[1].GetUInt8();
         reward.Racemask      = fields[2].GetInt32();
         reward.Price         = fields[3].GetUInt64();
         reward.AchievementId = fields[4].GetUInt32();
 
-        if (!sObjectMgr.GetItemPrototype(reward.Entry))
+        if (!sObjectMgr.GetItemPrototype(Entry))
         {
-            sLog.outError("Guild rewards constains not existing item entry %u", reward.Entry);
+            sLog.outError("Guild rewards constains not existing item entry %u", Entry);
             continue;
         }
 
@@ -318,7 +318,7 @@ void GuildMgr::LoadGuildRewards()
             continue;
         }
 
-        GuildRewards.push_back(reward);
+        m_GuildRewards[Entry] = reward;
         ++count;
     } while (result->NextRow());
     delete result;

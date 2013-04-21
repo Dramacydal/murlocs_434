@@ -26,6 +26,7 @@ class Guild;
 class ObjectGuid;
 
 struct GuildReward;
+typename GuildRewards;
 
 class GuildMgr
 {
@@ -34,7 +35,7 @@ class GuildMgr
         GuildMap m_GuildMap;
 
         std::vector<uint64> GuildXPperLevel;
-        std::vector<GuildReward> GuildRewards;
+        GuildRewards m_GuildRewards;
 
     public:
         GuildMgr();
@@ -60,7 +61,7 @@ class GuildMgr
         void ResetReputationCaps();
 
         uint32 GetXPForGuildLevel(uint8 level) const;
-        std::vector<GuildReward> const& GetGuildRewards() const { return GuildRewards; }
+        GuildRewards const& GetGuildRewards() const { return m_GuildRewards; }
 
         GuildMap const& GetGuildMap() const { return m_GuildMap; }
 };
