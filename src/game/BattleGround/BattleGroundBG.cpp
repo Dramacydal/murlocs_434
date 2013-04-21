@@ -265,7 +265,7 @@ void BattleGroundBG::FillInitialWorldStates(WorldPacket& data, uint32& count)
 
     // Node occupied states
     for (uint8 node = 0; node < BG_BG_NODES_MAX; ++node)
-        for (uint8 i = 1; i <= BG_BG_NODE_STATUS_HORDE_OCCUPIED; ++i)
+        for (uint8 i = BG_BG_NODE_STATUS_ALLY_CONTESTED; i <= BG_BG_NODE_STATUS_HORDE_OCCUPIED; ++i)
             FillInitialWorldState(data, count, BG_BG_OP_NODESTATES[node] + plusArray[i], m_Nodes[node] == i);
 
     // How many bases each team owns
