@@ -1458,7 +1458,6 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
     {
         ObjectGuid memberGuid = itr->first;
         Player* player = sObjectMgr.GetPlayer(itr->first);
-
         data->WriteBit(0);                  // unk1
         data->WriteBit(0);                  // unk2
         data->WriteGuidMask<2>(memberGuid);
@@ -1467,7 +1466,10 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
         data->WriteBit(0);                  // unk5
         data->WriteBit(0);                  // unk6
         data->WriteGuidMask<3, 0, 5, 1, 6>(memberGuid);
-        data->WriteBit(player->GetBGTeam() == ALLIANCE);
+        Team team = bg->GetPlayerTeam(itr->first);
+        if (!team && player)
+            team = Team(player->GetTeam());
+        data->WriteBit(team == ALLIANCE);   // Team
         data->WriteGuidMask<7>(memberGuid);
 
         buffer << uint32(itr->second->HealingDone);         // healing done
