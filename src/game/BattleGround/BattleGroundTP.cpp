@@ -33,6 +33,7 @@
 
 BattleGroundTP::BattleGroundTP()
 {
+    m_BuffChange = true;
     m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
     m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_TP_START_ONE_MINUTE;
     m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_TP_START_HALF_MINUTE;
@@ -503,27 +504,32 @@ void BattleGroundTP::HandleAreaTrigger(Player* source, uint32 Trigger)
     //uint64 buff_guid = 0;
     switch(Trigger)
     {
-        case 3686:                                          // Alliance elixir of speed spawn. Trigger not working, because located inside other areatrigger, can be replaced by IsWithinDist(object, dist) in BattleGround::Update().
-        case 3687:                                          // Horde elixir of speed spawn. Trigger not working, because located inside other areatrigger, can be replaced by IsWithinDist(object, dist) in BattleGround::Update().
-        case 3706:                                          // Alliance elixir of regeneration spawn
-        case 3708:                                          // Horde elixir of regeneration spawn
-        case 3707:                                          // Alliance elixir of berserk spawn
-        case 3709:                                          // Horde elixir of berserk spawn
+        case 5906:                                          // alliance buff near door
+        case 5907:                                          // horde buff near door
+        case 5908:                                          // horde spawn tower
+        case 5909:                                          // alliance spawn house
+        case 5910:                                          // horde spawn farm
+        case 5911:                                          // alliance spawn farm
+        case 5914:                                          // alliance at stronghold right
+        case 5916:                                          // horde stronghold door
+        case 5917:                                          // alliance at stronghold left
+        case 5918:                                          // horde stronghold right
+        case 5920:                                          // horde stronghold door 2
+        case 5921:                                          // horde stronghold left
+        case 6803:                                          // horde central gy
+        case 6804:                                          // alliance central gy
+        case 6805:                                          // horde base gy
+        case 6806:                                          // alliance base gy
             break;
-        case 3646:                                          // Alliance Flag spawn
+        case 5904:                                          // Alliance Flag spawn
             if (m_FlagState[TEAM_INDEX_HORDE] && !m_FlagState[TEAM_INDEX_ALLIANCE])
                 if (GetHordeFlagCarrierGuid() == source->GetObjectGuid())
                     EventPlayerCapturedFlag(source);
             break;
-        case 3647:                                          // Horde Flag spawn
+        case 5905:                                          // Horde Flag spawn
             if (m_FlagState[TEAM_INDEX_ALLIANCE] && !m_FlagState[TEAM_INDEX_HORDE])
                 if (GetAllianceFlagCarrierGuid() == source->GetObjectGuid())
                     EventPlayerCapturedFlag(source);
-            break;
-        case 3649:                                          // unk1
-        case 3688:                                          // unk2
-        case 4628:                                          // unk3
-        case 4629:                                          // unk4
             break;
         default:
             ERROR_LOG("WARNING: Unhandled AreaTrigger in Battleground: %u", Trigger);
@@ -637,9 +643,9 @@ WorldSafeLocsEntry const* BattleGroundTP::GetClosestGraveYard(Player* player)
     if (GetStatus() == STATUS_IN_PROGRESS)
     {
         if (player->GetTeam() == ALLIANCE)
-            return sWorldSafeLocsStore.LookupEntry(TP_GRAVEYARD_MAIN_ALLIANCE);
+            return sWorldSafeLocsStore.LookupEntry(TP_GRAVEYARD_FLAGROOM_ALLIANCE);
         else
-            return sWorldSafeLocsStore.LookupEntry(TP_GRAVEYARD_MAIN_HORDE);
+            return sWorldSafeLocsStore.LookupEntry(TP_GRAVEYARD_FLAGROOM_HORDE);
     }
 
     TeamIndex teamIndex = GetTeamIndex(player->GetTeam());
