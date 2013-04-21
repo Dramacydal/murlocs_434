@@ -513,8 +513,13 @@ void WorldSession::HandleReturnToGraveyardOpcode(WorldPacket& recv_data)
     if (!corpse)
         return;
 
-    WorldSafeLocsEntry const* corpseGrave = sObjectMgr.GetClosestGraveYard(
-        corpse->GetPositionX(), corpse->GetPositionY(), corpse->GetPositionZ(), corpse->GetMapId(), _player->GetTeam());
+    WorldSafeLocsEntry const* corpseGrave;
+
+    if (BattleGround* bg = _player->GetBattleGround())
+        corpseGrave = bg->GetClosestGraveYard(_player);
+    else
+        corpseGrave = sObjectMgr.GetClosestGraveYard(corpse->GetPositionX(), corpse->GetPositionY(), corpse->GetPositionZ(), corpse->GetMapId(), _player->GetTeam());
+
     if (!corpseGrave)
         return;
 

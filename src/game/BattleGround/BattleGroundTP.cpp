@@ -640,7 +640,7 @@ WorldSafeLocsEntry const* BattleGroundTP::GetClosestGraveYard(Player* player)
     //and teleport to the graveyard outside the flagroom
     //and start running around, while the doors are still closed
 
-    if (GetStatus() == STATUS_IN_PROGRESS)
+    if (GetStatus() == STATUS_WAIT_JOIN)
     {
         if (player->GetTeam() == ALLIANCE)
             return sWorldSafeLocsStore.LookupEntry(TP_GRAVEYARD_FLAGROOM_ALLIANCE);
