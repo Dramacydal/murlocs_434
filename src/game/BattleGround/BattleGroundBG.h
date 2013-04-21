@@ -86,7 +86,7 @@ enum BG_BG_ObjectType
     BG_BG_OBJECT_SPEEDBUFF_5                = 13,
     BG_BG_OBJECT_REGENBUFF_5                = 14,
     BG_BG_OBJECT_BERSERKBUFF_5              = 15,
-    BG_BG_OBJECT_MAX                        = 11,
+    BG_BG_OBJECT_MAX                        = 16,
 };
 
 /* node events */

@@ -1518,8 +1518,8 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
                 break;
             case BATTLEGROUND_BG:
                 data->WriteBits(2, 24);
-                *data << uint32(((BattleGroundBGScore*)itr->second)->BasesAssaulted);       // bases assaulted
-                *data << uint32(((BattleGroundBGScore*)itr->second)->BasesDefended);        // bases defended
+                buffer << uint32(((BattleGroundBGScore*)itr->second)->BasesAssaulted);      // bases assaulted
+                buffer << uint32(((BattleGroundBGScore*)itr->second)->BasesDefended);       // bases defended
                 break;  
             case BATTLEGROUND_EY:
                 data->WriteBits(1, 24);                     // count of next fields
@@ -1532,13 +1532,13 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
                 break;
             case BATTLEGROUND_IC:                           // wotlk
                 data->WriteBits(2, 24);                     // count of next fields
-                buffer << uint32(((BattleGroundICScore*)itr->second)->BasesAssaulted);       // bases asssulted
-                buffer << uint32(((BattleGroundICScore*)itr->second)->BasesDefended);        // bases defended
+                buffer << uint32(((BattleGroundICScore*)itr->second)->BasesAssaulted);      // bases asssulted
+                buffer << uint32(((BattleGroundICScore*)itr->second)->BasesDefended);       // bases defended
                 break;
             case BATTLEGROUND_TP:
                 data->WriteBits(2, 24);
-                buffer << uint32(((BattleGroundTPScore*)itr->second)->FlagCaptures);         // flag captures
-                buffer << uint32(((BattleGroundTPScore*)itr->second)->FlagReturns);          // flag returns
+                buffer << uint32(((BattleGroundTPScore*)itr->second)->FlagCaptures);        // flag captures
+                buffer << uint32(((BattleGroundTPScore*)itr->second)->FlagReturns);         // flag returns
                 break; 
             case BATTLEGROUND_NA:
             case BATTLEGROUND_BE:
@@ -1821,7 +1821,7 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
                 BATTLEGROUND_TP, BATTLEGROUND_TP,
                 BATTLEGROUND_EY, BATTLEGROUND_EY
             };
-            bgTypeId = random_bgs[urand(0, 7)];
+            bgTypeId = random_bgs[urand(0, 11)];
 
             // Ranger: no way Alterac with online < 150
             if (bgTypeId == BATTLEGROUND_AV && sWorld.GetActiveSessionCount() < 150)
