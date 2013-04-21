@@ -9232,7 +9232,9 @@ void Spell::EffectSummonObjectWild(SpellEffectEntry const* effect)
             {
                 if(bg && bg->GetTypeID(true)==BATTLEGROUND_TP && bg->GetStatus() == STATUS_IN_PROGRESS)
                 {
-                    ((BattleGroundTP*)bg)->SetDroppedFlagGuid(pGameObj->GetObjectGuid());
+                    Team team = pl->GetTeam() == ALLIANCE ? HORDE : ALLIANCE;
+
+                    ((BattleGroundTP*)bg)->SetDroppedFlagGuid(pGameObj->GetObjectGuid(), team);
                 }
                 break;
             }
