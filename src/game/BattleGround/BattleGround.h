@@ -115,7 +115,9 @@ enum BattleGroundTimeIntervals
     RESPAWN_IMMEDIATELY             = 0,                    // secs
     BUFF_RESPAWN_TIME               = 180,                  // secs
     ARENA_SPAWN_BUFF_OBJECTS        = 90000,                // ms - 90sec after start
-    ARENA_TIME_LIMIT                = 2820000,              // ms - 45+2 (preparation) minutes after start 
+    ARENA_TIME_LIMIT                = 47*MINUTE*IN_MILLISECONDS,// ms - 45+2 (preparation) minutes after start 
+    BATTLEGROUND_COUNTDOWN_MAX      = 120,                  // secs
+    ARENA_COUNTDOWN_MAX             = 60                    // secs
 };
 
 enum BattleGroundStartTimeIntervals
@@ -711,6 +713,7 @@ class BattleGround
         BattleGroundStatus m_Status;
         uint32 m_ClientInstanceID;                          //the instance-id which is sent to the client and without any other internal use
         uint32 m_StartTime;
+        uint32 m_CountdownTimer;
         bool m_ArenaBuffSpawned;                            // to cache if arenabuff event is started (cause bool is faster than checking IsActiveEvent)
         int32 m_EndTime;                                    // it is set to 120000 when bg is ending and it decreases itself
         BattleGroundBracketId m_BracketId;

@@ -247,6 +247,7 @@ BattleGround::BattleGround()
     m_IsArena           = false;
     m_Winner            = TEAM_NONE;
     m_StartTime         = 0;
+    m_CountdownTimer    = 0;
     m_Events            = 0;
     m_IsRated           = false;
     m_BuffChange        = false;
@@ -442,6 +443,25 @@ void BattleGround::Update(uint32 diff)
     if (GetStatus() == STATUS_WAIT_JOIN && GetPlayersSize())
     {
         ModifyStartDelayTime(diff);
+
+         // Send packet every 10 seconds until the 2nd field reach 0
+        if (m_CountdownTimer >= 10000)
+        {
+            uint32 countdownMaxForBGType = isArena() ? ARENA_COUNTDOWN_MAX : BATTLEGROUND_COUNTDOWN_MAX;
+        
+            WorldPacket data(SMSG_START_TIMER, 4+4+4);
+            data << uint32(0); // unk
+            data << uint32(countdownMaxForBGType - (m_StartTime / 1000));
+            data << uint32(countdownMaxForBGType);
+
+            for (BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+                if (Player* player = sObjectMgr.GetPlayer(itr->first))
+                    player->GetSession()->SendPacket(&data);
+
+            m_CountdownTimer = 0;
+        }
+        else
+            m_CountdownTimer += diff;
 
         if (!(m_Events & BG_STARTING_EVENT_1))
         {
@@ -1489,6 +1509,16 @@ void BattleGround::AddPlayer(Player *plr)
         plr->m_lastOkBgAfkTime = time(NULL);
         plr->m_bgAfkDistance = 0;
         plr->GetPosition(plr->m_bgLastAfkPosition.x, plr->m_bgLastAfkPosition.y, plr->m_bgLastAfkPosition.z);
+    }
+
+    if (GetStatus() == STATUS_WAIT_JOIN)                 // not started yet
+    {
+        int32 countdownMaxForBGType = isArena() ? ARENA_COUNTDOWN_MAX : BATTLEGROUND_COUNTDOWN_MAX;
+        WorldPacket data(SMSG_START_TIMER, 4+4+4);
+        data << uint32(0); // unk
+        data << uint32(countdownMaxForBGType - (m_StartTime / 1000));
+        data << uint32(countdownMaxForBGType);
+        plr->GetSession()->SendPacket(&data);
     }
 
     plr->GetAchievementMgr().ResetAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HEALING_DONE, ACHIEVEMENT_CRITERIA_CONDITION_MAP, GetMapId());
