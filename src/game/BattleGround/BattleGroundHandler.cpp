@@ -272,6 +272,7 @@ void WorldSession::HandleBattleGroundPlayerPositionsOpcode( WorldPacket & /*recv
 
     switch (bg->GetTypeID())
     {
+        case BATTLEGROUND_TP:
         case BATTLEGROUND_WS:
         {
             if (flagCarrierA = sObjectMgr.GetPlayer(((BattleGroundWS*)bg)->GetAllianceFlagCarrierGuid()))

@@ -6870,7 +6870,7 @@ void Spell::EffectOpenLock(SpellEffectEntry const* effect)
             if (BattleGround *bg = player->GetBattleGround())
             {
                 // check if it's correct bg
-                if (bg->GetTypeID(true) == BATTLEGROUND_AB || bg->GetTypeID(true) == BATTLEGROUND_AV || bg->GetTypeID(true) == BATTLEGROUND_SA || bg->GetTypeID(true) == BATTLEGROUND_IC)
+                if (bg->GetTypeID(true) == BATTLEGROUND_AB || bg->GetTypeID(true) == BATTLEGROUND_AV || bg->GetTypeID(true) == BATTLEGROUND_SA || bg->GetTypeID(true) == BATTLEGROUND_IC || bg->GetTypeID(true) == BATTLEGROUND_BG)
                     bg->EventPlayerClickedOnFlag(player, gameObjTarget);
                 return;
             }
@@ -9224,6 +9224,14 @@ void Spell::EffectSummonObjectWild(SpellEffectEntry const* effect)
                 if(bg && bg->GetTypeID(true)==BATTLEGROUND_EY && bg->GetStatus() == STATUS_IN_PROGRESS)
                 {
                     ((BattleGroundEY*)bg)->SetDroppedFlagGuid(pGameObj->GetObjectGuid());
+                }
+                break;
+            }
+            case 726:                                       //TP
+            {
+                if(bg && bg->GetTypeID(true)==BATTLEGROUND_TP && bg->GetStatus() == STATUS_IN_PROGRESS)
+                {
+                    //((BattleGroundTP*)bg)->SetDroppedFlagGuid(pGameObj->GetObjectGuid());
                 }
                 break;
             }

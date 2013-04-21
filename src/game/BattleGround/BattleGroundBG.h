@@ -21,6 +21,18 @@
 #include "Common.h"
 #include "BattleGround.h"
 
+#define BG_BG_NODES_MAX   3
+#define BG_BG_BUFFS_MAX   5
+
+/* do NOT change the order, else wrong behaviour */
+enum BG_BG_Nodes
+{
+    BG_BG_NODE_LIGHTHOUSE       = 0,
+    BG_BG_NODE_WATERWORKS       = 1,
+    BG_BG_NODE_MINE             = 2,
+    BG_BG_NODES_ERROR           = 255
+};
+
 enum BG_BG_WorldStates
 {
     BG_BG_OP_OCCUPIED_BASES_HORDE       = 1778,
@@ -28,46 +40,54 @@ enum BG_BG_WorldStates
     BG_BG_OP_RESOURCES_ALLY             = 1776,
     BG_BG_OP_RESOURCES_HORDE            = 1777,
     BG_BG_OP_RESOURCES_MAX              = 1780,
-    BG_BG_OP_RESOURCES_WARNING          = 1955
-/*
-    BG_BG_OP_LIGHTHOUSE_ICON            = 1842, //LIGHTHOUSE map icon (NONE)
-    BG_BG_OP_LIGHTHOUSE_STATE_ALIENCE   = 1767, //LIGHTHOUSE map state (ALIENCE)
-    BG_BG_OP_LIGHTHOUSE_STATE_HORDE     = 1768, //LIGHTHOUSE map state (HORDE)
-    BG_BG_OP_LIGHTHOUSE_STATE_CON_ALI   = 1769, //LIGHTHOUSE map state (CON ALIENCE)
-    BG_BG_OP_LIGHTHOUSE_STATE_CON_HOR   = 1770, //LIGHTHOUSE map state (CON HORDE)
-    BG_BG_OP_WATERWORKS_ICON            = 1845, //WATERWORKS map icon (NONE)
-    BG_BG_OP_WATERWORKS_STATE_ALIENCE   = 1772, //WATERWORKS state (ALIENCE)
-    BG_BG_OP_WATERWORKS_STATE_HORDE     = 1773, //WATERWORKS state (HORDE)
-    BG_BG_OP_WATERWORKS_STATE_CON_ALI   = 1774, //WATERWORKS state (CON ALIENCE)
-    BG_BG_OP_WATERWORKS_STATE_CON_HOR   = 1775, //WATERWORKS state (CON HORDE)
-    BG_BG_OP_MINE_ICON                  = 1846, //MINE map icon (NONE)
-    BG_BG_OP_MINE_STATE_ALIENCE         = 1782, //MINE map state (ALIENCE)
-    BG_BG_OP_MINE_STATE_HORDE           = 1783, //MINE map state (HORDE)
-    BG_BG_OP_MINE_STATE_CON_ALI         = 1784, //MINE map state (CON ALIENCE)
-    BG_BG_OP_MINE_STATE_CON_HOR         = 1785, //MINE map state (CON HORDE)
-*/
+    BG_BG_OP_RESOURCES_WARNING          = 1955,
+
+    BG_BG_OP_LIGHTHOUSE_ICON            = 1842,
+    BG_BG_OP_LIGHTHOUSE_STATE_ALLIANCE  = 1767,
+    BG_BG_OP_LIGHTHOUSE_STATE_HORDE     = 1768,
+    BG_BG_OP_LIGHTHOUSE_STATE_CON_ALI   = 1769,
+    BG_BG_OP_LIGHTHOUSE_STATE_CON_HOR   = 1770,
+
+    BG_BG_OP_WATERWORKS_ICON            = 1845,
+    BG_BG_OP_WATERWORKS_STATE_ALLIANCE  = 1772,
+    BG_BG_OP_WATERWORKS_STATE_HORDE     = 1773,
+    BG_BG_OP_WATERWORKS_STATE_CON_ALI   = 1774,
+    BG_BG_OP_WATERWORKS_STATE_CON_HOR   = 1775,
+
+    BG_BG_OP_MINE_ICON                  = 1846,
+    BG_BG_OP_MINE_STATE_ALLIANCE        = 1782,
+    BG_BG_OP_MINE_STATE_HORDE           = 1783,
+    BG_BG_OP_MINE_STATE_CON_ALI         = 1784,
+    BG_BG_OP_MINE_STATE_CON_HOR         = 1785,
 };
 
-const uint32 BG_BG_OP_NODESTATES[3] = { 1767, 1782, 1772, };
+const uint32 BG_BG_OP_NODESTATES[BG_BG_NODES_MAX] =
+    { BG_BG_OP_LIGHTHOUSE_ICON, BG_BG_OP_WATERWORKS_ICON, BG_BG_OP_MINE_ICON };
 
-const uint32 BG_BG_OP_NODEICONS[3] = { 1842, 1846, 1845, };
+const uint32 BG_BG_OP_NODEICONS[BG_BG_NODES_MAX] =
+    { BG_BG_OP_LIGHTHOUSE_STATE_ALLIANCE, BG_BG_OP_WATERWORKS_STATE_ALLIANCE, BG_BG_OP_MINE_STATE_ALLIANCE };
 
 enum BG_BG_ObjectType
 {
     // TODO drop them (pool-system should be used for this)
     // buffs
-    BG_BG_OBJECT_SPEEDBUFF_LIGHTHOUSE       = 1,
-    BG_BG_OBJECT_REGENBUFF_LIGHTHOUSE       = 2,
-    BG_BG_OBJECT_BERSERKBUFF_LIGHTHOUSE     = 3,
-    BG_BG_OBJECT_SPEEDBUFF_MINE             = 4,
-    BG_BG_OBJECT_REGENBUFF_MINE             = 5,
-    BG_BG_OBJECT_BERSERKBUFF_MINE           = 6,
-    BG_BG_OBJECT_SPEEDBUFF_WATERWORKS       = 7,
-    BG_BG_OBJECT_REGENBUFF_WATERWORKS       = 8,
-    BG_BG_OBJECT_BERSERKBUFF_WATERWORKS     = 9,
-    BG_BG_OBJECT_MAX                        = 10,
+    BG_BG_OBJECT_SPEEDBUFF_1                = 1,
+    BG_BG_OBJECT_REGENBUFF_1                = 2,
+    BG_BG_OBJECT_BERSERKBUFF_1              = 3,
+    BG_BG_OBJECT_SPEEDBUFF_2                = 4,
+    BG_BG_OBJECT_REGENBUFF_2                = 5,
+    BG_BG_OBJECT_BERSERKBUFF_2              = 6,
+    BG_BG_OBJECT_SPEEDBUFF_3                = 7,
+    BG_BG_OBJECT_REGENBUFF_3                = 8,
+    BG_BG_OBJECT_BERSERKBUFF_3              = 9,
+    BG_BG_OBJECT_SPEEDBUFF_4                = 10,
+    BG_BG_OBJECT_REGENBUFF_4                = 11,
+    BG_BG_OBJECT_BERSERKBUFF_4              = 12,
+    BG_BG_OBJECT_SPEEDBUFF_5                = 13,
+    BG_BG_OBJECT_REGENBUFF_5                = 14,
+    BG_BG_OBJECT_BERSERKBUFF_5              = 15,
+    BG_BG_OBJECT_MAX                        = 11,
 };
-
 
 /* node events */
 // node-events are just event1=BG_AB_Nodes, event2=BG_AB_NodeStatus
@@ -80,20 +100,9 @@ enum BG_BG_Timers
 
 enum BG_BG_Score
 {
-    BG_BG_WARNING_NEAR_VICTORY_SCORE    = 1400,
-    BG_BG_MAX_TEAM_SCORE                = 1600
+    BG_BG_WARNING_NEAR_VICTORY_SCORE    = 1800,
+    BG_BG_MAX_TEAM_SCORE                = 2000
 };
-
-/* do NOT change the order, else wrong behaviour */
-enum BG_BG_Nodes
-{
-    BG_BG_NODE_LIGHTHOUSE       = 0,
-    BG_BG_NODE_WATERWORKS       = 1,
-    BG_BG_NODE_MINE             = 2,
-    BG_BG_NODES_ERROR           = 255
-};
-
-#define BG_BG_NODES_MAX   3
 
 enum BG_BG_NodeStatus
 {
@@ -129,18 +138,20 @@ enum BG_BG_Objectives
 #define BG_BG_ExperiencesTicks          260
 #define BG_EVENT_START_BATTLE           9158
 
-// Tick intervals and given points: case 0,1,2,3,4,5 captured nodes
+// Tick intervals and given points: case 0,1,2,3 captured nodes
 const uint32 BG_BG_TickIntervals[4] = {0, 12000, 6000, 1000};
 const uint32 BG_BG_TickPoints[4] = {0, 10, 10, 30};
 
 // WorldSafeLocs ids for 3 nodes, and for ally, and horde starting location
-const uint32 BG_BG_GraveyardIds[5] = {1736, 1738, 1735, 1740, 1739};
+const uint32 BG_BG_GraveyardIds[5] = { 1736, 1738, 1735, 1740, 1739 };
 
 // x, y, z, o
-const float BG_BG_BuffPositions[BG_BG_NODES_MAX][4] = {
-    { 1063.39f, 1309.09f, 4.91f, 3.98f },   // Lighthouse
-    { 990.95f, 984.46f, 13.01f, 4.57f },    // Waterworks
-    { 1196.65f, 1020.01f, 7.97f, 5.74f },   // Mine
+const float BG_BG_BuffPositions[BG_BG_BUFFS_MAX][4] = {
+    { 990.267f, 984.076f, 12.9949f, 0.0f },
+    { 1110.99f, 921.877f, 27.545f, 0.0f },
+    { 966.826f, 1044.16f, 13.1475f, 0.0f },
+    { 1195.37f, 1020.52f, 7.97874f, 0.0f },
+    { 1064.07f, 1309.32f, 4.91045f, 0.0f },
 };
 
 struct BG_BG_BannerTimer

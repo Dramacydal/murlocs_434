@@ -90,6 +90,7 @@ struct AchievementCriteriaEntry
             uint32  additionalRequirement1_value;           // 6
             uint32  additionalRequirement2_type;            // 7
             uint32  additionalRequirement2_value;           // 8
+            uint32  map;                                    // 9
         } win_bg;
 
         // ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL            = 5
@@ -219,6 +220,11 @@ struct AchievementCriteriaEntry
         {
             uint32 captureID;                               // 3
             uint32 captureCount;                            // 4
+            uint32 unk5;                                    // 5
+            uint32 unk6;                                    // 6
+            uint32 unk7;                                    // 7
+            uint32 unk8;                                    // 8
+            uint32 map;                                     // 9
         } objective_capture;
 
         // ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA = 31
@@ -518,9 +524,9 @@ struct AchievementCriteriaEntry
             uint32  additionalRequirement1_value;           // 6        m_start_asset
             uint32  additionalRequirement2_type;            // 7        m_fail_event
             uint32  additionalRequirement2_value;           // 8        m_fail_asset
+            //uint32  additionalRequirement3;               // 9
         } raw;
     };
-    //uint32  unk1;                                         // 9
     DBCString name;                                         // 10       m_description_lang
     uint32  completionFlag;                                 // 11       m_flags
     uint32  timedCriteriaStartType;                         // 12       m_timer_start_event Only appears with timed achievements, seems to be the type of starting a timed Achievement, only type 1 and some of type 6 need manual starting

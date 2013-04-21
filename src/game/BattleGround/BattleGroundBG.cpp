@@ -88,12 +88,12 @@ void BattleGroundBG::Update(uint32 diff)
 
                     if (teamIndex == 0)
                     {
-                        SendMessage2ToAll(LANG_BG_AB_NODE_TAKEN, CHAT_MSG_BG_SYSTEM_ALLIANCE,NULL, LANG_BG_ALLY, _GetNodeNameId(node));
+                        SendMessage2ToAll(LANG_BG_BG_NODE_TAKEN, CHAT_MSG_BG_SYSTEM_ALLIANCE,NULL, LANG_BG_ALLY, _GetNodeNameId(node));
                         PlaySoundToAll(BG_BG_SOUND_NODE_CAPTURED_ALLIANCE);
                     }
                     else
                     {
-                        SendMessage2ToAll(LANG_BG_AB_NODE_TAKEN, CHAT_MSG_BG_SYSTEM_HORDE, NULL, LANG_BG_HORDE, _GetNodeNameId(node));
+                        SendMessage2ToAll(LANG_BG_BG_NODE_TAKEN, CHAT_MSG_BG_SYSTEM_HORDE, NULL, LANG_BG_HORDE, _GetNodeNameId(node));
                         PlaySoundToAll(BG_BG_SOUND_NODE_CAPTURED_HORDE);
                     }
                 }
@@ -171,7 +171,7 @@ void BattleGroundBG::StartingEventCloseDoors()
 {
     // despawn buffs
     for (int i = 0; i < BG_BG_NODES_MAX * 3; ++i)
-        SpawnBGObject(m_BgObjects[BG_BG_OBJECT_SPEEDBUFF_LIGHTHOUSE + i], RESPAWN_ONE_DAY);
+        SpawnBGObject(m_BgObjects[BG_BG_OBJECT_SPEEDBUFF_1 + i], RESPAWN_ONE_DAY);
 }
 
 void BattleGroundBG::StartingEventOpenDoors()
@@ -180,7 +180,7 @@ void BattleGroundBG::StartingEventOpenDoors()
     {
         //randomly select buff to spawn
         uint8 buff = urand(0, 2);
-        SpawnBGObject(m_BgObjects[BG_BG_OBJECT_SPEEDBUFF_LIGHTHOUSE + buff + i * 3], RESPAWN_IMMEDIATELY);
+        SpawnBGObject(m_BgObjects[BG_BG_OBJECT_SPEEDBUFF_1 + buff + i * BG_BG_NODES_MAX], RESPAWN_IMMEDIATELY);
     }
     OpenDoorEvent(BG_EVENT_DOOR);
 
@@ -206,13 +206,13 @@ void BattleGroundBG::HandleAreaTrigger(Player *Source, uint32 Trigger)
 {
     switch (Trigger)
     {
-        case 3866:                                          // Stables
-        case 3869:                                          // Gold Mine
-        case 3867:                                          // Farm
-        case 3868:                                          // Lumber Mill
-        case 3870:                                          // Black Smith
-        case 4020:                                          // Unk1
-        case 4021:                                          // Unk2
+        case 6265:                                          // Waterworks heal
+        case 6266:                                          // Mine speed
+        case 6267:                                          // Waterworks speed
+        case 6268:                                          // Mine berserk
+        case 6269:                                          // Lighthouse berserk
+        case 6447:                                          // Alliance start
+        case 6448:                                          // Horde start
             //break;
         default:
             //ERROR_LOG("WARNING: Unhandled AreaTrigger in Battleground: %u", Trigger);
@@ -265,7 +265,7 @@ void BattleGroundBG::FillInitialWorldStates(WorldPacket& data, uint32& count)
 
     // Node occupied states
     for (uint8 node = 0; node < BG_BG_NODES_MAX; ++node)
-        for (uint8 i = 1; i < BG_BG_NODES_MAX; ++i)
+        for (uint8 i = 1; i <= BG_BG_NODE_STATUS_HORDE_OCCUPIED; ++i)
             FillInitialWorldState(data, count, BG_BG_OP_NODESTATES[node] + plusArray[i], m_Nodes[node] == i);
 
     // How many bases each team owns
@@ -418,9 +418,9 @@ void BattleGroundBG::EventPlayerClickedOnFlag(Player *source, GameObject* target
     if (m_Nodes[node] >= BG_BG_NODE_TYPE_OCCUPIED)
     {
         if (teamIndex == TEAM_INDEX_ALLIANCE)
-            SendMessage2ToAll(LANG_BG_AB_NODE_TAKEN,CHAT_MSG_BG_SYSTEM_ALLIANCE, NULL, LANG_BG_ALLY, _GetNodeNameId(node));
+            SendMessage2ToAll(LANG_BG_BG_NODE_TAKEN,CHAT_MSG_BG_SYSTEM_ALLIANCE, NULL, LANG_BG_ALLY, _GetNodeNameId(node));
         else
-            SendMessage2ToAll(LANG_BG_AB_NODE_TAKEN,CHAT_MSG_BG_SYSTEM_HORDE, NULL, LANG_BG_HORDE, _GetNodeNameId(node));
+            SendMessage2ToAll(LANG_BG_BG_NODE_TAKEN,CHAT_MSG_BG_SYSTEM_HORDE, NULL, LANG_BG_HORDE, _GetNodeNameId(node));
     }
     PlaySoundToAll(sound);
 }
@@ -430,9 +430,9 @@ bool BattleGroundBG::SetupBattleGround()
     // buffs
     for (int i = 0; i < BG_BG_NODES_MAX; ++i)
     {
-        if (!AddObject(BG_BG_OBJECT_SPEEDBUFF_LIGHTHOUSE + 3 * i, Buff_Entries[0], BG_BG_BuffPositions[i][0], BG_BG_BuffPositions[i][1], BG_BG_BuffPositions[i][2], BG_BG_BuffPositions[i][3], QuaternionData(0, 0, sin(BG_BG_BuffPositions[i][3]/2), cos(BG_BG_BuffPositions[i][3]/2)), RESPAWN_ONE_DAY)
-            || !AddObject(BG_BG_OBJECT_SPEEDBUFF_LIGHTHOUSE + 3 * i + 1, Buff_Entries[1], BG_BG_BuffPositions[i][0], BG_BG_BuffPositions[i][1], BG_BG_BuffPositions[i][2], BG_BG_BuffPositions[i][3], QuaternionData(0, 0, sin(BG_BG_BuffPositions[i][3]/2), cos(BG_BG_BuffPositions[i][3]/2)), RESPAWN_ONE_DAY)
-            || !AddObject(BG_BG_OBJECT_SPEEDBUFF_LIGHTHOUSE + 3 * i + 2, Buff_Entries[2], BG_BG_BuffPositions[i][0], BG_BG_BuffPositions[i][1], BG_BG_BuffPositions[i][2], BG_BG_BuffPositions[i][3], QuaternionData(0, 0, sin(BG_BG_BuffPositions[i][3]/2), cos(BG_BG_BuffPositions[i][3]/2)), RESPAWN_ONE_DAY)
+        if (!AddObject(BG_BG_OBJECT_SPEEDBUFF_1 + 3 * i, Buff_Entries[0], BG_BG_BuffPositions[i][0], BG_BG_BuffPositions[i][1], BG_BG_BuffPositions[i][2], BG_BG_BuffPositions[i][3], QuaternionData(0, 0, sin(BG_BG_BuffPositions[i][3]/2), cos(BG_BG_BuffPositions[i][3]/2)), RESPAWN_ONE_DAY)
+            || !AddObject(BG_BG_OBJECT_SPEEDBUFF_1 + 3 * i + 1, Buff_Entries[1], BG_BG_BuffPositions[i][0], BG_BG_BuffPositions[i][1], BG_BG_BuffPositions[i][2], BG_BG_BuffPositions[i][3], QuaternionData(0, 0, sin(BG_BG_BuffPositions[i][3]/2), cos(BG_BG_BuffPositions[i][3]/2)), RESPAWN_ONE_DAY)
+            || !AddObject(BG_BG_OBJECT_SPEEDBUFF_1 + 3 * i + 2, Buff_Entries[2], BG_BG_BuffPositions[i][0], BG_BG_BuffPositions[i][1], BG_BG_BuffPositions[i][2], BG_BG_BuffPositions[i][3], QuaternionData(0, 0, sin(BG_BG_BuffPositions[i][3]/2), cos(BG_BG_BuffPositions[i][3]/2)), RESPAWN_ONE_DAY)
             )
             sLog.outErrorDb("BatteGroundAB: Failed to spawn buff object!");
     }
@@ -530,7 +530,7 @@ WorldSafeLocsEntry const* BattleGroundBG::GetClosestGraveYard(Player* player)
     }
     // If not, place ghost on starting location
     if (!good_entry)
-        good_entry = sWorldSafeLocsStore.LookupEntry(BG_BG_GraveyardIds[teamIndex + 5]);
+        good_entry = sWorldSafeLocsStore.LookupEntry(BG_BG_GraveyardIds[teamIndex + 3]);
 
     return good_entry;
 }
@@ -591,29 +591,29 @@ uint32 BattleGroundBG::GetPlayerScore(Player *Source, uint32 type)
 
 void BattleGroundBG::CheckBuggers()
 {
-    //if (GetStatus() == STATUS_WAIT_JOIN)
-    //{
-    //    for (BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
-    //    {
-    //        if (Player* plr = sObjectMgr.GetPlayer(itr->first))
-    //        {
-    //            if (plr->isGameMaster() || plr->IsBeingTeleported())
-    //                continue;
+    if (GetStatus() == STATUS_WAIT_JOIN)
+    {
+        for (BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+        {
+            if (Player* plr = sObjectMgr.GetPlayer(itr->first))
+            {
+                if (plr->isGameMaster() || plr->IsBeingTeleported())
+                    continue;
 
-    //            // horde buggers
-    //            if (plr->GetPositionX() < 996.6f)
-    //            {
-    //                if (plr->GetPositionX() > 723.22f)
-    //                    plr->TeleportTo(GetMapId(), 684.01f, 681.22f, -11.91f, plr->GetOrientation());
-    //            }
-    //            // alliance buggers
-    //            else
-    //            {
-    //                if (plr->GetPositionX() < 1268.92f)
-    //                    plr->TeleportTo(GetMapId(), 1313.90f, 1310.73f, -8.01f, plr->GetOrientation());
-    //            }
-    //        }
-    //    }
-    //}
+                // alliance buggers
+                if (plr->GetPositionX() < 1164.0f)
+                {
+                    if (plr->GetPositionX() > 922.0f || plr->GetPositionY() < 1316.0f)
+                        plr->TeleportTo(GetMapId(), 905.12f, 1338.88f, 27.468f, plr->GetOrientation());
+                }
+                // horde buggers
+                else
+                {
+                    if (plr->GetPositionX() < 1393.0f || plr->GetPositionY() < 948.0f || plr->GetPositionY() > 1032.0f)
+                        plr->TeleportTo(GetMapId(), 1404.306f, 976.73f, 7.44f, plr->GetOrientation());
+                }
+            }
+        }
+    }
 }
 

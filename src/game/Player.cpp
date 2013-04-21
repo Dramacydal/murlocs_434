@@ -9418,7 +9418,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 FillInitialWorldState(data,count,0xe1a,0x0);// 9 show
             }
             break;
-        case 4384:                                          // SA
+        case 4384:                                          // Strand of the Ancients
             if (bg && bg->GetTypeID(true) == BATTLEGROUND_SA)
                 bg->FillInitialWorldStates(data, count);
             else
@@ -9449,7 +9449,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 FillInitialWorldState(data,count,0xe2a,0x1);    // 3626 Beach2 - Alliance control
             }
             break;
-        case 4710:
+        case 4710:                                          // Isle of Conquest
             if (bg && bg->GetTypeID(true) == BATTLEGROUND_IC)
                 bg->FillInitialWorldStates(data, count);
             else
@@ -9474,6 +9474,10 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 FillInitialWorldState(data,count,4243,1); // 23
                 FillInitialWorldState(data,count,4345,1); // 24
             }
+            break;
+        case 5449:                                          // The Battle for Gilneas
+            if (bg && bg->GetTypeID(true) == BATTLEGROUND_BG)
+                bg->FillInitialWorldStates(data, count);
             break;
         default:
             FillInitialWorldState(data,count, 0x914, 0x0);  // 2324 7
