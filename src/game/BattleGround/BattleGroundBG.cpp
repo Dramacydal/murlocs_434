@@ -176,11 +176,11 @@ void BattleGroundBG::StartingEventCloseDoors()
 
 void BattleGroundBG::StartingEventOpenDoors()
 {
-    for (int i = 0; i < BG_BG_NODES_MAX; ++i)
+    for (int i = 0; i < BG_BG_BUFFS_MAX; ++i)
     {
         //randomly select buff to spawn
         uint8 buff = urand(0, 2);
-        SpawnBGObject(m_BgObjects[BG_BG_OBJECT_SPEEDBUFF_1 + buff + i * BG_BG_NODES_MAX], RESPAWN_IMMEDIATELY);
+        SpawnBGObject(m_BgObjects[BG_BG_OBJECT_SPEEDBUFF_1 + buff + i * 3], RESPAWN_IMMEDIATELY);
     }
     OpenDoorEvent(BG_EVENT_DOOR);
 
