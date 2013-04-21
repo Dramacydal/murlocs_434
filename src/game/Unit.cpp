@@ -7595,28 +7595,32 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
                     DoneTotalMod *= 1.25f;
             }
 
-            bool snaredOrSlowed = pVictim->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED);
-            if (!snaredOrSlowed)
+            // only Arcane damage spells affected by Torment the Weak
+            if (GetSpellSchoolMask(spellProto) & SPELL_SCHOOL_MASK_ARCANE)
             {
-                Unit::AuraList const& hasteAllAuras = GetAurasByType(SPELL_AURA_HASTE_ALL);
-                for (Unit::AuraList::const_iterator i = hasteAllAuras.begin(); i != hasteAllAuras.end(); ++i)
-                    if ((*i)->GetModifier()->m_amount < 0)
-                    {
-                        snaredOrSlowed = true;
-                        break;
-                    }
-            }
-
-            if (snaredOrSlowed)
-            {
-                // Search for Torment the Weak dummy aura
-                Unit::AuraList const& ttw = GetAurasByType(SPELL_AURA_DUMMY);
-                for (Unit::AuraList::const_iterator i = ttw.begin(); i != ttw.end(); ++i)
+                bool snaredOrSlowed = pVictim->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED);
+                if (!snaredOrSlowed)
                 {
-                    if ((*i)->GetSpellProto()->SpellIconID == 3263 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_GENERIC)
+                    Unit::AuraList const& hasteAllAuras = GetAurasByType(SPELL_AURA_HASTE_ALL);
+                    for (Unit::AuraList::const_iterator i = hasteAllAuras.begin(); i != hasteAllAuras.end(); ++i)
+                        if ((*i)->GetModifier()->m_amount < 0)
+                        {
+                            snaredOrSlowed = true;
+                            break;
+                        }
+                }
+
+                if (snaredOrSlowed)
+                {
+                    // Search for Torment the Weak dummy aura
+                    Unit::AuraList const& ttw = GetAurasByType(SPELL_AURA_DUMMY);
+                    for (Unit::AuraList::const_iterator i = ttw.begin(); i != ttw.end(); ++i)
                     {
-                        DoneTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
-                        break;
+                        if ((*i)->GetSpellProto()->SpellIconID == 2215 && (*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_GENERIC)
+                        {
+                            DoneTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
+                            break;
+                        }
                     }
                 }
             }
