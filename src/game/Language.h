@@ -1283,7 +1283,7 @@ enum MangosStrings
     LANG_BG_TP_HORDE_FLAG_RESPAWNED                 = 20099,
     LANG_BG_TP_CAPTURED_HF                          = 20100,
     LANG_BG_TP_CAPTURED_AF                          = 20101,
-    LANG_BG_TP_DROPPED_H                            = 20102,
+    LANG_BG_TP_DROPPED_HF                           = 20102,
     LANG_BG_TP_DROPPED_AF                           = 20103,
     LANG_BG_TP_RETURNED_HF                          = 20104,
     LANG_BG_TP_PICKEDUP_HF                          = 20105,
