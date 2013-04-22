@@ -325,7 +325,7 @@ struct MemberSlot
     uint8 Class;
     uint32 ZoneId;
     uint64 LogoutTime;
-    uint32 maxWeekReputation;
+    uint32 thisWeekReputation;
     std::string Pnote;
     std::string OFFnote;
     uint32 BankResetTimeMoney;

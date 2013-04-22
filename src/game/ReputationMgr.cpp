@@ -23,6 +23,7 @@
 #include "ObjectMgr.h"
 #include "Guild.h"
 #include "GuildMgr.h"
+#include "World.h"
 
 const int32 ReputationMgr::PointsInRank[MAX_REPUTATION_RANK] = {36000, 3000, 3000, 3000, 6000, 12000, 21000, 1000};
 
@@ -320,15 +321,16 @@ bool ReputationMgr::SetOneFactionReputation(FactionEntry const* factionEntry, in
 
         if (incremental)
         {
-            standing += itr->second.Standing + BaseRep;
-
             if (itr->first == GUILD_REP_FACTION)
             {
                 if (Guild* guild = sGuildMgr.GetGuildByGuid(m_player->GetGuildGuid()))
                     if (MemberSlot* member = guild->GetMemberSlot(m_player->GetObjectGuid()))
-                        if (standing > member->maxWeekReputation)
-                            standing = member->maxWeekReputation;
+                        if (standing + member->thisWeekReputation > sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP))
+                            standing = sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP) > member->thisWeekReputation ?
+                                sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP) - member->thisWeekReputation : 0;
             }
+
+            standing += itr->second.Standing + BaseRep;
         }
 
         if (standing > Reputation_Cap)

@@ -145,7 +145,7 @@ void GuildMgr::LoadGuilds()
     //   13                14               15                16               17                18
         "BankResetTimeTab3,BankRemSlotsTab3,BankResetTimeTab4,BankRemSlotsTab4,BankResetTimeTab5,BankRemSlotsTab5,"
     //   19               20                21                22               23                      24                  25
-        "characters.name, characters.level, characters.class, characters.zone, characters.logout_time, characters.account, maxWeekReputation "
+        "characters.name, characters.level, characters.class, characters.zone, characters.logout_time, characters.account, thisWeekReputation "
         "FROM guild_member LEFT JOIN characters ON characters.guid = guild_member.guid WHERE guild_member.guildid >= %u AND guild_member.guildid < %u  ORDER BY guildid ASC", startGuid, hiGuid);
 
     // load guild bank tab rights
@@ -220,8 +220,7 @@ void GuildMgr::ResetExperienceCaps()
 void GuildMgr::ResetReputationCaps()
 {
     CharacterDatabase.BeginTransaction();
-    CharacterDatabase.PExecute("UPDATE guild_member SET maxWeekReputation = maxWeekReputation + %u", sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP));
-    CharacterDatabase.PExecute("UPDATE guild_member SET maxWeekReputation = %u WHERE maxWeekReputation > %u", ReputationMgr::Reputation_Cap, ReputationMgr::Reputation_Cap);
+    CharacterDatabase.Execute("UPDATE guild_member SET thisWeekReputation = 0");
     for (GuildMap::iterator itr = m_GuildMap.begin(); itr != m_GuildMap.end(); ++itr)
         itr->second->ResetReputationCaps();
     CharacterDatabase.CommitTransaction();

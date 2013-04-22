@@ -226,8 +226,7 @@ bool Guild::AddMember(ObjectGuid plGuid, uint32 plRank)
     newmember.Pnote   = (std::string)"";
     newmember.LogoutTime = time(NULL);
     newmember.BankResetTimeMoney = 0;                       // this will force update at first query
-    newmember.maxWeekReputation = pl ? pl->GetReputationMgr().GetReputation(sFactionStore.LookupEntry(GUILD_REP_FACTION)) + sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP) :
-        sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP);
+    newmember.thisWeekReputation = 0;
 
     for (int i = 0; i < GUILD_BANK_MAX_TABS; ++i)
         newmember.BankResetTimeTab[i] = 0;
@@ -465,10 +464,7 @@ bool Guild::LoadMembersFromDB(QueryResult *guildMembersResult)
         newmember.LogoutTime            = fields[23].GetUInt64();
         newmember.accountId             = fields[24].GetInt32();
 
-        newmember.maxWeekReputation     = fields[25].GetUInt32();
-
-        if (newmember.maxWeekReputation > ReputationMgr::Reputation_Cap)
-            newmember.maxWeekReputation = ReputationMgr::Reputation_Cap;
+        newmember.thisWeekReputation     = fields[25].GetUInt32();
 
         // this code will remove not existing character guids from guild
         if (newmember.Level < 1 || newmember.Level > STRONG_MAX_LEVEL) // can be at broken `data` field
@@ -882,8 +878,8 @@ void Guild::Roster(WorldSession *session /*= NULL*/)
         buffer << uint32(player ? player->GetZoneId() : member.ZoneId);
         buffer << uint64(0);                            // Total activity
         buffer.WriteGuidBytes<7>(guid);
-        int32 remainRep = member.maxWeekReputation - rep;
-        buffer << uint32(remainRep > 0 ? remainRep : 0);// Remaining guild week Rep
+        buffer << uint32(sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP) > member.thisWeekReputation ?
+            sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP) - member.thisWeekReputation) : 0;// Remaining guild week Rep
 
         buffer.WriteStringData(member.Pnote);
 
@@ -3004,7 +3000,7 @@ void Guild::ResetReputationCaps()
 {
     for (MemberList::iterator itr = members.begin(); itr != members.end(); ++itr)
     {
-        itr->second.maxWeekReputation = std::min(int32(itr->second.maxWeekReputation + sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP)), ReputationMgr::Reputation_Cap);
+        itr->second.thisWeekReputation = 0;
         //if (Player* player = sObjectMgr.GetPlayer(itr->second.guid))
         //    SendRep(player);
     }
