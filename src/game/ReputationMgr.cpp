@@ -325,9 +325,13 @@ bool ReputationMgr::SetOneFactionReputation(FactionEntry const* factionEntry, in
             {
                 if (Guild* guild = sGuildMgr.GetGuildByGuid(m_player->GetGuildGuid()))
                     if (MemberSlot* member = guild->GetMemberSlot(m_player->GetObjectGuid()))
+                    {
                         if (standing + member->thisWeekReputation > sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP))
                             standing = sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP) > member->thisWeekReputation ?
                                 sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP) - member->thisWeekReputation : 0;
+
+                        guild->SetThisWeekReputation(m_player->GetObjectGuid(), member->thisWeekReputation + standing);
+                    }
             }
 
             standing += itr->second.Standing + BaseRep;

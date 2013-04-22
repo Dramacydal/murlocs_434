@@ -1463,6 +1463,16 @@ void Guild::SetBankMoney(int64 money)
     CharacterDatabase.PExecute("UPDATE guild SET BankMoney='" UI64FMTD "' WHERE guildid='%u'", money, m_Id);
 }
 
+void Guild::SetThisWeekReputation(ObjectGuid playerGuid, uint32 amt)
+{
+    MemberList::iterator itr = members.find(playerGuid);
+    if (itr == members.end())
+        return;
+
+    itr->second.thisWeekReputation = amt;
+    CharacterDatabase.PExecute("UPDATE guild_member SET thisWeekReputation = '%u' WHERE guildid='%u' AND guid = '%u'", amt, m_Id, playerGuid.GetCounter());
+}
+
 // *************************************************
 // Item per day and money per day related
 
