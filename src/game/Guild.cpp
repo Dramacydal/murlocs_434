@@ -879,7 +879,7 @@ void Guild::Roster(WorldSession *session /*= NULL*/)
         buffer << uint64(0);                            // Total activity
         buffer.WriteGuidBytes<7>(guid);
         buffer << uint32(sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP) > member.thisWeekReputation ?
-            sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP) - member.thisWeekReputation) : 0;// Remaining guild week Rep
+            sWorld.getConfig(CONFIG_UINT32_GUILD_WEEKLY_REP_CAP) - member.thisWeekReputation : 0);// Remaining guild week Rep
 
         buffer.WriteStringData(member.Pnote);
 
