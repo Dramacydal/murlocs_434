@@ -325,6 +325,7 @@ struct MemberSlot
     uint8 Class;
     uint32 ZoneId;
     uint64 LogoutTime;
+    uint32 maxWeekReputation;
     std::string Pnote;
     std::string OFFnote;
     uint32 BankResetTimeMoney;
@@ -543,6 +544,7 @@ class Guild
         uint64 GetTodayExperience() const { return m_TodayExperience; }
         void SendGuildXP(Player* player);
         void ResetDailyExperience();
+        void ResetReputationCaps();
 
         void HandleGuildPartyRequest(WorldSession* session);
         void SendReputationWeeklyCap(Player* player);
