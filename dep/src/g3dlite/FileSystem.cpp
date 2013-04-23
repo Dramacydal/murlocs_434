@@ -31,6 +31,8 @@
 #   include <dirent.h>
 #   include <fnmatch.h>
 #   include <unistd.h>
+#   define O_LARGEFILE 0100000
+#   define stat64 stat
 #   define _getcwd getcwd
 #   define _stat stat
 #endif
