@@ -526,10 +526,10 @@ bool Spell::CanReflect(SpellEntry const * spellInfo)
     if (!spellInfo)
         return false;
 
-    // AoE spells, spells with non-magic DmgClass or SchoolMask or with SPELL_ATTR_EX2_CANT_REFLECTED cannot be reflected
+    // AoE spells, spells with non-magic DmgClass or SchoolMask or with SPELL_ATTR_EX_CANT_REFLECTED cannot be reflected
     if (spellInfo->GetDmgClass() == SPELL_DAMAGE_CLASS_MAGIC &&
         spellInfo->SchoolMask != SPELL_SCHOOL_MASK_NORMAL &&
-        !spellInfo->HasAttribute(SPELL_ATTR_EX2_CANT_REFLECTED) &&
+        !spellInfo->HasAttribute(SPELL_ATTR_EX_CANT_REFLECTED) &&
         !IsAreaOfEffectSpell(spellInfo))
     {
         for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
