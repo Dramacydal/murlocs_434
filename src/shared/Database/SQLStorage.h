@@ -121,8 +121,6 @@ class SQLStorage : public SQLStorageBase
 
         void EraseEntry(uint32 id);
 
-        uint32 GetTotalSize() const;
-
     protected:
         void prepareToLoad(uint32 maxRecordId, uint32 recordCount, uint32 recordSize) override;
         void JustCreatedRecord(uint32 recordId, char* record) override

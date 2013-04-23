@@ -5771,7 +5771,6 @@ void Spell::EffectTriggerMissileSpell(SpellEffectEntry const* effect)
     if (m_CastItem)
         DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "WORLD: cast Item spellId - %i", spellInfo->Id);
 
-<<<<<<< HEAD
     if (m_caster->GetTypeId() == TYPEID_PLAYER)
         ((Player*)m_caster)->RemoveSpellCooldown(triggered_spell_id);
 
@@ -5787,16 +5786,13 @@ void Spell::EffectTriggerMissileSpell(SpellEffectEntry const* effect)
         MaNGOS::NormalizeMapCoord(y);
         m_caster->UpdateAllowedPositionZ(x, y, z);
 
-        m_caster->CastSpell(x, y, z, spellInfo, true, m_CastItem, NULL, m_originalCasterGUID);
+        m_caster->CastSpell(x, y, z, spellInfo, true, m_CastItem, NULL, m_originalCasterGUID, m_spellInfo);
     }
     else
     {
         Unit* caster = IsSpellWithCasterSourceTargetsOnly(spellInfo) ? unitTarget : m_caster;
-        caster->CastSpell(unitTarget, spellInfo, true, m_CastItem, NULL, m_originalCasterGUID);
+        caster->CastSpell(unitTarget, spellInfo, true, m_CastItem, NULL, m_originalCasterGUID, m_spellInfo);
     }
-=======
-    m_caster->CastSpell(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, spellInfo, true, m_CastItem, NULL, m_originalCasterGUID, m_spellInfo);
->>>>>>> 2e54054... [12351] Forward more information to spell-triggered spells
 }
 
 void Spell::EffectJump(SpellEffectEntry const* effect)
