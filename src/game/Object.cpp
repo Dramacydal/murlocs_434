@@ -1616,7 +1616,6 @@ void WorldObject::UpdateGroundPositionZ(float x, float y, float &z, float maxDif
     float new_z = GetMap()->GetHeight(GetPhaseMask(), x, y, z);
     if (new_z > INVALID_HEIGHT)
         z = new_z + 0.05f;                                  // just to be sure that we are not a few pixel under the surface
-    z = normalizedZ + 0.1f;
 }
 
 void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z) const
