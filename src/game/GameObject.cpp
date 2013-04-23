@@ -1036,7 +1036,6 @@ bool GameObject::IsCollisionEnabled() const
         case GAMEOBJECT_TYPE_SPELL_FOCUS:
         case GAMEOBJECT_TYPE_MAP_OBJECT:
         case GAMEOBJECT_TYPE_MEETINGSTONE:
-        case GAMEOBJECT_TYPE_BARBER_CHAIR:
         case GAMEOBJECT_TYPE_GUILD_BANK:
             return true;
         case GAMEOBJECT_TYPE_DOOR:
