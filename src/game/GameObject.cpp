@@ -1780,9 +1780,9 @@ bool GameObject::IsInRange(float x, float y, float z, float radius) const
     dx = dist * (cosA * cosB + sinA * sinB);
     dy = dist * (cosA * sinB - sinA * cosB);
 
-    return dx < info->maxX + radius && dx > info->minX - radius
-        && dy < info->maxY + radius && dy > info->minY - radius
-        && dz < info->maxZ + radius && dz > info->minZ - radius;
+    return dx < info->geoBoxMaxX + radius && dx > info->geoBoxMinX - radius
+        && dy < info->geoBoxMaxY + radius && dy > info->geoBoxMinY - radius
+        && dz < info->geoBoxMaxZ + radius && dz > info->geoBoxMinZ - radius;
 }
 
 void GameObject::DamageTaken(Unit* pDoneBy, uint32 damage, uint32 spellId)

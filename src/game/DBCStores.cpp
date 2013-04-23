@@ -580,12 +580,12 @@ void LoadDBCStores(const std::string& dataPath)
     {
         if (GameObjectDisplayInfoEntry *info = const_cast<GameObjectDisplayInfoEntry*>(sGameObjectDisplayInfoStore.LookupEntry(i)))
         {
-            if (info->maxX < info->minX)
-                std::swap(info->maxX, info->minX);
-            if (info->maxY < info->minY)
-                std::swap(info->maxY, info->minY);
-            if (info->maxZ < info->minZ)
-                std::swap(info->maxZ, info->minZ);
+            if (info->geoBoxMaxX < info->geoBoxMinX)
+                std::swap(info->geoBoxMaxX, info->geoBoxMinX);
+            if (info->geoBoxMaxY < info->geoBoxMinY)
+                std::swap(info->geoBoxMaxY, info->geoBoxMinY);
+            if (info->geoBoxMaxZ < info->geoBoxMinZ)
+                std::swap(info->geoBoxMaxZ, info->geoBoxMinZ);
         }
     }
 

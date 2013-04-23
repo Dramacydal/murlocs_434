@@ -2579,7 +2579,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         float y = target->GetPositionY();
                         float z = target->GetPositionZ();
                         float o = target->GetOrientation();
-                        float ground = target->GetTerrain()->GetHeight(x, y, MAX_HEIGHT);
+                        float ground = target->GetMap()->GetHeight(target->GetPhaseMask(), x, y, MAX_HEIGHT);
 
                         if (ground <= INVALID_HEIGHT)
                             return;
@@ -3412,7 +3412,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             {
                 float x, y, z;
                 target->GetPosition(x, y, z);
-                z = target->GetTerrain()->GetHeight(x, y, z, true, MAX_FALL_DISTANCE);
+                z = target->GetMap()->GetHeight(target->GetPhaseMask(), x, y, z, true, MAX_FALL_DISTANCE);
                 target->GetMotionMaster()->Clear();
                 target->GetMotionMaster()->MovePoint(0, x, y, z);
                 return;

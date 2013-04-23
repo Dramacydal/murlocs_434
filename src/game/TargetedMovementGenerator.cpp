@@ -92,35 +92,6 @@ void TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T& owner, bool up
     init.Launch();
 }
 
-<<<<<<< HEAD
-template<>
-void TargetedMovementGeneratorMedium<Player,ChaseMovementGenerator<Player> >::UpdateFinalDistance(float /*fDistance*/)
-{
-    // nothing to do for Player
-}
-
-template<>
-void TargetedMovementGeneratorMedium<Player,FollowMovementGenerator<Player> >::UpdateFinalDistance(float /*fDistance*/)
-{
-    // nothing to do for Player
-}
-
-template<>
-void TargetedMovementGeneratorMedium<Creature,ChaseMovementGenerator<Creature> >::UpdateFinalDistance(float fDistance)
-{
-    i_offset = fDistance;
-    i_recalculateTravel = true;
-}
-
-template<>
-void TargetedMovementGeneratorMedium<Creature,FollowMovementGenerator<Creature> >::UpdateFinalDistance(float fDistance)
-{
-    i_offset = fDistance;
-    i_recalculateTravel = true;
-}
-
-=======
->>>>>>> e58a8b7... remove dead code
 template<class T, typename D>
 bool TargetedMovementGeneratorMedium<T,D>::Update(T &owner, const uint32 & time_diff)
 {

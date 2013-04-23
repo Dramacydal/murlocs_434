@@ -1409,8 +1409,6 @@ bool WorldObject::IsWithinLOS(float ox, float oy, float oz) const
             return false;
     }
 
-    float x, y, z;
-    GetPosition(x, y, z);
     return GetMap()->IsInLineOfSight(x, y, z + 2.0f, ox, oy, oz + 2.0f, GetPhaseMask());
 }
 
@@ -1617,15 +1615,15 @@ void WorldObject::UpdateGroundPositionZ(float x, float y, float &z, float maxDif
 {
     maxDiff = maxDiff >= 100.0f ? 10.0f : sqrtf(maxDiff);
     bool useVmaps = false;
-    if(GetMap()->GetHeight(x, y, z, false) <  (GetMap()->GetHeight(x, y, z, true) ) // check use of vmaps
+    if (GetMap()->GetHeight(GetPhaseMask(), x, y, z, false) <  GetMap()->GetHeight(GetPhaseMask(), x, y, z, true)) // check use of vmaps
         useVmaps = true;
 
-    float normalizedZ = (GetMap()->GetHeight(x, y, z, useVmaps);
+    float normalizedZ = GetMap()->GetHeight(GetPhaseMask(), x, y, z, useVmaps);
     // check if its reacheable
     if(normalizedZ <= INVALID_HEIGHT || fabs(normalizedZ-z) > maxDiff)
     {
         useVmaps = !useVmaps;                                // try change vmap use
-        normalizedZ = GetTerrain()->GetHeightStatic(x, y, z, useVmaps);
+        normalizedZ = GetMap()->GetHeight(GetPhaseMask(), x, y, z, useVmaps);
         if(normalizedZ <= INVALID_HEIGHT || fabs(normalizedZ-z) > maxDiff)
             return;                                        // Do nothing in case of another bad result 
     }
@@ -1703,7 +1701,7 @@ bool WorldObject::IsPositionValid() const
 
 bool WorldObject::IsAtGroundLevel(float x, float y, float z) const
 {
-    float groundZ = GetTerrain()->GetHeight(x, y, z, true);
+    float groundZ = GetMap()->GetHeight(x, y, z, true);
     return groundZ > INVALID_HEIGHT && fabs(groundZ-z) < 0.5f;
 }
 
