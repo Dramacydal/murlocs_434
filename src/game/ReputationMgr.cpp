@@ -321,7 +321,7 @@ bool ReputationMgr::SetOneFactionReputation(FactionEntry const* factionEntry, in
 
         if (incremental)
         {
-            if (itr->first == GUILD_REP_FACTION)
+            if (factionEntry->ID == GUILD_REP_FACTION)
             {
                 if (Guild* guild = sGuildMgr.GetGuildByGuid(m_player->GetGuildGuid()))
                     if (MemberSlot* member = guild->GetMemberSlot(m_player->GetObjectGuid()))
