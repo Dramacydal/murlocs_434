@@ -195,6 +195,21 @@ bool BattleGroundRV::SetupBattleGround()
     return true;
 }
 
+void BattleGroundRV::OnObjectDBLoad(GameObject* go)
+{
+    switch (go->GetEntry())
+    {
+        case 208468:    // horizontal pillars
+        case 208470:
+        case 208469:    // vertical pillars
+        case 208471:
+            go->EnableModel(false);
+            break;
+    }
+
+    BattleGround::OnObjectDBLoad(go);
+}
+
 bool BattleGroundRV::IsWithinLOSInBG(float x1, float y1, float z1, float x2, float y2, float z2)
 {
     if (IsActiveEvent(RV_EVENT_SPAWN_PILLARS, 0))

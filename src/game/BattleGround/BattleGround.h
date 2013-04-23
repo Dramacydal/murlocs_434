@@ -600,8 +600,8 @@ class BattleGround
         /* event related */
         // called when a creature gets added to map (NOTE: only triggered if
         // a player activates the cell of the creature)
-        void OnObjectDBLoad(Creature* /*creature*/);
-        void OnObjectDBLoad(GameObject* /*obj*/);
+        virtual void OnObjectDBLoad(Creature* /*creature*/);
+        virtual void OnObjectDBLoad(GameObject* /*obj*/);
         // (de-)spawns creatures and gameobjects from an event
         void SpawnEvent(uint8 event1, uint8 event2, bool spawn, uint32 faction = 0);
         void SpawnEventWithRespawn(uint8 event1, uint8 event2, uint32 respawnTime, uint32 faction = 0);

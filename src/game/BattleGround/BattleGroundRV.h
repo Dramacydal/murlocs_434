@@ -75,6 +75,7 @@ class BattleGroundRV : public BattleGround
         void HandleKillPlayer(Player* player, Player *killer) override;
         bool HandlePlayerUnderMap(Player * plr) override;
 
+        void OnObjectDBLoad(GameObject* go) override;
         bool IsWithinLOSInBG(float x1, float y1, float z1, float x2, float y2, float z2);
 
         void HandleGameObjectCreate(GameObject* go) override;

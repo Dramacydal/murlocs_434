@@ -815,6 +815,9 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
 
         GameObjectModel* m_model;
 
+        bool DynamicModelEnabled() const { return useDynamicModel; }
+        void EnableModel(bool apply) { useDynamicModel = apply; UpdateModel(); }
+
     protected:
         uint32      m_spellId;
         time_t      m_respawnTime;                          // (secs) time of next respawn (or despawn if GO have owner()),
@@ -843,6 +846,8 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
 
         int64 m_packedRotation;
         QuaternionData m_worldRotation;
+
+        bool useDynamicModel;
 
     private:
         void SwitchDoorOrButton(bool activate, bool alternative = false);

@@ -127,6 +127,9 @@ bool GameObjectModel::initialize(const GameObject* const pGo, const GameObjectDi
 
 GameObjectModel* GameObjectModel::construct(const GameObject* const pGo)
 {
+    if (!pGo->DynamicModelEnabled())
+        return NULL;
+
     const GameObjectDisplayInfoEntry* info = sGameObjectDisplayInfoStore.LookupEntry(pGo->GetDisplayId());
     if (!info)
         return NULL;

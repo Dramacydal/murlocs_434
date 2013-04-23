@@ -263,6 +263,19 @@ bool BattleGroundDS::SetupBattleGround()
     return true;
 }
 
+void BattleGroundDS::OnObjectDBLoad(GameObject* go)
+{
+    switch (go->GetEntry())
+    {
+        case 191877:    // waterfall door and collision
+        case 194395:
+            go->EnableModel(false);
+            break;
+    }
+
+    BattleGround::OnObjectDBLoad(go);
+}
+
 bool BattleGroundDS::IsWithinLOSInBG(float x1, float y1, float z1, float x2, float y2, float z2)
 {
     if (!m_waterfallActive || !m_collisionSpawned)

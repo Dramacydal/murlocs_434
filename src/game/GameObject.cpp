@@ -67,6 +67,8 @@ GameObject::GameObject() : WorldObject(),
     m_captureTimer = 0;
 
     m_health = 0;
+
+    useDynamicModel = true;
 }
 
 GameObject::~GameObject()
@@ -1027,12 +1029,22 @@ bool GameObject::IsCollisionEnabled() const
     // TODO: Possible that this function must consider multiple checks
     switch (GetGoType())
     {
+        case GAMEOBJECT_TYPE_BUTTON:
+        case GAMEOBJECT_TYPE_QUESTGIVER:
+        case GAMEOBJECT_TYPE_CHEST:
+        case GAMEOBJECT_TYPE_GENERIC:
+        case GAMEOBJECT_TYPE_SPELL_FOCUS:
+        case GAMEOBJECT_TYPE_MAP_OBJECT:
+        case GAMEOBJECT_TYPE_MEETINGSTONE:
+        case GAMEOBJECT_TYPE_BARBER_CHAIR:
+        case GAMEOBJECT_TYPE_GUILD_BANK:
+            return true;
         case GAMEOBJECT_TYPE_DOOR:
         case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:
             return GetGoState() != GO_STATE_ACTIVE && GetGoState() != GO_STATE_ACTIVE_ALTERNATIVE;
 
         default:
-            return true;
+            return false;
     }
 }
 

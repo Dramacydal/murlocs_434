@@ -84,7 +84,7 @@ class BattleGroundDS : public BattleGround
         void HandleKillPlayer(Player* player, Player *killer) override;
         bool HandlePlayerUnderMap(Player * plr);
         bool IsCollisionSpawned() { return m_collisionSpawned; }
-
+        void OnObjectDBLoad(GameObject* go) override;
         bool IsWithinLOSInBG(float x1, float y1, float z1, float x2, float y2, float z2);
     private:
         bool IsWaterfallSprout(Creature* creature);
