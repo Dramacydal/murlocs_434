@@ -6987,8 +6987,9 @@ SpellCastResult Spell::CheckCast(bool strict)
 
                     bool ok = false;
                     float pathDist = m_caster->GetPathLength(destX, destY, destZ, false, &ok);
+                    // pathfinding disabled - do nothing
                     if (!ok)
-                        return SPELL_FAILED_OUT_OF_RANGE;
+                        break;
 
                     float range;
 

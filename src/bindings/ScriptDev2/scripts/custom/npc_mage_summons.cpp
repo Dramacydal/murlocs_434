@@ -15,6 +15,9 @@ struct MANGOS_DLL_DECL npc_mage_orbAI : public ScriptedAI
     bool snared;
     bool init;
     uint32 m_seekTimer;
+    float orientation;
+    bool stopped;
+    uint32 counter;
 
     npc_mage_orbAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
@@ -24,14 +27,35 @@ struct MANGOS_DLL_DECL npc_mage_orbAI : public ScriptedAI
     void MoveInLineOfSight(Unit* pWho) { }
     void EnterCombat(Unit* pEnemy) { }
 
-    void Reset()
+    void Reset() override
     {
         snared = false;
         init = false;
         m_seekTimer = 5000;
+        orientation = 0.0f;
+        stopped = false;
+        counter = 0;
     }
 
-    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell)
+    void MovementInform(uint32 uiMoveType, uint32 uiPointId) override
+    {
+        if (counter >= 10 || stopped || uiMoveType != POINT_MOTION_TYPE || !uiPointId)
+            return;
+
+        ++counter;
+
+        Position pos;
+        m_creature->GetPosition(pos.x, pos.y, pos.z);
+        m_creature->GetNearPoint(m_creature, pos.x, pos.y, pos.z, m_creature->GetObjectBoundingRadius(), 5.0f, orientation);
+        bool ok = false;
+        int32 pathLengh = m_creature->GetPathLength(pos.x, pos.y, pos.z, false, &ok);
+        if (!ok || pathLengh > 7.0f)
+            stopped = true;
+        else
+            m_creature->GetMotionMaster()->MovePoint(1, pos.x, pos.y, pos.z);
+    }
+
+    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell) override
     {
         switch (pSpell->Id)
         {
@@ -50,7 +74,7 @@ struct MANGOS_DLL_DECL npc_mage_orbAI : public ScriptedAI
         }
     }
 
-    void BeforeDespawn()
+    void BeforeDespawn() override
     {
         // Flame Orb only
         if (m_creature->GetEntry() != 44214)
@@ -65,7 +89,7 @@ struct MANGOS_DLL_DECL npc_mage_orbAI : public ScriptedAI
                 m_creature->CastSpell(m_creature, SPELL_FLAME_ORB_EXPLODE, true, NULL, NULL, creator->GetObjectGuid());
     }
 
-    void UpdateAI(const uint32 diff)
+    void UpdateAI(const uint32 diff) override
     {
         if (!init)
         {
@@ -83,11 +107,17 @@ struct MANGOS_DLL_DECL npc_mage_orbAI : public ScriptedAI
                 data.WriteGuidBytes<2, 4, 3, 1, 7, 0, 5, 6>(m_creature->GetObjectGuid());
                 m_creature->SendMessageToSet(&data, true);
 
-                Position destPos;
-                m_creature->GetPosition(destPos.x, destPos.y, destPos.z);
-                creator->GetNearPoint(creator, destPos.x, destPos.y, destPos.z, creator->GetObjectBoundingRadius(), 50.0f, creator->GetOrientation());
+                orientation = creator->GetOrientation();
 
-                m_creature->GetMotionMaster()->MovePoint(m_creature->GetCreatureInfo()->movementId, destPos.x, destPos.y, destPos.z, true);
+                Position pos;
+                m_creature->GetPosition(pos.x, pos.y, pos.z);
+                m_creature->GetNearPoint(m_creature, pos.x, pos.y, pos.z, m_creature->GetObjectBoundingRadius(), 5.0f, orientation);
+                bool ok = false;
+                int32 pathLengh = m_creature->GetPathLength(pos.x, pos.y, pos.z, false, &ok);
+                if (!ok || pathLengh > 7.0f)
+                    stopped = true;
+                else
+                    m_creature->GetMotionMaster()->MovePoint(1, pos.x, pos.y, pos.z);
             }
         }
 
