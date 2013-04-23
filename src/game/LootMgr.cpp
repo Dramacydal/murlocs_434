@@ -498,7 +498,7 @@ LootItem::LootItem(uint32 itemid_, uint8 type_, uint32 count_, uint32 randomSuff
 bool LootItem::AllowedForPlayer(Player const* player, WorldObject const* lootTarget) const
 {
     // DB conditions check
-    if (conditionId && !sObjectMgr.IsPlayerMeetToCondition(conditionId, player, player->GetMap(), lootTarget, CONDITION_FROM_LOOT))
+    if (lootTarget && conditionId && !sObjectMgr.IsPlayerMeetToCondition(conditionId, player, player->GetMap(), lootTarget, CONDITION_FROM_LOOT))
         return false;
 
     if (type == LOOT_ITEM_TYPE_ITEM)
@@ -682,7 +682,7 @@ void Loot::FillNotNormalLootFor(Player* pl)
         else if (i - questItemsCount < items.size())
             item = &items[i - questItemsCount];
 
-        if (!item->is_looted && (item->freeforall || item->currency) && item->AllowedForPlayer(pl))
+        if (!item->is_looted && (item->freeforall || item->currency) && item->AllowedForPlayer(pl, m_lootTarget))
         {
             if (item->type == LOOT_ITEM_TYPE_ITEM)
             {

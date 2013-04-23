@@ -132,7 +132,7 @@ struct LootItem
 
     LootSlotType GetSlotTypeForSharedLoot(PermissionTypes permission, Player* viewer, WorldObject const* lootTarget, bool condition_ok = false) const;
 
-    bool IsEligibleForSoublountTrade(Player const * player) const { return !is_looted && !freeforall && AllowedForPlayer(player); }
+    bool IsEligibleForSoublountTrade(Player const * player) const { return !is_looted && !freeforall && AllowedForPlayer(player, NULL); }
 };
 
 typedef std::vector<LootItem> LootItemList;
@@ -327,12 +327,9 @@ struct Loot
         LootItem* LootItemInSlot(uint32 lootslot, Player* player, QuestItem** qitem = NULL, QuestItem** ffaitem = NULL, QuestItem** conditem = NULL, QuestItem** currency = NULL);
         uint32 GetMaxSlotInLootFor(Player* player) const;
 
-<<<<<<< HEAD
         void AddAllowedLooter(Player const* player);
         AllowedLooterSet* GetAllowedLooters() { return &allowedGUIDs; }
-=======
         WorldObject const* GetLootTarget() const { return m_lootTarget; }
->>>>>>> 68b71a9... [12418] Use non-player conditions within the loot system
 
     private:
         void FillNotNormalLootFor(Player* player);
@@ -353,12 +350,10 @@ struct Loot
         // All rolls are registered here. They need to know, when the loot is not valid anymore
         LootValidatorRefManager m_LootValidatorRefManager;
 
-<<<<<<< HEAD
         AllowedLooterSet allowedGUIDs;
-=======
+
         // What is looted
         WorldObject const* m_lootTarget;
->>>>>>> 68b71a9... [12418] Use non-player conditions within the loot system
 };
 
 struct LootView

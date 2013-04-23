@@ -20388,7 +20388,7 @@ void Player::AddSpellMod(Aura* aura, bool apply)
     Opcodes opcode = (mod->m_auraname == SPELL_AURA_ADD_FLAT_MODIFIER) ? SMSG_SET_FLAT_SPELL_MODIFIER : SMSG_SET_PCT_SPELL_MODIFIER;
 
     uint32 modTypeCount = 0;    // count of mods per one mod->op
-    WorldPacket data(Opcode, 4 + 4 + 1 + 1 + 4);
+    WorldPacket data(opcode, 4 + 4 + 1 + 1 + 4);
     data << uint32(1);          // count of different mod->op's in packet
     size_t writePos = data.wpos();
     data << uint32(modTypeCount);
@@ -24239,15 +24239,9 @@ void Player::HandleFall(MovementInfo const& movementInfo)
 
     //Players with low fall distance, Feather Fall or physical immunity (charges used) are ignored
     // 14.57 can be calculated by resolving damageperc formula below to 0
-<<<<<<< HEAD
     if (z_diff >= 14.57f && !isDead() && !isGameMaster() &&
         !HasAuraType(SPELL_AURA_HOVER) && !HasAuraType(SPELL_AURA_FEATHER_FALL) &&
         !HasAuraType(SPELL_AURA_FLY) && !IsImmunedToDamage(SPELL_SCHOOL_MASK_NORMAL) && !hasFlyMountAura && GetTransportGuid().IsEmpty())
-=======
-    if (z_diff >= 14.57f && !isDead() && !isGameMaster() && /*!HasMovementFlag(MOVEFLAG_ONTRANSPORT) &&*/
-            !HasAuraType(SPELL_AURA_HOVER) && !HasAuraType(SPELL_AURA_FEATHER_FALL) &&
-            !HasAuraType(SPELL_AURA_FLY) && !IsImmunedToDamage(SPELL_SCHOOL_MASK_NORMAL))
->>>>>>> 9abc2d6... [12399] Fix a possible crash for reputation rewarding while rewarded player is teleported out of the map
     {
         //Safe fall, fall height reduction
         int32 safe_fall = GetTotalAuraModifier(SPELL_AURA_SAFE_FALL);

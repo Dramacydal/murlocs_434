@@ -846,9 +846,6 @@ void Log::WaitBeforeContinueIfNeed()
     }
 }
 
-<<<<<<< HEAD
-void outstring_log(const char * str, ...)
-=======
 void Log::setScriptLibraryErrorFile(char const* fname, char const* libName)
 {
     m_scriptLibName = libName;
@@ -868,7 +865,6 @@ void Log::setScriptLibraryErrorFile(char const* fname, char const* libName)
 }
 
 void outstring_log(const char* str, ...)
->>>>>>> e14a262... [12390] Add support for an own error file for scripting library
 {
     if (!str)
         return;
