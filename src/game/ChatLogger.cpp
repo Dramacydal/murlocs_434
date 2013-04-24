@@ -1,5 +1,5 @@
 #include "ChatLogger.h"
-#include "Policies/SingletonImp.h"
+#include "Policies/Singleton.h"
 #include "Config/Config.h"
 #include <ace/Log_Msg.h>
 #include <ace/Guard_T.h>

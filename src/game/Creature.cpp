@@ -188,8 +188,6 @@ m_creatureInfo(NULL)
 
     SetWalk(true);
 
-    m_bHasCustomRespawn = false;
-
     SetWalk(true, true);
 }
 

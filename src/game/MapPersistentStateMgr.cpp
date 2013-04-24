@@ -1136,16 +1136,6 @@ void MapPersistentStateManager::LoadGameobjectRespawnTimes()
         if (!data)
             continue;
 
-<<<<<<< HEAD
-        if (mapId != data->mapid)
-            continue;
-
-        MapEntry const* mapEntry = sMapStore.LookupEntry(mapId);
-        if (!mapEntry || (mapEntry->Instanceable() != (instanceId != 0)))
-            continue;
-
-        if (difficulty >= (!mapEntry->Instanceable() ? REGULAR_DIFFICULTY : (mapEntry->IsRaid() ? MAX_RAID_DIFFICULTY : MAX_DUNGEON_DIFFICULTY)))
-=======
         MapEntry const* mapEntry = sMapStore.LookupEntry(data->mapid);
         if (!mapEntry)
             continue;
@@ -1162,7 +1152,6 @@ void MapPersistentStateManager::LoadGameobjectRespawnTimes()
         }
 
         if (difficulty >= (!mapEntry->Instanceable() ? REGULAR_DIFFICULTY + 1 : (mapEntry->IsRaid() ? MAX_RAID_DIFFICULTY : MAX_DUNGEON_DIFFICULTY)))
->>>>>>> 1e072ad... [c12463] Fix logic mistake in loading respawn times. Thx to xfurry for pointing
             continue;
 
         MapPersistentState* state = AddPersistentState(mapEntry, instanceId, Difficulty(difficulty), resetTime, mapEntry->IsDungeon(), true, true, completedEncounters);

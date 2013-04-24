@@ -126,6 +126,6 @@ class MANGOS_DLL_SPEC InstanceData
         // Condition criteria additional requirements check
         // This is used for such things are heroic loot
         // See ObjectMgr.h enum ConditionSource for possible values of conditionSourceType
-        virtual bool CheckConditionCriteriaMeet(Player const* source, uint32 instance_condition_id, WorldObject const* conditionSource, uint32 conditionSourceType);
+        virtual bool CheckConditionCriteriaMeet(Player const* source, uint32 instance_condition_id, WorldObject const* conditionSource, uint32 conditionSourceType) const;
 };
 #endif

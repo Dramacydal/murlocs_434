@@ -863,11 +863,7 @@ bool Map::UnloadGrid(const uint32 &x, const uint32 &y, bool pForce)
         m_TerrainData->Unload(gx, gy);
     }
 
-<<<<<<< HEAD
-    DEBUG_LOG("Unloading grid[%u,%u] for map %u finished", x,y, i_id);
-=======
     DEBUG_FILTER_LOG(LOG_FILTER_MAP_LOADING, "Unloading grid[%u,%u] for map %u finished", x, y, i_id);
->>>>>>> c41451b... [c12532] Use Filter log for grid unloading messages
     return true;
 }
 

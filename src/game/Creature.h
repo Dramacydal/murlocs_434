@@ -496,8 +496,6 @@ class MANGOS_DLL_SPEC Creature : public Unit
 
         void Update(uint32 update_diff, uint32 time) override;  // overwrite Unit::Update
 
-        void SetRespawnCoord(float x, float y, float z, float o = 0.0f);
-        void GetRespawnCoord(float &x, float &y, float &z, float* ori = NULL, float* dist =NULL) const;
         uint32 GetEquipmentId() const { return m_equipmentId; }
 
         CreatureSubtype GetSubtype() const { return m_subtype; }

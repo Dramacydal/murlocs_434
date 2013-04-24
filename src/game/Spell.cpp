@@ -2851,9 +2851,9 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                         MaNGOS::GameObjectListSearcher<MaNGOS::GameObjectEntryInPosRangeCheck> checker(tempTargetGOList2, go_check);
                         Cell::VisitGridObjects(m_caster, checker, radius + fSearchDistance);
                     }
-                }
             }
-            else
+
+            if (bounds.first == bounds.second)
             {
                 MaNGOS::GameObjectInRangeCheck check(m_caster, x, y, z, radius);
                 MaNGOS::GameObjectListSearcher<MaNGOS::GameObjectInRangeCheck> searcher(tempTargetGOList2, check);
