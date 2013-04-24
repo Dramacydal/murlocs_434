@@ -460,12 +460,12 @@ struct MANGOS_DLL_DECL mob_mole_machineAI : public ScriptedAI
             // summon 2 dwarfes
             if(!m_bIsSentinel)
             {
-                if (Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_WATCHER, m_creature->GetPositionX() + 5, m_creature->GetPositionY() + 5, m_creature->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 10000))
+                if (Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_WATCHER, m_creature->GetPositionX() + 5, m_creature->GetPositionY() + 5, m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 10000))
                 {
                     pTemp->SetInCombatWithZone();
                     pTemp->GetMotionMaster()->MovePoint(0, HOME_X, HOME_Y, m_creature->GetPositionZ());
                 }
-                if (Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_GUARDIAN, m_creature->GetPositionX() - 5, m_creature->GetPositionY() - 5, m_creature->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 10000))
+                if (Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_GUARDIAN, m_creature->GetPositionX() - 5, m_creature->GetPositionY() - 5, m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 10000))
                 {
                     pTemp->SetInCombatWithZone();
                     pTemp->GetMotionMaster()->MovePoint(0, HOME_X, HOME_Y, m_creature->GetPositionZ());
@@ -474,7 +474,7 @@ struct MANGOS_DLL_DECL mob_mole_machineAI : public ScriptedAI
             // summon 1 sentinel
             else
             {
-                if (Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_SENTINEL, m_creature->GetPositionX() - 5, m_creature->GetPositionY() - 5, m_creature->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 10000))
+                if (Creature* pTemp = m_creature->SummonCreature(MOB_DARK_RUNE_SENTINEL, m_creature->GetPositionX() - 5, m_creature->GetPositionY() - 5, m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 10000))
                 {
                     pTemp->SetInCombatWithZone();
                     pTemp->GetMotionMaster()->MovePoint(0, HOME_X, HOME_Y, m_creature->GetPositionZ());

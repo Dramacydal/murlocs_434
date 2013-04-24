@@ -551,10 +551,10 @@ struct MANGOS_DLL_DECL npc_wizzlecranks_shredderAI : public npc_escortAI
                 SetRun(false);
                 break;
             case 17:
-                if (Creature* pTemp = m_creature->SummonCreature(NPC_MERCENARY, 1128.489f, -3037.611f, 92.701f, 1.472f, EMPSUMMON_TIMED_OOC_DESPAWN, 120000))
+                if (Creature* pTemp = m_creature->SummonCreature(NPC_MERCENARY, 1128.489f, -3037.611f, 92.701f, 1.472f, TEMPSUMMON_TIMED_OOC_DESPAWN, 120000))
                 {
                     DoScriptText(SAY_MERCENARY, pTemp);
-                    m_creature->SummonCreature(NPC_MERCENARY, 1160.172f, -2980.168f, 97.313f, 3.690f, EMPSUMMON_TIMED_OOC_DESPAWN, 120000);
+                    m_creature->SummonCreature(NPC_MERCENARY, 1160.172f, -2980.168f, 97.313f, 3.690f, TEMPSUMMON_TIMED_OOC_DESPAWN, 120000);
                 }
                 break;
             case 24:

@@ -72,7 +72,7 @@ struct MANGOS_DLL_DECL npc_kanatiAI : public npc_escortAI
         for(int i = 0; i < 3; ++i)
             m_creature->SummonCreature(NPC_GALAK_ASS,
             m_afGalakLoc[0], m_afGalakLoc[1], m_afGalakLoc[2], 0.0f,
-            EMPSUMMON_TIMED_OOC_DESPAWN, 25000);
+            TEMPSUMMON_TIMED_OOC_DESPAWN, 25000);
     }
 
     void JustSummoned(Creature* pSummoned)

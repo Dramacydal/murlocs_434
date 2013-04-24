@@ -147,7 +147,8 @@ struct MANGOS_DLL_DECL boss_uromAI : public BSWScriptedAI
 
             float x, y, z;
             m_creature->GetPosition(x, y, z);
-            m_creature->SetRespawnCoord(x, y, z);
+            CreatureCreatePos cp(m_creature->GetMap(), x, y, z, m_creature->GetOrientation(), m_creature->GetPhaseMask());
+            m_creature->SetRespawnCoord(cp);
             m_creature->StopMoving();
             m_creature->GetMotionMaster()->MoveIdle();
         }

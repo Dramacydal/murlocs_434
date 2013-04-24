@@ -137,7 +137,7 @@ struct MANGOS_DLL_DECL boss_curatorAI : public ScriptedAI
                 m_uiFlareTimer = 10000;
 
                 // summon Astral Flare
-                DoSpawnCreature(NPC_ASTRAL_FLARE, rand()%37, rand()%37, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                DoSpawnCreature(NPC_ASTRAL_FLARE, rand()%37, rand()%37, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
 
                 // reduce mana by 10% of maximum
                 if (int32 iMana = m_creature->GetMaxPower(POWER_MANA))

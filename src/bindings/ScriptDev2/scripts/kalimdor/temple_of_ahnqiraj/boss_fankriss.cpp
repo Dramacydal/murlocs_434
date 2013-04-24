@@ -71,7 +71,7 @@ struct MANGOS_DLL_DECL boss_fankrissAI : public ScriptedAI
             case 1: RandY = 0 + Rand; break;
         }
         Rand = 0;
-        Spawn = DoSpawnCreature(15630, RandX, RandY, 0, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 30000);
+        Spawn = DoSpawnCreature(15630, RandX, RandY, 0, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 30000);
         if (Spawn && pVictim)
             Spawn->AI()->AttackStart(pVictim);
     }
@@ -138,13 +138,13 @@ struct MANGOS_DLL_DECL boss_fankrissAI : public ScriptedAI
                             break;
                     }
                     Creature* pHatchling = NULL;
-                    if (pHatchling = m_creature->SummonCreature(15962, pTarget->GetPositionX()-3, pTarget->GetPositionY()-3, pTarget->GetPositionZ(), 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 15000))
+                    if (pHatchling = m_creature->SummonCreature(15962, pTarget->GetPositionX()-3, pTarget->GetPositionY()-3, pTarget->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 15000))
                         pHatchling->AI()->AttackStart(pTarget);
-                    if (pHatchling = m_creature->SummonCreature(15962, pTarget->GetPositionX()-3, pTarget->GetPositionY()+3, pTarget->GetPositionZ(), 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 15000))
+                    if (pHatchling = m_creature->SummonCreature(15962, pTarget->GetPositionX()-3, pTarget->GetPositionY()+3, pTarget->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 15000))
                         pHatchling->AI()->AttackStart(pTarget);
-                    if (pHatchling = m_creature->SummonCreature(15962, pTarget->GetPositionX()-5, pTarget->GetPositionY()-5, pTarget->GetPositionZ(), 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 15000))
+                    if (pHatchling = m_creature->SummonCreature(15962, pTarget->GetPositionX()-5, pTarget->GetPositionY()-5, pTarget->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 15000))
                         pHatchling->AI()->AttackStart(pTarget);
-                    if (pHatchling = m_creature->SummonCreature(15962, pTarget->GetPositionX()-5, pTarget->GetPositionY()+5, pTarget->GetPositionZ(), 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 15000))
+                    if (pHatchling = m_creature->SummonCreature(15962, pTarget->GetPositionX()-5, pTarget->GetPositionY()+5, pTarget->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 15000))
                         pHatchling->AI()->AttackStart(pTarget);
                 }
                 SpawnHatchlings_Timer = urand(45000, 60000);

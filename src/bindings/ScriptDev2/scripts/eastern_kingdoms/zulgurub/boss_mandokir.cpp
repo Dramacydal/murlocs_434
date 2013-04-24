@@ -199,7 +199,7 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
         m_creature->Unmount();
 
         //And summon his raptor
-        m_creature->SummonCreature(NPC_OHGAN, 0.0f, 0.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 35000);
+        m_creature->SummonCreature(NPC_OHGAN, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 35000);
     }
 
     void JustSummoned(Creature* pSummoned)

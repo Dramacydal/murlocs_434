@@ -189,8 +189,8 @@ struct MANGOS_DLL_DECL npc_kayra_longmaneAI : public npc_escortAI
         {
             case 4:
                 DoScriptText(SAY_AMBUSH1, m_creature, pPlayer);
-                DoSpawnCreature(NPC_SLAVEBINDER, -10.0f, -5.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 30000);
-                DoSpawnCreature(NPC_SLAVEBINDER, -8.0f, 5.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 30000);
+                DoSpawnCreature(NPC_SLAVEBINDER, -10.0f, -5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 30000);
+                DoSpawnCreature(NPC_SLAVEBINDER, -8.0f, 5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 30000);
                 break;
             case 5:
                 DoScriptText(SAY_PROGRESS, m_creature, pPlayer);
@@ -198,8 +198,8 @@ struct MANGOS_DLL_DECL npc_kayra_longmaneAI : public npc_escortAI
                 break;
             case 16:
                 DoScriptText(SAY_AMBUSH2, m_creature, pPlayer);
-                DoSpawnCreature(NPC_SLAVEBINDER, -10.0f, -5.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 30000);
-                DoSpawnCreature(NPC_SLAVEBINDER, -8.0f, 5.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 30000);
+                DoSpawnCreature(NPC_SLAVEBINDER, -10.0f, -5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 30000);
+                DoSpawnCreature(NPC_SLAVEBINDER, -8.0f, 5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 30000);
                 break;
             case 17:
                 DoScriptText(SAY_END, m_creature, pPlayer);

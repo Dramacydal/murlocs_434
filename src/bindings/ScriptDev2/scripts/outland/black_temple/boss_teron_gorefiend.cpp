@@ -400,7 +400,7 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
                 float fX = CalculateRandomLocation(pTarget->GetPositionX(), 20);
                 float fY = CalculateRandomLocation(pTarget->GetPositionY(), 20);
 
-                if (Creature* pDoomBlossom = m_creature->SummonCreature(NPC_DOOM_BLOSSOM, fX, fY, pTarget->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 20000))
+                if (Creature* pDoomBlossom = m_creature->SummonCreature(NPC_DOOM_BLOSSOM, fX, fY, pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 20000))
                 {
                     pDoomBlossom->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     pDoomBlossom->setFaction(m_creature->getFaction());

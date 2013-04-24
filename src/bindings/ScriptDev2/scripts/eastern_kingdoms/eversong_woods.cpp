@@ -506,7 +506,7 @@ struct MANGOS_DLL_DECL npc_infused_crystalAI : public ScriptedAI
         {
             for (uint8 i = 0; i < 3; ++i)
             {
-                if (Creature* pEnragedWrath = m_creature->SummonCreature(NPC_ENRAGED_WRATH, fEnragedWrathPosition[i][0], fEnragedWrathPosition[i][1], fEnragedWrathPosition[i][2], fEnragedWrathPosition[i][3], EMPSUMMON_TIMED_OOC_DESPAWN, 5000))
+                if (Creature* pEnragedWrath = m_creature->SummonCreature(NPC_ENRAGED_WRATH, fEnragedWrathPosition[i][0], fEnragedWrathPosition[i][1], fEnragedWrathPosition[i][2], fEnragedWrathPosition[i][3], TEMPSUMMON_TIMED_OOC_DESPAWN, 5000))
                 {
                     pEnragedWrath->AI()->AttackStart(m_creature);
                 }

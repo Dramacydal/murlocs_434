@@ -7372,7 +7372,7 @@ void Spell::DoSummonPossessed(SpellEffectEntry const * effect)
         m_caster->GetClosePoint(px,py,pz,1.0f);
 
 
-    TempSummonType summonType = (duration == 0) ? TEMPSUMMON_DEAD_DESPAWN : TEMPSUMMON_TIMED_OR_DEAD_DESPAWN;
+    TempSummonType summonType = (duration == 0) ? TEMPSUMMON_DEAD_DESPAWN : TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN;
     Creature* summon = m_caster->SummonCreature(creature_entry, px, py, pz, m_caster->GetOrientation(), summonType, duration, true);
     if (!summon)
     {
@@ -8023,7 +8023,7 @@ void Spell::DoSummonVehicle(SpellEffectEntry const * effect, uint32 forceFaction
     else
         m_caster->GetClosePoint(px, py, pz,m_caster->GetObjectBoundingRadius());
 
-    TempSummonType summonType = (GetSpellDuration(m_spellInfo) == 0) ? TEMPSUMMON_DEAD_DESPAWN : TEMPSUMMON_TIMED_OR_DEAD_DESPAWN;
+    TempSummonType summonType = (GetSpellDuration(m_spellInfo) == 0) ? TEMPSUMMON_DEAD_DESPAWN : TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN;
 
     if (Creature* vehicle = m_caster->SummonCreature(vehicle_entry,px,py,pz,m_caster->GetOrientation(),summonType,GetSpellDuration(m_spellInfo),true))
     {
@@ -9701,7 +9701,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     for (uint8 i = 0; i < 4; ++i)
                     {
                         unitTarget->GetNearPoint(unitTarget, x, y, z, unitTarget->GetObjectBoundingRadius(), 5.0f, angle + i*M_PI_F/2);
-                        unitTarget->SummonCreature(16119, x, y, z, angle, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
+                        unitTarget->SummonCreature(16119, x, y, z, angle, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
                     }
                     return;
                 }
@@ -9772,7 +9772,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                         creature_id = 17039;
 
                     if (WorldObject* pSource = GetAffectiveCasterObject())
-                        pSource->SummonCreature(creature_id, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 120*IN_MILLISECONDS);
+                        pSource->SummonCreature(creature_id, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 120*IN_MILLISECONDS);
                     return;
                 }
                 case 29830:                                 // Mirren's Drinking Hat
@@ -9848,7 +9848,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     for (uint8 i = 0; i < 4; ++i)
                     {
                         m_caster->GetNearPoint(m_caster, x, y, z, 0, 5.0f, M_PI_F*.5f*i + M_PI_F*.25f);
-                        m_caster->SummonCreature(21002, x, y, z, 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 30000);
+                        m_caster->SummonCreature(21002, x, y, z, 0, TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN, 30000);
                     }
                     return;
                 }

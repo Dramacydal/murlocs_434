@@ -760,7 +760,7 @@ bool AreaTrigger_at_nats_landing(Player* pPlayer, const AreaTriggerEntry* pAt)
         Creature* pShark = GetClosestCreatureWithEntry(pPlayer, NPC_LURKING_SHARK, 20.0f);
 
         if (!pShark)
-            pShark = pPlayer->SummonCreature(NPC_LURKING_SHARK, -4246.243f, -3922.356f, -7.488f, 5.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 100000);
+            pShark = pPlayer->SummonCreature(NPC_LURKING_SHARK, -4246.243f, -3922.356f, -7.488f, 5.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 100000);
 
         pShark->AI()->AttackStart(pPlayer);
         return false;

@@ -123,7 +123,7 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
                 if (GameObject *pEgg = SelectNextEgg())
                 {
                     pEgg->SetGoState(GO_STATE_ACTIVE);
-                    m_creature->SummonCreature(NPC_SPAWN_OF_MARLI, pEgg->GetPositionX(), pEgg->GetPositionY(), pEgg->GetPositionZ(),0, EMPSUMMON_TIMED_OOC_DESPAWN, 15000);
+                    m_creature->SummonCreature(NPC_SPAWN_OF_MARLI, pEgg->GetPositionX(), pEgg->GetPositionY(), pEgg->GetPositionZ(),0, TEMPSUMMON_TIMED_OOC_DESPAWN, 15000);
                 }
             }
 
@@ -194,7 +194,7 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
                 if (GameObject *pEgg = SelectNextEgg())
                 {
                     pEgg->SetGoState(GO_STATE_ACTIVE);
-                    m_creature->SummonCreature(NPC_SPAWN_OF_MARLI, pEgg->GetPositionX(), pEgg->GetPositionY(), pEgg->GetPositionZ(),0, EMPSUMMON_TIMED_OOC_DESPAWN, 15000);
+                    m_creature->SummonCreature(NPC_SPAWN_OF_MARLI, pEgg->GetPositionX(), pEgg->GetPositionY(), pEgg->GetPositionZ(),0, TEMPSUMMON_TIMED_OOC_DESPAWN, 15000);
                 }
                 m_uiSpawnSpider_Timer = urand(20000, 30000);
             }

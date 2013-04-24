@@ -1380,7 +1380,7 @@ struct MANGOS_DLL_DECL boss_mimironAI : public ScriptedAI
                 if(m_uiPhaseDelayTimer < uiDiff)
                 {
                     DoScriptText(SAY_TORSO_ACTIVE, m_creature);
-                    if(/*Creature* pTorso = */m_creature->SummonCreature(NPC_VX001, CENTER_X, CENTER_Y, CENTER_Z, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 180000))
+                    if(/*Creature* pTorso = */m_creature->SummonCreature(NPC_VX001, CENTER_X, CENTER_Y, CENTER_Z, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 180000))
                     {
                         if(m_pInstance->GetData(TYPE_MIMIRON_HARD) == IN_PROGRESS)
                         {

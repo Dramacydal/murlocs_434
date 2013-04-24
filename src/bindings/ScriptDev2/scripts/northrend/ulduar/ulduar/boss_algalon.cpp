@@ -156,7 +156,7 @@ struct MANGOS_DLL_DECL mob_black_holeAI : public ScriptedAI
         // summon unleashed dark matter in phase 2
         if (m_uiSummonTimer < uiDiff && m_bIsPhase2)
         {
-        if(Creature* pTemp = m_creature->SummonCreature(NPC_UNLEASHED_DARK_MATTER, 0, 0, 0, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 30000))
+        if(Creature* pTemp = m_creature->SummonCreature(NPC_UNLEASHED_DARK_MATTER, 0, 0, 0, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 30000))
             pTemp->SetInCombatWithZone();
             m_uiSummonTimer = urand(10000, 15000);
         }
@@ -338,7 +338,7 @@ struct MANGOS_DLL_DECL boss_algalonAI : public ScriptedAI
         float angle = (float) rand()*360/RAND_MAX + 1;
         float homeX = 1630.475f + urand(15, 30)*cos(angle*(M_PI/180));
         float homeY = -286.989f + urand(15, 30)*sin(angle*(M_PI/180));
-        if(Creature* pTemp = m_creature->SummonCreature(m_uiCreatureEntry, homeX, homeY, 417.32f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 30000))
+        if(Creature* pTemp = m_creature->SummonCreature(m_uiCreatureEntry, homeX, homeY, 417.32f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 30000))
         {
             pTemp->SetInCombatWithZone();
             if(pTemp->GetEntry() == NPC_DARK_MATTER)

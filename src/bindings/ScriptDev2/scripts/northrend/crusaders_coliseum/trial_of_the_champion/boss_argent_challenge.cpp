@@ -297,79 +297,79 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
             switch(urand(0, 24))
             {
                 case 0:
-                    m_creature->SummonCreature(MEMORY_ALGALON, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_ALGALON, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 1:
-                    m_creature->SummonCreature(MEMORY_CHROMAGGUS, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_CHROMAGGUS, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 2:
-                    m_creature->SummonCreature(MEMORY_CYANIGOSA, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_CYANIGOSA, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 3:
-                    m_creature->SummonCreature(MEMORY_DELRISSA, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_DELRISSA, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 4:
-                    m_creature->SummonCreature(MEMORY_ECK, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_ECK, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 5:
-                    m_creature->SummonCreature(MEMORY_ENTROPIUS, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_ENTROPIUS, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 6:
-                    m_creature->SummonCreature(MEMORY_GRUUL, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_GRUUL, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 7:
-                    m_creature->SummonCreature(MEMORY_HAKKAR, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_HAKKAR, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 8:
-                    m_creature->SummonCreature(MEMORY_HEIGAN, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_HEIGAN, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 9:
-                    m_creature->SummonCreature(MEMORY_HEROD, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_HEROD, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 10:
-                    m_creature->SummonCreature(MEMORY_HOGGER, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_HOGGER, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 11:
-                    m_creature->SummonCreature(MEMORY_IGNIS, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_IGNIS, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 12:
-                    m_creature->SummonCreature(MEMORY_ILLIDAN, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_ILLIDAN, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 13:
-                    m_creature->SummonCreature(MEMORY_INGVAR, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_INGVAR, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 14:
-                    m_creature->SummonCreature(MEMORY_KALITHRESH, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_KALITHRESH, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 15:
-                    m_creature->SummonCreature(MEMORY_LUCIFRON, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_LUCIFRON, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 16:
-                    m_creature->SummonCreature(MEMORY_MALCHEZAAR, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_MALCHEZAAR, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 17:
-                    m_creature->SummonCreature(MEMORY_MUTANUS, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_MUTANUS, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 18:
-                    m_creature->SummonCreature(MEMORY_ONYXIA, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_ONYXIA, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 19:
-                    m_creature->SummonCreature(MEMORY_THUNDERAAN, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_THUNDERAAN, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 20:
-                    m_creature->SummonCreature(MEMORY_VANCLEEF, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_VANCLEEF, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 21:
-                    m_creature->SummonCreature(MEMORY_VASHJ, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_VASHJ, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 22:
-                    m_creature->SummonCreature(MEMORY_VEKNILASH, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_VEKNILASH, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 23:
-                    m_creature->SummonCreature(MEMORY_VEZAX, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_VEZAX, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
                 case 24:
-                    m_creature->SummonCreature(MEMORY_ARCHIMONDE, 0.0f, 0.0f, 0.0f, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    m_creature->SummonCreature(MEMORY_ARCHIMONDE, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
                     break;
             }
             Shield_Delay = 1000;

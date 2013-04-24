@@ -615,7 +615,7 @@ struct MANGOS_DLL_DECL npc_wildaAI : public npc_escortAI
         float fX, fY, fZ;
         m_creature->GetRandomPoint(m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 15.0f, fX, fY, fZ);
 
-        m_creature->SummonCreature(NPC_COILSKAR_ASSASSIN, fX, fY, fZ, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+        m_creature->SummonCreature(NPC_COILSKAR_ASSASSIN, fX, fY, fZ, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
     }
 
     void Aggro(Unit* pWho)

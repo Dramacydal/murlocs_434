@@ -258,7 +258,7 @@ struct MANGOS_DLL_DECL boss_exarch_maladaarAI : public ScriptedAI
                 m_targetGuid = pTarget->GetObjectGuid();
 
                 DoCastSpellIfCan(pTarget, SPELL_STOLEN_SOUL, CAST_INTERRUPT_PREVIOUS);
-                DoSpawnCreature(NPC_STOLEN_SOUL, 0.0f, 0.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 10000);
+                DoSpawnCreature(NPC_STOLEN_SOUL, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 10000);
 
                 m_uiStolenSoulTimer = urand(20000, 30000);
             }

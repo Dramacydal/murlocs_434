@@ -659,7 +659,7 @@ struct MANGOS_DLL_DECL boss_yogg_saronAI : public ScriptedAI
         float homeY = m_creature->GetPositionY() + creatureDist*sin(angle*(M_PI/180));
         float homeZ = m_creature->GetTerrain()->GetWaterOrGroundLevel(homeX, homeY, m_creature->GetPositionZ());
         // summon tentacle
-        if(Creature *pTemp = m_creature->SummonCreature(pEntry, homeX, homeY, homeZ, 0, EMPSUMMON_TIMED_OOC_DESPAWN, 180000))
+        if(Creature *pTemp = m_creature->SummonCreature(pEntry, homeX, homeY, homeZ, 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 180000))
             pTemp->SetInCombatWithZone();
     }
 
@@ -731,7 +731,7 @@ struct MANGOS_DLL_DECL boss_yogg_saronAI : public ScriptedAI
                 if (m_uiSummonTimer < uiDiff)
                 {
                     // spell 64158 radius to high
-                    if(Creature *pTemp = m_creature->SummonCreature(MOB_IMMORTAL_GUARDIAN, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 180000))
+                    if(Creature *pTemp = m_creature->SummonCreature(MOB_IMMORTAL_GUARDIAN, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 180000))
                         pTemp->SetInCombatWithZone();
                     m_uiSummonTimer = 30000;
                 }

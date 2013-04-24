@@ -234,7 +234,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public ScriptedAI
         m_bIsLeftDead = true;
         for(uint8 i = 0; i < 5; i ++)
         {
-            if(Creature* pRubble = m_creature->SummonCreature(MOB_RUBBLE, LeftArm[0] - urand(0, 5), LeftArm[1] + urand(0, 10), LeftArm[2], 0, EMPSUMMON_TIMED_OOC_DESPAWN, 10000))
+            if(Creature* pRubble = m_creature->SummonCreature(MOB_RUBBLE, LeftArm[0] - urand(0, 5), LeftArm[1] + urand(0, 10), LeftArm[2], 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 10000))
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                     pRubble->AddThreat(pTarget,0.0f);
         }
@@ -259,7 +259,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public ScriptedAI
         m_bOpenArms = false;
         for(uint8 i = 0; i < 5; i ++)
         {
-            if(Creature* pRubble = m_creature->SummonCreature(MOB_RUBBLE, RightArm[0] - urand(0, 5), RightArm[1] + urand(0, 10), RightArm[2], 0, EMPSUMMON_TIMED_OOC_DESPAWN, 10000))
+            if(Creature* pRubble = m_creature->SummonCreature(MOB_RUBBLE, RightArm[0] - urand(0, 5), RightArm[1] + urand(0, 10), RightArm[2], 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 10000))
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                     pRubble->AddThreat(pTarget,0.0f);
         }

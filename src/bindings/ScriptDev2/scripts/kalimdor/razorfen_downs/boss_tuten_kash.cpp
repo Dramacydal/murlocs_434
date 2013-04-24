@@ -307,22 +307,22 @@ bool GOUse_go_gong_razor(Player* pPlayer, GameObject* pGo)
     switch(m_uiGongPhase)
     {
         case PHASE_ZERO: ///-> First time clicking
-            pGo->SummonCreature(NPC_TOMB_FIEND, PositionF1[0], PositionF1[1], PositionF1[2], PositionF1[3], EMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
-            pGo->SummonCreature(NPC_TOMB_FIEND, PositionF2[0], PositionF2[1], PositionF2[2], PositionF2[3], EMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
-            pGo->SummonCreature(NPC_TOMB_FIEND, PositionF3[0], PositionF3[1], PositionF3[2], PositionF3[3], EMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
-            pGo->SummonCreature(NPC_TOMB_FIEND, PositionF4[0], PositionF4[1], PositionF4[2], PositionF4[3], EMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
+            pGo->SummonCreature(NPC_TOMB_FIEND, PositionF1[0], PositionF1[1], PositionF1[2], PositionF1[3], TEMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
+            pGo->SummonCreature(NPC_TOMB_FIEND, PositionF2[0], PositionF2[1], PositionF2[2], PositionF2[3], TEMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
+            pGo->SummonCreature(NPC_TOMB_FIEND, PositionF3[0], PositionF3[1], PositionF3[2], PositionF3[3], TEMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
+            pGo->SummonCreature(NPC_TOMB_FIEND, PositionF4[0], PositionF4[1], PositionF4[2], PositionF4[3], TEMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
             break;
 ///-> empty case to keep players from multi summon the wave they are on 8P damn cheaters
         case PHASE_ZEROB:
             break;
         case PHASE_ONE:
-            pGo->SummonCreature(NPC_TOMB_REAVER, PositionR1[0], PositionR1[1], PositionR1[2], PositionR1[3], EMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
-            pGo->SummonCreature(NPC_TOMB_REAVER, PositionR2[0], PositionR2[1], PositionR2[2], PositionR2[3], EMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
+            pGo->SummonCreature(NPC_TOMB_REAVER, PositionR1[0], PositionR1[1], PositionR1[2], PositionR1[3], TEMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
+            pGo->SummonCreature(NPC_TOMB_REAVER, PositionR2[0], PositionR2[1], PositionR2[2], PositionR2[3], TEMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
             break;
         case PHASE_ONEB:
             break;
         case PHASE_TWO:
-            pGo->SummonCreature(NPC_TUTEN, PositionTUT[0], PositionTUT[1], PositionTUT[2], PositionTUT[3], EMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
+            pGo->SummonCreature(NPC_TUTEN, PositionTUT[0], PositionTUT[1], PositionTUT[2], PositionTUT[3], TEMPSUMMON_TIMED_OOC_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
             break;
         case PHASE_TWOB:
             break;

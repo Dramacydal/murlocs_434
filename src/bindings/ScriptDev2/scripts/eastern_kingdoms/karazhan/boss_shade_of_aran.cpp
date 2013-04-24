@@ -431,7 +431,7 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
         {
             for (uint32 i = 0; i < 5; ++i)
             {
-                if (Creature* pShadow = m_creature->SummonCreature(NPC_SHADOW_OF_ARAN, 0.0f, 0.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 5000))
+                if (Creature* pShadow = m_creature->SummonCreature(NPC_SHADOW_OF_ARAN, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 5000))
                 {
                     pShadow->Attack(m_creature->getVictim(), true);
                     pShadow->setFaction(m_creature->getFaction());

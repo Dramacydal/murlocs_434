@@ -185,7 +185,7 @@ struct MANGOS_DLL_DECL eye_of_cthunAI : public ScriptedAI
 
     void SpawnEyeTentacle(float x, float y)
     {
-        m_creature->SummonCreature(MOB_EYE_TENTACLE, m_creature->GetPositionX()+x ,m_creature->GetPositionY()+y, m_creature->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 500);
+        m_creature->SummonCreature(MOB_EYE_TENTACLE, m_creature->GetPositionX()+x ,m_creature->GetPositionY()+y, m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 500);
     }
 
     void Aggro(Unit* pWho)
@@ -241,7 +241,7 @@ struct MANGOS_DLL_DECL eye_of_cthunAI : public ScriptedAI
                     if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                     {
                         // Spawn claw tentacle on the random target
-                        if (Creature* pSummoned = m_creature->SummonCreature(MOB_CLAW_TENTACLE, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 500))
+                        if (Creature* pSummoned = m_creature->SummonCreature(MOB_CLAW_TENTACLE, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 500))
                             pSummoned->AI()->AttackStart(pTarget);
                     }
 
@@ -513,7 +513,7 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
 
     void SpawnEyeTentacle(float x, float y)
     {
-        m_creature->SummonCreature(MOB_EYE_TENTACLE, m_creature->GetPositionX()+x ,m_creature->GetPositionY()+y, m_creature->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 500);
+        m_creature->SummonCreature(MOB_EYE_TENTACLE, m_creature->GetPositionX()+x ,m_creature->GetPositionY()+y, m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 500);
     }
 
     Player* SelectRandomNotStomach()
@@ -772,7 +772,7 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
                     if (Player* pTarget = SelectRandomNotStomach())
                     {
                         // Spawn claw tentacle on the random target
-                        if (Creature* pSummoned = m_creature->SummonCreature(MOB_GIANT_CLAW_TENTACLE, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 500))
+                        if (Creature* pSummoned = m_creature->SummonCreature(MOB_GIANT_CLAW_TENTACLE, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 500))
                             pSummoned->AI()->AttackStart(pTarget);
                     }
 
@@ -788,7 +788,7 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
                     if (Player* pTarget = SelectRandomNotStomach())
                     {
                         // Spawn claw tentacle on the random target
-                        if (Creature* pSummoned = m_creature->SummonCreature(MOB_GIANT_EYE_TENTACLE, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, EMPSUMMON_TIMED_OOC_DESPAWN, 500))
+                        if (Creature* pSummoned = m_creature->SummonCreature(MOB_GIANT_EYE_TENTACLE, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 500))
                             pSummoned->AI()->AttackStart(pTarget);
                     }
 

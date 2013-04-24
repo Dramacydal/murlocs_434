@@ -253,7 +253,7 @@ struct MANGOS_DLL_DECL mob_titoAI : public ScriptedAI
 
 void boss_dorotheeAI::SummonTito()
 {
-    if (Creature* pTito = m_creature->SummonCreature(CREATURE_TITO, 0.0f, 0.0f, 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 30000))
+    if (Creature* pTito = m_creature->SummonCreature(CREATURE_TITO, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 30000))
     {
         DoScriptText(SAY_DOROTHEE_SUMMON, m_creature);
 

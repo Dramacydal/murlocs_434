@@ -128,7 +128,7 @@ struct MANGOS_DLL_DECL boss_grobbulusAI : public ScriptedAI
     void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell)
     {
         if ((pSpell->Id == SPELL_SLIME_SPRAY || pSpell->Id == SPELL_SLIME_SPRAY_H) && pTarget->GetTypeId() == TYPEID_PLAYER)
-            m_creature->SummonCreature(NPC_FALLOUT_SLIME, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 10*IN_MILLISECONDS);
+            m_creature->SummonCreature(NPC_FALLOUT_SLIME, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 10*IN_MILLISECONDS);
     }
 
     void UpdateAI(const uint32 uiDiff)

@@ -736,7 +736,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public ScriptedAI
         {
             x = (rand_norm() * 30.0f) - 15.0f;
             y = (rand_norm() * 30.0f) - 15.0f;
-            if(Creature* pLasher = DoSpawnCreature(NPC_DETONATING_LASHER, x, y, 0, 0, EMPSUMMON_TIMED_OOC_DESPAWN_OR_DEAD_DESPAWN, 120000))
+            if(Creature* pLasher = DoSpawnCreature(NPC_DETONATING_LASHER, x, y, 0, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 120000))
             {
                 pLasher->setFaction(m_creature->getFaction());
                 if(Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
@@ -750,7 +750,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public ScriptedAI
     {
         float x = (rand_norm() * 30.0f) - 15.0f;
         float y = (rand_norm() * 30.0f) - 15.0f;
-        if(Creature* pAdd = DoSpawnCreature(NPC_ANCIENT_CONSERVATOR, x, y, 0, 0, EMPSUMMON_TIMED_OOC_DESPAWN_OR_DEAD_DESPAWN, 120000))
+        if(Creature* pAdd = DoSpawnCreature(NPC_ANCIENT_CONSERVATOR, x, y, 0, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 120000))
         {
             pAdd->setFaction(m_creature->getFaction());
             if(Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))

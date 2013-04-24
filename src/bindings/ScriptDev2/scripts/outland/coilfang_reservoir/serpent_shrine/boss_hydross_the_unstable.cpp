@@ -154,7 +154,7 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
     {
         for(uint8 i = 0; i < 4; ++i)
             DoSpawnCreature(m_bCorruptedForm ? NPC_TAINTED_SPAWN : NPC_PURE_SPAWN,
-                afSpawnDiffs[i][0], afSpawnDiffs[i][1], 0.0f, 0.0f, EMPSUMMON_TIMED_OOC_DESPAWN, 10000);
+                afSpawnDiffs[i][0], afSpawnDiffs[i][1], 0.0f, 0.0f, TEMPSUMMON_TIMED_OOC_DESPAWN, 10000);
     }
 
     void UpdateAI(const uint32 uiDiff)

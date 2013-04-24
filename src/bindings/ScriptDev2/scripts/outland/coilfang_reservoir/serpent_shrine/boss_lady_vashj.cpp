@@ -354,7 +354,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                 {
                     m_creature->SummonCreature(NPC_TOXIC_SPOREBAT,
                         afSporebatPos[0], afSporebatPos[1], afSporebatPos[2], afSporebatPos[3],
-                        EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                        TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
 
                     //summon sporebats faster and faster
                     if (m_uiSummonSporebat_StaticTimer > 1000)
@@ -440,7 +440,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
 
                 m_creature->SummonCreature(NPC_COILFANG_STRIDER,
                     afCoilfangStriderPos[uiPos][0], afCoilfangStriderPos[uiPos][1], afCoilfangStriderPos[uiPos][2], afCoilfangStriderPos[uiPos][3],
-                    EMPSUMMON_TIMED_OOC_DESPAWN, 5000);
+                    TEMPSUMMON_TIMED_OOC_DESPAWN, 5000);
 
                 //wowwiki says 60 seconds, bosskillers says 60-70
                 m_uiCoilfangStrider_Timer = urand(60000, 70000);
