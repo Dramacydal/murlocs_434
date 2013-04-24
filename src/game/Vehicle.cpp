@@ -227,6 +227,11 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
         ((Player*)passenger)->SetGravity(false);
         passenger->SetRoot(true);
     }
+    else if (passenger->GetTypeId() == TYPEID_UNIT)
+    {
+        if (((Creature*)passenger)->AI())
+            ((Creature*)passenger)->AI()->SetCombatMovement(false);
+    }
 
     //if (seat->second.seatInfo->m_flags & SEAT_FLAG_UNATTACKABLE || seat->second.seatInfo->m_flags & SEAT_FLAG_CAN_CONTROL)
     //{
@@ -324,8 +329,6 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
 
     if (m_pBase->GetTypeId() == TYPEID_UNIT)
     {
-        if (((Creature*)passenger)->AI())
-            ((Creature*)passenger)->AI()->SetCombatMovement(false);
         if (((Creature*)m_pBase)->AI())
             ((Creature*)m_pBase)->AI()->PassengerBoarded(passenger, seat->first, true);
     }
@@ -414,6 +417,11 @@ void VehicleKit::RemovePassenger(Unit *passenger)
 
         ((Player*)passenger)->SetFallInformation(0, pz + 0.5f);
     }
+    else if (passenger->GetTypeId() == TYPEID_UNIT)
+    {
+        if (((Creature*)passenger)->AI())
+            ((Creature*)passenger)->AI()->SetCombatMovement(true, true);
+    }
 
     passenger->UpdateAllowedPositionZ(px, py, pz);
     passenger->SetPosition(px, py, pz + 0.5f, po);
@@ -428,8 +436,6 @@ void VehicleKit::RemovePassenger(Unit *passenger)
         if (((Creature*)m_pBase)->AI())
             ((Creature*)m_pBase)->AI()->PassengerBoarded(passenger, seat->first, false);
 
-        if (((Creature*)passenger)->AI())
-            ((Creature*)passenger)->AI()->SetCombatMovement(true, true);
         if (!passenger->getVictim())
             passenger->GetMotionMaster()->Initialize();
     }
