@@ -21,7 +21,7 @@
 #include "Map.h"
 #include "Log.h"
 
-void InstanceData::SaveToDB() const
+void InstanceData::SaveToDB()
 {
     // no reason to save BGs/Arenas
     if (instance->IsBattleGroundOrArena())
@@ -39,14 +39,14 @@ void InstanceData::SaveToDB() const
         CharacterDatabase.PExecute("UPDATE world SET data = '%s' WHERE map = '%u'", data.c_str(), instance->GetId());
 }
 
-bool InstanceData::CheckAchievementCriteriaMeet(uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/ /*= NULL*/, uint32 /*miscvalue1*/ /*= 0*/) const
+bool InstanceData::CheckAchievementCriteriaMeet( uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/ /*= NULL*/, uint32 /*miscvalue1*/ /*= 0*/ )
 {
     ERROR_LOG("Achievement system call InstanceData::CheckAchievementCriteriaMeet but instance script for map %u not have implementation for achievement criteria %u",
         instance->GetId(),criteria_id);
     return false;
 }
 
-bool InstanceData::CheckConditionCriteriaMeet(Player const* /*source*/, uint32 instance_condition_id, WorldObject const* /*conditionSource*/, uint32 conditionSourceType) const
+bool InstanceData::CheckConditionCriteriaMeet(Player const* /*source*/, uint32 instance_condition_id, WorldObject const* /*conditionSource*/, ConditionSource conditionSourceType)
 {
     sLog.outError("Condition system call InstanceData::CheckConditionCriteriaMeet but instance script for map %u not have implementation for player condition criteria with internal id %u (called from %u)",
                   instance->GetId(), instance_condition_id, uint32(conditionSourceType));
