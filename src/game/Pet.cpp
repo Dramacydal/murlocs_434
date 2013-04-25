@@ -598,25 +598,18 @@ void Pet::Update(uint32 update_diff, uint32 diff)
                 }
             }
 
-            //regenerate focus for hunter pets or energy for deathknight's ghoul
-            if(m_regenTimer <= update_diff)
+            if (getPetType() != HUNTER_PET)
+                break;
+
+            if (m_focusRegenTimer <= diff)
             {
-                switch (getPowerType())
-                {
-                    case POWER_FOCUS:
-                    case POWER_ENERGY:
-                        Regenerate(getPowerType());
-                        break;
-                    default:
-                        break;
-                }
-                m_regenTimer = 4000;
+                m_focusRegenTimer = 0;
+                if (getPowerType() == POWER_FOCUS)
+                    Regenerate(POWER_FOCUS);
+                m_focusRegenTimer = REGEN_TIME_PET_FOCUS;
             }
             else
-                m_regenTimer -= update_diff;
-
-            if(getPetType() != HUNTER_PET)
-                break;
+                m_focusRegenTimer -= diff;
             break;
         }
         default:
