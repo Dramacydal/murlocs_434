@@ -361,6 +361,9 @@ bool ChatHandler::HandleGPSCommand(char* args)
         {
             PSendSysMessage("MovementFlags:    %X", ((Player*)unit)->m_movementInfo.GetMovementFlags());
             PSendSysMessage("MovementFlags2:   %X", ((Player*)unit)->m_movementInfo.GetMovementFlags2());
+            PSendSysMessage("hasFallData: %u hasFallDirection: %u  hasPitch: %u hasSplineElevation: %u",
+                unit->m_movementInfo.GetStatusInfo().hasFallData, unit->m_movementInfo.GetStatusInfo().hasFallDirection,
+                unit->m_movementInfo.GetStatusInfo().hasPitch, unit->m_movementInfo.GetStatusInfo().hasSplineElevation);
         }
     }
 
