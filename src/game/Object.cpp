@@ -329,7 +329,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
         {
             // use flags received from client as they are more correct
             hasPitch = unit->m_movementInfo.GetStatusInfo().hasPitch;
-            hasFallData = unit->m_movementInfo.GetStatusInfo().hasFallData;
+            hasFallData = unit->m_movementInfo.GetStatusInfo().hasFallData && unit->m_movementInfo.HasMovementFlag(MovementFlags(MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR));
             hasFallDirection = unit->m_movementInfo.GetStatusInfo().hasFallDirection;
             hasElevation = unit->m_movementInfo.GetStatusInfo().hasSplineElevation;
             //hasTransportTime2 = unit->m_movementInfo.GetStatusInfo().hasTransportTime2;
@@ -956,7 +956,6 @@ void Object::UpdateUInt32Value(uint16 index, uint32 value)
     MANGOS_ASSERT(index < m_valuesCount || PrintIndexError(index, true));
 
     m_uint32Values[index] = value;
-    MarkForClientUpdate();
 }
 
 void Object::SetUInt64Value( uint16 index, const uint64 &value )
