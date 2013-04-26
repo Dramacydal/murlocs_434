@@ -2389,6 +2389,16 @@ void Aura::TriggerSpell()
                 }
                 break;
             }
+            // Molting
+            case 99464:
+            case 99504:
+            case 100698:
+            case 100699:
+            {
+                target->SummonCreature(53089,target->GetPositionX()-urand(5,30),target->GetPositionY()-urand(-5,-30),56.500f, target->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN, 0);
+                return;
+            }
+
             default:
                 break;
         }
@@ -8797,6 +8807,19 @@ void Aura::PeriodicTick()
                 case 72443:
                     target->CastSpell(target, 72202, true); // Blood Link
                     break;*/
+                // Gushing Wound
+                case 100024:
+                case 100721:
+                case 100722:
+                case 100723:
+                {
+                    if (target->GetHealthPercent() < 50.0f)
+                    {
+                        target->RemoveAurasDueToSpell(GetId());
+                        return;
+                    }
+                    break;
+                }
                 default:
                     break;
             }
@@ -10430,15 +10453,6 @@ void Aura::PeriodicDummyTick()
                 // timer expired - remove death runes
                 ((Player*)target)->RemoveRunesByAuraEffect(this);
             }
-            // Bladed Armor
-            if (spell->SpellIconID == 2653)
-            {
-                // Increases your attack power by $s1 for every $s2 armor value you have.
-                // Calculate AP bonus (from 1 effect of this spell)
-                int32 apBonus = m_modifier.m_amount * target->GetArmor() / target->CalculateSpellDamage(target, spell, EFFECT_INDEX_1);
-                target->CastCustomSpell(target, 61217, &apBonus, &apBonus, NULL, true, NULL, this);
-                return;
-            }
             break;
         }
         case SPELLFAMILY_PRIEST:
@@ -11758,6 +11772,38 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     }
                     return;
                 }
+                case 97128:                                 // Molten Feather
+                {
+                    if (!apply)
+                    {
+                        GetTarget()->SetPower(POWER_ALTERNATIVE, 0);
+
+                        GetTarget()->RemoveAurasDueToSpell(98761);
+                        GetTarget()->RemoveAurasDueToSpell(98762);
+                        GetTarget()->RemoveAurasDueToSpell(98763);
+                        GetTarget()->RemoveAurasDueToSpell(98764);
+                        GetTarget()->RemoveAurasDueToSpell(98765);
+                        GetTarget()->RemoveAurasDueToSpell(98766);
+                        GetTarget()->RemoveAurasDueToSpell(98767);
+                        GetTarget()->RemoveAurasDueToSpell(98768);
+                        GetTarget()->RemoveAurasDueToSpell(98769);
+                        GetTarget()->RemoveAurasDueToSpell(98770);
+                        GetTarget()->RemoveAurasDueToSpell(98771);
+                    }
+                    return;
+                }
+                case 101223:                                // Fieroblast
+                case 101294:
+                case 101295:
+                case 101296:
+                {
+                    if (apply)
+                    {
+                        if (Unit* caster =GetCaster())
+                            caster->CastSpell(caster, 100093, true);
+                    }
+                    return;
+                }
                 default:
                     return;
             }
@@ -12139,6 +12185,11 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 }
                 return;
             }
+
+            // Item - Priest T11 Healer 4P Bonus
+            if (GetSpellSpecific(GetId()) == SPELL_PRIEST_CHAKRA && GetId() != 14751)
+                if (!apply || m_target->HasAura(89911))
+                    spellId1 = 89912;
 
             switch (GetId())
             {
