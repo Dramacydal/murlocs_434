@@ -1909,7 +1909,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 case 4879:
                 {
                     if (GetTypeId() != TYPEID_PLAYER)
-                        return;
+                        return SPELL_AURA_PROC_FAILED;
 
                     if (!pVictim || pVictim->IsInMap(this) || pVictim->GetDistance(this) > 50.0f)
                         return SPELL_AURA_PROC_FAILED;
