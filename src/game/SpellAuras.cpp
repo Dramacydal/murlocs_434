@@ -12186,11 +12186,6 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 return;
             }
 
-            // Item - Priest T11 Healer 4P Bonus
-            if (GetSpellSpecific(GetId()) == SPELL_PRIEST_CHAKRA && GetId() != 14751)
-                if (!apply || m_target->HasAura(89911))
-                    spellId1 = 89912;
-
             switch (GetId())
             {
                 case 15473:                                 // Shadowform
@@ -12215,7 +12210,16 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     spellId1 = 81207;
                     break;
                 default:
+                {
+                    // Item - Priest T11 Healer 4P Bonus
+                    if (GetSpellSpecific(GetId()) == SPELL_PRIEST_CHAKRA && GetId() != 14751)
+                        if (!apply || m_target->HasAura(89911))
+                        {
+                            spellId1 = 89912;
+                            break;
+                        }
                     return;
+                }
             }
             break;
         }
