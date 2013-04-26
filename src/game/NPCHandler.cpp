@@ -139,10 +139,8 @@ static void SendTrainerSpellHelper(WorldPacket& data, TrainerSpell const* tSpell
     data << uint8(reqLevel);
     data << uint32(tSpell->reqSkill);
     data << uint32(tSpell->reqSkillValue);
-    data << uint32(primary_prof_first_rank && can_learn_primary_prof ? 1 : 0);
-    // primary prof. learn confirmation dialog
-    data << uint32(primary_prof_first_rank ? 1 : 0);    // must be equal prev. field to have learn button in enabled state
 
+    bool fill = true;
     for (uint8 i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
         if (tSpell->learnedSpell[i] != 0)
@@ -150,11 +148,17 @@ static void SendTrainerSpellHelper(WorldPacket& data, TrainerSpell const* tSpell
             SpellChainNode const* chain_node = sSpellMgr.GetSpellChainNode(tSpell->learnedSpell[i]);
             data << uint32(!tSpell->IsCastable() && chain_node ? (chain_node->prev ? chain_node->prev : chain_node->req) : 0);
             data << uint32(!tSpell->IsCastable() && chain_node && chain_node->prev ? chain_node->req : 0);
-            return;
+            fill = false;
+            break;
         }
     }
 
-    data << uint32(0) << uint32(0);
+    if (fill)
+        data << uint32(0) << uint32(0);
+
+    data << uint32(primary_prof_first_rank && can_learn_primary_prof ? 1 : 0);
+    // primary prof. learn confirmation dialog
+    data << uint32(primary_prof_first_rank ? 1 : 0);    // must be equal prev. field to have learn button in enabled state
 }
 
 void WorldSession::SendTrainerList(ObjectGuid guid, const std::string& strTitle)
