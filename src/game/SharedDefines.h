@@ -1270,7 +1270,7 @@ enum AuraState
     //AURA_STATE_UNKNOWN19                  = 19,           //     | not used
     //AURA_STATE_UNKNOWN20                  = 20,           //  c  | only (45317 Suicide)
     //AURA_STATE_UNKNOWN21                  = 21,           //     | not used
-    //AURA_STATE_UNKNOWN22                  = 22,           // C   | not implemented yet (Requires Evasive Charges to use)
+    AURA_STATE_UNKNOWN22                    = 22,           // C   | not implemented yet (Requires Evasive Charges to use)
     AURA_STATE_HEALTH_ABOVE_75_PERCENT      = 23,           // C   |
 };
 
@@ -1321,7 +1321,7 @@ enum Mechanics
     (1<<(MECHANIC_SNARE   -1))|(1<<(MECHANIC_STUN       -1))|(1<<(MECHANIC_FREEZE-1))| \
     (1<<(MECHANIC_KNOCKOUT-1))|(1<<(MECHANIC_POLYMORPH  -1))|(1<<(MECHANIC_BANISH-1))| \
     (1<<(MECHANIC_SHACKLE -1))|(1<<(MECHANIC_TURN       -1))|(1<<(MECHANIC_HORROR-1))| \
-    (1<<(MECHANIC_DAZE    -1))|(1<<(MECHANIC_SAPPED     -1)))
+    (1<<(MECHANIC_DAZE    -1))|(1<<(MECHANIC_SAPPED     -1))|(1<<(MECHANIC_SILENCE-1)))
 
 #define IMMUNE_TO_ROOT_AND_SNARE_MASK ( \
     (1<<(MECHANIC_ROOT-1))|(1<<(MECHANIC_SNARE-1)))
