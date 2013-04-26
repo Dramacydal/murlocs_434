@@ -25,7 +25,7 @@ struct MANGOS_DLL_DECL npc_shadowy_apparitionAI : public ScriptedAI
     {
         init = false;
         despawned = false;
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+        m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
         ownerGuid.Clear();
         targetGuid.Clear();
 
@@ -33,8 +33,7 @@ struct MANGOS_DLL_DECL npc_shadowy_apparitionAI : public ScriptedAI
         if (!owner || owner->GetTypeId() != TYPEID_PLAYER)
             return;
 
-        if (((Player*)owner)->addsu
-        m_creature->SetUInt32Value(UNIT_FIELD_BYTES_0, 2048);
+         m_creature->SetUInt32Value(UNIT_FIELD_BYTES_0, 2048);
         m_creature->SetUInt32Value(UNIT_FIELD_BYTES_2, owner->GetUInt32Value(UNIT_FIELD_BYTES_2));
         m_creature->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
         m_creature->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, DEFAULT_WORLD_OBJECT_SIZE);
