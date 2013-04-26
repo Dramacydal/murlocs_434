@@ -92,7 +92,7 @@ struct MANGOS_DLL_DECL npc_shadowy_apparitionAI : public ScriptedAI
             m_creature->FixateTarget(m_creature->getVictim());
             init = true;
             ownerGuid = m_creature->GetCreatorGuid();
-            if (Unit* victim = me->getVictim())
+            if (Unit* victim = m_creature->getVictim())
                 targetGuid = victim->GetObjectGuid();
             else
             {
