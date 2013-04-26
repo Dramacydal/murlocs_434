@@ -16,6 +16,7 @@ extern void AddSC_npc_warlock_summons();
 extern void AddSC_npc_mage_summons();
 extern void AddSC_npc_druid_summons();
 extern void AddSC_npc_paladin_summons();
+extern void AddSC_npc_priest_summons();
 
 // examples
 extern void AddSC_example_creature();
@@ -574,6 +575,7 @@ void AddScripts()
     AddSC_npc_mage_summons();
     AddSC_npc_druid_summons();
     AddSC_npc_paladin_summons();
+    AddSC_npc_priest_summons();
 
     // examples
     AddSC_example_creature();

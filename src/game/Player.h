@@ -1284,6 +1284,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void RemoveSummonUnit(Unit* summon);
         Unit* GetSummonUnit(uint32 spellId) const;
         SummonUnitList& GetSummonUnitList() { return m_summonList; }
+        uint32 GetSummonedUnitCount(uint32 entry) const;
 
         uint32 m_nextVehicleId;
 

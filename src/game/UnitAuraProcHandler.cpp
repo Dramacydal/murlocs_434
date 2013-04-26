@@ -1905,6 +1905,26 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     triggered_spell_id = 63675;
                     break;
                 }
+                // Shadowy Apparition
+                case 4879:
+                {
+                    if (GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    if (!pVictim || pVictim->IsInMap(this) || pVictim->GetDistance(this) > 50.0f)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    if (!roll_chance_i(triggerAmount * (((Player*)this)->isMoving() ? 5 : 1)))
+                        return SPELL_AURA_PROC_FAILED;
+
+                    if (((Player*)this)->GetSummonedUnitCount(46954) >= 4)
+                        return SPELL_AURA_PROC_FAILED;
+
+                    if (Creature* apparition = SummonCreature(46954, GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT_OR_DEAD_DESPAWN, 1000))
+                        apparition->Attack(pVictim, true);
+
+                    return SPELL_AURA_PROC_OK;
+                }
                 // Atonement
                 case 4938:
                 {
