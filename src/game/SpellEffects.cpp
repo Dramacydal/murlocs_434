@@ -6721,7 +6721,7 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
         }
         case 99131:                                         // Divine Fire
         {
-            damage = m_caster->GetCreateMana * damage / 100;
+            damage = m_caster->GetCreateMana() * damage / 100;
             break;
         }
         case 101033:                                        // Resurgence
