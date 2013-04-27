@@ -2043,6 +2043,14 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     triggered_spell_id = 89913;
                     break;
                 }
+                // Shadowflame
+                case 99155:
+                {
+                    // Indulgence of the Penitent
+                    basepoints[0] = int32(triggerAmount * damage / 100.0f);
+                    triggered_spell_id = 99156;
+                    break;
+                }
             }
             break;
         }

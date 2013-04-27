@@ -5671,7 +5671,12 @@ void Spell::EffectTriggerSpell(SpellEffectEntry const* effect)
         case 41967:
         {
             if (Unit *pet = unitTarget->GetPet())
+            {
                 pet->CastSpell(pet, 28305, true);
+                // Item - Priest T12 Shadow 2P Bonus
+                if (unitTarget->HasAura(99154))
+                    pet->CastSpell(pet, 99155, true);
+            }
             return;
         }
         // Demonic Leap
