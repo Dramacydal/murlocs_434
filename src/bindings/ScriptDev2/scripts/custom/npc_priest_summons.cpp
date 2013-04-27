@@ -33,7 +33,7 @@ struct MANGOS_DLL_DECL npc_shadowy_apparitionAI : public ScriptedAI
         if (!owner || owner->GetTypeId() != TYPEID_PLAYER)
             return;
 
-         m_creature->SetUInt32Value(UNIT_FIELD_BYTES_0, 2048);
+        m_creature->SetUInt32Value(UNIT_FIELD_BYTES_0, 2048);
         m_creature->SetUInt32Value(UNIT_FIELD_BYTES_2, owner->GetUInt32Value(UNIT_FIELD_BYTES_2));
         m_creature->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
         m_creature->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, DEFAULT_WORLD_OBJECT_SIZE);
@@ -65,6 +65,12 @@ struct MANGOS_DLL_DECL npc_shadowy_apparitionAI : public ScriptedAI
         despawned = true;
         m_creature->CastSpell(victim, SPELL_APPARITION_DAMAGE, true);
         m_creature->CastSpell(m_creature, SPELL_APPARITION_DEATH_VISUAL, true);
+        if (Unit* creator = m_creature->GetCreator())
+            // Item - Priest T13 Shadow 4P Bonus (Shadowfiend and Shadowy Apparition)
+            if (creator->HasAura(105844))
+                for (int i = 0; i < 3; ++i)
+                    creator->CastSpell(creator, 77487, true);
+
         m_creature->ForcedDespawn(200);
     }
 
@@ -82,6 +88,12 @@ struct MANGOS_DLL_DECL npc_shadowy_apparitionAI : public ScriptedAI
         despawned = true;
         m_creature->CastSpell(who, SPELL_APPARITION_DAMAGE, true, NULL, NULL, ownerGuid);
         m_creature->CastSpell(m_creature, SPELL_APPARITION_DEATH_VISUAL, true);
+        if (Unit* creator = m_creature->GetCreator())
+            // Item - Priest T13 Shadow 4P Bonus (Shadowfiend and Shadowy Apparition)
+            if (creator->HasAura(105844))
+                for (int i = 0; i < 3; ++i)
+                    creator->CastSpell(creator, 77487, true);
+
         m_creature->ForcedDespawn(200);
     }
 
