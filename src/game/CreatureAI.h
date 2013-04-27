@@ -288,11 +288,8 @@ class MANGOS_DLL_SPEC CreatureAI
         ///== Fields =======================================
 
         /// Pointer to the Creature controlled by this AI
-        union
-        {
-            Creature* const m_creature;
-            Creature* const me;
-        };
+        Creature* const m_creature;
+        Creature* const me;
 
         // called when creature is about to despawn
         virtual void BeforeDespawn() { }
