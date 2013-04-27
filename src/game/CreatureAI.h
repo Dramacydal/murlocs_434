@@ -64,6 +64,7 @@ class MANGOS_DLL_SPEC CreatureAI
     public:
         explicit CreatureAI(Creature* creature) :
             m_creature(creature),
+            me(creature),
             m_isCombatMovement(true),
             m_attackDistance(0.0f),
             m_attackAngle(0.0f)
@@ -287,7 +288,11 @@ class MANGOS_DLL_SPEC CreatureAI
         ///== Fields =======================================
 
         /// Pointer to the Creature controlled by this AI
-        Creature* const m_creature;
+        union
+        {
+            Creature* const m_creature;
+            Creature* const me;
+        };
 
         // called when creature is about to despawn
         virtual void BeforeDespawn() { }
@@ -300,6 +305,9 @@ class MANGOS_DLL_SPEC CreatureAI
         /// How should an enemy be chased
         float m_attackDistance;
         float m_attackAngle;
+
+        virtual void SetData(uint32 type, uint32 data) { }
+        virtual uint32 GetData (uint32 id) { return 0; }
 };
 
 struct SelectableAI : public FactoryHolder<CreatureAI>, public Permissible<Creature>

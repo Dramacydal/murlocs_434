@@ -63,7 +63,7 @@ struct MANGOS_DLL_DECL npc_escortAI : public ScriptedAI
         void MovementInform(uint32, uint32);
 
         // EscortAI functions
-        //void AddWaypoint(uint32 id, float x, float y, float z, uint32 WaitTimeMs = 0);
+        void AddWaypoint(uint32 id, float x, float y, float z, uint32 WaitTimeMs = 0);
 
         virtual void WaypointReached(uint32 uiPointId) = 0;
         virtual void WaypointStart(uint32 uiPointId) {}
@@ -81,10 +81,11 @@ struct MANGOS_DLL_DECL npc_escortAI : public ScriptedAI
     protected:
         Player* GetPlayerForEscort() { return m_creature->GetMap()->GetPlayer(m_playerGuid); }
         virtual void JustStartedEscort() {}
+        std::list<Escort_Waypoint> WaypointList;
 
     private:
         bool AssistPlayerInCombat(Unit* pWho);
-        bool IsPlayerOrGroupInRange();
+        virtual bool IsPlayerOrGroupInRange();
         bool MoveToNextWaypoint();
         void FillPointMovementListForCreature();
 
@@ -98,7 +99,6 @@ struct MANGOS_DLL_DECL npc_escortAI : public ScriptedAI
 
         const Quest* m_pQuestForEscort;                     //generally passed in Start() when regular escort script.
 
-        std::list<Escort_Waypoint> WaypointList;
         std::list<Escort_Waypoint>::iterator CurrentWP;
 
         bool m_bIsRunning;                                  //all creatures are walking by default (has flag SPLINEFLAG_WALKMODE)
