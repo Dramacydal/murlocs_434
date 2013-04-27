@@ -1402,8 +1402,8 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
             }
             case SPELLFAMILY_DEATHKNIGHT:
             {
-                // Blood Boil - bonus for diseased targets
-                if (m_spellInfo->IsFitToFamilyMask(0x00040000) && unitTarget->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_DEATHKNIGHT, 0, 0x00000002, m_caster->GetObjectGuid()))
+                // Blood Boil - bonus for diseased targets or with Burning Blood
+                if (m_spellInfo->IsFitToFamilyMask(0x00040000) && (unitTarget->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_DEATHKNIGHT, 0, 0x00000002, m_caster->GetObjectGuid()) || unitTarget->GetSpellAuraHolder(98957, m_caster->GetObjectGuid())))
                 {
                     damage += damage / 2;
                     damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)* 0.035f);
@@ -8909,6 +8909,11 @@ void Spell::EffectWeaponDmg(SpellEffectEntry const* effect)
                         itr->second->GetCasterGuid() == m_caster->GetObjectGuid())
                         ++count;
                 }
+
+                // Burning Blood
+                // Item - Death Knight T12 Blood 2P Bonus
+                if (count < 2 && unitTarget->GetSpellAuraHolder(98957, m_caster->GetObjectGuid()))
+                    count = 2;
 
                 if (count)
                 {
