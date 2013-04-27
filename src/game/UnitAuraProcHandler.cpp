@@ -4460,6 +4460,12 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
 
                 return SPELL_AURA_PROC_CANT_TRIGGER;
             }
+            else if (auraSpellInfo->Id == 90295)            // Item - Warrior T11 DPS 4P Bonus
+            {
+                if (!procSpell || procSpell->Id == 85288)   // except Raging Blow main spell
+                    return SPELL_AURA_PROC_FAILED;
+                break;
+            }
             break;
         case SPELLFAMILY_WARLOCK:
         {
