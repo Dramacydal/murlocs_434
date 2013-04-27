@@ -5772,6 +5772,13 @@ SpellAuraProcResult Unit::HandleAddPctModifierAuraProc(Unit* pVictim, uint32 /*d
                 CastCustomSpell(this, 100977, &bp, &bp, NULL, true);
                 return SPELL_AURA_PROC_OK;
             }
+            // Item - Druid T11 Feral 4P Bonus
+            else if (spellInfo->Id == 90165)
+            {
+                // Strength of the Panther
+                CastSpell(this, 90166, true);
+                return SPELL_AURA_PROC_OK;
+            }
             break;
         }
         case SPELLFAMILY_HUNTER:
