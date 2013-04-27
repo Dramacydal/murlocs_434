@@ -1911,7 +1911,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     if (GetTypeId() != TYPEID_PLAYER)
                         return SPELL_AURA_PROC_FAILED;
 
-                    if (!pVictim || pVictim->IsInMap(this) || pVictim->GetDistance(this) > 50.0f)
+                    if (!pVictim || !pVictim->IsInMap(this) || pVictim->GetDistance(this) > 50.0f)
                         return SPELL_AURA_PROC_FAILED;
 
                     if (!roll_chance_i(triggerAmount * (((Player*)this)->isMoving() ? 5 : 1)))
