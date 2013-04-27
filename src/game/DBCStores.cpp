@@ -1509,6 +1509,13 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectImplicitTargetA = TARGET_CURRENT_ENEMY_COORDINATES;
                 break;
             }
+            case 83582: // Pyromaniac
+            case 96206: // Nature's Bounty
+            case 99158: // Dark Flames
+            {
+                spell->AttributesEx6 |= SPELL_ATTR_EX6_REMOVED_AT_SPEC_SWITCH;
+                break;
+            }
             case 86150:                         // Guardian of Ancient Kings
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
