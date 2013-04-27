@@ -10428,6 +10428,12 @@ void Aura::PeriodicDummyTick()
                     GetHolder()->RefreshHolder();
                 return;
             }
+            // Smoldering Rune
+            else if (GetId() == 98971)
+            {
+                target->CastSpell(target, 99055, true);
+                return;
+            }
             // Raise Dead
 //            if (spell->SpellFamilyFlags & UI64LIT(0x0000000000001000))
 //                return;
@@ -12779,6 +12785,16 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                     }
                     else
                         return;
+                    break;
+                }
+                case 81256:                                 // Dancing Rune Weapon
+                {
+                    // Item - Death Knight T12 Blood 4P Bonus
+                    if (!apply && m_target->HasAura(98966))
+                    {
+                        cast_at_remove = true;
+                        spellId1 = 101162;                  // Flaming Rune Weapon
+                    }
                     break;
                 }
             }
