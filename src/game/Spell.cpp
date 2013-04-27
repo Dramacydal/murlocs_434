@@ -3127,7 +3127,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 targetUnitMap.remove(m_targets.getUnitTarget());
             // Cauterizing Flame
             // Item - Priest T12 Healer 4P Bonus
-            else if (m_spellInfo->Id == 
+            else if (m_spellInfo->Id == 99152)
             {
                 PrioritizeHealthUnitQueue healthQueue;
                 for(UnitList::const_iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end(); ++itr)
