@@ -3125,6 +3125,22 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
             // Ancient Healer
             if (m_spellInfo->Id == 86678)
                 targetUnitMap.remove(m_targets.getUnitTarget());
+            // Cauterizing Flame
+            // Item - Priest T12 Healer 4P Bonus
+            else if (m_spellInfo->Id == 
+            {
+                PrioritizeHealthUnitQueue healthQueue;
+                for(UnitList::const_iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end(); ++itr)
+                    if (!(*itr)->isDead())
+                        healthQueue.push(PrioritizeHealthUnitWraper(*itr));
+
+                targetUnitMap.clear();
+                while(!healthQueue.empty() && targetUnitMap.size() < 1)
+                {
+                    targetUnitMap.push_back(healthQueue.top().getUnit());
+                    healthQueue.pop();
+                }
+            }
             break;
         // TARGET_SINGLE_PARTY means that the spells can only be casted on a party member and not on the caster (some seals, fire shield from imp, etc..)
         case TARGET_SINGLE_PARTY:
