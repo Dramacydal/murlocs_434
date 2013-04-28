@@ -4395,8 +4395,15 @@ void Spell::cast(bool skipCheck)
         case SPELLFAMILY_SHAMAN:
         {
             SpellEffectEntry const* spellEffect = m_spellInfo->GetSpellEffect(EFFECT_INDEX_0);
+            // Stormstrike
+            if (m_spellInfo->Id == 17364)
+            {
+                // Item - Shaman T12 Enhancement 4P Bonus
+                if (m_caster->HasAura(99213))
+                    AddTriggeredSpell(99212);
+            }
             // Spirit Walk
-            if (m_spellInfo->Id == 58875)
+            else if (m_spellInfo->Id == 58875)
                 AddPrecastSpell(58876);
             // Spirit Link Totem
             else if (m_spellInfo->Id == 98007)
