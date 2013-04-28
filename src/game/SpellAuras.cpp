@@ -7446,6 +7446,7 @@ void Aura::HandleAuraModIncreaseHealth(bool apply, bool Real)
         case 55233:                                         // Vampiric Blood
         case 59465:                                         // Brood Rage (Ahn'Kahet)
         case 105284:                                        // Ancestral Vigor
+        case 105588:                                        // Vampiric Blood
         {
             if(Real)
             {
@@ -7453,7 +7454,7 @@ void Aura::HandleAuraModIncreaseHealth(bool apply, bool Real)
                 {
                     // Demonic Empowerment (Voidwalker) & Vampiric Blood - special cases, store percent in data
                     // recalculate to full amount at apply for proper remove
-                    if (GetId() == 54443 || GetId() == 55233)
+                    if (GetId() == 54443 || GetId() == 55233 || GetId() == 105588)
                         m_modifier.m_amount = target->GetMaxHealth() * m_modifier.m_amount / 100;
 
                     // Ancestral Vigor, increase max health not more than 5/10%
