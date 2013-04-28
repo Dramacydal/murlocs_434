@@ -6727,6 +6727,7 @@ void Spell::EffectEnergize(SpellEffectEntry const* effect)
             }
             break;
         }
+        case 99007:                                         // Heartfire
         case 99131:                                         // Divine Fire
         {
             damage = m_caster->GetCreateMana() * damage / 100;
