@@ -1543,6 +1543,12 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectApplyAuraName = SPELL_AURA_ADD_TARGET_TRIGGER;
                 break;
             }
+            case 105722:                        // Item - Druid T13 Balance 2P Bonus (Insect Swarm)
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectSpellClassMask.Flags &= ~UI64LIT(0x10);
+                break;
+            }
          }
 
         // Lightwell, enable healing spd scale
