@@ -8191,7 +8191,7 @@ bool Unit::IsSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                         break;
                     case SPELLFAMILY_SHAMAN:
                         // Lava Burst
-                        if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000100000000000)))
+                        if (spellProto->IsFitToFamilyMask(UI64LIT(0x0000100000000000)) || spellProto->Id == 77451)
                         {
                             // Flame Shock
                             if (pVictim->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_SHAMAN, UI64LIT(0x0000000010000000), 0, GetObjectGuid()))

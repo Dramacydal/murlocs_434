@@ -1150,13 +1150,9 @@ void LoadDBCStores(const std::string& dataPath)
                 }
                 break;
             }
-            case 45284: case 45286: case 45287: case 45288: // Lightning (Lightning Overload)
-            case 45289: case 45290: case 45291: case 45292:
-            case 45293: case 45294: case 45295: case 45296:
-            case 49239: case 49240:
-            case 45297: case 45298: case 45299:             // Chain Lightning (Lightning Overload)
-            case 45300: case 45301: case 45302:
-            case 49268: case 49269:
+            case 45284:                         // Lightning (Elemental Overload)
+            case 45297:                         // Chain Lightning (Elemental Overload)
+            case 77451:                         // Lava Burst (Elemental Overload)
             {
                 spell->AttributesEx2 |= SPELL_ATTR_EX2_CANT_CRIT;
                 break;

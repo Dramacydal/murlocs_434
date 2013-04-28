@@ -3727,10 +3727,10 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 CastCustomSpell(pVictim,triggered_spell_id,&basepoints[EFFECT_INDEX_0],NULL,NULL,true,castItem,triggeredByAura);
                 return SPELL_AURA_PROC_OK;
             }
-            // Lightning Overload
+            // Elemental Overload
             if (dummySpell->SpellIconID == 2018 && effIndex == EFFECT_INDEX_0)  // only this spell have SpellFamily Shaman SpellIconID == 2018 and dummy aura
             {
-                DEBUG_LOG("Lightning overload: amount %i", triggerAmount);
+                DEBUG_LOG("Elemental overload: amount %i", triggerAmount);
                 if(!procSpell || GetTypeId() != TYPEID_PLAYER || !pVictim || !roll_chance_i(triggerAmount))
                     return SPELL_AURA_PROC_FAILED;
 
@@ -3743,6 +3743,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     case   403: spellId = 45284; break;
                     // Chain Lightning
                     case   421: spellId = 45297; break;
+                    // Lava Burst
+                    case 51505: spellId = 77451; break;
                     default:
                         return SPELL_AURA_PROC_FAILED;
                 }
@@ -3755,6 +3757,10 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
 
                 if (cooldown && GetTypeId() == TYPEID_PLAYER)
                     ((Player*)this)->AddSpellCooldown(dummySpell->Id, 0, time(NULL) + cooldown);
+
+                // Item - Shaman T13 Elemental 4P Bonus (Elemental Overload)
+                if (HasAura(105816))
+                    CastSpell(this, 105821, true);  // Time Rupture
 
                 return SPELL_AURA_PROC_OK;
             }
