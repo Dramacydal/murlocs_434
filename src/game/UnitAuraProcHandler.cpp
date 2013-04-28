@@ -2501,6 +2501,11 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     triggered_spell_id = spells[urand(0, 2)];
                     break;
                 }
+                case 105849:                                // Item - Rogue T13 2P Bonus (Tricks of the Trade)
+                {
+                    triggered_spell_id = 105964;
+                    break;
+                }
             }
             // Murderous Intent
             if (dummySpell->SpellIconID == 134)
