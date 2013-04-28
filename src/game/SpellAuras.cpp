@@ -11994,6 +11994,15 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
         }
         case SPELLFAMILY_WARRIOR:
         {
+            // Shield Block (Defensive Stance)
+            if (GetId() == 2565)
+                // Item - Warrior T12 Protection 4P Bonus
+                if (!apply && m_target->HasAura(99242))
+                {
+                    spellId1 = 99243;
+                    cast_at_remove = true;
+                }
+
             if(!apply)
             {
                 // Remove Blood Frenzy only if target no longer has any Deep Wound or Rend (applying is handled by procs)
