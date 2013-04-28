@@ -1591,6 +1591,12 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             // Vengeance (death knight)
             else if (dummySpell->Id == 93099)
                 return HandleVengeanceProc(pVictim, damage, triggerAmount);
+            // Item - Warrior T12 Protection 2P Bonus
+            else if (dummySpell->Id == 99239)
+            {
+                triggered_spell_id = 99240;
+                basepoints[0] = triggerAmount * (damage+absorb) / 100 / GetSpellAuraMaxTicks(triggered_spell_id);
+            }
             break;
         }
         case SPELLFAMILY_WARLOCK:
@@ -3977,7 +3983,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             else if (dummySpell->Id == 98996)
             {
                 triggered_spell_id = 99000;
-                basepoints[0] = triggerAmount * damage / 100 / GetSpellAuraMaxTicks(triggered_spell_id);
+                basepoints[0] = triggerAmount * (damage+absorb) / 100 / GetSpellAuraMaxTicks(triggered_spell_id);
                 break;
             }
             // Wandering Plague
