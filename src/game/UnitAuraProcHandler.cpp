@@ -2297,6 +2297,12 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     triggered_spell_id = 99017;
                     break;
                 }
+                // Item - Rogue T12 2P Bonus
+                case 99174:
+                {
+                    triggered_spell_id = 99173;
+                    basepoints[0] = int32(triggerAmount * (damage+absorb) / 100) / GetSpellAuraMaxTicks(triggered_spell_id);
+                }
             }
             // Nature's Ward
             if (dummySpell->SpellIconID == 2250)
@@ -2867,6 +2873,18 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 if (!target)
                     return SPELL_AURA_PROC_FAILED;
                 break;
+            }
+            // Item - Paladin T12 Protection 2P Bonus
+            else if (dummySpell->Id == 99074)
+            {
+                triggered_spell_id = 99075;
+                basepoints[0] = triggerAmount * damage / 100;
+            }
+            // Item - Paladin T12 Retribution 2P Bonus
+            else if (dummySpell->Id == 99093)
+            {
+                triggered_spell_id = 99092;
+                basepoints[0] = triggerAmount * damage / 100;
             }
 
             // Divine Purpose
