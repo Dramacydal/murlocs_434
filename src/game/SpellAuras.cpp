@@ -11035,7 +11035,7 @@ void SpellAuraHolder::_AddSpellAuraHolder()
     uint8 flags = 0;
     for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
-        if (m_auras[i])
+        if (m_auras[i] && IsAuraApplyEffect(m_spellProto, SpellEffectIndex(i)))
         {
             flags |= (1 << i);
 

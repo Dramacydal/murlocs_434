@@ -1963,15 +1963,15 @@ void World::SendGMGlobalMessage(WorldPacket *packet, AccountTypes sec, WorldSess
 
 void World::SendUpdateWintergraspTimerWorldState(BattleFieldWG* opvp)
 {
-    WorldPacket data1(SMSG_UPDATE_WORLD_STATE, 8);
+    WorldPacket data1(SMSG_UPDATE_WORLD_STATE, 9);
     data1 << uint32(WGClockWorldState[1]);
     data1 << uint32(time(NULL) + opvp->GetTimer() / 1000);
     data1 << uint8(0);
 
-    WorldPacket data2(SMSG_UPDATE_WORLD_STATE, 8);
+    WorldPacket data2(SMSG_UPDATE_WORLD_STATE, 9);
     data2 << uint32(WG_WS_SHOW_COOLDOWN_WORLDSTATE);
     data2 << uint32(opvp->GetState() == BF_STATE_IN_PROGRESS ? 0 : 1);
-    data1 << uint8(0);
+    data2 << uint8(0);
 
     SessionMap::const_iterator itr;
     for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
