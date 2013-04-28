@@ -1511,7 +1511,6 @@ void LoadDBCStores(const std::string& dataPath)
             }
             case 83582: // Pyromaniac
             case 96206: // Nature's Bounty
-            case 99158: // Dark Flames
             {
                 spell->AttributesEx6 |= SPELL_ATTR_EX6_REMOVED_AT_SPEC_SWITCH;
                 break;
@@ -1536,6 +1535,12 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectImplicitTargetA = TARGET_AREAEFFECT_CUSTOM;
                     eff->EffectImplicitTargetB = TARGET_NONE;
                 }
+                break;
+            }
+            case 99009:                         // Item - Druid T12 Feral 4P Bonus
+            {
+                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+                    eff->EffectApplyAuraName = SPELL_AURA_ADD_TARGET_TRIGGER;
                 break;
             }
          }

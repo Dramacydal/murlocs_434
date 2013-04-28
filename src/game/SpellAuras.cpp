@@ -12339,6 +12339,8 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             {
                 if (!apply || m_target->HasAura(63057))
                     spellId1 = 63058;                       // Glyph of Amberskin Protection
+                if (!apply && m_target->HasAura(99009))     // Item - Druid T12 Feral 4P Bonus
+                    m_target->CastSpell(m_target, 99011, true);// Smokescreen
             }
             // Item - Druid T10 Feral 4P Bonus
             else if (GetId() == 5229)                       // Enrage (Druid Bear)
