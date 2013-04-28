@@ -12699,7 +12699,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             // Maelstrom Weapon
             if (GetId() == 53817)
             {
-                //  Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon)
+                // Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon)
                 if (!apply || m_target->HasAura(105866))
                     spellId1 = 105869;
             }
