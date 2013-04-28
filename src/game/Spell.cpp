@@ -2965,6 +2965,10 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 FillRaidOrPartyTargets(targetUnitMap, m_caster, m_caster, radius, true, true, false);
             else if (m_spellInfo->Id == 105588)             // Vampiric Blood
                 FillRaidOrPartyTargets(targetUnitMap, m_caster, m_caster, radius, true, true, false);
+            else if (m_spellInfo->Id == 105737)             // Mass Regeneration (Bear Form)
+                FillRaidOrPartyTargets(targetUnitMap, m_caster, m_caster, radius, true, true, false);
+            else if (m_spellInfo->Id == 105739)             // Mass Regeneration
+                FillRaidOrPartyTargets(targetUnitMap, m_caster, m_caster, radius, true, true, false);
             else
                 FillRaidOrPartyTargets(targetUnitMap, m_caster, m_caster, radius, true, true, IsPositiveSpell(m_spellInfo->Id));
             break;
@@ -9100,6 +9104,11 @@ bool Spell::CheckTarget(Unit* target, SpellEffectIndex eff)
 
         case 82301:     // Burning Heart
             if (target->GetEntry() != 40004)
+                return false;
+            break;
+        case 105739:    // Mass Regeneration
+            // Mass Regeneration (Bear Form)
+            if (!target->HasAura(105737))
                 return false;
             break;
     }
