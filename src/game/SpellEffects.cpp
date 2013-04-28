@@ -6382,7 +6382,9 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
                 if (riptide)
                 {
                     addhealth += addhealth/4;
-                    unitTarget->RemoveAurasDueToSpell(riptide->GetId());
+                    // Item - Shaman T12 Restoration 4P Bonus
+                    if (!m_caster->HasAura(99195))
+                        unitTarget->RemoveSpellAuraHolder(riptide->GetHolder());
                 }
             }
         }
