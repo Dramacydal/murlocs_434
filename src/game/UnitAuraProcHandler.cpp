@@ -5154,6 +5154,15 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     if (((Player*)this)->GetRuneCooldown(i) == 0)
                         return SPELL_AURA_PROC_FAILED;
             }
+            // Item - Death Knight T13 Blood 2P Bonus
+            else if (auraSpellInfo->Id == 105552)
+            {
+                uint32 hp = GetHealth();
+                if (hp <= damage || hp - damage > GetMaxHealth() * triggerAmount / 100)
+                    return SPELL_AURA_PROC_FAILED;
+
+                break;
+            }
             break;
         }
         default:
