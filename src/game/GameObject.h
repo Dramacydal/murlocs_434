@@ -555,7 +555,7 @@ enum GOState
     GO_STATE_ACTIVE             = 0x00,                     // show in world as used and not reset (closed door open)
     GO_STATE_READY              = 0x01,                     // show in world as ready (closed door close)
     GO_STATE_ACTIVE_ALTERNATIVE = 0x02,                     // show in world as used in alt way and not reset (closed door open by cannon fire)
-    GO_STATE_TRANSPORT_SPEC     = 0x18
+    GO_STATE_TRANSPORT_SPEC     = 0x18,                     // additional mask that have all transport gameobjects
 };
 
 #define MAX_GO_STATE              3

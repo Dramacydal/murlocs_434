@@ -7016,7 +7016,7 @@ void ObjectMgr::LoadGameobjectInfo()
                 TransportAnimationsByEntry::const_iterator itr = sTransportAnimationsByEntry.find(goInfo->id);
                 if (itr == sTransportAnimationsByEntry.end())
                 {
-                    sLog.outError("Gameobject (Entry: %u GoType: %u) is transport by does not have entries in TransportAnimation.dbc! Gameobject is obsolete.",
+                    sLog.outError("Gameobject (Entry: %u GoType: %u) is transport but does not have entries in TransportAnimation.dbc! Gameobject is obsolete.",
                         goInfo->id, goInfo->type);
                     break;
                 }
@@ -7025,7 +7025,7 @@ void ObjectMgr::LoadGameobjectInfo()
                 {
                     if (itr->second.find(frame) == itr->second.end())
                     {
-                        sLog.outError("Gameobject (Entry: %u GoType: %u) has data0=%u but this frame is not in TransportAnimation.dbc!",
+                        sLog.outError("Gameobject (Entry: %u GoType: %u) has data0=%u but this frame is not in TransportAnimation.dbc! May cause client crashes.",
                             goInfo->id, goInfo->type, frame);
                     }
                 }
@@ -7034,7 +7034,7 @@ void ObjectMgr::LoadGameobjectInfo()
                 {
                     if (itr->second.find(frame) == itr->second.end())
                     {
-                        sLog.outError("Gameobject (Entry: %u GoType: %u) has data6=%u but this frame is not in TransportAnimation.dbc!",
+                        sLog.outError("Gameobject (Entry: %u GoType: %u) has data6=%u but this frame is not in TransportAnimation.dbc! May cause client crashes.",
                             goInfo->id, goInfo->type, frame);
                     }
                 }
@@ -7043,7 +7043,7 @@ void ObjectMgr::LoadGameobjectInfo()
                 {
                     if (itr->second.find(frame) == itr->second.end())
                     {
-                        sLog.outError("Gameobject (Entry: %u GoType: %u) has data8=%u but this frame is not in TransportAnimation.dbc!",
+                        sLog.outError("Gameobject (Entry: %u GoType: %u) has data8=%u but this frame is not in TransportAnimation.dbc! May cause client crashes.",
                             goInfo->id, goInfo->type, frame);
                     }
                 }
@@ -7052,7 +7052,7 @@ void ObjectMgr::LoadGameobjectInfo()
                 {
                     if (itr->second.find(frame) == itr->second.end())
                     {
-                        sLog.outError("Gameobject (Entry: %u GoType: %u) has data10=%u but this frame is not in TransportAnimation.dbc!",
+                        sLog.outError("Gameobject (Entry: %u GoType: %u) has data10=%u but this frame is not in TransportAnimation.dbc! May cause client crashes.",
                             goInfo->id, goInfo->type, frame);
                     }
                 }

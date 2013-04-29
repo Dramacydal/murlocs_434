@@ -157,7 +157,11 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
 
     if (goinfo->type == GAMEOBJECT_TYPE_TRANSPORT)
         if (sTransportAnimationsByEntry.find(goinfo->id) == sTransportAnimationsByEntry.end())
+        {
+            sLog.outError("GameObject::Create: gameobject entry %u guid %u is transport, but does not have entry in TransportAnimation.dbc. Can't spawn.",
+                goinfo->id, guidlow);
             return false;
+        }
 
     SetObjectScale(goinfo->size);
 

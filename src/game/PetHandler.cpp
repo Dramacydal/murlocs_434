@@ -54,7 +54,7 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
         return;
     }
 
-    //copyguids system (for treants or spirit wolves)
+    // copyguids system (for treants or spirit wolves)
     ObjectGuid copyguid = ObjectGuid(pet->GetObjectGuid().GetHigh(), pet->GetObjectGuid().GetEntry()-1, pet->GetGUIDLow()-1);
     Unit* pet2= ObjectAccessor::GetUnit(*_player, copyguid);
     if (pet2 && pet2->GetEntry() == pet->GetEntry() && pet2->GetOwnerGuid() == pet->GetOwnerGuid())
@@ -63,6 +63,7 @@ void WorldSession::HandlePetAction(WorldPacket& recv_data)
         *virtualpacket << copyguid;
         *virtualpacket << data;
         *virtualpacket << targetGuid;
+        *virtualpacket << x << y << z;
         HandlePetAction(*virtualpacket);
         delete virtualpacket;
     }
