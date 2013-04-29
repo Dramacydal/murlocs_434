@@ -5075,12 +5075,14 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                 // Seal of Justice, Seal of Righteousness, Censure
                 if (!procSpell || procSpell->Id != 20170 && procSpell->Id != 25742 && procSpell->Id != 31803)
                     return SPELL_AURA_PROC_FAILED;
+                break;
             }
             // Sacred Shield
             else if (auraSpellInfo->Id == 85285)
             {
                 if (GetHealthPercent() > 20.0f)
                     return SPELL_AURA_PROC_FAILED;
+                break;
             }
             // Item - Paladin T13 Protection 2P Bonus (Judgement)
             else if (auraSpellInfo->Id == 105800)
@@ -5090,7 +5092,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
 
                 trigger_spell_id = 105801;
                 basepoints[0] = damage * triggerAmount / 100;
-                return;
+                break;
             }
             break;
         }
