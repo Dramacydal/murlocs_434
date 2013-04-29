@@ -1251,6 +1251,9 @@ class ObjectMgr
         PhaseDefinitionStore const* GetPhaseDefinitionStore() { return &_PhaseDefinitionStore; }
         SpellPhaseStore const* GetSpellPhaseStore() { return &_SpellPhaseStore; }
 
+        void LoadDisabledSpells();
+        bool IsSpellDisabled(uint32 spellId) const;
+
     protected:
 
         // first free id for selected id type
@@ -1407,6 +1410,8 @@ class ObjectMgr
 
         PhaseDefinitionStore _PhaseDefinitionStore;
         SpellPhaseStore _SpellPhaseStore;
+
+        std::set<uint32> m_disabledSpells;
 };
 
 #define sObjectMgr MaNGOS::Singleton<ObjectMgr>::Instance()

@@ -1529,6 +1529,9 @@ void World::SetInitialWorldSettings()
     sLog.outString("Loading hotfix data...");
     sObjectMgr.LoadHotfixData();
 
+    sLog.outString("Loading disabled spells...");
+    sObjectMgr.LoadDisabledSpells();
+
     ///- Handle outdated emails (delete/return)
     sLog.outString( "Returning old mails..." );
     sObjectMgr.ReturnOrDeleteOldMails(false);

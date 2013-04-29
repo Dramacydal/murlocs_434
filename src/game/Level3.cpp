@@ -508,6 +508,14 @@ bool ChatHandler::HandleReloadHotfixDataCommand(char* /*args*/)
     return true;
 }
 
+bool ChatHandler::HandleRealoadDisabledSpellsCommand(char* /*args*/)
+{
+    sLog.outString("Re-Loading disabled spells...");
+    sObjectMgr.LoadDisabledSpells();
+    sWorld.SendGMGlobalText("DB table `disabled_spells` reloaded.");
+    return true;
+}
+
 bool ChatHandler::HandleReloadQuestAreaTriggersCommand(char* /*args*/)
 {
     sLog.outString( "Re-Loading Quest Area Triggers..." );

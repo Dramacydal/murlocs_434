@@ -8510,7 +8510,6 @@ bool ObjectMgr::IsPlayerMeetToCondition(uint16 conditionId, Player const* pPlaye
     return false;
 }
 
-
 void ObjectMgr::GetConditions(uint32 conditionId, std::vector<PlayerCondition const*>& out) const
 {
     const PlayerCondition* condition = sConditionStorage.LookupEntry<PlayerCondition>(conditionId);
@@ -10803,7 +10802,7 @@ void ObjectMgr::LoadSpellPhaseInfo()
 
     if (!result)
     {
-        sLog.outString(">> Loaded 0 spell dbc infos. DB table `spell_phase` is empty.");
+        sLog.outString(">> Loaded 0 spell phase dbc infos. DB table `spell_phase` is empty.");
         return;
     }
 
@@ -10841,6 +10840,47 @@ void ObjectMgr::LoadSpellPhaseInfo()
 
     delete result;
 
-    sLog.outString(">> Loaded %u spell dbc infos in %u ms.", count);
+    sLog.outString(">> Loaded %u spell phase dbc infos.", count);
 }
 
+void ObjectMgr::LoadDisabledSpells()
+{
+    m_disabledSpells.clear();
+
+    //                                                     0
+    QueryResult* result = CharacterDatabase.Query("SELECT `id` FROM `disabled_spells`");
+
+    if (!result)
+    {
+        sLog.outString(">> Loaded 0 disabled spells. DB table `disabled_spells` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 spellId = fields[0].GetUInt32();
+
+        SpellEntry const* spell = sSpellStore.LookupEntry(spellId);
+        if (!spell)
+        {
+            sLog.outError("Spell %u defined in `disabled_spells` does not exists, skipped.", spellId);
+            continue;
+        }
+
+        m_disabledSpells.insert(spellId);
+        ++count;
+    }
+    while (result->NextRow());
+
+    delete result;
+
+    sLog.outString(">> Loaded %u disabled spells.", count);
+}
+
+bool ObjectMgr::IsSpellDisabled(uint32 spellId) const
+{
+    return m_disabledSpells.find(spellId) != m_disabledSpells.end();
+}
