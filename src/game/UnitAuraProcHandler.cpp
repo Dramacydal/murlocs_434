@@ -3568,6 +3568,36 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 triggered_spell_id = 64695;
                 break;
             }
+            // Ancestral Healing
+            if (dummySpell->SpellIconID == 200)
+            {
+                if (!pVictim)
+                    return SPELL_AURA_PROC_FAILED;
+
+                int32 maxHp = pVictim->GetMaxHealth() * 10 / 100;
+                int32 bp = damage * triggerAmount / 100;
+
+                // Cast Ancestral Vigor
+                if (SpellAuraHolder* holder = pVictim->GetSpellAuraHolder(105284))
+                {
+                    if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
+                    {
+                        maxHp = std::max(maxHp - aura->GetModifier()->m_amount, 0);
+                        bp += aura->GetModifier()->m_amount;
+                        if (bp > maxHp)
+                            bp = aura->GetModifier()->m_amount;
+                        aura->ChangeAmount(bp);
+                    }
+                }
+                else
+                {
+                    if (bp > maxHp)
+                        bp = maxHp;
+                    // Cast Ancestral Vigor (max hp part of talent)
+                    CastCustomSpell(pVictim, 105284, &bp, NULL, NULL, true);
+                }
+                return SPELL_AURA_PROC_OK;
+            }
             // Focused Insight
             if (dummySpell->SpellIconID == 4674)
             {
@@ -5141,46 +5171,8 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Ancestral Healing
             else if (auraSpellInfo->SpellIconID == 200)
             {
-                switch (triggeredByAura->GetModifier()->m_amount)
-                {
-                    case EFFECT_INDEX_0:
-                    {
-                        if ((procEx & PROC_EX_CRITICAL_HIT) == 0)
-                            return SPELL_AURA_PROC_FAILED;
-                        break;
-                    }
-                    case EFFECT_INDEX_1:
-                    {
-                        if (!pVictim)
-                            return SPELL_AURA_PROC_FAILED;
-
-                        int32 maxHp = pVictim->GetMaxHealth() * 10 / 100;
-                        int32 bp = damage * triggerAmount / 100;
-
-                        // Cast Ancestral Vigor
-                        if (SpellAuraHolder* holder = target->GetSpellAuraHolder(105284))
-                        {
-                            if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
-                            {
-                                maxHp = std::max(maxHp - aura->GetModifier()->m_amount, 0);
-                                bp += aura->GetModifier()->m_amount;
-                                if (bp > maxHp)
-                                    bp = aura->GetModifier()->m_amount;
-                                aura->ChangeAmount(bp);
-                            }
-                        }
-                        else
-                        {
-                            if (bp > maxHp)
-                                bp = maxHp;
-                            // Cast Ancestral Vigor (max hp part of talent)
-                            CastCustomSpell(pVictim, 105284, &bp, NULL, NULL, true);
-                        }
-                        return SPELL_AURA_PROC_OK;
-                    }
-                    default:
-                        return SPELL_AURA_PROC_OK;
-                }
+                if ((procEx & PROC_EX_CRITICAL_HIT) == 0)
+                    return SPELL_AURA_PROC_FAILED;
                 break;
             }
             break;
