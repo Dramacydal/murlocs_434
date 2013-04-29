@@ -1596,6 +1596,14 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             {
                 triggered_spell_id = 99240;
                 basepoints[0] = triggerAmount * (damage+absorb) / 100 / GetSpellAuraMaxTicks(triggered_spell_id);
+                break;
+            }
+            // Item - Warrior T13 Protection 2P Bonus (Revenge)
+            else if (dummySpell->Id == 105908)
+            {
+                triggered_spell_id = 105909;
+                basepoints[0] = triggerAmount * damage / 100;
+                break;
             }
             break;
         }
