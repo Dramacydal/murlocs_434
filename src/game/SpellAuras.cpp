@@ -11489,7 +11489,9 @@ void SpellAuraHolder::BuildUpdatePacket(WorldPacket& data) const
     uint8 auraFlags = GetAuraFlags();
     data << uint16(auraFlags);
     data << uint8(GetAuraLevel());
-    data << uint8(GetStackAmount() > 1 ? GetStackAmount() : (GetAuraCharges()) ? GetAuraCharges() : 1);
+
+    //data << uint8(GetStackAmount() > 1 ? GetStackAmount() : (GetAuraCharges()) ? GetAuraCharges() : 1);
+    data << uint8(GetSpellProto()->GetStackAmount() ? GetStackAmount() : (GetAuraCharges() ? GetAuraCharges() : 1));
 
     if(!(auraFlags & AFLAG_NOT_CASTER))
     {

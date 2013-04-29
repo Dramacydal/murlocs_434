@@ -5211,7 +5211,10 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                                     break;
                             }
                             if (triggered_spell)
+                            {
                                 m_caster->CastSpell(unitTarget, triggered_spell, true);
+                                break;
+                            }
                         }
                 }
                 return;
