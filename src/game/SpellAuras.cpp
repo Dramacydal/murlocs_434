@@ -7479,24 +7479,6 @@ void Aura::HandleAuraModIncreaseHealth(bool apply, bool Real)
                     if (GetId() == 54443 || GetId() == 55233 || GetId() == 105588)
                         m_modifier.m_amount = target->GetMaxHealth() * m_modifier.m_amount / 100;
 
-                    // Ancestral Vigor, increase max health not more than 5/10%
-                    if (GetId() == 105284)
-                    {
-                        if (Unit* caster = GetCaster())
-                        {
-                            Aura* talent = caster->GetAura(16176, EFFECT_INDEX_1);
-                            if (!talent)
-                                talent = caster->GetAura(16235, EFFECT_INDEX_1);
-
-                            if (talent)
-                            {
-                                float hpMax = float(talent->GetModifier()->m_amount) * target->GetMaxHealth() / 100.0f;
-                                if (m_modifier.m_amount > int32(hpMax))
-                                    ChangeAmount(int32(hpMax));
-                            }
-                        }
-                    }
-
                     target->HandleStatModifier(UNIT_MOD_HEALTH, TOTAL_VALUE, float(m_modifier.m_amount), apply);
                     target->ModifyHealth(m_modifier.m_amount);
                 }
