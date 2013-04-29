@@ -5162,6 +5162,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                         {
                             if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
                             {
+                                maxHp = std::max(maxHp - aura->GetModifier()->m_amount, 0);
                                 bp += aura->GetModifier()->m_amount;
                                 if (bp > maxHp)
                                     bp = aura->GetModifier()->m_amount;
