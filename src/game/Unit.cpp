@@ -7256,9 +7256,10 @@ int32 Unit::DealHeal(Unit* pVictim, uint32 addhealth, SpellEntry const* spellPro
                 if (maxHp)
                 {
                     if (aura->GetModifier()->m_amount + overheal > maxHp)
-                        aura->ChangeAmount(maxHp);
+                        aura->GetModifier()->m_amount = maxHp;
                     else
-                        aura->ChangeAmount(aura->GetModifier()->m_amount + overheal);
+                        aura->GetModifier()->m_amount += overheal;
+                    aura->GetHolder()->RefreshHolder();
                 }
             }
             else

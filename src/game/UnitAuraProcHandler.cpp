@@ -3698,16 +3698,14 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                 int32 bp = damage * triggerAmount / 100;
 
                 // Cast Ancestral Vigor
-                if (SpellAuraHolder* holder = pVictim->GetSpellAuraHolder(105284))
+                if (Aura* aura = pVictim->GetAura(105284, EFFECT_INDEX_0))
                 {
-                    if (Aura* aura = holder->GetAuraByEffectIndex(EFFECT_INDEX_0))
-                    {
-                        maxHp = std::max(maxHp - aura->GetModifier()->m_amount, 0);
-                        bp += aura->GetModifier()->m_amount;
-                        if (bp > maxHp)
-                            bp = aura->GetModifier()->m_amount;
-                        aura->ChangeAmount(bp);
-                    }
+                    maxHp = std::max(maxHp - aura->GetModifier()->m_amount, 0);
+                    bp += aura->GetModifier()->m_amount;
+                    if (bp > maxHp)
+                        bp = aura->GetModifier()->m_amount;
+                    aura->ChangeAmount(bp, false);
+                    aura->GetHolder()->RefreshHolder();
                 }
                 else
                 {
