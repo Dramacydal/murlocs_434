@@ -5230,6 +5230,13 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
                     return SPELL_AURA_PROC_FAILED;
                 break;
             }
+            // Item - Proc Stacking Activator (5)
+            else if (auraSpellInfo->Id == 91833)
+            {
+                if (HasAura(91836))
+                    return SPELL_AURA_PROC_FAILED;
+                break;
+            }
             // Item - Proc Dodge Below 35%
             else if (auraSpellInfo->Id == 92234)
             {
