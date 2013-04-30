@@ -6433,7 +6433,10 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
         {
             // Weight of a Feather
             if (Aura* aura = unitTarget->GetAura(96881, EFFECT_INDEX_0))
+            {
                 addhealth += aura->GetModifier()->m_amount;
+                unitTarget->RemoveSpellAuraHolder(aura->GetHolder());
+            }
         }
 
         // Chain Healing
