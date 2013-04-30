@@ -3137,7 +3137,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 FillRaidOrPartyHealthPriorityTargets(targetUnitMap, m_caster, m_targets.getUnitTarget(), radius, 1, true, false, true);
             // Blaze of Life
             // Nick of Time
-            else if (m_spellInfo->Id == 96966 || m_spellInfo->Id == 97136 || m_spellInfo->Id == 108000 || m_spellInfo->Id == 109825)
+            else if (m_spellInfo->Id == 96966 || m_spellInfo->Id == 97136 || m_spellInfo->Id == 108000 || m_spellInfo->Id == 109822 || m_spellInfo->Id == 109825)
                 FillRaidOrPartyHealthPriorityTargets(targetUnitMap, m_caster, m_targets.getUnitTarget(), radius, 1, true, false, true);
             else
                 FillAreaTargets(targetUnitMap, radius, PUSH_DEST_CENTER, SPELL_TARGETS_FRIENDLY);
@@ -7869,8 +7869,23 @@ SpellCastResult Spell::CheckCast(bool strict)
             }
             break;
         }
+        case 91041:     // Heart's Judgement
+        {
+            // Heart's Revelation
+            if (m_targets.getUnitTarget() && !m_targets.getUnitTarget()->HasAura(91027))
+                return SPELL_FAILED_CASTER_AURASTATE;
+            break;
+        }
+        case 92328:     // Heart's Judgement
+        {
+            // Heart's Revelation
+            if (m_targets.getUnitTarget() && !m_targets.getUnitTarget()->HasAura(92325))
+                return SPELL_FAILED_CASTER_AURASTATE;
+            break;
+        }
         case 96880:     // Tipping of the Scales
         {
+            // Weight of a Feather
             if (m_targets.getUnitTarget() && !m_targets.getUnitTarget()->HasAura(96881))
                 return SPELL_FAILED_CASTER_AURASTATE;
             break;
