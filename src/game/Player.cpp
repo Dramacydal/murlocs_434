@@ -2300,7 +2300,7 @@ void Player::RemoveSummonUnit(Unit* summon)
 
 uint32 Player::GetSummonedUnitCount(uint32 entry) const
 {
-    uint32 counter;
+    uint32 counter = 0;
     for (SummonUnitList::const_iterator i = m_summonList.begin(); i != m_summonList.end(); ++i)
         if ((*i)->GetEntry() == entry)
             ++counter;
