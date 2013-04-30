@@ -5260,7 +5260,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Song of Sorrow
             else if (auraSpellInfo->Id == 90998 || auraSpellInfo->Id == 91003)
             {
-                if (!pVictim || pVictim->GetHealthPercent > triggerAmount * pVictim->GetMaxHealth() / 100)
+                if (!pVictim || pVictim->GetHealthPercent() > triggerAmount * pVictim->GetMaxHealth() / 100)
                     return SPELL_AURA_PROC_FAILED;
                 break;
             }
