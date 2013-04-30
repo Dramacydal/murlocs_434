@@ -2917,6 +2917,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 // Chains of Ice and Chilblains
                 if (spellInfo_1->SpellIconID == 180 && spellInfo_2->SpellIconID == 180)
                     return false;
+
+                // Dancing Rune Weapon
+                if (spellInfo_1->SpellIconID == 2657 && spellInfo_2->SpellIconID == 2657)
+                    return false;
             }
             break;
         default:
