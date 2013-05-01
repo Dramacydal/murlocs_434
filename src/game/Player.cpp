@@ -22558,6 +22558,10 @@ void Player::learnSkillRewardedSpells(uint32 skill_id, uint32 skill_value )
 
 void Player::SendAurasForTarget(Unit *target)
 {
+    // client crashfix?
+    if (!HaveAtClient(target))
+        return;
+
     Unit::VisibleAuraMap const& visibleAuras = target->GetVisibleAuras();
     // client crashfix
     if (visibleAuras.empty())
