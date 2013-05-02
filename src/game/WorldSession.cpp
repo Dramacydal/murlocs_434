@@ -189,7 +189,7 @@ void WorldSession::SendPacket(WorldPacket const* packet)
 
 #endif                                                  // !MANGOS_DEBUG
 
-    sLog.outString("Send packet %u %s to %s", packet->GetOpcode(), LookupOpcodeName(packet->GetOpcode()), GetPlayer() ? GetPlayer()->GetGuidStr().c_str() : "<unknown>");
+    DEBUG_LOG("Send packet %u %s to %s", packet->GetOpcode(), LookupOpcodeName(packet->GetOpcode()), GetPlayer() ? GetPlayer()->GetGuidStr().c_str() : "<unknown>");
 
     if (m_Socket->SendPacket (*packet) == -1)
         m_Socket->CloseSocket ();
@@ -233,7 +233,7 @@ bool WorldSession::Update(PacketFilter& updater)
                         packet->GetOpcode());
         #endif*/
 
-        sLog.outString("Received packet %u %s from %s", packet->GetOpcode(), LookupOpcodeName(packet->GetOpcode()), GetPlayer() ? GetPlayer()->GetGuidStr().c_str() : "<unknown>");
+        DEBUG_LOG("Received packet %u %s from %s", packet->GetOpcode(), LookupOpcodeName(packet->GetOpcode()), GetPlayer() ? GetPlayer()->GetGuidStr().c_str() : "<unknown>");
 
         OpcodeHandler const& opHandle = opcodeTable[packet->GetOpcode()];
         try
