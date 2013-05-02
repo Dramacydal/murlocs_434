@@ -239,7 +239,7 @@ bool WorldSession::Update(PacketFilter& updater)
         try
         {
             if (GetPlayer())
-                sLog.outString("Received packet %s (size %u) from %s", opHandle.name, packet->size(), GetPlayer()->GetGuidStr().c_str());
+                DEBUG_LOG("Received packet %s (size %u) from %s", opHandle.name, packet->size(), GetPlayer()->GetGuidStr().c_str());
 
             switch (opHandle.status)
             {
