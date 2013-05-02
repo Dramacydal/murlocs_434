@@ -1804,11 +1804,13 @@ void GameObject::DamageTaken(Unit* pDoneBy, uint32 damage, uint32 spellId)
         m_health -= damage;
         // For Strand of the Ancients and probably Isle of Conquest
         if (pWho)
+        {
             if (BattleGround *bg = pWho->GetBattleGround())
                 bg->EventPlayerDamageGO(pWho, this, m_goInfo->destructibleBuilding.damageEvent, spellId);
 
-        if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
-            opvp->HandleEvent(m_goInfo->destructibleBuilding.damageEvent, this, pWho, spellId);
+            if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
+                opvp->HandleEvent(m_goInfo->destructibleBuilding.damageEvent, this, pWho, spellId);
+        }
     }
     else
         m_health = 0;
@@ -1829,10 +1831,10 @@ void GameObject::DamageTaken(Unit* pDoneBy, uint32 damage, uint32 spellId)
             {
                 if (BattleGround *bg = pWho->GetBattleGround())
                     bg->EventPlayerDamageGO(pWho, this, m_goInfo->destructibleBuilding.destroyedEvent, spellId);
-            }
 
-            if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
-                opvp->HandleEvent(m_goInfo->destructibleBuilding.destroyedEvent, this, pWho, spellId);
+                if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
+                    opvp->HandleEvent(m_goInfo->destructibleBuilding.destroyedEvent, this, pWho, spellId);
+            }
         }
     }
     else                                            // from intact to damaged
@@ -1858,11 +1860,13 @@ void GameObject::DamageTaken(Unit* pDoneBy, uint32 damage, uint32 spellId)
                 m_health = 0;
 
             if (pWho)
+            {
                 if (BattleGround *bg = pWho->GetBattleGround())
                     bg->EventPlayerDamageGO(pWho, this, m_goInfo->destructibleBuilding.damagedEvent, spellId);
 
-            if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
-                opvp->HandleEvent(m_goInfo->destructibleBuilding.damagedEvent, this, pWho, spellId);
+                if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
+                    opvp->HandleEvent(m_goInfo->destructibleBuilding.damagedEvent, this, pWho, spellId);
+            }
          }
     }
 
