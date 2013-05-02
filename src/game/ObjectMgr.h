@@ -590,6 +590,14 @@ struct HotfixInfo
     uint32 Entry;
 };
 
+enum DisableSpellType
+{
+    DISABLE_SPELL_TYPE_NONE     = 0,
+    DISABLE_SPELL_TYPE_CAST     = 1,
+    DISABLE_SPELL_TYPE_LEARN    = 2,
+    DISABLE_SPELL_TYPE_ALL      = DISABLE_SPELL_TYPE_CAST | DISABLE_SPELL_TYPE_LEARN,
+};
+
 typedef std::vector<HotfixInfo> HotfixData;
 
 class ObjectMgr
@@ -1252,7 +1260,7 @@ class ObjectMgr
         SpellPhaseStore const* GetSpellPhaseStore() { return &_SpellPhaseStore; }
 
         void LoadDisabledSpells();
-        bool IsSpellDisabled(uint32 spellId) const;
+        bool IsSpellDisabled(uint32 spellId, uint32 type = DISABLE_SPELL_TYPE_ALL) const;
 
     protected:
 
@@ -1411,7 +1419,8 @@ class ObjectMgr
         PhaseDefinitionStore _PhaseDefinitionStore;
         SpellPhaseStore _SpellPhaseStore;
 
-        std::set<uint32> m_disabledSpells;
+        typedef std::map<uint32, uint32> DisabledSpells;
+        DisabledSpells m_disabledSpells;
 };
 
 #define sObjectMgr MaNGOS::Singleton<ObjectMgr>::Instance()

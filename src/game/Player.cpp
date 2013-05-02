@@ -18336,6 +18336,15 @@ void Player::_LoadSpells(QueryResult *result)
                 continue;
             }
 
+            // skip disabled spells
+            if (sObjectMgr.IsSpellDisabled(spell_id, DISABLE_SPELL_TYPE_LEARN))
+            {
+                ERROR_LOG("Player::_LoadSpells: %s has spell %u in character_spell that is disabled server-side, removing it.",
+                    GetGuidStr().c_str(), spell_id);
+                CharacterDatabase.PExecute("DELETE FROM character_spell WHERE spell = '%u'", spell_id);
+                continue;
+            }
+
             // check guild perks
             PerksMap::const_iterator itr = perksMap.find(spell_id);
             if (itr != perksMap.end())
@@ -19740,7 +19749,7 @@ void Player::_SaveSpells()
                 stmtDel.PExecute(GetGUIDLow(), itr->first);
 
             // add only changed/new not dependent spells
-            if (!itr->second.dependent && (itr->second.state == PLAYERSPELL_NEW || itr->second.state == PLAYERSPELL_CHANGED))
+            if (!itr->second.dependent && (itr->second.state == PLAYERSPELL_NEW || itr->second.state == PLAYERSPELL_CHANGED) && !sObjectMgr.IsSpellDisabled(itr->first, DISABLE_SPELL_TYPE_LEARN))
                 stmtIns.PExecute(GetGUIDLow(), itr->first, uint8(itr->second.active ? 1 : 0), uint8(itr->second.disabled ? 1 : 0));
         }
 

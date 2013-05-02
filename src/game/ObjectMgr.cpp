@@ -10851,8 +10851,8 @@ void ObjectMgr::LoadDisabledSpells()
 {
     m_disabledSpells.clear();
 
-    //                                                     0
-    QueryResult* result = CharacterDatabase.Query("SELECT `id` FROM `disabled_spells`");
+    //                                                     0     1
+    QueryResult* result = CharacterDatabase.Query("SELECT `id`, `type` FROM `disabled_spells`");
 
     if (!result)
     {
@@ -10866,6 +10866,7 @@ void ObjectMgr::LoadDisabledSpells()
         Field* fields = result->Fetch();
 
         uint32 spellId = fields[0].GetUInt32();
+        uint32 type = fields[1].GetUInt32();
 
         SpellEntry const* spell = sSpellStore.LookupEntry(spellId);
         if (!spell)
@@ -10874,7 +10875,7 @@ void ObjectMgr::LoadDisabledSpells()
             continue;
         }
 
-        m_disabledSpells.insert(spellId);
+        m_disabledSpells[spellId] = type;
         ++count;
     }
     while (result->NextRow());
@@ -10884,7 +10885,11 @@ void ObjectMgr::LoadDisabledSpells()
     sLog.outString(">> Loaded %u disabled spells.", count);
 }
 
-bool ObjectMgr::IsSpellDisabled(uint32 spellId) const
+bool ObjectMgr::IsSpellDisabled(uint32 spellId, uint32 type) const
 {
-    return m_disabledSpells.find(spellId) != m_disabledSpells.end();
+    DisabledSpells::const_iterator itr = m_disabledSpells.find(spellId);
+    if (itr == m_disabledSpells.end())
+        return false;
+
+    return itr->second & type;
 }
