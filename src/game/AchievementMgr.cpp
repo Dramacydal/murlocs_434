@@ -1496,6 +1496,10 @@ void AchievementMgr<T>::UpdateAchievementCriteria(AchievementCriteriaTypes type,
                 if (!ok)
                     continue;
 
+                AchievementCriteriaRequirementSet const* data = sAchievementMgr.GetCriteriaRequirementSet(achievementCriteria);
+                if (data && !data->Meets(referencePlayer,unit))
+                    continue;
+
                 change = referencePlayer->getLevel();
                 progressType = PROGRESS_HIGHEST;
                 break;
