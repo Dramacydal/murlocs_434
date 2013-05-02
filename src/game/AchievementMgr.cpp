@@ -1499,7 +1499,7 @@ void AchievementMgr<T>::UpdateAchievementCriteria(AchievementCriteriaTypes type,
                     continue;
 
                 AchievementCriteriaRequirementSet const* data = sAchievementMgr.GetCriteriaRequirementSet(achievementCriteria);
-                if (data && !data->Meets(referencePlayer,unit))
+                if (data && !data->Meets(referencePlayer,referencePlayer))
                     continue;
 
                 change = referencePlayer->getLevel();
