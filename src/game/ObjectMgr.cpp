@@ -2633,7 +2633,7 @@ void ObjectMgr::LoadFunItemAddon(ItemPrototype const* proto)
         case 43478:
         case 43015:
         {
-            if (sWorld.getConfig(CONFIG_BOOL_FUN_NO_ITEM_SKILL_REQ)))
+            if (sWorld.getConfig(CONFIG_BOOL_FUN_NO_ITEM_SKILL_REQ))
             {
                 const_cast<ItemPrototype*>(proto)->RequiredSkill = 0;
                 const_cast<ItemPrototype*>(proto)->RequiredSkillRank = 0;
