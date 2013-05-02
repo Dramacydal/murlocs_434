@@ -6961,26 +6961,10 @@ void Player::RewardReputation(Unit *pVictim, float rate)
     uint32 repFaction2 = Rep->repfaction2;
 
     // Championning tabard reputation system
-    if (Rep->championingAura && pVictim->GetMap()->IsNonRaidDungeon() && HasAura(Rep->championingAura))
+    if (uint32 championingFaction = GetChampioningFaction())
     {
-        MapEntry const* storedMap = sMapStore.LookupEntry(GetMapId());
-        InstanceTemplate const* instance = ObjectMgr::GetInstanceTemplate(GetMapId());
-        Item const* pItem = GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_TABARD);
-        if (storedMap && instance && pItem)
-        {
-            ItemPrototype const* pProto = pItem->GetProto();// Checked on load
-            // The required MinLevel for the tabard to work is related to the item level of the tabard
-            if ((instance->levelMin + 1 >= pProto->ItemLevel || !GetMap()->IsRegularDifficulty())
-                    // For ItemLevel == 75 (or 85) need to check expansion
-                    && (pProto->ItemLevel == 75 && storedMap->Expansion() == EXPANSION_WOTLK))
-            {
-                if (uint32 tabardFactionID = pItem->GetProto()->RequiredReputationFaction)
-                {
-                    repFaction1 = tabardFactionID;
-                    repFaction2 = tabardFactionID;
-                }
-            }
-        }
+        repFaction1 = championingFaction;
+        repFaction2 = championingFaction;
     }
 
     if (repFaction1 && (!Rep->team_dependent || GetTeam() == ALLIANCE))
@@ -27631,4 +27615,154 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot, Item* pItem)
     }
     else
         SendEquipError( msg, NULL, NULL, item->itemid );
+}
+
+uint32 Player::GetChampioningFaction()
+{
+    MapEntry const* storedMap = sMapStore.LookupEntry(GetMapId());
+    InstanceTemplate const* instance = ObjectMgr::GetInstanceTemplate(GetMapId());
+    if (!storedMap || !instance)
+        return false;
+
+    uint32 faction, level;
+    uint32 expansion = 0;
+
+    Unit::AuraList const& mDummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
+    for (Unit::AuraList::const_iterator itr = mDummyAuras.begin(); itr != mDummyAuras.end(); ++itr)
+    {
+        switch ((*itr)->GetId())
+        {
+            // Wrath of the Lich King factions
+            case 57819:
+                faction = 1106;
+                level = 80;
+                expansion = EXPANSION_WOTLK;
+                break;          // Argent Crusade
+            case 57820:
+                faction = 1098;
+                level = 80;
+                expansion = EXPANSION_WOTLK;
+                break;          // Knights of the Ebon Blade
+            case 57821:
+                faction = 1090;
+                level = 80;
+                expansion = EXPANSION_WOTLK;
+                break;          // Kirin Tor
+            case 57822:
+                faction = 1091;
+                level = 80;
+                expansion = EXPANSION_WOTLK;
+                break;          // The Wyrmrest Accord
+                // Cataclysm factions
+            case 93337:
+                faction = 1173;
+                level = 85;
+                expansion = EXPANSION_CATA;
+                break;          // Ramkahen
+            case 93339:
+                faction = 1135;
+                level = 85;
+                expansion = EXPANSION_CATA;
+                break;          // The Earthen Ring
+            case 93341:
+                faction = 1158;
+                level = 85;
+                expansion = EXPANSION_CATA;
+                break;          // Guardians of Hyjal
+            case 93347:
+                faction = 1171;
+                level = 85;
+                expansion = EXPANSION_CATA;
+                break;          // Therazane
+            case 93368:
+                faction = 1174;
+                level = 85;
+                expansion = EXPANSION_CATA;
+                break;          // Wildhammer Clan
+            case 94158:
+                faction = 1172;
+                level = 85;
+                expansion = EXPANSION_CATA;
+                break;          // Dragonmaw Clan
+                // Alliance factions
+            case 93795:
+                faction = 72;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Stormwind
+            case 93805:
+                faction = 47;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Ironforge
+            case 93806:
+                faction = 69;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Darnassus
+            case 93811:
+                faction = 930;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Exodar
+            case 93816:
+                faction = 1134;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Gilneas
+            case 93821:
+                faction = 54;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Gnomeregan
+                // Horde factions
+            case 93825:
+                faction = 76;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Orgrimmar
+            case 93827:
+                faction = 530;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Darkspear Trolls
+            case 93828:
+                faction = 911;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Silvermoon
+            case 93830:
+                faction = 1133;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Bilgewater Cartel
+            case 94462:
+                faction = 68;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Undercity
+            case 94463:
+                faction = 81;
+                level = 0;
+                expansion = EXPANSION_NONE;
+                break;          // Thunder Bluff
+        }
+
+        if (faction)
+            break;
+    }
+
+    if (!faction)
+        return 0;
+
+    if (level == 0)
+        return faction;
+
+    if (storedMap->Expansion() < expansion)
+        return 0;
+
+    if (instance->levelMin < level && GetMap()->IsRegularDifficulty())
+        return 0;
+
+    return faction;
 }

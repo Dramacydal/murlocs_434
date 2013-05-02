@@ -2723,6 +2723,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void _LoadVoidStorage(QueryResult* result);
         void _SaveVoidStorage();
 
+        uint32 GetChampioningFaction();
+
         struct SoulSwapData
         {
             std::vector<uint32> spells;
