@@ -2591,8 +2591,7 @@ void ObjectMgr::LoadItemPrototypes()
             }
         }
 
-        if (sWorld.funSettings.FunEnabled())
-            LoadFunItemAddon(proto);
+        LoadFunItemAddon(proto);
     }
 
     // check some dbc referenced items (avoid duplicate reports)
@@ -2622,7 +2621,7 @@ void ObjectMgr::LoadItemPrototypes()
 
 void ObjectMgr::LoadFunItemAddon(ItemPrototype const* proto)
 {
-    if (proto->RequiredReputationFaction)
+    if (proto->RequiredReputationFaction && sWorld.getConfig(CONFIG_BOOL_FUN_NO_ITEM_REP_REQ))
     {
         const_cast<ItemPrototype*>(proto)->RequiredReputationFaction = 0;
         const_cast<ItemPrototype*>(proto)->RequiredReputationRank = 0;
@@ -2633,9 +2632,14 @@ void ObjectMgr::LoadFunItemAddon(ItemPrototype const* proto)
         case 43480:         // Food
         case 43478:
         case 43015:
-            const_cast<ItemPrototype*>(proto)->RequiredSkill = 0;
-            const_cast<ItemPrototype*>(proto)->RequiredSkillRank = 0;
+        {
+            if (sWorld.getConfig(CONFIG_BOOL_FUN_NO_ITEM_SKILL_REQ)))
+            {
+                const_cast<ItemPrototype*>(proto)->RequiredSkill = 0;
+                const_cast<ItemPrototype*>(proto)->RequiredSkillRank = 0;
+            }
             break;
+        }
     }
 }
 
@@ -6036,7 +6040,7 @@ void ObjectMgr::LoadCustomWorldSafeLocs()
 
     m_customWorldSafeLocs.clear();
 
-    if (!sWorld.funSettings.FunEnabled())
+    if (!sWorld.getConfig(CONFIG_BOOL_FUN_CUSTOM_WORLD_SAFE_LOCS))
         return;
 
     QueryResult* result = WorldDatabase.Query("SELECT id, map, x, y, z, team FROM custom_worldsafelocs");

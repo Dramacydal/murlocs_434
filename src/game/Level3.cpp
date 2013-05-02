@@ -7184,7 +7184,7 @@ bool ChatHandler::HandleInstanceUnbindCommand(char* args)
         return false;
 
     Player* player = getSelectedPlayer();
-    if (!player)
+    if (!player || m_session->GetSecurity() < SEC_MODERATOR)
         player = m_session->GetPlayer();
     uint32 counter = 0;
     uint32 mapid = 0;

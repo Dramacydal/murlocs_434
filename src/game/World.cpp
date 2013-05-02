@@ -1042,7 +1042,6 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_BOOL_CHARACTER_VISUALS_OVERRIDE, "Character.Visuals.Override", false);
 
     ///- Fun Server options
-    setConfig(CONFIG_BOOL_FUN_ENABLED, "Fun.Enabled", false);
     setConfig(CONFIG_BOOL_FUN_DUEL_RESET_COOLDOWNS, "Fun.DuelResetCooldowns", false);
     setConfig(CONFIG_BOOL_FUN_DUEL_RESET_STATS, "Fun.DuelResetStats", false);
     setConfig(CONFIG_BOOL_FUN_RESTRICT_TELEPORTS, "Fun.RestrictTeleports", false);
@@ -1054,6 +1053,14 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_UINT32_FUN_REROLL_COST_CUSTOMIZE, "Fun.Cost.Customize", 500);
     setConfig(CONFIG_UINT32_FUN_REROLL_COST_FACTION, "Fun.Cost.Faction", 3000);
     setConfig(CONFIG_UINT32_FUN_REROLL_COST_RACE, "Fun.Cost.Race", 1000);
+    setConfig(CONFIG_BOOL_FUN_NO_ITEM_SKILL_REQ, "Fun.NoItemSkillReq", false);
+    setConfig(CONFIG_BOOL_FUN_NO_ITEM_REP_REQ, "Fun.NoItemRepReq", false);
+    setConfig(CONFIG_BOOL_FUN_CUSTOM_WORLD_SAFE_LOCS, "Fun.CustomWorldSafeLocs", false);
+    setConfig(CONFIG_BOOL_FUN_IGNORE_DK_QUESTS, "Fun.IgnoreDkQuests", false);
+    setConfig(CONFIG_BOOL_FUN_FC_TO_START_LOC, "Fun.FactionChangeToStartLoc", false);
+    setConfig(CONFIG_BOOL_FUN_TAME_IGNORE_GM_MODE, "Fun.TameIgnoreGmMode", false);
+    setConfig(CONFIG_BOOL_FUN_IGNORE_SPELL_FOCUS, "Fun.IgnoreSpellFocus", false);
+    setConfig(CONFIG_BOOL_FUN_REROLL_ENABLED, "Fun.RerollEnabled", false);
 
     setConfig(CONFIG_UINT32_FUN_RATE_A1, "Fun.Rate.A1", 2000);
     setConfig(CONFIG_UINT32_FUN_RATE_A2, "Fun.Rate.A2", 2100);
@@ -3340,16 +3347,9 @@ bool World::GetWorldState(uint32 index, uint32& val) const
     return false;
 }
 
-bool FunSettings::FunEnabled() const { return sWorld.getConfig(CONFIG_BOOL_FUN_ENABLED); }
-bool FunSettings::ResetCooldowns() const { return FunEnabled() && sWorld.getConfig(CONFIG_BOOL_FUN_DUEL_RESET_COOLDOWNS); }
-bool FunSettings::ResetStats() const { return FunEnabled() && sWorld.getConfig(CONFIG_BOOL_FUN_DUEL_RESET_STATS); }
-bool FunSettings::RestrictTeleports() const { return FunEnabled() && sWorld.getConfig(CONFIG_BOOL_FUN_RESTRICT_TELEPORTS); }
-bool FunSettings::RestrictInstances() const { return FunEnabled() && sWorld.getConfig(CONFIG_BOOL_FUN_RESTRICT_INSTANCES); }
-bool FunSettings::UnlimitedRandomBG() const { return FunEnabled() && sWorld.getConfig(CONFIG_BOOL_FUN_UNLIMITED_RANDOM_BG); }
-
 FunRerollCostType FunSettings::GetRerollCostType(RerollType type) const
 {
-    if (FunEnabled())
+    if (sWorld.getConfig(CONFIG_BOOL_FUN_REROLL_ENABLED))
     {
         switch (type)
         {

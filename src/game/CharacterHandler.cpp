@@ -1407,7 +1407,7 @@ void WorldSession::HandleCharFactionOrRaceChangeOpcode(WorldPacket& recv_data)
             newZ = 15.7588f;
         }
 
-        if (sWorld.funSettings.FunEnabled())
+        if (sWorld.getConfig(CONFIG_BOOL_FUN_FC_TO_START_LOC))
         {
             if (PlayerInfo const* info = sObjectMgr.GetPlayerInfo(race, _class))
             {

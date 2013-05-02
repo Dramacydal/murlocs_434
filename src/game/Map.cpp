@@ -1335,7 +1335,7 @@ bool DungeonMap::CanEnter(Player *player)
         return false;
     }
 
-    if (sWorld.funSettings.RestrictInstances())
+    if (sWorld.getConfig(CONFIG_BOOL_FUN_RESTRICT_INSTANCES))
     {
         player->SendTransferAborted(GetId(), TRANSFER_ABORT_MAP_NOT_ALLOWED);
         ChatHandler(player).SendSysMessage(LANG_FUN_INSTANCES_DISABLED);

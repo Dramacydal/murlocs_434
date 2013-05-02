@@ -41,9 +41,9 @@
 #endif
 
 // The path to config files
-#ifndef SYSCONFDIR
-  #define SYSCONFDIR ""
-#endif
+//#ifndef SYSCONFDIR
+  #define SYSCONFDIR "./etc/"
+//#endif
 
 #if PLATFORM == PLATFORM_WINDOWS
   #ifdef _WIN64

@@ -239,7 +239,7 @@ void AuthSocket::OnRead()
         ///- Report unknown commands in the debug log
         if (i == AUTH_TOTAL_COMMANDS)
         {
-            DEBUG_LOG("[Auth] got unknown packet %u", (uint32)_cmd);
+            sLog.outError("[Auth] got unknown packet %u from %s", (uint32)_cmd, remote_address_.c_str());
             return;
         }
     }

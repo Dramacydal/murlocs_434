@@ -6648,7 +6648,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                 case 1:         // Anvil
                 case 3:         // Forge
                 case 1552:      // Runeforging
-                    if (sWorld.funSettings.FunEnabled() && m_caster->GetTypeId() == TYPEID_PLAYER &&
+                    if (sWorld.getConfig(CONFIG_BOOL_FUN_IGNORE_SPELL_FOCUS) && m_caster->GetTypeId() == TYPEID_PLAYER &&
                         !((Player*)m_caster)->InBattleGround() && !((Player*)m_caster)->InArena())
                     {
                         ok = NULL;
@@ -7020,7 +7020,7 @@ SpellCastResult Spell::CheckCast(bool strict)
 
                 Player* plrCaster = (Player*)caster;
 
-                bool gmmode = m_triggeredBySpellInfo == NULL && !sWorld.funSettings.FunEnabled();
+                bool gmmode = m_triggeredBySpellInfo == NULL && !sWorld.getConfig(CONFIG_BOOL_FUN_TAME_IGNORE_GM_MODE);
 
                 if (gmmode && !ChatHandler(plrCaster).FindCommand("npc tame"))
                 {
@@ -7960,7 +7960,7 @@ SpellCastResult Spell::CheckCast(bool strict)
         case 71436:     // Teleport: Booty Bay
         case 73324:     // Portal: Dalaran
         {
-            if (m_caster->GetTypeId() == TYPEID_PLAYER && sWorld.funSettings.RestrictTeleports())
+            if (m_caster->GetTypeId() == TYPEID_PLAYER && sWorld.getConfig(CONFIG_BOOL_FUN_RESTRICT_TELEPORTS))
             {
                 ChatHandler((Player*)m_caster).PSendSysMessage(LANG_FUN_TELEPORT_DISABLED);
                 return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;

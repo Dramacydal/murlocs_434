@@ -50,9 +50,9 @@ void WorldSession::HandleDuelAcceptedOpcode(WorldPacket& recvPacket)
     pl->SendDuelCountdown(3000);
     plTarget->SendDuelCountdown(3000);
 
-    if (sWorld.funSettings.ResetCooldowns())
+    if (sWorld.getConfig(CONFIG_BOOL_FUN_DUEL_RESET_COOLDOWNS))
     {
-        if (!pl->GetMap()->IsDungeon() && !pl->IsFFAPvP())
+        if (!pl->GetMap()->Instanceable() && !pl->IsFFAPvP())
         {
             pl->RemoveArenaSpellCooldowns();
             pl->RemoveArenaAuras(true);
@@ -62,9 +62,10 @@ void WorldSession::HandleDuelAcceptedOpcode(WorldPacket& recvPacket)
                 pet->SetHealth(pet->GetMaxHealth());
                 pet->SetPower(pet->getPowerType(), pet->GetMaxPower(pet->getPowerType()));
                 pet->RemoveArenaAuras(true);
+                pet->RemoveSpellCooldowns();
             }
         }
-        if (!plTarget->GetMap()->IsDungeon() && !plTarget->IsFFAPvP())
+        if (!plTarget->GetMap()->Instanceable() && !plTarget->IsFFAPvP())
         {
             plTarget->RemoveArenaSpellCooldowns();
             plTarget->RemoveArenaAuras(true);
@@ -74,13 +75,14 @@ void WorldSession::HandleDuelAcceptedOpcode(WorldPacket& recvPacket)
                 pet->SetHealth(pet->GetMaxHealth());
                 pet->SetPower(pet->getPowerType(), pet->GetMaxPower(pet->getPowerType()));
                 pet->RemoveArenaAuras(true);
+                pet->RemoveSpellCooldowns();
             }
         }
     }
 
-    if (sWorld.funSettings.ResetStats())
+    if (sWorld.getConfig(CONFIG_BOOL_FUN_DUEL_RESET_STATS))
     {
-        if (!pl->GetMap()->IsDungeon() && !pl->IsFFAPvP())
+        if (!pl->GetMap()->Instanceable() && !pl->IsFFAPvP())
         {
             pl->SetHealth(pl->GetMaxHealth());
             Powers power = pl->getPowerType();
@@ -92,7 +94,7 @@ void WorldSession::HandleDuelAcceptedOpcode(WorldPacket& recvPacket)
             }
         }
 
-        if (!plTarget->GetMap()->IsDungeon() && !plTarget->IsFFAPvP())
+        if (!plTarget->GetMap()->Instanceable() && !plTarget->IsFFAPvP())
         {
             plTarget->SetHealth(plTarget->GetMaxHealth());
             Powers power = plTarget->getPowerType();

@@ -4510,11 +4510,11 @@ bool GossipHello_npc_fun_services(Player* player, Creature* pCreature)
     #ifndef WIN32
 
     player->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, ACTION_MORPH, SENDER_FUN_SERVICES_MAIN, OPTION_FUN_SERVICES_FIRST);
-    if (!player->HasAtLoginFlag(AT_LOGIN_CUSTOMIZE) && sWorld.funSettings.FunEnabled())
+    if (!player->HasAtLoginFlag(AT_LOGIN_CUSTOMIZE) && sWorld.getConfig(CONFIG_BOOL_FUN_REROLL_ENABLED))
         player->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, ACTION_CUSTOMIZE, SENDER_FUN_SERVICES_MAIN, OPTION_FUN_SERVICES_FIRST+1);
-    if (!player->HasAtLoginFlag(AT_LOGIN_CHANGE_RACE) && sWorld.funSettings.FunEnabled())
+    if (!player->HasAtLoginFlag(AT_LOGIN_CHANGE_RACE) && sWorld.getConfig(CONFIG_BOOL_FUN_REROLL_ENABLED))
         player->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, ACTION_RACE, SENDER_FUN_SERVICES_MAIN, OPTION_FUN_SERVICES_FIRST+2);
-    if (!player->HasAtLoginFlag(AT_LOGIN_CHANGE_FACTION) && sWorld.funSettings.FunEnabled())
+    if (!player->HasAtLoginFlag(AT_LOGIN_CHANGE_FACTION) && sWorld.getConfig(CONFIG_BOOL_FUN_REROLL_ENABLED))
         player->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, ACTION_FACTION, SENDER_FUN_SERVICES_MAIN, OPTION_FUN_SERVICES_FIRST+3);
     player->SEND_GOSSIP_MENU(GOSSIP_FUN_SERVICES, pCreature->GetObjectGuid());
 

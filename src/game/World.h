@@ -428,6 +428,14 @@ enum eConfigBoolValues
     CONFIG_BOOL_FUN_RESTRICT_TELEPORTS,
     CONFIG_BOOL_FUN_RESTRICT_INSTANCES,
     CONFIG_BOOL_FUN_UNLIMITED_RANDOM_BG,
+    CONFIG_BOOL_FUN_NO_ITEM_SKILL_REQ,
+    CONFIG_BOOL_FUN_NO_ITEM_REP_REQ,
+    CONFIG_BOOL_FUN_CUSTOM_WORLD_SAFE_LOCS,
+    CONFIG_BOOL_FUN_IGNORE_DK_QUESTS,
+    CONFIG_BOOL_FUN_FC_TO_START_LOC,
+    CONFIG_BOOL_FUN_TAME_IGNORE_GM_MODE,
+    CONFIG_BOOL_FUN_IGNORE_SPELL_FOCUS,
+    CONFIG_BOOL_FUN_REROLL_ENABLED,
     CONFIG_BOOL_VMSS_ENABLE,
     CONFIG_BOOL_LFG_ENABLE,
     CONFIG_BOOL_LFR_ENABLE,
@@ -556,12 +564,6 @@ enum RerollType
 
 struct FunSettings
 {
-    bool FunEnabled() const;
-    bool ResetCooldowns() const;
-    bool ResetStats() const;
-    bool RestrictTeleports() const;
-    bool RestrictInstances() const;
-    bool UnlimitedRandomBG() const;
     FunRerollCostType GetRerollCostType(RerollType type) const;
     uint32 GetRerollCost(RerollType type) const;
 };

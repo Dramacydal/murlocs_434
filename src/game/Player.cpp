@@ -7060,6 +7060,24 @@ void Player::RewardReputation(Quest const *pQuest)
     // TODO: implement reputation spillover
 }
 
+uint32 rankToKills[] = 
+{
+    100,
+    200,
+    500,
+    1000,
+    2100,
+    3200,
+    4300,
+    5400,
+    6500,
+    7600,
+    9000,
+    15000,
+    30000,
+    50000,
+};
+
 void Player::UpdateHonorKills()
 {
     /// called when rewarding honor and at each save
@@ -7094,45 +7112,17 @@ void Player::UpdateHonorKills()
         uint32 HonorKills = GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS);
         uint32 victim_rank = 0;
 
-        //this may consume a lot of cpu cycles.
-        //You can use this sql query: "SELECT max( totalKills ) FROM characters" to get the max totalKills 
-        //of yours players and edit this condition to:  "if (HonorKills < 15 || HonorKills > max(totalKills)+1)) return;"
-        //don't forget to replace max(totalKills) with the result of query
-        if (HonorKills < 15)
+        if (HonorKills < rankToKills[0])
             return;
 
-        if (HonorKills >= 15 && HonorKills < 2000)
-            victim_rank = 1;
-        else if (HonorKills >= 2000 && HonorKills < 5000)
-            victim_rank = 2;
-        else if (HonorKills >= 5000 && HonorKills < 10000)
-            victim_rank = 3;
-        else if (HonorKills >= 10000 && HonorKills < 15000)
-            victim_rank = 4;
-        else if (HonorKills >= 15000 && HonorKills < 20000)
-            victim_rank = 5;
-        else if (HonorKills >= 20000 && HonorKills < 25000)
-            victim_rank = 6;
-        else if (HonorKills >= 25000 && HonorKills < 30000)
-            victim_rank = 7;
-        else if (HonorKills >= 30000 && HonorKills < 35000)
-            victim_rank = 8;
-        else if (HonorKills >= 35000 && HonorKills < 40000)
-            victim_rank = 9;
-        else if (HonorKills >= 40000 && HonorKills < 45000)
-            victim_rank = 10;
-        else if (HonorKills >= 45000 && HonorKills < 50000)
-            victim_rank = 11;
-        else if (HonorKills >= 50000 && HonorKills < 55000)
-            victim_rank = 12;
-        else if (HonorKills >= 55000 && HonorKills < 60000)
-            victim_rank = 13;
-        else if (HonorKills >= 60000)
-            victim_rank = 14;
-
-        // horde titles starting from 15+
-        if (GetTeam() == HORDE)
-            victim_rank += 14;
+        for (int i = countof(rankToKills) - 1; i >= 0; --i)
+        {
+            if (HonorKills >= rankToKills[i])
+            {
+                victim_rank = i + 1;
+                break;
+            }
+        }
 
         if (CharTitlesEntry const* titleEntry = sCharTitlesStore.LookupEntry(victim_rank))
         {
@@ -22559,7 +22549,7 @@ void Player::learnSkillRewardedSpells(uint32 skill_id, uint32 skill_value )
 void Player::SendAurasForTarget(Unit *target)
 {
     // client crashfix?
-    if (!HaveAtClient(target))
+    if (!HaveAtClient(target) || !IsInWorld())
         return;
 
     Unit::VisibleAuraMap const& visibleAuras = target->GetVisibleAuras();
@@ -24301,20 +24291,17 @@ InventoryResult Player::CanEquipUniqueItem( ItemPrototype const* itemProto, uint
             return EQUIP_ERR_ITEM_MAX_LIMIT_CATEGORY_EQUIPPED_EXCEEDED_IS;
     }
 
-    if (sWorld.funSettings.FunEnabled())
-    {
-        uint32 iccRings[] = { 50375, 50376, 50377, 50378, 50384, 50386, 50387, 50388,
-            50397, 50398, 50399, 50400, 50401, 50402, 50403, 50404, 52569, 52570, 52571, 52572 };
+    uint32 iccRings[] = { 50375, 50376, 50377, 50378, 50384, 50386, 50387, 50388,
+        50397, 50398, 50399, 50400, 50401, 50402, 50403, 50404, 52569, 52570, 52571, 52572 };
 
-        for (uint32 i = 0; i < countof(iccRings); ++i)
-            if (itemProto->ItemId == iccRings[i])
-            {
-                for (uint32 j = 0; j < countof(iccRings); ++j)
-                    if (iccRings[i] != iccRings[j] && HasItemOrGemWithIdEquipped(iccRings[j], 1))
-                        return EQUIP_ERR_ITEM_CANT_BE_EQUIPPED;
-                break;
-            }
-    }
+    for (uint32 i = 0; i < countof(iccRings); ++i)
+        if (itemProto->ItemId == iccRings[i])
+        {
+            for (uint32 j = 0; j < countof(iccRings); ++j)
+                if (iccRings[i] != iccRings[j] && HasItemOrGemWithIdEquipped(iccRings[j], 1))
+                    return EQUIP_ERR_ITEM_CANT_BE_EQUIPPED;
+            break;
+        }
 
     return EQUIP_ERR_OK;
 }
@@ -25882,7 +25869,7 @@ void Player::HandleAltVisSwitch()
 
 void Player::SetRandomWinner(bool isWinner)
 {
-    if (sWorld.funSettings.UnlimitedRandomBG())
+    if (sWorld.getConfig(CONFIG_BOOL_FUN_UNLIMITED_RANDOM_BG))
         return;
 
     m_IsBGRandomWinner = isWinner;
@@ -25903,7 +25890,7 @@ void Player::_LoadRandomBGStatus(QueryResult *result)
 
 bool Player::GetRandomWinner()
 {
-    return sWorld.funSettings.UnlimitedRandomBG() ? false : m_IsBGRandomWinner;
+    return sWorld.getConfig(CONFIG_BOOL_FUN_UNLIMITED_RANDOM_BG) ? false : m_IsBGRandomWinner;
 }
 
 void Player::SendReturnToAreaMessage(uint32 areaid, uint32 timer)
@@ -25936,7 +25923,7 @@ bool Player::DkQuestsCompleted()
     if (getClass() != CLASS_DEATH_KNIGHT)
         return true;
 
-    if (sWorld.funSettings.FunEnabled())
+    if (sWorld.getConfig(CONFIG_BOOL_FUN_IGNORE_DK_QUESTS))
         return true;
 
     // The Scarlet Enclave
