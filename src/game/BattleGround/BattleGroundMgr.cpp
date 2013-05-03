@@ -1767,8 +1767,8 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
     if (bg_template->isArena())
     {
         BattleGroundTypeId arenas[] = {BATTLEGROUND_NA, BATTLEGROUND_BE, BATTLEGROUND_RL, BATTLEGROUND_DS, BATTLEGROUND_RV};
-        //bgTypeId = arenas[urand(0, 4)];
-        bgTypeId = BATTLEGROUND_RV;
+        bgTypeId = arenas[urand(0, 4)];
+        //bgTypeId = BATTLEGROUND_RV;
         bg_template = GetBattleGroundTemplate(bgTypeId);
         if (!bg_template)
         {
