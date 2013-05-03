@@ -59,7 +59,7 @@ GameObject::GameObject() : WorldObject(),
     m_valuesCount_335 = GAMEOBJECT_END_335;
     m_respawnTime = 0;
     m_respawnDelayTime = 25;
-    m_lootState = GO_READY;
+    m_lootState = GO_NOT_READY;
     m_spawnedByDefault = true;
     m_useTimes = 0;
     m_spellId = 0;
@@ -191,7 +191,7 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
     {
         case GAMEOBJECT_TYPE_TRAP:
         case GAMEOBJECT_TYPE_FISHINGNODE:
-            m_lootState = GO_NOT_READY;                     // Initialize Traps and Fishingnode delayed in ::Update
+            //m_lootState = GO_NOT_READY;                     // Initialize Traps and Fishingnode delayed in ::Update
             break;
         case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:
             m_health = GetMaxHealth();
@@ -267,10 +267,13 @@ void GameObject::Update(uint32 update_diff, uint32 p_time)
 
                         m_lootState = GO_READY;             // can be successfully open with some chance
                     }
-                    break;
+                    return;
                 }
+                default:
+                    m_lootState = GO_READY;                 // for other GO is same switched without delay to GO_READY
+                    break;
             }
-            break;
+            // NO BREAK for switch (m_lootState)
         }
         case GO_READY:
         {
