@@ -208,7 +208,7 @@ void OutdoorPvPMgr::Update(uint32 diff)
         if (m_scripts[i])
             m_scripts[i]->Update(m_updateTimer.GetCurrent());
 
-    m_updateTimer.Reset();
+    m_updateTimer.SetCurrent(0);
 }
 
 /**
