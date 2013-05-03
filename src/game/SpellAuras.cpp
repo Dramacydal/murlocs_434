@@ -10181,9 +10181,17 @@ void Aura::PeriodicDummyTick()
                     else
                     {
                         if (aura0)
+                        {
+                            aura0->ApplyModifier(false, true);
                             aura0->ChangeAmount(bp0, false);
+                            aura0->ApplyModifier(true, true);
+                        }
                         if (aura1)
+                        {
+                            aura1->ApplyModifier(false, true);
                             aura1->ChangeAmount(bp1, false);
+                            aura1->ApplyModifier(true, true);
+                        }
                         holder->SendAuraUpdate(false);
                     }
                     break;

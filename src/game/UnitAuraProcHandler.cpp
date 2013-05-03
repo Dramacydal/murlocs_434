@@ -3704,7 +3704,9 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
                     bp += aura->GetModifier()->m_amount;
                     if (bp > maxHp)
                         bp = aura->GetModifier()->m_amount;
+                    aura->ApplyModifier(false, true);
                     aura->ChangeAmount(bp, false);
+                    aura->ApplyModifier(true, true);
                     aura->GetHolder()->RefreshHolder();
                 }
                 else
