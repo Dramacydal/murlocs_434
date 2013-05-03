@@ -1435,13 +1435,13 @@ void WorldSession::HandleReforgeItemOpcode(WorldPacket& recvData)
         return;
     }
 
-    if (player->GetMoney() < uint64(item->GetSpecialPrice()))   // cheating
+    if (player->GetMoney() < uint64(item->GetProto()->GetSpecialPrice()))   // cheating
     {
         SendReforgeResult(false);
         return;
     }
 
-    player->ModifyMoney(-int64(item->GetSpecialPrice()));
+    player->ModifyMoney(-int64(item->GetProto()->GetSpecialPrice()));
 
     item->SetEnchantment(REFORGE_ENCHANTMENT_SLOT, reforgeEntry, 0, 0);
 
@@ -1581,7 +1581,7 @@ void WorldSession::HandleTransmogrifyItems(WorldPacket& recvData)
             itemTransmogrifier->SetSoulboundTradeable(NULL, _player, false);
             _player->RemoveSoulboundTradeableItem(itemTransmogrifier->GetObjectGuid());
 
-            cost += itemTransmogrified->GetSpecialPrice();
+            cost += itemTransmogrified->GetProto()->GetSpecialPrice();
         }
     }
 

@@ -120,6 +120,11 @@ DBCStorage <GuildPerkSpellsEntry>         sGuildPerkSpellsStore(GuildPerkSpellsf
 
 DBCStorage <HolidaysEntry>                sHolidaysStore(Holidaysfmt);
 
+DBCStorage <ImportPriceArmorEntry>        sImportPriceArmorStore(ImportPriceArmorfmt);
+DBCStorage <ImportPriceQualityEntry>      sImportPriceQualityStore(ImportPriceQualityfmt);
+DBCStorage <ImportPriceShieldEntry>       sImportPriceShieldStore(ImportPriceShieldfmt);
+DBCStorage <ImportPriceWeaponEntry>       sImportPriceWeaponStore(ImportPriceWeaponfmt);
+DBCStorage <ItemPriceBaseEntry>           sItemPriceBaseStore(ItemPriceBasefmt);
 DBCStorage <ItemArmorQualityEntry>        sItemArmorQualityStore(ItemArmorQualityfmt);
 DBCStorage <ItemArmorShieldEntry>         sItemArmorShieldStore(ItemArmorShieldfmt);
 DBCStorage <ItemArmorTotalEntry>          sItemArmorTotalStore(ItemArmorTotalfmt);
@@ -610,6 +615,11 @@ void LoadDBCStores(const std::string& dataPath)
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGtOCTBaseMPByClassStore,  dbcPath,"gtOCTBaseMPByClass.dbc"); // 15595
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sGuildPerkSpellsStore,     dbcPath,"GuildPerkSpells.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sHolidaysStore,            dbcPath,"Holidays.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sImportPriceArmorStore,    dbcPath,"ImportPriceArmor.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sImportPriceQualityStore,  dbcPath,"ImportPriceQuality.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sImportPriceShieldStore,   dbcPath,"ImportPriceShield.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sImportPriceWeaponStore,   dbcPath,"ImportPriceWeapon.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemPriceBaseStore,       dbcPath,"ItemPriceBase.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemArmorQualityStore,    dbcPath,"ItemArmorQuality.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemArmorShieldStore,     dbcPath,"ItemArmorShield.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemArmorTotalStore,      dbcPath,"ItemArmorTotal.dbc");

@@ -1190,6 +1190,45 @@ struct HolidaysEntry
     //uint32 flags;                                         // 54       m_flags
 };
 
+// ImportPriceArmor.dbc
+struct ImportPriceArmorEntry
+{
+    uint32 InventoryType;                                   // 1        Id/InventoryType
+    float ClothFactor;                                      // 2        Price factor cloth
+    float LeatherFactor;                                    // 3        Price factor leather
+    float MailFactor;                                       // 4        Price factor mail
+    float PlateFactor;                                      // 5        Price factor plate
+};
+
+// ImportPriceQuality.dbc
+struct ImportPriceQualityEntry
+{
+    uint32 QualityId;                                       // 1        Quality Id (+1?)
+    float Factor;                                           // 2        Price factor
+};
+
+// ImportPriceShield.dbc
+struct ImportPriceShieldEntry
+{
+    uint32 Id;                                              // 1        Unk id (only 1 and 2)
+    float Factor;                                           // 2        Price factor
+};
+
+// ImportPriceWeapon.dbc
+struct ImportPriceWeaponEntry
+{
+    uint32 Id;                                              // 1        Unk id (mainhand - 0, offhand - 1, weapon - 2, 2hweapon - 3, ranged/rangedright/relic - 4)
+    float Factor;                                           // 2        Price factor
+};
+
+// ItemPriceBase.dbc
+struct ItemPriceBaseEntry
+{
+    uint32 ItemLevel;                                       // 2        Item level (1 - 1000)
+    float ArmorFactor;                                      // 3        Price factor for armor
+    float WeaponFactor;                                     // 4        Price factor for weapons
+};
+
 struct ItemArmorQualityEntry
 {
   uint32    Id;                                             // 0 item level

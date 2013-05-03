@@ -1976,7 +1976,7 @@ void FillDisenchantFields(ItemPrototype const* proto)
         proto->Stackable > 1 ||
         proto->Quality < ITEM_QUALITY_UNCOMMON || proto->Quality > ITEM_QUALITY_EPIC ||
         !(proto->Class == ITEM_CLASS_ARMOR || proto->Class == ITEM_CLASS_WEAPON) ||
-        !sItemCurrencyCostStore.LookupEntry(proto->ItemId))
+        !(proto->GetSpecialPrice() || sItemCurrencyCostStore.LookupEntry(proto->ItemId)))
         return;
 
     for (uint32 i = 0; i < sItemDisenchantLootStore.GetNumRows(); ++i)
