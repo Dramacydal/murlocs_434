@@ -1030,11 +1030,10 @@ void WorldSession::HandleGuildPermissions( WorldPacket& /* recv_data */ )
 /* Called when clicking on Guild bank gameobject */
 void WorldSession::HandleGuildBankerActivate( WorldPacket & recv_data )
 {
-    DEBUG_LOG("WORLD: Received (CMSG_GUILD_BANKER_ACTIVATE)");
-
     ObjectGuid goGuid;
     uint8 unk;
     recv_data >> goGuid >> unk;
+    DEBUG_LOG("WORLD: Received (CMSG_GUILD_BANKER_ACTIVATE) go: %s unk: %u", goGuid.GetString().c_str(), unk);
 
     if (!GetPlayer()->GetGameObjectIfCanInteractWith(goGuid, GAMEOBJECT_TYPE_GUILD_BANK))
         return;
