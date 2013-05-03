@@ -6049,7 +6049,7 @@ void Aura::HandleModMechanicImmunity(bool apply, bool /*Real*/)
     Unit* target = GetTarget();
     uint32 mechanicMask = 1 << (misc-1);
 
-    if (apply && GetSpellProto()->HasAttribute(SPELL_ATTR_EX_DISPEL_AURAS_ON_IMMUNITY))
+    if (GetSpellProto()->HasAttribute(SPELL_ATTR_EX_DISPEL_AURAS_ON_IMMUNITY))
     {
         // immune movement impairment and loss of control (spell data have special structure for mark this case)
         if (IsSpellRemoveAllMovementAndControlLossEffects(GetSpellProto()))
@@ -10195,6 +10195,12 @@ void Aura::PeriodicDummyTick()
                         caster->CastSpell(caster, GetId() == 91296 ? 91306 : 91311, true);
                     return;
                 }
+                // Smoldering Rune
+                case 98971:
+                {
+                    target->CastSpell(target, 99055, true);
+                    return;
+                }
                 // Exist more after, need add later
                 default:
                     break;
@@ -10498,12 +10504,6 @@ void Aura::PeriodicDummyTick()
                     target->RemoveAurasDueToSpell(GetId());
                 else
                     GetHolder()->RefreshHolder();
-                return;
-            }
-            // Smoldering Rune
-            else if (GetId() == 98971)
-            {
-                target->CastSpell(target, 99055, true);
                 return;
             }
             // Raise Dead
