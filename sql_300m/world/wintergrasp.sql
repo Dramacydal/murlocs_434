@@ -34,6 +34,9 @@ DELETE FROM `spell_area` WHERE `spell` = 56618;
 DELETE FROM `spell_area` WHERE `spell` = 60027;
 -- Horde Control Phase Shift
 DELETE FROM `spell_area` WHERE `spell` = 60028;
+-- collision door
+DELETE FROM `gameobject` WHERE `id` = 194323 AND `guid` = 1695;
+DELETE FROM `gameobject` WHERE `id` = 164162 AND `guid` = 73042;
 
 -- Delete wrong GOs
 -- Titan Relic
@@ -611,6 +614,7 @@ UPDATE `gameobject` SET `phaseMask` = 1 WHERE `map` = 571 AND `id` IN (190763, 1
 
 -- Titan's Relic
 UPDATE `gameobject` SET `phaseMask` = 1 WHERE `map` = 571 AND `id` = 192834;
+UPDATE `gameobject_template` SET `flags` = `flags` & ~16 WHERE `entry` = 192834;
 -- Keep's Door
 DELETE FROM `gameobject` WHERE `guid` = 51165 AND `id` = 191810;
 INSERT INTO `gameobject` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`) VALUES

@@ -133,6 +133,15 @@ struct MANGOS_DLL_DECL npc_guardian_of_the_ancient_kingsAI : public ScriptedAI
                     AttackStart(ownerVictim);
             }
         }
+
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+            return;
+
+        if (!m_creature->IsNonMeleeSpellCasted(false))
+            return;
+
+        if (summonedBySpell == SPELL_GUARDIAN_RETRO)
+            DoMeleeAttackIfReady();
     }
 };
 
