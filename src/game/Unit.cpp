@@ -7743,7 +7743,7 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
                 return pdamage;
 
             // Drain Life
-            if (spellProto->Id == 689 && GetHealthPercent() < 25.0f)
+            if ((spellProto->Id == 689 || spellProto->Id == 89420) && GetHealthPercent() < 25.0f)
             {
                 // Search Death's Embrace
                 Unit::AuraList const& dummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
