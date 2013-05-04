@@ -1209,6 +1209,8 @@ enum MangosStrings
     LANG_PHASING_LIST                   = 11150,
     LANG_PHASING_PHASEMASK              = 11151,
 
+    LANG_BUGGED_QUEST_CAN_BE_AUTOCOMPLETED = 11152,
+
     // Strand of the Ancients
     LANG_BG_SA_START_TWO_MINUTE                     = 20000,
     LANG_BG_SA_START_ONE_MINUTE                     = 20001,

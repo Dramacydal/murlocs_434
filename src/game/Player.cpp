@@ -14871,6 +14871,9 @@ void Player::AddQuest( Quest const *pQuest, Object *questGiver )
     }
 
     UpdateForQuestWorldObjects();
+
+    if (sObjectMgr.GetBuggedQuests().find(quest_id) != sObjectMgr.GetBuggedQuests().end())
+        ChatHandler(this).PSendSysMessage(LANG_BUGGED_QUEST_CAN_BE_AUTOCOMPLETED);
 }
 
 void Player::CompleteQuest(uint32 quest_id)
