@@ -1033,7 +1033,7 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                                         continue;
 
                                     bool isPeriodic = false;
-                                    for (uint32 i = 0; i < MAX_AURAS; ++i)
+                                    for (uint32 i = 0; i < MAX_EFFECT_INDEX; ++i)
                                     {
                                         if (Aura* aura = itr->second->GetAuraByEffectIndex(SpellEffectIndex(i)))
                                         {
