@@ -604,6 +604,8 @@ Unit::Unit() :
     m_boneShieldCooldown = time(NULL);
 
     m_nextCustomSpellData.Clear();
+
+    wildHuntMarker = false;
 }
 
 Unit::~Unit()
@@ -7822,6 +7824,21 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
         }
         default:
             break;
+    }
+
+    if (wildHuntMarker)
+    {
+         // search for "Wild Hunt"
+        for (PetSpellMap::const_iterator itr = ((Pet*)this)->m_spells.begin(); itr != ((Pet*)this)->m_spells.end(); ++itr)
+            if (itr->second.state != PETSPELL_REMOVED)
+            {
+                SpellEntry const* spellInfo = sSpellStore.LookupEntry(itr->first);
+                if (!spellInfo || spellInfo->SpellIconID == 3748)
+                    continue;
+
+                DoneTotalMod *= (100.0f + spellInfo->CalculateSimpleValue(EFFECT_INDEX_0)) / 100.0f;
+                break;
+            }
     }
 
     // Done fixed damage bonus auras

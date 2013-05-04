@@ -2231,16 +2231,6 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                     ownerValue = owner->GetTotalAttackPowerValue(RANGED_ATTACK);
                     scale = 0.1287f;
 
-                    // search for "Wild Hunt"
-                    for (PetSpellMap::const_iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
-                        if (itr->second.state != PETSPELL_REMOVED)
-                        {
-                            SpellEntry const* spellInfo = sSpellStore.LookupEntry(itr->first);
-                            if (!spellInfo || spellInfo->SpellIconID == 3748)
-                                continue;
-                            scale *= float(spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) + 100) / 100.0f;
-                            break;
-                         }
                     break;
                 }
                 // warlock pet scaling aura
@@ -2286,17 +2276,6 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                         case 34902:
                         {
                             scale = 0.4493f;
-
-                            // search for "Wild Hunt"
-                            for (PetSpellMap::const_iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
-                                if (itr->second.state != PETSPELL_REMOVED)
-                                {
-                                    SpellEntry const* spellInfo = sSpellStore.LookupEntry(itr->first);
-                                    if (!spellInfo || spellInfo->SpellIconID != 3748)
-                                        continue;
-                                    scale *= float(spellInfo->CalculateSimpleValue(EFFECT_INDEX_0) + 100) / 100.0f;
-                                    break;
-                                 }
 
                             float baseHP = GetModifierValue(UNIT_MOD_HEALTH, BASE_VALUE) + GetCreateHealth();
                             baseHP *= GetModifierValue(UNIT_MOD_HEALTH, BASE_PCT);
