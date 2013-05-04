@@ -1515,3 +1515,87 @@ bool ChatHandler::HandleMmrResetCommand(char* args)
     return true;
 }
 
+bool ChatHandler::HandleQuestCompleteBuggedCommand(char* args)
+{
+    BuggedQuestsMap& buggedQuests = sObjectMgr.GetBuggedQuests();
+
+    Player* player = m_session->GetPlayer();
+
+    uint8 loc_idx = GetSessionDbLocaleIndex();
+
+    for (BuggedQuestsMap::iterator itr = buggedQuests.begin(); itr != buggedQuests.end(); ++itr)
+    {
+        uint32 entry = itr->first;
+        Quest const* pQuest = sObjectMgr.GetQuestTemplate(itr->first);
+
+        // If player doesn't have the quest
+        if (!pQuest || player->GetQuestStatus(entry) == QUEST_STATUS_NONE || player->GetQuestRewardStatus(entry))
+            continue;
+
+        // Add quest items for quests that require items
+        for(uint8 x = 0; x < QUEST_ITEM_OBJECTIVES_COUNT; ++x)
+        {
+            uint32 id = pQuest->ReqItemId[x];
+            uint32 count = pQuest->ReqItemCount[x];
+            if (!id || !count)
+                continue;
+
+            uint32 curItemCount = player->GetItemCount(id, true);
+
+            ItemPosCountVec dest;
+            uint8 msg = player->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, id, count - curItemCount );
+            if (msg == EQUIP_ERR_OK)
+            {
+                Item* item = player->StoreNewItem( dest, id, true);
+                player->SendNewItem(item,count - curItemCount, true, false);
+            }
+        }
+
+        // All creature/GO slain/casted (not required, but otherwise it will display "Creature slain 0/10")
+        for (uint8 i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
+        {
+            int32 creature = pQuest->ReqCreatureOrGOId[i];
+            uint32 creaturecount = pQuest->ReqCreatureOrGOCount[i];
+
+            if (uint32 spell_id = pQuest->ReqSpell[i])
+            {
+                for(uint16 z = 0; z < creaturecount; ++z)
+                    player->CastedCreatureOrGO(creature, ObjectGuid(), spell_id);
+            }
+            else if (creature > 0)
+            {
+                if (CreatureInfo const* cInfo = ObjectMgr::GetCreatureTemplate(creature))
+                    for(uint16 z = 0; z < creaturecount; ++z)
+                        player->KilledMonster(cInfo, ObjectGuid());
+            }
+            else if (creature < 0)
+            {
+                for(uint16 z = 0; z < creaturecount; ++z)
+                    player->CastedCreatureOrGO(-creature, ObjectGuid(), 0);
+            }
+        }
+
+        // If the quest requires reputation to complete
+        if (uint32 repFaction = pQuest->GetRepObjectiveFaction())
+        {
+            uint32 repValue = pQuest->GetRepObjectiveValue();
+            uint32 curRep = player->GetReputationMgr().GetReputation(repFaction);
+            if (curRep < repValue)
+                if (FactionEntry const *factionEntry = sFactionStore.LookupEntry(repFaction))
+                    player->GetReputationMgr().SetReputation(factionEntry,repValue);
+        }
+
+        // If the quest requires money
+        int32 ReqOrRewMoney = pQuest->GetRewOrReqMoney();
+        if (ReqOrRewMoney < 0)
+            player->ModifyMoney(-ReqOrRewMoney);
+
+        player->CompleteQuest(entry);
+
+        std::string title = pQuest->GetTitle();
+        sObjectMgr.GetQuestLocaleStrings(entry, loc_idx, &title);
+        PSendSysMessage(LANG_BUGGED_QUESTS_COMPLETED, pQuest->GetQuestId(), pQuest->GetQuestId(), pQuest->GetQuestLevel(), title.c_str());
+    }
+
+    return true;
+}
