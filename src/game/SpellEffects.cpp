@@ -1026,7 +1026,8 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                                 Unit::SpellAuraHolderMap const& holders = unitTarget->GetSpellAuraHolderMap();
                                 for (Unit::SpellAuraHolderMap::const_iterator itr = holders.begin(); itr != holders.end(); ++itr)
                                 {
-                                    if (itr->second->IsPositive() ||
+                                    if (itr->second->IsDeleted() ||
+                                        itr->second->IsPositive() ||
                                         itr->second->IsPassive() ||
                                         itr->second->GetCasterGuid() != m_caster->GetObjectGuid())
                                         continue;
