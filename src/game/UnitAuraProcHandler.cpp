@@ -4859,8 +4859,8 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit *pVictim, uint32 d
             // Strength of Soul
             else if (auraSpellInfo->SpellIconID == 177)
             {
-                // done in other way
-                return SPELL_AURA_PROC_FAILED;
+                basepoints[0] = triggerAmount;
+                break;
             }
             // Blessed Recovery
             else if (auraSpellInfo->SpellIconID == 1875)
