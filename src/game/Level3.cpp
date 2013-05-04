@@ -438,6 +438,14 @@ bool ChatHandler::HandleReloadAreaTriggerTeleportCommand(char* /*args*/)
     return true;
 }
 
+bool ChatHandler::HandleReloadBuggedQuestsCommand(char* /*args*/)
+{
+    sLog.outString("Re-Loading `bugged_quests` table...");
+    sObjectMgr.LoadBuggedQuests();
+    sWorld.SendGMGlobalText("DB table `bugged_quests` reloaded.");
+    return true;
+}
+
 bool ChatHandler::HandleReloadCommandCommand(char* /*args*/)
 {
     load_command_table = true;
@@ -5954,6 +5962,44 @@ bool ChatHandler::HandleQuestCompleteCommand(char* args)
         player->learnSpell(spell, false);
 
     player->CompleteQuest(entry);
+    return true;
+}
+
+bool ChatHandler::HandleQuestAddBuggedCommand(char* args)
+{
+    uint32 entry;
+    if (!ExtractUint32KeyFromLink(&args, "Hquest", entry))
+        return false;
+
+    char* comment = ExtractQuotedArg(&args);
+    if (!comment)
+        return false;
+
+    if (!sObjectMgr.AddBuggedQuest(entry, comment))
+    {
+        PSendSysMessage(LANG_BUGGED_QUEST_ADD_ERROR);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    PSendSysMessage(LANG_BUGGED_QUEST_ADDED, entry);
+    return true;
+}
+
+bool ChatHandler::HandleQuestRemoveBuggedCommand(char* args)
+{
+    uint32 entry;
+    if (!ExtractUint32KeyFromLink(&args, "Hquest", entry))
+        return false;
+
+    if (!sObjectMgr.RemoveBuggedQuest(entry))
+    {
+        PSendSysMessage(LANG_BUGGED_QUEST_DELETE_ERROR);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    PSendSysMessage(LANG_BUGGED_QUEST_DELETED, entry);
     return true;
 }
 

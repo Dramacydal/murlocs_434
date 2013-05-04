@@ -38,15 +38,15 @@ AUTO_INCREMENT=1
 ENGINE=MyISAM
 COLLATE='utf8_general_ci';
 
-DELETE FROM `trinity_string` WHERE `entry` BETWEEN 11136 AND 11142;
-INSERT INTO `trinity_string` (`entry`, `content_default`) VALUES
-(11136, '|cff0099FFPhaseMgr: Report for player: %s, zoneId: %u, level: %u, team: %u, phaseupdateflag: %u|r'),
-(11137, '|cff663399PhaseMgr: There are no definitions defined for zoneId %u.|r'),
-(11138, '|cff0066FFPhaseMgr: Success (entry: %u) - added %s %u to the players phase.|r'),
-(11139, '|cffFF0000PhaseMgr: Condition for phase %u (entry: %u, zoneId: %u) failed.|r'),
-(11140, '|cffFF0000PhaseMgr: Condition for phase %u (entry: %u, zoneId: %u) has last phasemask flag. Skipped other definitions.|r'),
-(11141, '|cff6699FFPhaseMgr: The player gets phasemask %u through definitions, %u through phasing auras, and phase %u through custom phase.|r'),
-(11142, '|cff0099FFPhaseMgr: The player has phasemask %u (real: %u).|r');
+DELETE FROM `mangos_string` WHERE `entry` BETWEEN 11145 AND 11151;
+INSERT INTO `mangos_string` (`entry`, `content_default`) VALUES
+(11145, '|cff0099FFPhaseMgr: Report for player: %s, zoneId: %u, level: %u, team: %u, phaseupdateflag: %u|r'),
+(11146, '|cff663399PhaseMgr: There are no definitions defined for zoneId %u.|r'),
+(11147, '|cff0066FFPhaseMgr: Success (entry: %u) - added %s %u to the players phase.|r'),
+(11148, '|cffFF0000PhaseMgr: Condition for phase %u (entry: %u, zoneId: %u) failed.|r'),
+(11149, '|cffFF0000PhaseMgr: Condition for phase %u (entry: %u, zoneId: %u) has last phasemask flag. Skipped other definitions.|r'),
+(11150, '|cff6699FFPhaseMgr: The player gets phasemask %u through definitions, %u through phasing auras, and phase %u through custom phase.|r'),
+(11151, '|cff0099FFPhaseMgr: The player has phasemask %u (real: %u).|r');
 
 DELETE FROM `command` WHERE `name` IN('debug phase', 'debug send setphaseshift');
 INSERT INTO `command` (`name`, `security`, `help`) VALUES

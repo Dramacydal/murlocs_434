@@ -25,6 +25,8 @@
 #include "ArenaTeam.h"
 #include "World.h"
 #include "SocialMgr.h"
+#include "Chat.h"
+#include "Language.h"
 
 void WorldSession::HandleInspectArenaTeamsOpcode(WorldPacket & recv_data)
 {
@@ -265,6 +267,12 @@ void WorldSession::HandleArenaTeamLeaveOpcode(WorldPacket & recv_data)
         return;
     }
 
+    if (at->IsFighting())
+    {
+        ChatHandler(this).SendSysMessage(LANG_CANT_DO_THAT_WHILE_TEAM_FIGHTING);
+        return;
+    }
+
     // arena team has only one member (=captain)
     if (_player->GetObjectGuid() == at->GetCaptainGuid())
     {
@@ -295,7 +303,10 @@ void WorldSession::HandleArenaTeamDisbandOpcode(WorldPacket & recv_data)
             return;
 
         if (at->IsFighting())
+        {
+            ChatHandler(this).SendSysMessage(LANG_CANT_DO_THAT_WHILE_TEAM_FIGHTING);
             return;
+        }
 
         at->Disband(this);
         delete at;
@@ -335,6 +346,12 @@ void WorldSession::HandleArenaTeamRemoveOpcode(WorldPacket & recv_data)
     if (at->GetCaptainGuid() == member->guid)
     {
         SendArenaTeamCommandResult(ERR_ARENA_TEAM_QUIT_S, "", "", ERR_ARENA_TEAM_LEADER_LEAVE_S);
+        return;
+    }
+
+    if (at->IsFighting())
+    {
+        ChatHandler(this).SendSysMessage(LANG_CANT_DO_THAT_WHILE_TEAM_FIGHTING);
         return;
     }
 

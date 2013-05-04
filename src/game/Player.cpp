@@ -2651,6 +2651,16 @@ Creature* Player::GetNPCIfCanInteractWith(ObjectGuid guid, uint32 npcflagmask)
     if (hasUnitState(UNIT_STAT_CAN_NOT_REACT_OR_LOST_CONTROL)  && !hasUnitState(UNIT_STAT_ON_VEHICLE))
         return NULL;
 
+    if ((npcflagmask & UNIT_NPC_FLAG_AUCTIONEER) || (npcflagmask & UNIT_NPC_FLAG_MAILBOX) || (npcflagmask & UNIT_NPC_FLAG_GUILD_BANKER))
+    {
+        uint32 playedTimeRestriction = sWorld.getConfig(CONFIG_UINT32_PLAYED_TIME_BEFORE_TRADE) * MINUTE;
+        if (playedTimeRestriction && playedTimeRestriction > GetTotalPlayedTime() && !isGameMaster())
+        {
+            ChatHandler(this).PSendSysMessage(LANG_YOU_SHOULD_PLAY_FOR, secsToTimeString(playedTimeRestriction).c_str());
+            return NULL;
+        }
+    }
+
     // exist (we need look pets also for some interaction (quest/etc)
     Creature *unit = GetMap()->GetAnyTypeCreature(guid);
     if (!unit)
@@ -2697,6 +2707,16 @@ GameObject* Player::GetGameObjectIfCanInteractWith(ObjectGuid guid, uint32 gameo
     // not in interactive state
     if (hasUnitState(UNIT_STAT_CAN_NOT_REACT_OR_LOST_CONTROL) && !hasUnitState(UNIT_STAT_ON_VEHICLE))
         return NULL;
+
+    if (gameobject_type == GAMEOBJECT_TYPE_GUILD_BANK || gameobject_type == GAMEOBJECT_TYPE_MAILBOX)
+    {
+        uint32 playedTimeRestriction = sWorld.getConfig(CONFIG_UINT32_PLAYED_TIME_BEFORE_TRADE) * MINUTE;
+        if (playedTimeRestriction && playedTimeRestriction > GetTotalPlayedTime() && !isGameMaster())
+        {
+            ChatHandler(this).PSendSysMessage(LANG_YOU_SHOULD_PLAY_FOR, secsToTimeString(playedTimeRestriction).c_str());
+            return NULL;
+        }
+    }
 
     if (GameObject *go = GetMap()->GetGameObject(guid))
     {

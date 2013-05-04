@@ -489,6 +489,13 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             msg = recv_data.ReadString(msgLength);
             channel = recv_data.ReadString(channelLength);
 
+            uint32 playedTimeRestriction = sWorld.getConfig(CONFIG_UINT32_PLAYED_TIME_BEFORE_LFG_SPEAK) * MINUTE;
+            if (playedTimeRestriction && playedTimeRestriction > _player->GetTotalPlayedTime() && !_player->isGameMaster())
+            {
+                ChatHandler(this).PSendSysMessage(LANG_YOU_SHOULD_PLAY_FOR, secsToTimeString(playedTimeRestriction).c_str());
+                return;
+            }
+
             if (!processChatmessageFurtherAfterSecurityChecks(msg, lang))
                 return;
 

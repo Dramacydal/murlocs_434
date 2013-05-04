@@ -561,6 +561,10 @@ ChatCommand * ChatHandler::getCommandTable()
         { "add",            SEC_ADMINISTRATOR,  false, &ChatHandler::HandleQuestAddCommand,            "", NULL },
         { "complete",       SEC_ADMINISTRATOR,  false, &ChatHandler::HandleQuestCompleteCommand,       "", NULL },
         { "remove",         SEC_ADMINISTRATOR,  false, &ChatHandler::HandleQuestRemoveCommand,         "", NULL },
+        { "addbugged",      SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleQuestAddBuggedCommand,      "", NULL },
+        { "removebugged",   SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleQuestRemoveBuggedCommand,   "", NULL },
+        { "listbugged",     SEC_GAMEMASTER,     true,  &ChatHandler::HandleQuestListBuggedCommand,     "", NULL },
+        { "completebugged", SEC_PLAYER,         true,  &ChatHandler::HandleQuestCompleteBuggedCommand, "", NULL },
         { NULL,             0,                  false, NULL,                                           "", NULL }
     };
 
@@ -589,6 +593,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "areatrigger_involvedrelation",SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadQuestAreaTriggersCommand,       "", NULL },
         { "areatrigger_tavern",          SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadAreaTriggerTavernCommand,       "", NULL },
         { "areatrigger_teleport",        SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadAreaTriggerTeleportCommand,     "", NULL },
+        { "bugged_quests",               SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadBuggedQuestsCommand,            "", NULL },
         { "command",                     SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadCommandCommand,                 "", NULL },
         { "conditions",                  SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadConditionsCommand,              "", NULL },
         { "creature_ai_scripts",         SEC_ADMINISTRATOR, true,  &ChatHandler::HandleReloadEventAIScriptsCommand,          "", NULL },

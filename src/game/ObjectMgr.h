@@ -116,6 +116,8 @@ struct RFCData
     uint32 hordeId;
 };
 
+typedef std::map<uint32, std::string> BuggedQuestsMap;
+
 typedef std::map<uint32/*player guid*/,uint32/*instance*/> CellCorpseSet;
 struct CellObjectGuids
 {
@@ -1240,6 +1242,12 @@ class ObjectMgr
 
         void LoadCustomAreaFlags();
 
+        // bugged autocompletable by player quests
+        void LoadBuggedQuests();
+        BuggedQuestsMap& GetBuggedQuests() { return m_buggedQuests; }
+        bool AddBuggedQuest(uint32 entry, std::string comment);
+        bool RemoveBuggedQuest(uint32 entry);
+
         void LoadHotfixData();
         HotfixData const& GetHotfixData() const { return m_hotfixData; }
         time_t GetHotfixDate(uint32 entry, uint32 type) const
@@ -1418,6 +1426,8 @@ class ObjectMgr
 
         PhaseDefinitionStore _PhaseDefinitionStore;
         SpellPhaseStore _SpellPhaseStore;
+
+        BuggedQuestsMap m_buggedQuests;
 
         typedef std::map<uint32, uint32> DisabledSpells;
         DisabledSpells m_disabledSpells;

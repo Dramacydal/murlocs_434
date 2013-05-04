@@ -10702,6 +10702,79 @@ void ObjectMgr::LoadCustomAreaFlags()
     sLog.outString(">> Loaded %u custom area flags.", count);
 }
 
+void ObjectMgr::LoadBuggedQuests()
+{
+    m_buggedQuests.clear();
+    uint32 count = 0;
+
+    QueryResult* result = WorldDatabase.Query("SELECT `entry`, `comment` FROM `bugged_quests`");
+
+    if (!result)
+    {
+        BarGoLink bar(1);
+
+        bar.step();
+
+        sLog.outString();
+        sLog.outString(">> Loaded %u bugged autocomplete quests.", count);
+        return;
+    }
+
+    BarGoLink bar(result->GetRowCount());
+
+    do
+    {
+        bar.step();
+
+        Field* fields = result->Fetch();
+
+        uint32 entry = fields[0].GetUInt32();
+        std::string comment = fields[1].GetCppString();
+        if (!GetQuestTemplate(entry))
+        {
+            sLog.outError("DB table `bugged_quests` has entry for non-existent quest %u");
+            continue;
+        }
+
+        m_buggedQuests[entry] = comment;
+
+        ++count;
+    }
+    while (result->NextRow());
+    delete result;
+
+    sLog.outString();
+    sLog.outString(">> Loaded %u bugged autocomplete quests.", count);
+}
+
+bool ObjectMgr::AddBuggedQuest(uint32 entry, std::string comment)
+{
+    if (!GetQuestTemplate(entry))
+        return false;
+
+    if (m_buggedQuests.find(entry) != m_buggedQuests.end())
+        return false;
+
+    m_buggedQuests[entry] = comment;
+
+    WorldDatabase.escape_string(comment);
+    WorldDatabase.PExecute("REPLACE INTO `bugged_quests` (`entry`, `comment`) VALUE (%u, '%s')", entry, comment.c_str());
+
+    return true;
+}
+
+bool ObjectMgr::RemoveBuggedQuest(uint32 entry)
+{
+    if (m_buggedQuests.find(entry) == m_buggedQuests.end())
+        return false;
+
+    m_buggedQuests.erase(entry);
+
+    WorldDatabase.PExecute("DELETE FROM `bugged_quests` WHERE `entry` = %u", entry);
+
+    return true;
+}
+
 void ObjectMgr::LoadHotfixData()
 {
     uint32 count = 0;

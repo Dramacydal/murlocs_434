@@ -3343,7 +3343,7 @@ enum TradeStatus
     TRADE_STATUS_TRADE_ACCEPT               = 6,
     TRADE_STATUS_TARGET_LOGOUT              = 7,
     TRADE_STATUS_TRADE_COMPLETE             = 9,
-    //TRADE_STATUS_TRIAL_ACCOUNT            = 10,   // Trial accounts can not perform that action
+    TRADE_STATUS_TRIAL_ACCOUNT              = 10,   // Trial accounts can not perform that action
     TRADE_STATUS_BEGIN_TRADE                = 12,
     TRADE_STATUS_YOU_DEAD                   = 13,
     TRADE_STATUS_TARGET_TO_FAR              = 16,

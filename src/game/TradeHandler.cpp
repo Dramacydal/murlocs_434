@@ -29,6 +29,7 @@
 #include "SocialMgr.h"
 #include "Language.h"
 #include "DBCStores.h"
+#include "Chat.h"
 
 void WorldSession::SendTradeStatus(TradeStatus status)
 {
@@ -694,6 +695,23 @@ void WorldSession::HandleInitiateTradeOpcode(WorldPacket& recvPacket)
     {
         SendTradeStatus(TRADE_STATUS_TARGET_TO_FAR);
         return;
+    }
+
+    if (!pOther->isGameMaster() && !_player->isGameMaster())
+    {
+        uint32 playedTimeRestriction = sWorld.getConfig(CONFIG_UINT32_PLAYED_TIME_BEFORE_TRADE) * MINUTE;
+        if (playedTimeRestriction && playedTimeRestriction > _player->GetTotalPlayedTime())
+        {
+            SendTradeStatus(TRADE_STATUS_TRIAL_ACCOUNT);
+            ChatHandler(this).PSendSysMessage(LANG_YOU_SHOULD_PLAY_FOR, secsToTimeString(playedTimeRestriction).c_str());
+            return;
+        }
+
+        if (playedTimeRestriction && playedTimeRestriction > pOther->GetTotalPlayedTime())
+        {
+            SendTradeStatus(TRADE_STATUS_TRIAL_ACCOUNT);
+            return;
+        }
     }
 
     // OK start trade

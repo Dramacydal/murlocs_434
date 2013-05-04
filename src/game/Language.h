@@ -1188,13 +1188,26 @@ enum MangosStrings
     LANG_MMR_RESET_FOR_TYPE             = 11134,
     LANG_YOUR_NXN_MMR                   = 11135,
 
-    LANG_PHASING_REPORT_STATUS          = 11136,
-    LANG_PHASING_NO_DEFINITIONS         = 11137,
-    LANG_PHASING_SUCCESS                = 11138,
-    LANG_PHASING_FAILED                 = 11139,
-    LANG_PHASING_LAST_PHASE             = 11140,
-    LANG_PHASING_LIST                   = 11141,
-    LANG_PHASING_PHASEMASK              = 11142,
+    LANG_BUGGED_QUEST_ADD_ERROR         = 11136,
+    LANG_BUGGED_QUEST_DELETE_ERROR      = 11137,
+    LANG_BUGGED_QUEST_ADDED             = 11138,
+    LANG_BUGGED_QUEST_DELETED           = 11139,
+    LANG_BUGGED_QUEST_NOT_FOUND         = 11140,
+    LANG_BUGGED_QUESTS_COMPLETED        = 11141,
+
+    LANG_YOU_SHOULD_PLAY_FOR            = 11142,
+
+    LANG_CANT_DO_THAT_WHILE_TEAM_FIGHTING = 11143,
+
+    LANG_ACTIVE_EVENTS                  = 11144,
+
+    LANG_PHASING_REPORT_STATUS          = 11145,
+    LANG_PHASING_NO_DEFINITIONS         = 11146,
+    LANG_PHASING_SUCCESS                = 11147,
+    LANG_PHASING_FAILED                 = 11148,
+    LANG_PHASING_LAST_PHASE             = 11149,
+    LANG_PHASING_LIST                   = 11150,
+    LANG_PHASING_PHASEMASK              = 11151,
 
     // Strand of the Ancients
     LANG_BG_SA_START_TWO_MINUTE                     = 20000,

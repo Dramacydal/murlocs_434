@@ -1114,6 +1114,10 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_UINT32_WINTERGRASP_STOP_TELEPORTING_TIME, "Wintergrasp.StopTeleportingTime", 60 * MINUTE * IN_MILLISECONDS);
 
     setConfig(CONFIG_BOOL_ALLOW_HONOR_KILLS_TITLES, "AllowHonorKillsTitles", false);
+
+    //- Player played time dependent restrictions
+    setConfig(CONFIG_UINT32_PLAYED_TIME_BEFORE_TRADE, "PlayedTime.Trade", 0);
+    setConfig(CONFIG_UINT32_PLAYED_TIME_BEFORE_LFG_SPEAK, "PlayedTime.LFG", 0);
 }
 
 /// Initialize the World
@@ -1532,6 +1536,9 @@ void World::SetInitialWorldSettings()
 
     sLog.outString("Loading custom area flags...");
     sObjectMgr.LoadCustomAreaFlags();
+
+    sLog.outString("Loading bugged quests that can be autocompleted...");
+    sObjectMgr.LoadBuggedQuests();
 
     sLog.outString("Loading hotfix data...");
     sObjectMgr.LoadHotfixData();

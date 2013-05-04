@@ -39,6 +39,8 @@
 #include "ArenaTeam.h"
 #include "Language.h"
 #include "SpellMgr.h"
+#include "Chat.h"
+#include "GameEventMgr.h"
 
 // config option SkipCinematics supported values
 enum CinematicsSkipMode
@@ -895,6 +897,18 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
 
     if (BattleGround* bg = pCurrChar->GetBattleGround())
         bg->HandlePlayerLogin(pCurrChar);
+
+    ChatHandler(this).SendSysMessage(LANG_ACTIVE_EVENTS);
+    GameEventMgr::GameEventDataMap const& events = sGameEventMgr.GetEventMap();
+    for (uint32 event_id = 0; event_id < events.size(); ++event_id)
+    {
+        if (!sGameEventMgr.IsValidEvent(event_id) || !sGameEventMgr.IsActiveEvent(event_id))
+            continue;
+
+        GameEventData const& eventData = events[event_id];
+
+        ChatHandler(this).PSendSysMessage("%u: %s", event_id, eventData.description.c_str());
+    }
 
     delete holder;
 }

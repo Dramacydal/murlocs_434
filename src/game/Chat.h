@@ -462,6 +462,11 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleQuestRemoveCommand(char* args);
         bool HandleQuestCompleteCommand(char* args);
 
+        bool HandleQuestAddBuggedCommand(char* args);
+        bool HandleQuestRemoveBuggedCommand(char* args);
+        bool HandleQuestCompleteBuggedCommand(char* args);
+        bool HandleQuestListBuggedCommand(char* args);
+
         bool HandleReloadAllCommand(char* args);
         bool HandleReloadAllAchievementCommand(char* args);
         bool HandleReloadAllAreaCommand(char* args);
@@ -484,6 +489,7 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleReloadAreaTriggerTavernCommand(char* args);
         bool HandleReloadAreaTriggerTeleportCommand(char* args);
         bool HandleReloadBattleEventCommand(char* args);
+        bool HandleReloadBuggedQuestsCommand(char* args);
         bool HandleReloadCommandCommand(char* args);
         bool HandleReloadConditionsCommand(char* args);
         bool HandleReloadCreatureQuestRelationsCommand(char* args);

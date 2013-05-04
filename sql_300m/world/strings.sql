@@ -352,3 +352,15 @@ INSERT INTO `mangos_string` (`entry`, `content_default`, `content_loc8`) VALUES
 (11133, 'You must leave %uv%u arena team before you can reset MMR for that bracket.', 'Вы должны покинуть команду арены %uv%u, перед тем как сбросить MMR для данного брекета.'),
 (11134, 'Your MMR for %uv%u bracket has been reset.', 'Ваш MMR брекета %uv%u был сброшен.'),
 (11135, 'Your %uv%u MMR: %u', 'Ваш %uv%u MMR: %u');
+
+DELETE FROM `mangos_string` WHERE `entry` = 11142;
+INSERT INTO `mangos_string` (`entry`, `content_default`, `content_loc8`) VALUE
+(11142, 'You should play for at least %s before you can use that function', 'Вы должны отыграть как минимум %s прежде чем сможете воспользоваться данной функцией');
+
+DELETE FROM `mangos_string` WHERE `entry` = 11143;
+INSERT INTO `mangos_string` (`entry`, `content_default`, `content_loc8`) VALUE
+(11143, 'You can''t do that while arena team is fighting.', 'Вы не можете сделать это, пока команда арены участвует в бою.');
+
+DELETE FROM `mangos_string` WHERE `entry` = 11144;
+INSERT INTO `mangos_string` (`entry`, `content_default`, `content_loc8`) VALUE
+(11144, 'Active events:', 'Активные праздники:');

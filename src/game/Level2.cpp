@@ -6447,3 +6447,29 @@ bool ChatHandler::HandleGroupInfoCommand(char* args)
 
     return true;
 }
+
+bool ChatHandler::HandleQuestListBuggedCommand(char* args)
+{
+    uint32 entry;
+    if (!ExtractUint32KeyFromLink(&args, "Hquest", entry))
+        entry = 0;
+
+    Player* target = getSelectedPlayer();
+    int loc_idx = GetSessionDbLocaleIndex();
+
+    BuggedQuestsMap& buggedQuests = sObjectMgr.GetBuggedQuests();
+    if (entry)
+    {
+        if (buggedQuests.find(entry) != buggedQuests.end())
+            ShowQuestListHelper(entry, loc_idx, target);
+        else
+            PSendSysMessage(LANG_BUGGED_QUEST_NOT_FOUND, entry);
+    }
+    else
+    {
+        for (BuggedQuestsMap::const_iterator itr = buggedQuests.begin(); itr != buggedQuests.end(); ++itr)
+            ShowQuestListHelper(itr->first, loc_idx, target);
+    }
+
+    return true;
+}
