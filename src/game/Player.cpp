@@ -22235,9 +22235,10 @@ void Player::SendInitialPacketsBeforeAddToMap()
 
     SendTalentsInfoData(false);
 
-    data.Initialize(SMSG_INSTANCE_DIFFICULTY, 4+4);
-    data << uint32(GetMap()->GetDifficulty());
-    GetSession()->SendPacket(&data);
+    // prevent spam at unhandled opcode
+    //data.Initialize(SMSG_INSTANCE_DIFFICULTY, 4+4);
+    //data << uint32(GetMap()->GetDifficulty());
+    //GetSession()->SendPacket(&data);
 
     SendInitialSpells();
 
@@ -24111,7 +24112,7 @@ bool Player::CanStartFlyInArea(uint32 mapid, uint32 zone, uint32 area) const
 
     // Disallow mounting in wintergrasp when battle is in progress
     if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(zone))
-        if (opvp->IsBattleField())
+        if (opvp->IsBattleField() && ((BattleField*)opvp)->GetBattlefieldId() == BATTLEFIELD_WG)
             return ((BattleField*)opvp)->GetState() != BF_STATE_IN_PROGRESS;
 
     // don't allow flying in Dalaran restricted areas
