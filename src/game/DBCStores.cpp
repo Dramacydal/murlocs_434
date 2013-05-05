@@ -1521,10 +1521,17 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectImplicitTargetA = TARGET_CURRENT_ENEMY_COORDINATES;
                 break;
             }
-            case 83582: // Pyromaniac
-            case 96206: // Nature's Bounty
+            case 83582:                         // Pyromaniac
+            case 96206:                         // Nature's Bounty
             {
                 spell->AttributesEx6 |= SPELL_ATTR_EX6_REMOVED_AT_SPEC_SWITCH;
+                break;
+            }
+            case 85547:                         // Jinx: Curse of the Elements
+            case 86105:                         // Jinx: Curse of the Elements
+            {
+                spell->AttributesEx |= SPELL_ATTR_EX_NOT_BREAK_STEALTH;
+                spell->AttributesEx3 |= SPELL_ATTR_EX3_NO_INITIAL_AGGRO;
                 break;
             }
             case 86150:                         // Guardian of Ancient Kings
