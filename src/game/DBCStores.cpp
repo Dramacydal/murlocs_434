@@ -964,6 +964,12 @@ void LoadDBCStores(const std::string& dataPath)
 
         switch (spell->Id)
         {
+            case 122:                           // Frost Nova
+            {
+                if (SpellInterruptsEntry* inter = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
+                    inter->AuraInterruptFlags |= 0x08000000; // AURA_INTERRUPT_FLAG_DAMAGE2
+                break;
+            }
             case 1776:                          // Gouge
             {
                 spell->Attributes &= ~SPELL_ATTR_UNK11;
