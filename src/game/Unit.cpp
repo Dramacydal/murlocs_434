@@ -7689,6 +7689,9 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
         }
         case SPELLFAMILY_WARLOCK:
         {
+            if (spellProto->GetTargetAuraState() == AURA_STATE_CONFLAGRATE)
+                return pdamage;
+
             // Drain Soul
             if (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000004000))
             {
