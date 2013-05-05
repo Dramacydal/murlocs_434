@@ -4003,14 +4003,14 @@ void Spell::prepare(SpellCastTargets const* targets, Aura* triggeredByAura)
     // without adding to cast type slot
     // will not show cast bar but will show effects at casting time etc
 
-    if (m_spellInfo->speed > 0.0f && GetCastTime())
-    {
-        Unit* procTarget = m_targets.getUnitTarget();
-        if (!procTarget)
-            procTarget = m_caster;
+    //if (m_spellInfo->speed > 0.0f && GetCastTime())
+    //{
+    //    Unit* procTarget = m_targets.getUnitTarget();
+    //    if (!procTarget)
+    //        procTarget = m_caster;
 
-        m_caster->ProcDamageAndSpell(procTarget, m_procAttacker, PROC_FLAG_NONE, PROC_EX_CAST_END, 0, 0, m_attackType, m_spellInfo);
-    }
+    //    m_caster->ProcDamageAndSpell(procTarget, m_procAttacker, PROC_FLAG_NONE, PROC_EX_CAST_END, 0, 0, m_attackType, m_spellInfo);
+    //}
 }
 
 void Spell::cancel()
@@ -4529,7 +4529,7 @@ void Spell::cast(bool skipCheck)
         // 0 damage since any damage based procs should be on hit
         // 0 victim proc since there is no victim proc dependent on successfull cast for caster
         // if m_casttime > 0  proc already made in prepare()
-        if (!GetCastTime())
+        //if (!GetCastTime())
             m_caster->ProcDamageAndSpell(procTarget, m_procAttacker, PROC_FLAG_NONE, PROC_EX_CAST_END, 0, 0, m_attackType, m_spellInfo);
     }
     else
