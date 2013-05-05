@@ -4405,6 +4405,22 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                         m_caster->CastSpell(unitTarget, 92827, true);   // Ritual of Refreshment (Rank 3)
                     return;
                 }
+                case 61316:                                 // Dalaran Brilliance
+                {
+                    Unit* target = unitTarget;
+                    if (!target)
+                        target = m_caster;
+
+                    uint32 spellId;
+                    if (m_caster->GetTypeId() != TYPEID_PLAYER || target->GetTypeId() != TYPEID_PLAYER
+                        || ((Player*)m_caster)->GetGroup() != ((Player*)target)->GetGroup())
+                        spellId = 79039;
+                    else
+                        spellId = 79038;
+
+                    m_caster->CastSpell(target, spellId, true);
+                    return;
+                }
                 case 82731:                                 // Flame Orb (summon)
                 {
                     m_caster->CastSpell(m_caster, 84765, true);         // Flame Orb
