@@ -200,8 +200,36 @@ void WorldSession::HandleMoveWorldportAckOpcode()
     }
 
     // mount allow check
-    if(!mEntry->IsMountAllowed())
+    if (!mEntry->IsMountAllowed())
         _player->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
+    else
+    {
+        // recheck mount capabilities at far teleport
+        Unit::AuraList const& mMountAuras = _player->GetAurasByType(SPELL_AURA_MOUNTED);
+        for (Unit::AuraList::const_iterator itr = mMountAuras.begin(); itr != mMountAuras.end(); )
+        {
+            Aura const* aura = *itr;
+
+            // mount is no longer suitable
+            MountCapabilityEntry const* entry = _player->GetMountCapability(aura->GetSpellEffect()->EffectMiscValueB);
+            if (!entry)
+            {
+                _player->RemoveAurasDueToSpell(aura->GetId());
+                itr = mMountAuras.begin();
+                continue;
+            }
+
+            // mount capability changed
+            if (entry->Id != aura->GetModifier()->m_amount)
+            {
+                const_cast<Aura*>(aura)->ApplyModifier(false, true);
+                const_cast<Aura*>(aura)->ChangeAmount(entry->Id);
+                const_cast<Aura*>(aura)->ApplyModifier(true, true);
+            }
+
+            ++itr;
+        }
+    }
 
     // honorless target
     if(GetPlayer()->pvpInfo.inHostileArea)
