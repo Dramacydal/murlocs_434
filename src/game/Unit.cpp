@@ -14718,6 +14718,9 @@ void Unit::RemoveRootsAndSnares(ShapeshiftForm form, SpellAuraHolder* except)
     Unit::AuraList const& slowingAuras = GetAurasByType(SPELL_AURA_MOD_DECREASE_SPEED);
     for (Unit::AuraList::const_iterator iter = slowingAuras.begin(); iter != slowingAuras.end(); ++iter)
     {
+        if ((*iter)->IsPositive())
+            continue;
+
         SpellEntry const* aurSpellInfo = (*iter)->GetSpellProto();
 
         uint32 aurMechMask = GetAllSpellMechanicMask(aurSpellInfo);
