@@ -835,7 +835,7 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                     }
 
                     m_caster->ModifyPower(POWER_RAGE, -rage);
-                    return;
+                    break;
                 }
                 break;
             }
