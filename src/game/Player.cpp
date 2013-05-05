@@ -7429,12 +7429,12 @@ void Player::UpdateArea(uint32 newArea)
             SetFFAPvP(false);
     }
 
-    if (area)
-    {
-        // Dalaran restricted flight zone
-        if ((area->flags & AREA_FLAG_CANNOT_FLY) && IsFreeFlying() && !isGameMaster() && !HasAura(58600))
-            CastSpell(this, 58600, true);                   // Restricted Flight Area
-    }
+    //if (area)
+    //{
+    //    // Dalaran restricted flight zone
+    //    if ((area->flags & AREA_FLAG_CANNOT_FLY) && IsFreeFlying() && !isGameMaster() && !HasAura(58600))
+    //        CastSpell(this, 58600, true);                   // Restricted Flight Area
+    //}
 
     sOutdoorPvPMgr.HandlePlayerLeaveArea(this, m_zoneUpdateId, m_areaUpdateId);
     sOutdoorPvPMgr.HandlePlayerEnterArea(this, m_zoneUpdateId, newArea);
@@ -24102,25 +24102,24 @@ bool Player::CanStartFlyInArea(uint32 mapid, uint32 zone, uint32 area) const
         return true;
     // continent checked in SpellMgr::GetSpellAllowedInLocationError at cast and area update
     uint32 v_map = GetVirtualMapForMapAndZone(mapid, zone);
+    OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(zone);
 
-    if (v_map == 571 && !HasSpell(54197))   // Cold Weather Flying
-        return false;
+    // switch all known flying maps
+    switch (v_map)
+    {
+        case 0:         // Eastern Kingdoms
+        case 1:         // Kalimdor
+        case 646:       // Deepholm
+            return HasSpell(90267);
+        case 571:       // Northrend
+            // Check Cold Weather Flying
+            // Disallow mounting in wintergrasp when battle is in progress
+            return HasSpell(54197) && (!opvp || !opvp->IsBattleField() || ((BattleField*)opvp)->GetState() != BF_STATE_IN_PROGRESS);
+        case 732:       // Tol Barad
+            return false;
+    }
 
-    // Eastern Kingdoms, Kalimdor and Deepholm require Flight Master's License
-    if ((v_map == 0 || v_map == 1 || v_map == 646) && !HasSpell(90267))
-        return false;
-
-    // Disallow mounting in wintergrasp when battle is in progress
-    if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(zone))
-        if (opvp->IsBattleField() && ((BattleField*)opvp)->GetBattlefieldId() == BATTLEFIELD_WG)
-            return ((BattleField*)opvp)->GetState() != BF_STATE_IN_PROGRESS;
-
-    // don't allow flying in Dalaran restricted areas
-    // (no other zones currently has areas with AREA_FLAG_CANNOT_FLY)
-    if (AreaTableEntry const* atEntry = GetAreaEntryByAreaID(area))
-        return (!(atEntry->flags & AREA_FLAG_CANNOT_FLY));
-
-    return true;
+    return false;
 }
 
 struct DoPlayerLearnSpell
