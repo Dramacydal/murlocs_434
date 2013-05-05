@@ -201,7 +201,10 @@ void WorldSession::HandleMoveWorldportAckOpcode()
 
     // mount allow check
     if (!mEntry->IsMountAllowed())
+    {
         _player->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
+        _player->RemoveSpellsCausingAura(SPELL_AURA_FLY);
+    }
     else
     {
         // recheck mount capabilities at far teleport
@@ -222,9 +225,29 @@ void WorldSession::HandleMoveWorldportAckOpcode()
             // mount capability changed
             if (entry->Id != aura->GetModifier()->m_amount)
             {
-                const_cast<Aura*>(aura)->ApplyModifier(false, true);
+                if (MountCapabilityEntry const* oldEntry = sMountCapabilityStore.LookupEntry(aura->GetModifier()->m_amount))
+                    _player->RemoveAurasDueToSpell(oldEntry->SpeedModSpell);
+
+                _player->CastSpell(_player, entry->SpeedModSpell, true);
+
                 const_cast<Aura*>(aura)->ChangeAmount(entry->Id);
-                const_cast<Aura*>(aura)->ApplyModifier(true, true);
+            }
+
+            ++itr;
+        }
+
+        uint32 zone, area;
+        _player->GetZoneAndAreaId(zone, area);
+        // recheck fly auras
+        Unit::AuraList const& mFlyAuras = _player->GetAurasByType(SPELL_AURA_FLY);
+        for (Unit::AuraList::const_iterator itr = mFlyAuras.begin(); itr != mFlyAuras.end(); )
+        {
+            Aura const* aura = *itr;
+            if (!_player->CanStartFlyInArea(_player->GetMapId(), zone, area))
+            {
+                _player->RemoveAurasDueToSpell(aura->GetId());
+                itr = mFlyAuras.begin();
+                continue;
             }
 
             ++itr;
