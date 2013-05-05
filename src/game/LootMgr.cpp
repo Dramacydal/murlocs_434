@@ -1075,7 +1075,7 @@ ByteBuffer& operator<<(ByteBuffer& b, LootView const& lv)
         if (slot_type >= MAX_LOOT_SLOT_TYPE)
             continue;
 
-        b << uint8(i) << l.items[i];
+        b << uint8(questItemsCount + i) << l.items[i];
         DEBUG_LOG("slot: %u item: %u l.items", i, l.items[i].itemid);
         b << uint8(slot_type);                              // 0 - get 1 - look only 2 - master selection
         ++itemsShown;
