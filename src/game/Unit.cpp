@@ -12216,7 +12216,9 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit * pTarget, uint32 procFlag,
                         // don't allow proc from cast end for non modifier spells
                         // unless they have proc ex defined for that
                         // Backdraft hack
-                        if (triggeredByHolder->GetId() != 54274 && triggeredByHolder->GetId() != 54276 && triggeredByHolder->GetId() != 54277)
+                        // Molten Core hack
+                        if (triggeredByHolder->GetId() != 54274 && triggeredByHolder->GetId() != 54276 && triggeredByHolder->GetId() != 54277 &&
+                            triggeredByHolder->GetId() != 47383 && triggeredByHolder->GetId() != 71162 && triggeredByHolder->GetId() != 71165)
                         {
                             if (IsCastEndProcModifierAura(triggeredByHolder->GetSpellProto(), SpellEffectIndex(i), procSpell))
                             {
