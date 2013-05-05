@@ -1543,6 +1543,11 @@ void LoadDBCStores(const std::string& dataPath)
                 }
                 break;
             }
+            case 97985:                         // Feral Swiftness Clear
+            {
+                spell->AttributesEx |= SPELL_ATTR_EX_NOT_BREAK_STEALTH;
+                break;
+            }
             case 99009:                         // Item - Druid T12 Feral 4P Bonus
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
