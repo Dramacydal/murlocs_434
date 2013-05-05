@@ -1001,8 +1001,12 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                 // Seed of Corruption detonate
                 else if (m_spellInfo->Id == 27285)
                 {
-                    if (m_currentBasePoints[EFFECT_INDEX_1])        // marked as affected by Soulburn
-                        m_caster->CastSpell(unitTarget, 172, true); // cast Corruption
+                    if (Unit* caster = GetAffectiveCaster())
+                        if (caster->soulburnMarker)           // marked as affected by Soulburn
+                        {
+                            caster->m_nextCustomSpellData.SetFlag(CUSTOM_SPELL_FLAG_NO_COST);
+                            caster->CastSpell(unitTarget, 172, true);   // cast Corruption
+                        }
                 }
                 // Shadow Cleave
                 else if (m_spellInfo->Id == 50581)
