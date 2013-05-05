@@ -6260,12 +6260,12 @@ SpellCastResult Spell::CheckCast(bool strict)
 
     SpellAuraRestrictionsEntry const* auraRestrictions = m_spellInfo->GetSpellAuraRestrictions();
 
-    if (auraRestrictions && auraRestrictions->excludeCasterAuraSpell)
-    {
-        if (auraRestrictions->excludeCasterAuraSpell == 79636 ||    // No Feather Fall
-            auraRestrictions->excludeCasterAuraSpell == 96223)      // Run Speed Marker
-            AddTriggeredSpell(auraRestrictions->excludeCasterAuraSpell);
-    }
+    //if (auraRestrictions && auraRestrictions->excludeCasterAuraSpell)
+    //{
+    //    if (auraRestrictions->excludeCasterAuraSpell == 79636 ||    // No Feather Fall
+    //        auraRestrictions->excludeCasterAuraSpell == 96223)      // Run Speed Marker
+    //        AddTriggeredSpell(auraRestrictions->excludeCasterAuraSpell);
+    //}
 
     // caster state requirements
     if (auraRestrictions && auraRestrictions->CasterAuraState && !m_caster->HasAuraState(AuraState(auraRestrictions->CasterAuraState)))
