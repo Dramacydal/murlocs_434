@@ -26743,7 +26743,7 @@ void Player::SendItemRefundResult(Item* item, uint32 result)
     {
         for (uint8 i = 0; i < MAX_EXTENDED_COST_CURRENCIES; ++i)
         {
-            data << uint32(iece->reqcurrcount[i]);
+            data << uint32(iece->reqcurrcount[i] / GetCurrencyPrecision(iece->reqcur[i]));
             data << uint32(iece->reqcur[i]);
         }
         data << uint32(item->GetPaidMoney());
