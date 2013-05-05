@@ -1051,7 +1051,7 @@ bool Aura::CanProcFrom(SpellEntry const *spell, uint32 /*procFlag*/, uint32 Even
         // note: SpellFamilyName is not checked if no spell_proc_event is defined
         SpellClassOptionsEntry const* classOpt = spell->GetSpellClassOptions();
         if (!classOpt)
-            return true;
+            return false;
 
         return mask.IsFitToFamilyMask(classOpt->SpellFamilyFlags);
     }
@@ -3413,14 +3413,14 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             }
             case 58600:                                     // Restricted Flight Area
             {
-                AreaTableEntry const* area = GetAreaEntryByAreaID(target->GetAreaId());
+                //AreaTableEntry const* area = GetAreaEntryByAreaID(target->GetAreaId());
 
                 // Dalaran restricted flight zone (recheck before apply unmount)
-                if (area && target->GetTypeId() == TYPEID_PLAYER && (area->flags & AREA_FLAG_CANNOT_FLY) &&
-                    ((Player*)target)->IsFreeFlying() && !((Player*)target)->isGameMaster())
-                {
-                    target->CastSpell(target, 58601, true); // Remove Flight Auras (also triggered Parachute (45472))
-                }
+                //if (area && target->GetTypeId() == TYPEID_PLAYER && (area->flags & AREA_FLAG_CANNOT_FLY) &&
+                //    ((Player*)target)->IsFreeFlying() && !((Player*)target)->isGameMaster())
+                //{
+                //    target->CastSpell(target, 58601, true); // Remove Flight Auras (also triggered Parachute (45472))
+                //}
                 return;
             }
             case 91604:                                     //  Restricted Flight Area
