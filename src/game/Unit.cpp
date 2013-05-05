@@ -7712,7 +7712,7 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
 
             if (pVictim->HasAuraState(AURA_STATE_CONFLAGRATE))
             {
-                // Incinerate Rank 1, 2, 3, 4
+                // Incinerate
                 if ((classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x00004000000000)) && spellProto->SpellIconID == 2128)
                 {
                     // Incinerate does more dmg (dmg/6) if the target have Immolate debuff.
@@ -7739,9 +7739,6 @@ uint32 Unit::SpellDamageBonusDone(Unit *pVictim, SpellEntry const *spellProto, u
                     }
                 }
             }
-
-            if (spellProto->GetTargetAuraState() == AURA_STATE_CONFLAGRATE)
-                return pdamage;
 
             // Drain Life
             if ((spellProto->Id == 689 || spellProto->Id == 89420) && GetHealthPercent() < 25.0f)
