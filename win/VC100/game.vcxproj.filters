@@ -189,6 +189,9 @@
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundBG.cpp" />
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundTP.cpp" />
     <ClCompile Include="..\..\src\game\VoidStorageHandler.cpp" />
+    <ClCompile Include="..\..\src\game\vmap\DynamicTree.cpp" />
+    <ClCompile Include="..\..\src\game\vmap\GameObjectModel.cpp" />
+    <ClCompile Include="..\..\src\game\PhaseMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\AccountMgr.h" />
@@ -376,5 +379,10 @@
     <ClInclude Include="..\..\src\game\BattleField\BattleFieldWG.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundBG.h" />
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundTP.h" />
+    <ClInclude Include="..\..\src\game\vmap\BIHWrap.h" />
+    <ClInclude Include="..\..\src\game\vmap\DynamicTree.h" />
+    <ClInclude Include="..\..\src\game\vmap\GameObjectModel.h" />
+    <ClInclude Include="..\..\src\game\vmap\RegularGrid.h" />
+    <ClInclude Include="..\..\src\game\PhaseMgr.h" />
   </ItemGroup>
 </Project>
