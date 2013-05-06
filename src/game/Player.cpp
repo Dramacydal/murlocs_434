@@ -24114,6 +24114,8 @@ bool Player::CanStartFlyInArea(uint32 mapid, uint32 zone, uint32 area) const
         case 1:         // Kalimdor
         case 646:       // Deepholm
             return HasSpell(90267);
+        case 530:       // Outland
+            return true;
         case 571:       // Northrend
             // Check Cold Weather Flying
             // Disallow mounting in wintergrasp when battle is in progress
