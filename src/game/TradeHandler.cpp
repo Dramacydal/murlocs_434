@@ -90,7 +90,7 @@ void WorldSession::HandleBusyTradeOpcode(WorldPacket& /*recvPacket*/)
     // recvPacket.print_storage();
 }
 
-void WorldSession::SendUpdateTrade(bool trader_state /*= true*/)
+void WorldSession::SendUpdateTrade(bool trader_state /*= true*/, bool spellOnly /*=false*/)
 {
     TradeData* view_trade = trader_state ? _player->GetTradeData()->GetTraderData() : _player->GetTradeData();
 
@@ -105,7 +105,7 @@ void WorldSession::SendUpdateTrade(bool trader_state /*= true*/)
     data << uint32(TRADE_SLOT_COUNT);                       // trade slots count/number?
 
     uint8 itemCount = 0;
-    for (uint8 i = 0; i < TRADE_SLOT_COUNT; ++i)
+    for (uint8 i = 0; i < TRADE_SLOT_COUNT && !spellOnly; ++i)
         if (Item* item = view_trade->GetItem(TradeSlots(i)))
             ++itemCount;
 

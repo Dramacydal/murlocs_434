@@ -7759,8 +7759,7 @@ SpellCastResult Spell::CheckCast(bool strict)
         {
             // Spell will be casted at completing the trade. Silently ignore at this place
             my_trade->SetSpell(m_spellInfo->Id, m_CastItem);
-            finish(false);
-            return SPELL_CAST_OK;
+            return SPELL_FAILED_DONT_REPORT;
         }
     }
 
