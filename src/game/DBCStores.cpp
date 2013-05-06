@@ -965,6 +965,7 @@ void LoadDBCStores(const std::string& dataPath)
         switch (spell->Id)
         {
             case 122:                           // Frost Nova
+            case 8122:                          // Psychic Scream
             {
                 if (SpellInterruptsEntry* inter = (SpellInterruptsEntry*)spell->GetSpellInterrupts())
                     inter->AuraInterruptFlags |= 0x08000000; // AURA_INTERRUPT_FLAG_DAMAGE2
