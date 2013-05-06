@@ -24087,10 +24087,13 @@ uint32 Player::CalculateTalentsPoints() const
     if (talentPointsForLevel > baseForLevel)
         talentPointsForLevel = baseForLevel;
 
-    if (getClass() == CLASS_DEATH_KNIGHT)
+    if (getClass() == CLASS_DEATH_KNIGHT && getLevel() == sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL))
     {
-        if (getLevel() == 80 && talentPointsForLevel < 71 || talentPointsForLevel > 71)
-            talentPointsForLevel = 71;
+        if (NumTalentsAtLevelEntry const* maxLevelEntry = sNumTalentsAtLevelStore.LookupEntry(getLevel()))
+        {
+            if (talentPointsForLevel < maxLevelEntry->Talents)
+                talentPointsForLevel = maxLevelEntry->Talents;
+        }
     }
 
     return uint32(talentPointsForLevel * sWorld.getConfig(CONFIG_FLOAT_RATE_TALENT));
