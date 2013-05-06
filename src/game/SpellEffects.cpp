@@ -982,7 +982,7 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                     if (Aura* aura = im->GetAuraByEffectIndex(EFFECT_INDEX_2))
                     {
                         damage += int32(aura->GetModifier()->m_amount * aura->GetAuraMaxTicks() * m_spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) / 100.0f);
-                        damage = unitTarget->SpellDamageBonusTaken(this, im->GetSpellProto(), damage, DOT);
+                        damage = unitTarget->SpellDamageBonusTaken(m_caster, im->GetSpellProto(), damage, DOT);
                         break;
                     }
                 }
