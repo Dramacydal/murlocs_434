@@ -632,22 +632,26 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
     LoadAccountData(holder->GetResult(PLAYER_LOGIN_QUERY_LOADACCOUNTDATA),PER_CHARACTER_CACHE_MASK);
     SendAccountDataTimes(PER_CHARACTER_CACHE_MASK);
 
+    bool sessionTimeAlert = false;
     data.Initialize(SMSG_FEATURE_SYSTEM_STATUS, 34);        // added in 2.2.0
-    data << uint8(2);                                       // status
-    data << uint32(1);                                      // Scrolls of Ressurection?
+    data << uint8(2);                                       // Complain System Status
+    data << uint32(1);                                      // Scrolls of Ressurection remaining
     data << uint32(1);
     data << uint32(2);
     data << uint32(0);
     data.WriteBit(true);
     data.WriteBit(true);
     data.WriteBit(false);
-    data.WriteBit(true);
-    data.WriteBit(false);
-    data.WriteBit(false);                                   // enable(1)/disable(0) voice chat interface in client
-    data << uint32(1);
-    data << uint32(0);
-    data << uint32(10);
-    data << uint32(60);
+    data.WriteBit(false);                                   // Session Time Alert
+    data.WriteBit(false);                                   // GMQuickTicketSystemEnabled
+    data.WriteBit(false);                                   // IsVoiceChatAllowedByServer
+    if (sessionTimeAlert)
+    {
+        data << uint32(1);
+        data << uint32(0);
+        data << uint32(10);
+        data << uint32(60);
+    }
     SendPacket(&data);
 
     // Send MOTD
