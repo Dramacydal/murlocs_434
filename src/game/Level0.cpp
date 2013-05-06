@@ -1141,14 +1141,14 @@ bool ChatHandler::HandleDkStartCommand(char* args)
     }
 
     uint32 talcount = pl->CalculateTalentsPoints();
-
-    if (pl->getLevel() != 80)
+    NumTalentsAtLevelEntry const* entry = sNumTalentsAtLevelStore.LookupEntry(pl->getLevel());
+    if (!entry)
     {
-        PSendSysMessage("You must reach level 80 to use this command.");
+        PSendSysMessage("Internal error.");
         return true;
     }
 
-    if (talcount == 71)
+    if (talcount == entry->Talents)
     {
         PSendSysMessage("All quests are already completed.");
         return true;
