@@ -233,6 +233,7 @@
     <ClCompile Include="..\scripts\custom\npc_druid_summons.cpp" />
     <ClCompile Include="..\scripts\custom\npc_mage_summons.cpp" />
     <ClCompile Include="..\scripts\custom\npc_paladin_summons.cpp" />
+    <ClCompile Include="..\scripts\custom\npc_priest_summons.cpp" />
     <ClCompile Include="..\scripts\custom\npc_warlock_summons.cpp" />
     <ClCompile Include="..\scripts\custom\teleguy.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\alterac_mountains.cpp" />
