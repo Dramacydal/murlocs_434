@@ -1464,7 +1464,7 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
         data->WriteGuidMask<2>(memberGuid);
         data->WriteBit(!bg->isArena());
         data->WriteBit(0);                  // unk4
-        data->WriteBit(0);                  // unk5
+        data->WriteBit(bg->isRated());      // unk5
         data->WriteBit(0);                  // unk6
         data->WriteGuidMask<3, 0, 5, 1, 6>(memberGuid);
         Team team = bg->GetPlayerTeam(itr->first);
@@ -1485,7 +1485,9 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
 
         buffer.WriteGuidBytes<4>(memberGuid);
         buffer << uint32(itr->second->KillingBlows);
-        // if (unk5) << uint32() unk
+        if (bg->isRated())
+            buffer << int32(bg->GetArenaTeamRatingChangeForTeam(team));
+
         buffer.WriteGuidBytes<5>(memberGuid);
         // if (unk6) << uint32() unk
         // if (unk2) << uint32() unk
@@ -1496,7 +1498,7 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
         else
             buffer << uint32(0);
 
-        switch (bg->GetTypeID())                            // battleground specific things
+        switch (bg->GetTypeID(true))                        // battleground specific things
         {
             case BATTLEGROUND_AV:
                 data->WriteBits(5, 24);                     // count of next fields
@@ -1568,12 +1570,9 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
     {
         for (int8 i = 0; i < PVP_TEAM_COUNT; ++i)
         {
-            uint32 pointsLost = bg->m_ArenaTeamRatingChanges[i] < 0 ? abs(bg->m_ArenaTeamRatingChanges[i]) : 0;
-            uint32 pointsGained = bg->m_ArenaTeamRatingChanges[i] > 0 ? bg->m_ArenaTeamRatingChanges[i] : 0;
-
-            *data << uint32(bg->GetArenaMatchmakerRatingByIndex(i)); // Matchmaking Value
-            *data << uint32(pointsLost);                    // Rating Lost
-            *data << uint32(pointsGained);                  // Rating gained
+            *data << uint32(bg->GetArenaMatchmakerRatingByIndex(i));    // Matchmaking Value
+            *data << uint32(0);                                         // Rating Lost
+            *data << uint32(0);                                         // Rating gained
             DEBUG_LOG("rating change: %d", bg->m_ArenaTeamRatingChanges[i]);
         }
     }
