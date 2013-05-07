@@ -206,7 +206,7 @@ void BattleFieldWG::FillInitialWorldStates(WorldPacket& data, uint32& count, Pla
     FillInitialWorldState(data, count, WG_WS_ALLIANCE_DEFENDER, m_defender == TEAM_INDEX_ALLIANCE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
     FillInitialWorldState(data, count, WG_WS_HORDE_DEFENDER, m_defender == TEAM_INDEX_HORDE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
 
-    FillInitialWorldState(data, count, WGClockWorldState[0], uint32(time(NULL) + m_timer / 1000));
+    FillInitialWorldState(data, count, WGClockWorldState[0], m_state == BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
 
     FillInitialWorldState(data, count, WG_WS_VEHICLE_A, uint32(m_vehicleGUIDs[0].size()));
     FillInitialWorldState(data, count, WG_WS_MAX_VEHICLE_A, GetWorkshopsOwnedBy(TEAM_INDEX_ALLIANCE) * 4);
@@ -236,7 +236,7 @@ void BattleFieldWG::SendUpdateWorldStatesTo(Player* player)
     player->SendUpdateWorldState(WG_WS_ALLIANCE_DEFENDER, m_defender == TEAM_INDEX_ALLIANCE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
     player->SendUpdateWorldState(WG_WS_HORDE_DEFENDER, m_defender == TEAM_INDEX_HORDE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
 
-    player->SendUpdateWorldState(WGClockWorldState[0], uint32(time(NULL) + m_timer / 1000));
+    player->SendUpdateWorldState(WGClockWorldState[0], m_state == BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
 
     player->SendUpdateWorldState(WG_WS_VEHICLE_A, uint32(m_vehicleGUIDs[0].size()));
     player->SendUpdateWorldState(WG_WS_MAX_VEHICLE_A, GetWorkshopsOwnedBy(TEAM_INDEX_ALLIANCE) * 4);
@@ -1008,7 +1008,7 @@ bool BattleFieldWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvo
 
                     if (m_timer > 0)
                     {
-                        SendUpdateWorldState(WGClockWorldState[0], uint32(time(NULL) + m_timer / 1000));
+                        SendUpdateWorldState(WGClockWorldState[0], m_state == BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
                         SendUpdateWorldState(WGClockWorldState[1], uint32(time(NULL) + m_timer / 1000));
                         sWorld.SendUpdateWintergraspTimerWorldState(this);
                     }
