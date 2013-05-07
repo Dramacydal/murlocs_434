@@ -11146,17 +11146,19 @@ void SpellAuraHolder::_AddSpellAuraHolder()
         if (m_auras[i] && IsAuraApplyEffect(m_spellProto, SpellEffectIndex(i)))
         {
             flags |= (1 << i);
+            if (m_auras[i]->GetModifier()->m_amount)
+                flags |= AFLAG_EFFECT_AMOUNT_SEND;
 
-            switch (m_auras[i]->GetModifier()->m_auraname)
-            {
-                case SPELL_AURA_SCHOOL_ABSORB:
-                case SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS:
-                case SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS_2:
-                    flags |= AFLAG_EFFECT_AMOUNT_SEND;
-                    break;
-                default:
-                    break;
-            }
+            //switch (m_auras[i]->GetModifier()->m_auraname)
+            //{
+            //    case SPELL_AURA_SCHOOL_ABSORB:
+            //    case SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS:
+            //    case SPELL_AURA_OVERRIDE_ACTIONBAR_SPELLS_2:
+            //        flags |= AFLAG_EFFECT_AMOUNT_SEND;
+            //        break;
+            //    default:
+            //        break;
+            //}
         }
     }
 
@@ -11171,9 +11173,9 @@ void SpellAuraHolder::_AddSpellAuraHolder()
     else
         flags |= AFLAG_NEGATIVE;
 
-    if (m_spellProto->HasAttribute(SPELL_ATTR_EX8_AURA_SENDS_AMOUNT) &&
-        (flags & (AFLAG_EFF_INDEX_0 | AFLAG_EFF_INDEX_1 | AFLAG_EFF_INDEX_2)))
-        flags |= AFLAG_EFFECT_AMOUNT_SEND;
+    //if (m_spellProto->HasAttribute(SPELL_ATTR_EX8_AURA_SENDS_AMOUNT) &&
+    //    (flags & (AFLAG_EFF_INDEX_0 | AFLAG_EFF_INDEX_1 | AFLAG_EFF_INDEX_2)))
+    //    flags |= AFLAG_EFFECT_AMOUNT_SEND;
 
     SetAuraFlags(flags);
 
@@ -11577,6 +11579,18 @@ void SpellAuraHolder::BuildUpdatePacket(WorldPacket& data) const
     data << uint32(GetId());
 
     uint8 auraFlags = GetAuraFlags();
+    // recheck effect amount
+    if ((auraFlags & AFLAG_EFFECT_AMOUNT_SEND) == 0)
+    {
+        for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+            if (Aura const* aura = m_auras[i])
+                if ((auraFlags & (1 << i)) && aura->GetModifier()->m_amount)
+                {
+                    auraFlags |= AFLAG_EFFECT_AMOUNT_SEND;
+                    break;
+                }
+    }
+
     data << uint16(auraFlags);
     data << uint8(GetAuraLevel());
 

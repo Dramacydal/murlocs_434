@@ -693,6 +693,10 @@ enum MovementFlags
     MOVEFLAG_SAFE_FALL          = 0x08000000,               // active rogue safe fall spell (passive)
     MOVEFLAG_HOVER              = 0x10000000,
     MOVEFLAG_LOCAL_DIRTY        = 0x20000000,
+
+    MOVEFLAG_MASK_CREATURE_ALLOWED =
+        MOVEFLAG_FORWARD | MOVEFLAG_LEVITATING | MOVEFLAG_ROOT | MOVEFLAG_SWIMMING |
+        MOVEFLAG_CAN_FLY | MOVEFLAG_WATERWALKING | MOVEFLAG_SAFE_FALL | MOVEFLAG_HOVER,
 };
 
 // flags that use in movement check for example at spell casting
