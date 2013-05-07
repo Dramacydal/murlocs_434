@@ -21,13 +21,14 @@
 
 #include "Platform/Define.h"
 #include "Utilities/ByteConverter.h"
+#include "Common.h"
 #include <cassert>
 
 class DB2FileLoader
 {
     public:
-    DB2FileLoader();
-    ~DB2FileLoader();
+        DB2FileLoader();
+        ~DB2FileLoader();
 
     bool Load(const char *filename, const char *fmt);
 
@@ -68,6 +69,7 @@ class DB2FileLoader
         DB2FileLoader &file;
 
         friend class DB2FileLoader;
+
     };
 
     // Get record by id
@@ -77,7 +79,6 @@ class DB2FileLoader
     uint32 GetNumRows() const { return recordCount;}
     uint32 GetCols() const { return fieldCount; }
     uint32 GetOffset(size_t id) const { return (fieldsOffset != NULL && id < fieldCount) ? fieldsOffset[id] : 0; }
-    uint32 GetHash() const { return tableHash; }
     bool IsLoaded() const { return (data != NULL); }
     char* AutoProduceData(const char* fmt, uint32& count, char**& indexTable);
     char* AutoProduceStringsArrayHolders(const char* fmt, char* dataTable);
@@ -99,8 +100,8 @@ private:
     uint32 build;        // WDB2
 
     int unk1;            // WDB2 (Unix time in WCH2)
-    int minIndex;        // WDB2
-    int maxIndex;        // WDB2 (index table)
+    int unk2;            // WDB2
+    int unk3;            // WDB2 (index table)
     int locale;          // WDB2
     int unk5;            // WDB2
 };

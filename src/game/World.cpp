@@ -1543,9 +1543,6 @@ void World::SetInitialWorldSettings()
     sLog.outString("Loading hotfix data...");
     sObjectMgr.LoadHotfixData();
 
-    sLog.outString("Loading missing KeyChains...");
-    sObjectMgr.LoadMissingKeyChains();
-
     sLog.outString("Loading disabled spells...");
     sObjectMgr.LoadDisabledSpells();
 

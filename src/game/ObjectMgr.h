@@ -37,7 +37,6 @@
 #include "ObjectGuid.h"
 #include "Policies/Singleton.h"
 #include "Vehicle.h"
-#include "DB2Stores.h"
 
 #include <string>
 #include <map>
@@ -1261,8 +1260,6 @@ class ObjectMgr
 
             return ret ? ret : time(NULL);
         }
-
-        void LoadMissingKeyChains();
 
         void LoadPhaseDefinitions();
         void LoadSpellPhaseInfo();

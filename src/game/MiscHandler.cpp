@@ -41,7 +41,6 @@
 #include "OutdoorPvP/OutdoorPvP.h"
 #include "BattleField/BattleFieldWG.h"
 #include "Guild.h"
-#include "DB2Stores.h"
 
 #include "Pet.h"
 #include "SocialMgr.h"
@@ -1870,14 +1869,6 @@ void WorldSession::HandleRequestHotfix(WorldPacket& recv_data)
     uint32 type, count;
     recv_data >> type;
 
-    DB2StorageBase const* store = GetDB2Storage(type);
-    if (!store)
-    {
-        sLog.outError("CMSG_REQUEST_HOTFIX: Received unknown hotfix type: %u", type);
-        recv_data.rfinish();
-        return;
-    }
-
     count = recv_data.ReadBits(23);
 
     std::vector<ObjectGuid> guids;
@@ -1893,28 +1884,19 @@ void WorldSession::HandleRequestHotfix(WorldPacket& recv_data)
         recv_data >> entry;
         recv_data.ReadGuidBytes<2>(guids[i]);
 
-        if (!store->HasRecord(entry))
+        switch (type)
         {
-            WorldPacket data(SMSG_DB_REPLY, 4 * 4);
-            data << -int32(entry);
-            data << uint32(store->GetHash());
-            data << uint32(time(NULL));
-            data << uint32(0);
-            SendPacket(&data);
-            continue;
+            case DB2_REPLY_ITEM:
+                SendItemDb2Reply(entry);
+                break;
+            case DB2_REPLY_SPARSE:
+                SendItemSparseDb2Reply(entry);
+                break;
+            default:
+                sLog.outError("CMSG_REQUEST_HOTFIX: Received unknown hotfix type: %u", type);
+                recv_data.rfinish();
+                break;
         }
-
-        WorldPacket data(SMSG_DB_REPLY);
-        data << int32(entry);
-        data << uint32(store->GetHash());
-        data << uint32(sObjectMgr.GetHotfixDate(entry, store->GetHash()));
-
-        size_t sizePos = data.wpos();
-        data << uint32(0);              // size of next block
-        store->WriteRecord(entry, uint32(GetSessionDbcLocale()), data);
-        data.put<uint32>(sizePos, data.wpos() - sizePos - 4);
-
-        SendPacket(&data);
     }
 }
 

@@ -19,10 +19,8 @@
 #ifndef MANGOS_DB2SFRM_H
 #define MANGOS_DB2SFRM_H
 
-char const Itemfmt[]="niiiiiii";
-char const ItemCurrencyCostfmt[]="di";
-char const ItemExtendedCostEntryfmt[]="nxxiiiiiiiiiiiixiiiiiiiiiixxixx";
-char const ItemSparsefmt[]="niiiffiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiifiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiisssssiiiiiiiiiiiiiiiiiiiiiifiiifii";
-char const KeyChainfmt[]="nbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+const char Itemfmt[]="niiiiiii";
+const char ItemCurrencyCostfmt[]="di";
+const char ItemExtendedCostEntryfmt[]="nxxiiiiiiiiiiiixiiiiiiiiiixxixx";
 
 #endif
