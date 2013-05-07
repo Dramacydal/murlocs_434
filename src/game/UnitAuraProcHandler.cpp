@@ -6015,7 +6015,7 @@ SpellAuraProcResult Unit::HandleAddFlatModifierAuraProc(Unit* pVictim, uint32 /*
                     pVictim->GetHealthPercent() > 25.0f)
                     return SPELL_AURA_PROC_FAILED;
 
-                CastSpell(this, 92931, true);
+                CastSpell(pVictim, 92931, true);
                 return SPELL_AURA_PROC_OK;
             }
             break;
