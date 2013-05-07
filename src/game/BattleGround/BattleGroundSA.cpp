@@ -626,7 +626,7 @@ void BattleGroundSA::EventPlayerDamageGO(Player* player, GameObject* target_obj,
                     SendWarningToAll(LANG_BG_SA_GATE_ROOM_ANCIENT_SHRINE_DESTROYED);
                     UpdateWorldState(BG_SA_GateStatusWS[type], m_GateStatus[type] = BG_SA_GATE_STATUS_DESTROYED);
                     UpdatePlayerScore(player, SCORE_GATES_DESTROYED, 1);
-                    RewardHonorToTeam(BG_SA_XP_RELIC_GATE_DESTROYED, teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
+                    RewardHonorToTeam(GetBonusHonorFromKill(BG_SA_XP_RELIC_GATE_DESTROYED), teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
                     PlaySoundToAll(teamIndex == TEAM_INDEX_ALLIANCE ? BG_SA_SOUND_WALL_DESTROYED_ALLIANCE : BG_SA_SOUND_WALL_DESTROYED_HORDE);
                     m_relicGateDestroyed = true;
                     break;
@@ -653,7 +653,7 @@ void BattleGroundSA::EventPlayerDamageGO(Player* player, GameObject* target_obj,
                     SendWarningToAll(LANG_BG_SA_GATE_GREEN_EMERALD_DESTROYED);
                     UpdateWorldState(BG_SA_GateStatusWS[type], m_GateStatus[type] = BG_SA_GATE_STATUS_DESTROYED);
                     UpdatePlayerScore(player, SCORE_GATES_DESTROYED, 1);
-                    RewardHonorToTeam(BG_SA_XP_GATE_DESTROYED, teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
+                    RewardHonorToTeam(GetBonusHonorFromKill(BG_SA_XP_GATE_DESTROYED), teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
                     SpawnEvent(SA_EVENT_ADD_BOMB_GREEN, 0, true, GetDefender() == ALLIANCE ? VEHICLE_FACTION_HORDE : VEHICLE_FACTION_ALLIANCE);
                     PlaySoundToAll(teamIndex == TEAM_INDEX_ALLIANCE ? BG_SA_SOUND_WALL_DESTROYED_ALLIANCE : BG_SA_SOUND_WALL_DESTROYED_HORDE);
                     SpawnEvent(SA_EVENT_ADD_SIGIL_GREEN, 0, false);
@@ -681,7 +681,7 @@ void BattleGroundSA::EventPlayerDamageGO(Player* player, GameObject* target_obj,
                     SendWarningToAll(LANG_BG_SA_GATE_BLUE_SAPHIRE_DESTROYED);
                     UpdateWorldState(BG_SA_GateStatusWS[type], m_GateStatus[type] = BG_SA_GATE_STATUS_DESTROYED);
                     UpdatePlayerScore(player, SCORE_GATES_DESTROYED, 1);
-                    RewardHonorToTeam(BG_SA_XP_GATE_DESTROYED, teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
+                    RewardHonorToTeam(GetBonusHonorFromKill(BG_SA_XP_GATE_DESTROYED), teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
                     SpawnEvent(SA_EVENT_ADD_BOMB_BLUE, 0, true, GetDefender() == ALLIANCE ? VEHICLE_FACTION_HORDE : VEHICLE_FACTION_ALLIANCE);
                     PlaySoundToAll(teamIndex == TEAM_INDEX_ALLIANCE ? BG_SA_SOUND_WALL_DESTROYED_ALLIANCE : BG_SA_SOUND_WALL_DESTROYED_HORDE);
                     SpawnEvent(SA_EVENT_ADD_SIGIL_BLUE, 0, false);
@@ -709,7 +709,7 @@ void BattleGroundSA::EventPlayerDamageGO(Player* player, GameObject* target_obj,
                     SendWarningToAll(LANG_BG_SA_GATE_PURPLE_AMETHYST_DESTROYED);
                     UpdateWorldState(BG_SA_GateStatusWS[type], m_GateStatus[type] = BG_SA_GATE_STATUS_DESTROYED);
                     UpdatePlayerScore(player, SCORE_GATES_DESTROYED, 1);
-                    RewardHonorToTeam(BG_SA_XP_GATE_DESTROYED, teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
+                    RewardHonorToTeam(GetBonusHonorFromKill(BG_SA_XP_GATE_DESTROYED), teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
                     SpawnEvent(SA_EVENT_ADD_BOMB_PURPLE, 0, true, GetDefender() == ALLIANCE ? VEHICLE_FACTION_HORDE : VEHICLE_FACTION_ALLIANCE);
                     PlaySoundToAll(teamIndex == TEAM_INDEX_ALLIANCE ? BG_SA_SOUND_WALL_DESTROYED_ALLIANCE : BG_SA_SOUND_WALL_DESTROYED_HORDE);
                     SpawnEvent(SA_EVENT_ADD_SIGIL_PURPLE, 0, false);
@@ -737,7 +737,7 @@ void BattleGroundSA::EventPlayerDamageGO(Player* player, GameObject* target_obj,
                     SendWarningToAll(LANG_BG_SA_GATE_RED_SUN_DESTROYED);
                     UpdateWorldState(BG_SA_GateStatusWS[type], m_GateStatus[type] = BG_SA_GATE_STATUS_DESTROYED);
                     UpdatePlayerScore(player, SCORE_GATES_DESTROYED, 1);
-                    RewardHonorToTeam(BG_SA_XP_GATE_DESTROYED, teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
+                    RewardHonorToTeam(GetBonusHonorFromKill(BG_SA_XP_GATE_DESTROYED), teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
                     SpawnEvent(SA_EVENT_ADD_BOMB_RED, 0, true, GetDefender() == ALLIANCE ? VEHICLE_FACTION_HORDE : VEHICLE_FACTION_ALLIANCE);
                     PlaySoundToAll(teamIndex == TEAM_INDEX_ALLIANCE ? BG_SA_SOUND_WALL_DESTROYED_ALLIANCE : BG_SA_SOUND_WALL_DESTROYED_HORDE);
                     SpawnEvent(SA_EVENT_ADD_SIGIL_RED, 0, false);
@@ -765,7 +765,7 @@ void BattleGroundSA::EventPlayerDamageGO(Player* player, GameObject* target_obj,
                     SendWarningToAll(LANG_BG_SA_GATE_YELLOW_MOON_DESTROYED);
                     UpdateWorldState(BG_SA_GateStatusWS[type], m_GateStatus[type] = BG_SA_GATE_STATUS_DESTROYED);
                     UpdatePlayerScore(player, SCORE_GATES_DESTROYED, 1);
-                    RewardHonorToTeam(BG_SA_XP_GATE_DESTROYED, teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
+                    RewardHonorToTeam(GetBonusHonorFromKill(BG_SA_XP_GATE_DESTROYED), teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
                     SpawnEvent(SA_EVENT_ADD_BOMB_YELLOW, 0, true, GetDefender() == ALLIANCE ? VEHICLE_FACTION_HORDE : VEHICLE_FACTION_ALLIANCE);
                     PlaySoundToAll(teamIndex == TEAM_INDEX_ALLIANCE ? BG_SA_SOUND_WALL_DESTROYED_ALLIANCE : BG_SA_SOUND_WALL_DESTROYED_HORDE);
                     SpawnEvent(SA_EVENT_ADD_SIGIL_YELLOW, 0, false);
@@ -786,7 +786,7 @@ void BattleGroundSA::EventPlayerDamageGO(Player* player, GameObject* target_obj,
 
                 m_RoundScores[m_Round].winner = GetDefender() == ALLIANCE ? HORDE : ALLIANCE;
                 m_RoundScores[m_Round].time = m_Round_Timer;
-                RewardHonorToTeam(BG_SA_XP_WIN_ROUND, teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
+                RewardHonorToTeam(GetBonusHonorFromKill(BG_SA_XP_WIN_ROUND), teamIndex == TEAM_INDEX_ALLIANCE ? ALLIANCE : HORDE);
                 SendMessageToAll(m_defender == HORDE ? LANG_BG_SA_TITAN_PORTAL_CAPTURED_ALLIANCE : LANG_BG_SA_TITAN_PORTAL_CAPTURED_HORDE, CHAT_MSG_BG_SYSTEM_NEUTRAL);
                 UpdateAchievementCriteriaOnTeam(m_RoundScores[m_Round].winner, ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, 65246);
                 if (m_Round == BG_SA_ROUND_ONE) // Victory at first round

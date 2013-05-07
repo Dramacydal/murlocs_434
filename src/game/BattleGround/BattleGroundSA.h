@@ -33,10 +33,10 @@ class BattleGround;
 
 enum BG_SA_XP_Reward
 {
-    BG_SA_XP_GATE_DESTROYED             = 85,
-    BG_SA_XP_OCUPY_GRAVEYARD            = 85,
-    BG_SA_XP_RELIC_GATE_DESTROYED       = 100,
-    BG_SA_XP_WIN_ROUND                  = 150
+    BG_SA_XP_GATE_DESTROYED             = 2,
+    BG_SA_XP_OCUPY_GRAVEYARD            = 2,
+    BG_SA_XP_RELIC_GATE_DESTROYED       = 4,
+    BG_SA_XP_WIN_ROUND                  = 4
 };
 
 enum BG_SA_WorldStates
