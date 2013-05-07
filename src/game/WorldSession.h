@@ -933,8 +933,6 @@ class MANGOS_DLL_SPEC WorldSession
 
         // Hotfix handlers
         void HandleRequestHotfix(WorldPacket& recv_data);
-        void SendItemDb2Reply(uint32 entry);
-        void SendItemSparseDb2Reply(uint32 entry);
 
         // Compact Unit Frames
         void HandleSaveCUFProfiles(WorldPacket& recv_data);

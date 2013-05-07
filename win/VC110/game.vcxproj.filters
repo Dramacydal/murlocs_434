@@ -610,6 +610,9 @@
     <ClCompile Include="..\..\src\game\vmap\GameObjectModel.cpp">
       <Filter>vmaps</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\game\DB2Utility.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\AccountMgr.h">
@@ -1173,6 +1176,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\game\vmap\RegularGrid.h">
       <Filter>vmaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\DB2Utility.h">
+      <Filter>Server</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

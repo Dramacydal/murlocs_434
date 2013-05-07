@@ -19,18 +19,19 @@
 #ifndef MANGOS_DB2STORES_H
 #define MANGOS_DB2STORES_H
 
-#include "Common.h"
 #include "Database/DB2Store.h"
 #include "DB2Structure.h"
-
-#include <list>
+#include <string>
 
 extern DB2Storage <ItemEntry>                    sItemStore;
 extern DB2Storage <ItemCurrencyCostEntry>        sItemCurrencyCostStore;
 extern DB2Storage <ItemExtendedCostEntry>        sItemExtendedCostStore;
+extern DB2Storage <KeyChainEntry>                sKeyChainStore;
 
-void LoadDB2Stores(const std::string& dataPath);
+void LoadDB2Stores(std::string const& dataPath);
 
 DB2Storage <ItemEntry> const* GetItemDisplayStore();
+
+DB2StorageBase const* GetDB2Storage(uint32 type);
 
 #endif

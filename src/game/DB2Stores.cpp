@@ -25,17 +25,25 @@
 #include "ObjectGuid.h"
 
 #include "DB2fmt.h"
+#include "DB2Utility.h"
+#include "World.h"
 
 #include <map>
 
-DB2Storage <ItemEntry>                    sItemStore(Itemfmt);
+DB2Storage <ItemEntry>                    sItemStore(Itemfmt, &DB2Utilities::HasItemEntry, &DB2Utilities::WriteItemDbReply);
 DB2Storage <ItemCurrencyCostEntry>        sItemCurrencyCostStore(ItemCurrencyCostfmt);
 DB2Storage <ItemExtendedCostEntry>        sItemExtendedCostStore(ItemExtendedCostEntryfmt);
+DB2Storage <ItemSparseEntry>              sItemSparseStore(ItemSparsefmt, &DB2Utilities::HasItemSparseEntry, &DB2Utilities::WriteItemSparseDbReply);
+DB2Storage <KeyChainEntry>                sKeyChainStore(KeyChainfmt);
 
 typedef std::list<std::string> StoreProblemList1;
+
+typedef std::map<uint32 /*hash*/, DB2StorageBase*> DB2StorageMap;
+DB2StorageMap DB2Stores;
+
 uint32 DB2FileCount = 0;
 
-static bool LoadDB2_assert_print(uint32 fsize,uint32 rsize, const std::string& filename)
+static bool LoadDB2_assert_print(uint32 fsize,uint32 rsize, std::string const& filename)
 {
     sLog.outError("Size of '%s' setted by format string (%u) not equal size of C++ structure (%u).",filename.c_str(),fsize,rsize);
 
@@ -91,9 +99,11 @@ inline void LoadDB2(LocalDB2Data& localeData, StoreProblemList1& errors, DB2Stor
         else
             errors.push_back(db2Filename);
     }
+
+    DB2Stores[storage.GetHash()] = &storage;
 }
 
-void LoadDB2Stores(const std::string& dataPath)
+void LoadDB2Stores(std::string const& dataPath)
 {
     std::string db2Path = dataPath + "dbc/";
 
@@ -105,7 +115,9 @@ void LoadDB2Stores(const std::string& dataPath)
 
     LoadDB2(availableDb2Locales,bad_db2_files,sItemStore,                db2Path,"Item.db2");
     LoadDB2(availableDb2Locales,bad_db2_files,sItemCurrencyCostStore,    db2Path,"ItemCurrencyCost.db2");
+    LoadDB2(availableDb2Locales,bad_db2_files,sItemSparseStore,          db2Path,"Item-sparse.db2");
     LoadDB2(availableDb2Locales,bad_db2_files,sItemExtendedCostStore,    db2Path,"ItemExtendedCost.db2");
+    LoadDB2(availableDb2Locales,bad_db2_files,sKeyChainStore,            db2Path,"KeyChain.db2");
 
     // error checks
     if (bad_db2_files.size() >= DB2FileCount)
@@ -134,4 +146,13 @@ void LoadDB2Stores(const std::string& dataPath)
     
     sLog.outString();
     sLog.outString( ">> Initialized %d db2 stores", DB2FileCount );
+}
+
+DB2StorageBase const* GetDB2Storage(uint32 type)
+{
+    DB2StorageMap::const_iterator itr = DB2Stores.find(type);
+    if (itr != DB2Stores.end())
+        return itr->second;
+
+    return NULL;
 }
