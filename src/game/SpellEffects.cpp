@@ -7598,6 +7598,22 @@ void Spell::EffectDispel(SpellEffectEntry const* effect)
     if (dispelMask & (1 << DISPEL_DISEASE) && unitTarget->HasAura(50536))
         dispelMask &= ~(1 << DISPEL_DISEASE);
 
+    // Cleanse powered by Acts of Sacrifice
+    if (effect->EffectIndex == EFFECT_INDEX_0 && m_caster->GetTypeId() == TYPEID_PLAYER &&
+        m_spellInfo->Id == 4987 && unitTarget == m_caster)
+    {
+        Unit::AuraList const& mPctAuras = m_caster->GetAurasByType(SPELL_AURA_ADD_PCT_MODIFIER);
+        for (Unit::AuraList::const_iterator itr = mPctAuras.begin(); itr != mPctAuras.end(); ++itr)
+        {
+            // Acts of Sacrifice Ranks 1, 2
+            if ((*itr)->GetId() == 85446 || (*itr)->GetId() == 85795)
+            {
+                m_caster->RemoveAurasByMechanicMask(IMMUNE_TO_ROOT_AND_SNARE_MASK, false, 1);
+                break;
+            }
+        }
+    }
+
     bool friendly = unitTarget->IsFriendlyTo(m_caster);
     bool immune = unitTarget->IsImmunedToDamage(GetSpellSchoolMask(m_spellInfo));
 
@@ -7707,6 +7723,30 @@ void Spell::EffectDispel(SpellEffectEntry const* effect)
                 if (Unit *owner = m_caster->GetOwner())
                     if (owner->HasAura(56249))
                         m_caster->CastCustomSpell(owner, 19658, &heal_amount, NULL, NULL, true);
+            }
+            // Cleanse Spirit
+            else if (m_spellInfo->Id == 51886)
+            {
+                if (m_caster->GetTypeId() == TYPEID_PLAYER)
+                {
+                    // search Cleansing Waters
+                    Unit::AuraList const& mDummyAuras = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
+                    for (Unit::AuraList::const_iterator itr = mDummyAuras.begin(); itr != mDummyAuras.end(); ++itr)
+                    {
+                        if ((*itr)->GetEffIndex() == EFFECT_INDEX_0 && (*itr)->GetSpellProto()->SpellIconID == 2020 &&
+                            (*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_SHAMAN)
+                        {
+                            uint32 triggered_spell = (*itr)->GetId() == 86959 ? 86961 : 86958;
+
+                            if (((Player*)m_caster)->HasSpellCooldown(triggered_spell))
+                                break;
+
+                            m_caster->CastSpell(unitTarget, triggered_spell, true);
+                            ((Player*)m_caster)->AddSpellCooldown(triggered_spell, 0, time(NULL) + 6);
+                            break;
+                        }
+                    }
+                }
             }
             // Dispel Magic
             else if (m_spellInfo->Id == 97690)
@@ -13960,21 +14000,6 @@ void Spell::EffectDispelMechanic(SpellEffectEntry const* effect)
             data << uint32(*itr);                       // Spell Id
 
         m_caster->SendMessageToSet(&data, true);
-    }
-
-    // Cleanse powered by Acts of Sacrifice
-    if (effect->EffectIndex == EFFECT_INDEX_0 && m_caster->GetTypeId() == TYPEID_PLAYER && m_spellInfo->Id == 4987 && unitTarget == m_caster)
-    {
-        Unit::AuraList const& mPctAuras = m_caster->GetAurasByType(SPELL_AURA_ADD_PCT_MODIFIER);
-        for (Unit::AuraList::const_iterator itr = mPctAuras.begin(); itr != mPctAuras.end(); ++itr)
-        {
-            // Acts of Sacrifice Ranks 1, 2
-            if ((*itr)->GetId() == 85446 || (*itr)->GetId() == 85795)
-            {
-                m_caster->RemoveAurasByMechanicMask(IMMUNE_TO_ROOT_AND_SNARE_MASK, false, 1);
-                break;
-            }
-        }
     }
 }
 
