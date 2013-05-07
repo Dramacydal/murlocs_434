@@ -9377,8 +9377,8 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
         outdoorPvPWG->FillInitialWorldStates(data, count, this);
 
     FillInitialWorldState(data, count, 5333, 0);            // Tol Barad is not in progress
-    FillInitialWorldState(data, count, 5332, WorldTimer::getMSTime() +
-        sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_BATTLE_DURATION) * MINUTE);   // Tol Barad start delay
+    FillInitialWorldState(data, count, 5332, uint32(time(NULL) +
+        sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_BATTLE_DURATION) * MINUTE));   // Tol Barad start delay
 
     if(mapid == 530)                                        // Outland
     {
