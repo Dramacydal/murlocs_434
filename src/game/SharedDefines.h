@@ -911,7 +911,7 @@ enum SpellEffects
     SPELL_EFFECT_REWARD_CURRENCY           = 166,
     SPELL_EFFECT_167                       = 167,
     SPELL_EFFECT_168                       = 168,
-    SPELL_EFFECT_169                       = 169,
+    SPELL_EFFECT_DESTROY_ITEM              = 169,
     SPELL_EFFECT_170                       = 170,
     SPELL_EFFECT_171                       = 171,
     SPELL_EFFECT_RESURRECT_WITH_AURA       = 172,

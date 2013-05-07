@@ -395,6 +395,7 @@ class Spell
         void EffectRewardCurrency(SpellEffectEntry const* effect);
         void EffectDamageFromMaxHealthPct(SpellEffectEntry const* effect);
         void EffectResurrectWithAura(SpellEffectEntry const* effect);
+        void EffectDestroyItem(SpellEffectEntry const* effect);
 
         Spell(Unit* caster, SpellEntry const *info, bool triggered, ObjectGuid originalCasterGUID = ObjectGuid(), SpellEntry const* triggeredBy = NULL);
         ~Spell();
