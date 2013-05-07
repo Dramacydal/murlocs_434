@@ -2926,13 +2926,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, uint
             // Sic 'Em!
             else if (dummySpell->SpellIconID == 5092)
             {
-                Pet* pet = GetPet();
-                if (!pet)
-                    return SPELL_AURA_PROC_FAILED;
-
-                basepoints[0] = triggerAmount;
-                pet->CastCustomSpell(pet, 83359, &basepoints[0], NULL, NULL, true, NULL, triggeredByAura, GetObjectGuid());
-                return SPELL_AURA_PROC_OK;
+                triggered_spell_id = 89388;
+                break;
             }
             // Posthaste
             else if (dummySpell->SpellIconID == 5094)
@@ -5774,9 +5769,9 @@ SpellAuraProcResult Unit::HandleOverrideClassScriptAuraProc(Unit *pVictim, uint3
             return SPELL_AURA_PROC_OK;
     }
 
-    // not processed
+    // drop charges
     if(!triggered_spell_id)
-        return SPELL_AURA_PROC_FAILED;
+        return SPELL_AURA_PROC_OK;
 
     // standard non-dummy case
     SpellEntry const* triggerEntry = sSpellStore.LookupEntry(triggered_spell_id);

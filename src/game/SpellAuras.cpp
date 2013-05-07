@@ -1207,6 +1207,7 @@ void Aura::HandleAddModifier(bool apply, bool Real)
             case 74434:                                     // Soulburn
             case 81093:                                     // Fury of Stormrage
             case 83359:                                     // Sic 'Em!
+            case 89388:                                     // Sic 'Em!
             case 88819:                                     // Daybreak
             case 89485:                                     // Inner Focus
             case 90174:                                     // Divine Purpose
@@ -12527,8 +12528,8 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
             // Eclipse (Solar)
             else if (GetId() == 48517)
                 spellId1 = 94338;
-            // Stampede
-            else if (GetId() == 81021 || GetId() == 81022)
+            // Stampede, Tiger's Fury
+            else if (GetId() == 81021 || GetId() == 81022 || GetId() == 108566)
                 spellId1 = 109881;                          // Stampede Ravage Marker
             // Harmony
             else if (GetId() == 100977)
