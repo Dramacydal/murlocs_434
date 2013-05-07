@@ -1045,7 +1045,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
     {
         // Rage from physical damage received .
         if(cleanDamage && cleanDamage->damage && (damageSchoolMask & SPELL_SCHOOL_MASK_NORMAL) && pVictim->GetTypeId() == TYPEID_PLAYER && (pVictim->getPowerType() == POWER_RAGE))
-            ((Player*)pVictim)->RewardRage(cleanDamage->damage, 0, false);
+            ((Player*)pVictim)->RewardRage(cleanDamage->damage, false);
 
         return 0;
     }
@@ -1064,7 +1064,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
                 else
                     weaponSpeedHitFactor = uint32(GetAttackTime(cleanDamage->attackType)/1000.0f * 3.5f);
 
-                ((Player*)this)->RewardRage(damage, weaponSpeedHitFactor, true, pVictim);
+                ((Player*)this)->RewardRage(weaponSpeedHitFactor, true, pVictim);
 
                 break;
             }
@@ -1075,7 +1075,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
                 else
                     weaponSpeedHitFactor = uint32(GetAttackTime(cleanDamage->attackType)/1000.0f * 1.75f);
 
-                ((Player*)this)->RewardRage(damage, weaponSpeedHitFactor, true, pVictim);
+                ((Player*)this)->RewardRage(weaponSpeedHitFactor, true, pVictim);
 
                 break;
             }
@@ -1335,7 +1335,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             if(this != pVictim && pVictim->getPowerType() == POWER_RAGE)
             {
                 uint32 rage_damage = damage + (cleanDamage ? cleanDamage->damage : 0);
-                ((Player*)pVictim)->RewardRage(rage_damage, 0, false);
+                ((Player*)pVictim)->RewardRage(rage_damage, false);
             }
 
             // random durability for items (HIT TAKEN)
@@ -2296,41 +2296,6 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
         // Calculate absorb & resists
         uint32 absorb_affected_damage = CalcNotIgnoreAbsorbDamage(damageInfo->damage,damageInfo->damageSchoolMask);
         damageInfo->target->CalculateDamageAbsorbAndResist(this, damageInfo->damageSchoolMask, DIRECT_DAMAGE, absorb_affected_damage, &damageInfo->absorb, &damageInfo->resist, NULL, true);
-
-        // Reward rage from absorbed damage
-        if (damageInfo->absorb && (damageInfo->damageSchoolMask & SPELL_SCHOOL_MASK_NORMAL) && GetTypeId() == TYPEID_PLAYER &&
-            getPowerType() == POWER_RAGE)
-        {
-            uint32 weaponSpeedHitFactor;
-
-            switch(damageInfo->attackType)
-            {
-                case BASE_ATTACK:
-                {
-                    if(damageInfo->hitOutCome == MELEE_HIT_CRIT)
-                        weaponSpeedHitFactor = uint32(GetAttackTime(damageInfo->attackType)/1000.0f * 7);
-                    else
-                        weaponSpeedHitFactor = uint32(GetAttackTime(damageInfo->attackType)/1000.0f * 3.5f);
-
-                    ((Player*)this)->RewardRage(damageInfo->absorb, weaponSpeedHitFactor, true, pVictim);
-
-                    break;
-                }
-                case OFF_ATTACK:
-                {
-                    if(damageInfo->hitOutCome == MELEE_HIT_CRIT)
-                        weaponSpeedHitFactor = uint32(GetAttackTime(damageInfo->attackType)/1000.0f * 3.5f);
-                    else
-                        weaponSpeedHitFactor = uint32(GetAttackTime(damageInfo->attackType)/1000.0f * 1.75f);
-
-                    ((Player*)this)->RewardRage(damageInfo->absorb, weaponSpeedHitFactor, true, pVictim);
-
-                    break;
-                }
-                case RANGED_ATTACK:
-                    break;
-            }
-        }
 
         damageInfo->damage-=damageInfo->absorb + damageInfo->resist;
         if (damageInfo->absorb)

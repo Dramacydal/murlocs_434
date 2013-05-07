@@ -2325,20 +2325,12 @@ void Player::RemoveFromWorld()
     Unit::RemoveFromWorld();
 }
 
-void Player::RewardRage(uint32 damage, uint32 weaponSpeedHitFactor, bool attacker, Unit* pVictim)
+void Player::RewardRage(uint32 damage, bool attacker, Unit* pVictim)
 {
-    float addRage;
+    float addRage = damage;
 
-    float rageconversion = float((0.0091107836 * getLevel()*getLevel())+3.225598133*getLevel())+4.2652911f;
-
-    // Unknown if correct, but lineary adjust rage conversion above level 70
-    if (getLevel() > 70)
-        rageconversion += 13.27f * (getLevel() - 70);
-
-    if(attacker)
+    if (attacker)
     {
-        addRage = ((damage/rageconversion*7.5f + weaponSpeedHitFactor)/2.0f);
-
         // talent who gave more rage on attack
         addRage *= 1.0f + GetTotalAuraModifier(SPELL_AURA_MOD_RAGE_FROM_DAMAGE_DEALT) / 100.0f;
 
@@ -2349,7 +2341,7 @@ void Player::RewardRage(uint32 damage, uint32 weaponSpeedHitFactor, bool attacke
     }
     else
     {
-        addRage = damage/rageconversion*2.5f;
+        addRage /= GetCreateHealth() / 35;
 
         // Berserker Rage effect
         if (HasAura(18499, EFFECT_INDEX_0))
