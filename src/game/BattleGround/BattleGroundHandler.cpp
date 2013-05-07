@@ -269,7 +269,7 @@ void WorldSession::HandleBattleGroundPlayerPositionsOpcode( WorldPacket & /*recv
     uint32 flagCarrierCountA = 0;   // obsolete
     uint32 flagCarrierCountH = 0;
 
-    switch (bg->GetTypeID())
+    switch (bg->GetTypeID(true))
     {
         case BATTLEGROUND_TP:
         case BATTLEGROUND_WS:
