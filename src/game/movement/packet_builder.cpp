@@ -199,7 +199,7 @@ namespace Movement
 
     void PacketBuilder::WriteCreateBytes(const MoveSpline& move_spline, ByteBuffer& data)
     {
-        //if (!move_spline.Finalized())
+        if (!move_spline.Finalized())
         {
             MoveSplineFlag splineFlags = move_spline.splineflags;
             uint32 nodes = move_spline.getPath().size();
