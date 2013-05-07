@@ -1059,10 +1059,9 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         {
             case BASE_ATTACK:
             {
-                if(cleanDamage->hitOutCome == MELEE_HIT_CRIT)
-                    weaponSpeedHitFactor = uint32(GetAttackTime(cleanDamage->attackType)/1000.0f * 7);
-                else
-                    weaponSpeedHitFactor = uint32(GetAttackTime(cleanDamage->attackType)/1000.0f * 3.5f);
+                weaponSpeedHitFactor = uint32(GetAttackTime(cleanDamage->attackType)/1000.0f * 6.5f);
+                if (cleanDamage->hitOutCome == MELEE_HIT_CRIT)
+                    weaponSpeedHitFactor *= 2;
 
                 ((Player*)this)->RewardRage(weaponSpeedHitFactor, true, pVictim);
 
@@ -1070,10 +1069,9 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             }
             case OFF_ATTACK:
             {
-                if(cleanDamage->hitOutCome == MELEE_HIT_CRIT)
-                    weaponSpeedHitFactor = uint32(GetAttackTime(cleanDamage->attackType)/1000.0f * 3.5f);
-                else
-                    weaponSpeedHitFactor = uint32(GetAttackTime(cleanDamage->attackType)/1000.0f * 1.75f);
+                weaponSpeedHitFactor = uint32(GetAttackTime(cleanDamage->attackType)/1000.0f * 3.25f);
+                if (cleanDamage->hitOutCome == MELEE_HIT_CRIT)
+                    weaponSpeedHitFactor *= 2;
 
                 ((Player*)this)->RewardRage(weaponSpeedHitFactor, true, pVictim);
 
