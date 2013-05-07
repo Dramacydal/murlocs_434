@@ -10989,7 +10989,7 @@ int32 Unit::CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMas
             duration = 0;
     }
 
-    switch (spellProto->GetSpellFamilyName())
+    switch (spellProto->Id)
     {
         case 774:       // Rejuvenation
         case 8936:      // Regrowth
