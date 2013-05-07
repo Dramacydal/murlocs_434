@@ -190,7 +190,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MP /Zm300 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>..\..\..\..\dep\include\;..\..\..\shared\;..\..\..\framework\;..\..\..\game\;..\include\;..\base\;..\..\..\..\dep\ACE_wrappers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPT;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -448,14 +448,6 @@
     <ClCompile Include="..\scripts\kalimdor\dustwallow_marsh.cpp" />
     <ClCompile Include="..\scripts\kalimdor\felwood.cpp" />
     <ClCompile Include="..\scripts\kalimdor\feralas.cpp" />
-    <ClCompile Include="..\scripts\kalimdor\firelands\boss_alysrazor.cpp" />
-    <ClCompile Include="..\scripts\kalimdor\firelands\boss_baleroc.cpp" />
-    <ClCompile Include="..\scripts\kalimdor\firelands\boss_bethtilac.cpp" />
-    <ClCompile Include="..\scripts\kalimdor\firelands\boss_lord_rhyolith.cpp" />
-    <ClCompile Include="..\scripts\kalimdor\firelands\boss_majordomo_staghelm.cpp" />
-    <ClCompile Include="..\scripts\kalimdor\firelands\boss_ragnaros_firelands.cpp" />
-    <ClCompile Include="..\scripts\kalimdor\firelands\boss_shannox.cpp" />
-    <ClCompile Include="..\scripts\kalimdor\firelands\instance_firelands.cpp" />
     <ClCompile Include="..\scripts\kalimdor\lost_city_of_tolvir\boss_general_husam.cpp" />
     <ClCompile Include="..\scripts\kalimdor\lost_city_of_tolvir\boss_high_prophet_barim.cpp" />
     <ClCompile Include="..\scripts\kalimdor\lost_city_of_tolvir\boss_lockmaw.cpp" />
