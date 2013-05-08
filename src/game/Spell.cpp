@@ -9062,7 +9062,8 @@ bool Spell::CheckTarget(Unit* target, SpellEffectIndex eff)
         return false;
 
     // Check targets for creature type mask and remove not appropriate (skip explicit self target case, maybe need other explicit targets)
-    if(spellEffect->EffectImplicitTargetA != TARGET_SELF )
+    // don't skip Wintergrasp Water
+    if (spellEffect->EffectImplicitTargetA != TARGET_SELF || m_spellInfo->Id == 36444)
     {
         if (!CheckTargetCreatureType(target, 1 << eff))
             return false;
