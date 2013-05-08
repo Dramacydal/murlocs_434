@@ -1280,33 +1280,34 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
     if (getState() == SPELL_STATE_DELAYED && !IsPositiveSpell(m_spellInfo->Id) && (WorldTimer::getMSTime() - target->timeDelay) <= unit->m_lastSanctuaryTime)
         return;
 
-    bool offensive = !unitTarget->IsFriendlyTo(caster);
-    for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
-    {
-        SpellEffectEntry const * effect = m_spellInfo->GetSpellEffect(SpellEffectIndex(i));
-        if (!effect)
-            continue;
+    // obsolete since 3.3.5
+    //bool offensive = !unitTarget->IsFriendlyTo(caster);
+    //for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
+    //{
+    //    SpellEffectEntry const * effect = m_spellInfo->GetSpellEffect(SpellEffectIndex(i));
+    //    if (!effect)
+    //        continue;
 
-        uint32 dispelMask;
-        if (effect->Effect == SPELL_EFFECT_DISPEL)
-        {
-            dispelMask = GetDispelMask(DispelType(effect->EffectMiscValue));
-            if (!(offensive && unitTarget->HasPositiveAuraByDispelMask(dispelMask) || !offensive && unitTarget->HasNegativeAuraByDispelMask(dispelMask)))
-            {
-                mask &= ~(1 << i);
-                target->effectMask &= ~(1 << i);
-            }
-        }
-        else if (offensive && effect->Effect == SPELL_EFFECT_STEAL_BENEFICIAL_BUFF)
-        {
-            dispelMask = GetDispelMask(DispelType(effect->EffectMiscValue));
-            if (!unitTarget->HasPositiveAuraByDispelMask(dispelMask))
-            {
-                mask &= ~(1 << i);
-                target->effectMask &= ~(1 << i);
-            }
-        }
-    }
+    //    uint32 dispelMask;
+    //    if (effect->Effect == SPELL_EFFECT_DISPEL)
+    //    {
+    //        dispelMask = GetDispelMask(DispelType(effect->EffectMiscValue));
+    //        if (!(offensive && unitTarget->HasPositiveAuraByDispelMask(dispelMask) || !offensive && unitTarget->HasNegativeAuraByDispelMask(dispelMask)))
+    //        {
+    //            mask &= ~(1 << i);
+    //            target->effectMask &= ~(1 << i);
+    //        }
+    //    }
+    //    else if (offensive && effect->Effect == SPELL_EFFECT_STEAL_BENEFICIAL_BUFF)
+    //    {
+    //        dispelMask = GetDispelMask(DispelType(effect->EffectMiscValue));
+    //        if (!unitTarget->HasPositiveAuraByDispelMask(dispelMask))
+    //        {
+    //            mask &= ~(1 << i);
+    //            target->effectMask &= ~(1 << i);
+    //        }
+    //    }
+    //}
 
     if (m_spellInfo->speed > 0)
     {
