@@ -27051,12 +27051,12 @@ void Player::ModifyCurrencyCount(uint32 id, int32 count, bool modifyWeek, bool m
     if (newTotalCount < 0)
         newTotalCount = 0;
 
-    int32 newWeekCount = oldWeekCount + (modifyWeek && count > 0 ? count : 0);
+    int32 newWeekCount = oldWeekCount + ((modifyWeek && count > 0) ? count : 0);
     if (newWeekCount < 0)
         newWeekCount = 0;
 
     int32 totalCap = GetCurrencyTotalCap(currency);
-    if (totalCap && totalCap < newTotalCount)
+    if (totalCap && totalCap < newTotalCount && count > 0)
     {
         int32 delta = newTotalCount - totalCap;
         newTotalCount = totalCap;
