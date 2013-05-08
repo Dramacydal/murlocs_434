@@ -16655,6 +16655,8 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
 
     _LoadGroup(holder->GetResult(PLAYER_LOGIN_QUERY_LOADGROUP));
 
+    _LoadCurrencies(holder->GetResult(PLAYER_LOGIN_QUERY_LOADCURRENCIES));
+
     _LoadArenaTeamInfo(holder->GetResult(PLAYER_LOGIN_QUERY_LOADARENAINFO));
 
     // check arena teams integrity
@@ -16989,7 +16991,6 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
     if (HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST) && !(extraflags & PLAYER_EXTRA_SPECTATOR))
         m_deathState = DEAD;
 
-    _LoadCurrencies(holder->GetResult(PLAYER_LOGIN_QUERY_LOADCURRENCIES));
     _LoadSpells(holder->GetResult(PLAYER_LOGIN_QUERY_LOADSPELLS));
 
     // after spell load, learn rewarded spell if need also
