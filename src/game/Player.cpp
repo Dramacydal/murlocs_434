@@ -20609,7 +20609,8 @@ void Player::SetArenaTeamInfoField(uint8 slot, ArenaTeamInfoType type, uint32 va
             if (newCap <= itr->second.customWeekCap)
                 continue;
 
-            itr->second.state = PLAYERCURRENCY_CHANGED;
+            if (itr->second.state != PLAYERCURRENCY_NEW)
+                itr->second.state = PLAYERCURRENCY_CHANGED;
             itr->second.customWeekCap = newCap;
             SendCurrencyWeekCap(itr->second.currencyEntry, newCap);
         }
