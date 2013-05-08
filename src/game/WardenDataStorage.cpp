@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "WardenDataStorage.h"
 #include "WardenWin.h"
+#include "World.h"
 
 CWardenDataStorage::CWardenDataStorage()
 {
@@ -49,7 +50,15 @@ void CWardenDataStorage::Init()
 
 void CWardenDataStorage::LoadWardenDataResult()
 {
-    QueryResult *result = LoginDatabase.Query("SELECT `check`, `data`, `result`, `address`, `length`, `str` FROM warden_data_result");
+    // Check if Warden is enabled by config before loading anything
+    if (!sWorld.getConfig(CONFIG_BOOL_ANTICHEAT_WARDEN))
+    {
+        sLog.outString(">> Warden disabled, loading checks skipped.");
+        sLog.outString();
+        return;
+    }
+
+    QueryResult *result = LoginDatabase.Query("SELECT `check`, `data`, `result`, `address`, `length`, `str` FROM warden_data_result_cata");
 
     uint32 count = 0;
 

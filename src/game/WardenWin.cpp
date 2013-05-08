@@ -223,7 +223,7 @@ void WardenWin::RequestData()
     ByteBuffer buff;
     buff << uint8(WARDEN_SMSG_CHEAT_CHECKS_REQUEST);
 
-    int maxSize = 5 - MemCheck.size();                            // Ranger: original is 8, not 5
+    int maxSize = 8 - MemCheck.size();                            // Ranger: original is 8, not 5
     for (int i = 0; i < maxSize; ++i)                             // for now include 2 (now, overwrite) random checks (Ranger: original 5 random checks)
     {
         id = irand(1, maxid - 1);
@@ -240,19 +240,6 @@ void WardenWin::RequestData()
             default:
                 break;
         }
-    }
-
-    // Ranger: now id 40 (old 385) - is base WEH detection - send check ALWAYS!
-    SendDataId.push_back(40);
-
-    // Ranger: now id 62 (old 804) - is base WPE detection - send check ALWAYS!
-    SendDataId.push_back(62);
-
-    // Ranger: random WPE injected dll - other version and standart module check  - send check RANDOM!
-    switch (irand(0, 1))
-    {
-        case 0: SendDataId.push_back(26); break; // WPESPY.DLL module check
-        case 1: SendDataId.push_back(63); break; // page check for WPESPY.DLL (other version)
     }
 
     uint8 xorByte = InputKey[0];

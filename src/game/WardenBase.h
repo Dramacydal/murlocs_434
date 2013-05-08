@@ -93,7 +93,7 @@ class WardenBase
 
     public:
         WardenBase();
-        ~WardenBase();
+        virtual ~WardenBase();
 
         virtual void Init(WorldSession *pClient, BigNumber *K);
         virtual ClientWardenModule *GetModuleForClient(WorldSession *session);
@@ -121,8 +121,8 @@ class WardenBase
         SARC4 iCrypto;
         SARC4 oCrypto;
         uint32 m_WardenCheckTimer;                          // timer between data packets
-        bool m_WardenDataSent;
         uint32 m_WardenKickTimer;                           // time after send packet
+        bool m_WardenDataSent;
         uint32 m_WardenTimer;
         ClientWardenModule *Module;
         bool m_initialized;
