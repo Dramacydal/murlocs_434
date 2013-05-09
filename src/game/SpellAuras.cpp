@@ -11372,13 +11372,13 @@ void SpellAuraHolder::_RemoveSpellAuraHolder()
             case SPELLFAMILY_DEATHKNIGHT:
                 if (m_spellProto->Id == 48263)              // Blood Presence
                 {
-                    if (!caster->HasAura(56817))            // Rune Strike enabler
+                    if (!m_target->GetSpellAuraHolder(56817, m_target->GetObjectGuid()))    // Rune Strike enabler
                         removeState = AURA_STATE_DEFENSE;
                     break;
                 }
                 else if (m_spellProto->Id == 56817)         // Rune Strike enabler
                 {
-                    if (!caster->HasAura(48263))            // Blood Presence
+                    if (!m_target->GetSpellAuraHolder(48263, m_target->GetObjectGuid()))    // Blood Presence
                         removeState = AURA_STATE_DEFENSE;
                     break;
                 }
