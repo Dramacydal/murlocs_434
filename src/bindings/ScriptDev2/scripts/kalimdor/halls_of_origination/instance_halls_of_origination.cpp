@@ -71,6 +71,11 @@ void instance_halls_of_origination::OnObjectCreate(GameObject* pGo)
             if (m_auiEncounter[TYPE_FLAME_WARDEN] == DONE)
                 pGo->SetGoState(GO_STATE_ACTIVE);
             break;
+        case GO_ULDUM_LASERS_02:
+        case GO_ULDUM_LASERS_01:
+        case GO_ULDUM_LASERS_04:
+        case GO_ULDUM_LASERS_03:
+            break;
         default:
             return;
     }
