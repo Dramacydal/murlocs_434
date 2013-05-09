@@ -46,10 +46,10 @@ void instance_halls_of_origination::OnObjectCreate(GameObject* pGo)
         case GO_ANHUUR_BRIDGE:
         case GO_ANHUUR_DOOR:
         case GO_VAULT_OF_LIGHTS_ENTRANCE_DOOR:
+        case GO_ANHUUR_BRIDGE_COL:
             if (m_auiEncounter[TYPE_ANHUUR] == DONE)
                 pGo->SetGoState(GO_STATE_ACTIVE);
-            break;
-        case GO_ANHUUR_BRIDGE_COL:
+            pGo->SetActiveObjectState(true);
             break;
         case GO_VAULT_OF_LIGHTS_BOSS_DOOR:
             if (WardensDead())
@@ -95,9 +95,7 @@ void instance_halls_of_origination::SetData(uint32 uiType, uint32 uiData)
                 DoUseDoorOrButton(GO_ANHUUR_BRIDGE);
                 DoUseDoorOrButton(GO_ANHUUR_DOOR);
                 DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_ENTRANCE_DOOR);
-
-                if (GameObject* go = GetSingleGameObjectFromStorage(GO_ANHUUR_BRIDGE_COL))
-                    go->Delete();
+                DoUseDoorOrButton(GO_ANHUUR_BRIDGE_COL);
             }
             break;
         case TYPE_EARTH_WARDEN:
@@ -105,6 +103,7 @@ void instance_halls_of_origination::SetData(uint32 uiType, uint32 uiData)
             if (uiData == DONE)
             {
                 DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_02);
+                DoUseDoorOrButton(GO_ULDUM_LASERS_02);
                 if (WardensDead())
                     DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
             }
@@ -114,6 +113,7 @@ void instance_halls_of_origination::SetData(uint32 uiType, uint32 uiData)
             if (uiData == DONE)
             {
                 DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_01);
+                DoUseDoorOrButton(GO_ULDUM_LASERS_01);
                 if (WardensDead())
                     DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
             }
@@ -123,6 +123,7 @@ void instance_halls_of_origination::SetData(uint32 uiType, uint32 uiData)
             if (uiData == DONE)
             {
                 DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_04);
+                DoUseDoorOrButton(GO_ULDUM_LASERS_04);
                 if (WardensDead())
                     DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
             }
@@ -132,6 +133,7 @@ void instance_halls_of_origination::SetData(uint32 uiType, uint32 uiData)
             if (uiData == DONE)
             {
                 DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_03);
+                DoUseDoorOrButton(GO_ULDUM_LASERS_03);
                 if (WardensDead())
                     DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
             }

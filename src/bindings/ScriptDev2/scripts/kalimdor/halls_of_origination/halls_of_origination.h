@@ -44,6 +44,13 @@ enum
     GO_ULDUM_LIGHT_MACHINE_01   = 207375,
     GO_ULDUM_LIGHT_MACHINE_04   = 207376,
     GO_ULDUM_LIGHT_MACHINE_03   = 207377,
+
+    GO_SUN_MIRROR               = 207726,
+
+    GO_ULDUM_LASERS_02          = 207662,
+    GO_ULDUM_LASERS_01          = 207663,
+    GO_ULDUM_LASERS_04          = 207664,
+    GO_ULDUM_LASERS_03          = 207665,
 };
 
 class MANGOS_DLL_DECL instance_halls_of_origination : public ScriptedInstance
