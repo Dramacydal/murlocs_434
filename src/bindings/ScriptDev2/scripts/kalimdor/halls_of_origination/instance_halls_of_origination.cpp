@@ -102,27 +102,39 @@ void instance_halls_of_origination::SetData(uint32 uiType, uint32 uiData)
             break;
         case TYPE_EARTH_WARDEN:
             m_auiEncounter[uiType] = uiData;
-            DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_02);
-            if (WardensDead())
-                DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
+            if (uiData == DONE)
+            {
+                DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_02);
+                if (WardensDead())
+                    DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
+            }
             break;
         case TYPE_WATER_WARDEN:
             m_auiEncounter[uiType] = uiData;
-            DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_01);
-            if (WardensDead())
-                DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
+            if (uiData == DONE)
+            {
+                DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_01);
+                if (WardensDead())
+                    DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
+            }
             break;
         case TYPE_AIR_WARDEN:
             m_auiEncounter[uiType] = uiData;
-            DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_04);
-            if (WardensDead())
-                DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
+            if (uiData == DONE)
+            {
+                DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_04);
+                if (WardensDead())
+                    DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
+            }
             break;
         case TYPE_FLAME_WARDEN:
             m_auiEncounter[uiType] = uiData;
-            DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_03);
-            if (WardensDead())
-                DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
+            if (uiData == DONE)
+            {
+                DoUseDoorOrButton(GO_ULDUM_LIGHT_MACHINE_03);
+                if (WardensDead())
+                    DoUseDoorOrButton(GO_VAULT_OF_LIGHTS_BOSS_DOOR);
+            }
             break;
         case TYPE_PTAH:
         case TYPE_ANRAPHET:
