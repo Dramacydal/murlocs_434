@@ -111,6 +111,7 @@ class MANGOS_DLL_SPEC SpellAuraHolder
         void SetIsSingleTarget(bool val) { m_isSingleTarget = val; }
         void UnregisterSingleCastHolder();
 
+        int32 GetAuraMaxDurationWithoutHaste() const { return m_maxDurationWithoutHaste; }
         int32 GetAuraMaxDuration() const { return m_maxDuration; }
         void SetAuraMaxDuration(int32 duration);
         int32 GetAuraDuration() const { return m_duration; }
@@ -175,6 +176,7 @@ class MANGOS_DLL_SPEC SpellAuraHolder
         uint32 m_stackAmount;                               // Aura stack amount
         int32 m_maxDuration;                                // Max aura duration
         int32 m_duration;                                   // Current time
+        int32 m_maxDurationWithoutHaste;                    // Duration calculated without haste, needed for tick calculation
         int32 m_timeCla;                                    // Timer for power per sec calculation
 
         AuraRemoveMode m_removeMode:8;                      // Store info for know remove aura reason

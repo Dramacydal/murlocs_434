@@ -14427,34 +14427,6 @@ void Unit::SendMonsterMoveTransport(WorldObject* transport)
     SendMessageToSet(&data, true);
 }
 
-uint32 Unit::CalculateAuraPeriodicTimeWithHaste(SpellEntry const* spellProto, uint32 oldPeriodicTime)
-{
-    if (!spellProto || oldPeriodicTime == 0)
-        return 0;
-
-    if (!spellProto->HasAttribute(SPELL_ATTR_EX5_AFFECTED_BY_HASTE))
-        return oldPeriodicTime;
-
-    uint32 _periodicTime = ceil(oldPeriodicTime * GetFloatValue(UNIT_MOD_CAST_SPEED));
-
-    return _periodicTime;
-}
-
-uint32 Unit::CalculateSpellDurationWithHaste(SpellEntry const* spellProto, uint32 oldduration)
-{
-    if (!spellProto || oldduration == 0)
-        return 0;
-
-    if (!spellProto->HasAttribute(SPELL_ATTR_EX5_AFFECTED_BY_HASTE))
-        return oldduration;
-
-    // Apply haste to duration
-
-    uint32 duration = ceil(float(oldduration) * GetFloatValue(UNIT_MOD_CAST_SPEED));
-
-    return duration;
-}
-
 bool Unit::IsSplineEnabled() const
 {
     return movespline->Initialized();

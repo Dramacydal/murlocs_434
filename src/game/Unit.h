@@ -2052,8 +2052,6 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         uint32 CalcNotIgnoreAbsorbDamage( uint32 damage, SpellSchoolMask damageSchoolMask, SpellEntry const* spellInfo = NULL);
         uint32 CalcNotIgnoreDamageReduction(uint32 damage, SpellSchoolMask damageSchoolMask);
         int32 CalculateAuraDuration(SpellEntry const* spellProto, uint32 effectMask, int32 duration, Unit const* caster, Spell const* spell = NULL);
-        uint32 CalculateAuraPeriodicTimeWithHaste(SpellEntry const* spellProto, uint32 periodicTime);
-        uint32 CalculateSpellDurationWithHaste(SpellEntry const* spellProto, uint32 duration);
 
         float CalculateLevelPenalty(SpellEntry const* spellProto) const;
 
