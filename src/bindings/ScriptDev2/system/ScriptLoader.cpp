@@ -561,6 +561,16 @@ extern void AddSC_boss_prophet_barim();
 extern void AddSC_boss_lockmaw();
 extern void AddSC_boss_siamat();
 
+// Halls of Origination
+extern void AddSC_instance_halls_of_origination();
+extern void AddSC_boss_ammunae();
+extern void AddSC_boss_anraphet();
+extern void AddSC_boss_earthrager_ptah();
+extern void AddSC_boss_isiset();
+extern void AddSC_boss_rahj();
+extern void AddSC_boss_setesh();
+extern void AddSC_boss_temple_guardian_anhuur();
+
 void AddScripts()
 {
     // battlegrounds
@@ -1115,4 +1125,13 @@ void AddScripts()
     AddSC_boss_prophet_barim();
     AddSC_boss_lockmaw();
     AddSC_boss_siamat();
+
+    AddSC_instance_halls_of_origination();
+    AddSC_boss_ammunae();
+    AddSC_boss_anraphet();
+    AddSC_boss_earthrager_ptah();
+    AddSC_boss_isiset();
+    AddSC_boss_rahj();
+    AddSC_boss_setesh();
+    AddSC_boss_temple_guardian_anhuur();
 }

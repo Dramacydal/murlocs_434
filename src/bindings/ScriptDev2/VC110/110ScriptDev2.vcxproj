@@ -448,6 +448,14 @@
     <ClCompile Include="..\scripts\kalimdor\dustwallow_marsh.cpp" />
     <ClCompile Include="..\scripts\kalimdor\felwood.cpp" />
     <ClCompile Include="..\scripts\kalimdor\feralas.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\halls_of_origination\boss_ammunae.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\halls_of_origination\boss_anraphet.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\halls_of_origination\boss_earthrager_ptah.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\halls_of_origination\boss_isiset.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\halls_of_origination\boss_rajh.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\halls_of_origination\boss_setesh.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\halls_of_origination\boss_temple_guardian_anhuur.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\halls_of_origination\instance_halls_of_origination.cpp" />
     <ClCompile Include="..\scripts\kalimdor\lost_city_of_tolvir\boss_general_husam.cpp" />
     <ClCompile Include="..\scripts\kalimdor\lost_city_of_tolvir\boss_high_prophet_barim.cpp" />
     <ClCompile Include="..\scripts\kalimdor\lost_city_of_tolvir\boss_lockmaw.cpp" />
@@ -810,6 +818,7 @@
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\old_hillsbrad\old_hillsbrad.h" />
     <ClInclude Include="..\scripts\kalimdor\dire_maul\dire_maul.h" />
     <ClInclude Include="..\scripts\kalimdor\firelands\firelands.h" />
+    <ClInclude Include="..\scripts\kalimdor\halls_of_origination\halls_of_origination.h" />
     <ClInclude Include="..\scripts\kalimdor\lost_city_of_tolvir\lost_city_of_tolvir.h" />
     <ClInclude Include="..\scripts\kalimdor\onyxias_lair\onyxias_lair.h" />
     <ClInclude Include="..\scripts\kalimdor\razorfen_kraul\razorfen_kraul.h" />
