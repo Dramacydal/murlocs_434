@@ -11238,6 +11238,10 @@ void SpellAuraHolder::_AddSpellAuraHolder()
         // Bleeding aura state
         if (GetAllSpellMechanicMask(m_spellProto) & (1 << (MECHANIC_BLEED-1)))
             m_target->ModifyAuraState(AURA_STATE_BLEEDING, true);
+
+        // Blood Presence and Rune Strike enabler
+        if (GetId() == 48263 || GetId() == 56817)
+            m_target->ModifyAuraState(AURA_STATE_DEFENSE, true);
     }
 }
 
@@ -11351,6 +11355,20 @@ void SpellAuraHolder::_RemoveSpellAuraHolder()
             case SPELLFAMILY_HUNTER:
                 if (m_spellProto->IsFitToFamilyMask(UI64LIT(0x1000000000000000)))
                     removeState = AURA_STATE_FAERIE_FIRE;   // Sting (hunter versions)
+                break;
+            case SPELLFAMILY_DEATHKNIGHT:
+                if (m_spellProto->Id == 48263)              // Blood Presence
+                {
+                    if (!caster->HasAura(56817))            // Rune Strike enabler
+                        removeState = AURA_STATE_DEFENSE;
+                    break;
+                }
+                else if (m_spellProto->Id == 56817)         // Rune Strike enabler
+                {
+                    if (!caster->HasAura(48263))            // Blood Presence
+                        removeState = AURA_STATE_DEFENSE;
+                    break;
+                }
                 break;
             default:
                 break;

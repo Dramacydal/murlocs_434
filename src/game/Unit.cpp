@@ -12065,8 +12065,9 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit * pTarget, uint32 procFlag,
                 // if victim and dodge attack
                 if (procExtra&PROC_EX_DODGE)
                 {
-                    //Update AURA_STATE on dodge
-                    if (getClass() != CLASS_ROGUE) // skip Rogue Riposte
+                    // Update AURA_STATE on dodge
+                    // skip Rogue Riposte, Death Knight aura state controlled by auras
+                    if (getClass() != CLASS_ROGUE && getClass() != CLASS_DEATH_KNIGHT)
                     {
                         ModifyAuraState(AURA_STATE_DEFENSE, true);
                         StartReactiveTimer( REACTIVE_DEFENSE );
@@ -12081,14 +12082,16 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit * pTarget, uint32 procFlag,
                         ModifyAuraState(AURA_STATE_HUNTER_PARRY, true);
                         StartReactiveTimer( REACTIVE_HUNTER_PARRY );
                     }
-                    else
+                    // Death Knight aura state controlled by auras
+                    else if (getClass() != CLASS_DEATH_KNIGHT)
                     {
                         ModifyAuraState(AURA_STATE_DEFENSE, true);
                         StartReactiveTimer( REACTIVE_DEFENSE );
                     }
                 }
                 // if and victim block attack
-                if (procExtra & PROC_EX_BLOCK)
+                // Death Knight aura state controlled by auras
+                if ((procExtra & PROC_EX_BLOCK) && getClass() != CLASS_DEATH_KNIGHT)
                 {
                     ModifyAuraState(AURA_STATE_DEFENSE,true);
                     StartReactiveTimer( REACTIVE_DEFENSE );
@@ -12671,16 +12674,9 @@ void Unit::ClearAllReactives()
 
     if (HasAuraState( AURA_STATE_DEFENSE))
     {
-        ModifyAuraState(AURA_STATE_DEFENSE, false);
-        if (getClass() == CLASS_DEATH_KNIGHT)
-        {
-            // Clear Rune Strike casterAuraSpell fake aura
-            if (SpellAuraHolder* holder = GetSpellAuraHolder(56816))
-            {
-                if (SpellEffectEntry const * effect = holder->GetSpellProto()->GetSpellEffect(EFFECT_INDEX_0))
-                    holder->SendFakeAuraUpdate(effect->EffectTriggerSpell, true);
-            }
-        }
+        // Death Knight aura state controlled by auras
+        if (getClass() != CLASS_DEATH_KNIGHT)
+            ModifyAuraState(AURA_STATE_DEFENSE, false);
     }
     if (getClass() == CLASS_HUNTER && HasAuraState( AURA_STATE_HUNTER_PARRY))
         ModifyAuraState(AURA_STATE_HUNTER_PARRY, false);
@@ -12707,17 +12703,9 @@ void Unit::UpdateReactives( uint32 p_time )
                 case REACTIVE_DEFENSE:
                     if (HasAuraState(AURA_STATE_DEFENSE))
                     {
-                        ModifyAuraState(AURA_STATE_DEFENSE, false);
-                        if (getClass() == CLASS_DEATH_KNIGHT)
-                        {
-                            // Clear Rune Strike casterAuraSpell fake aura
-                            // Clear Rune Strike casterAuraSpell fake aura
-                            if (SpellAuraHolder* holder = GetSpellAuraHolder(56816))
-                            {
-                                if (SpellEffectEntry const * effect = holder->GetSpellProto()->GetSpellEffect(EFFECT_INDEX_0))
-                                    holder->SendFakeAuraUpdate(effect->EffectTriggerSpell, true);
-                            }
-                        }
+                        // Death Knight aura state controlled by auras
+                        if (getClass() != CLASS_DEATH_KNIGHT)
+                            ModifyAuraState(AURA_STATE_DEFENSE, false);
                     }
                     break;
                 case REACTIVE_HUNTER_PARRY:
