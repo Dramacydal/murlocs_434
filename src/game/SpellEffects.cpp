@@ -12189,7 +12189,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     if (!unitTarget)
                         return;
 
-                    m_caster->CastSpell(unitTarget, 72590, true);
+                    m_caster->CastCustomSpell(unitTarget, 72590, &damage, NULL, NULL, true);
                     return;
                 }
                 case 97985:                                 // Feral Swiftness Clear
