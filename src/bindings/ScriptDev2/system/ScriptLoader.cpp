@@ -577,6 +577,15 @@ extern void AddSC_boss_altairus();
 extern void AddSC_boss_asaad();
 extern void AddSC_boss_grand_vizier_ertan();
 
+// End of Time
+extern void AddSC_instance_end_of_time();
+extern void AddSC_end_of_time();
+extern void AddSC_boss_echo_of_baine();
+extern void AddSC_boss_echo_of_jaina();
+extern void AddSC_boss_echo_of_sylvanas();
+extern void AddSC_boss_echo_of_tyrande();
+extern void AddSC_boss_murozond();
+
 void AddScripts()
 {
     // battlegrounds
@@ -1145,4 +1154,12 @@ void AddScripts()
     AddSC_boss_altairus();
     AddSC_boss_asaad();
     AddSC_boss_grand_vizier_ertan();
+
+    AddSC_instance_end_of_time();
+    AddSC_end_of_time();
+    AddSC_boss_echo_of_baine();
+    AddSC_boss_echo_of_jaina();
+    AddSC_boss_echo_of_sylvanas();
+    AddSC_boss_echo_of_tyrande();
+    AddSC_boss_murozond();
 }

@@ -432,6 +432,13 @@
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\dark_portal\boss_temporus.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\dark_portal\dark_portal.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\dark_portal\instance_dark_portal.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\end_of_time\boss_echo_of_baine.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\end_of_time\boss_echo_of_jaina.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\end_of_time\boss_echo_of_sylvanas.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\end_of_time\boss_echo_of_tyrande.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\end_of_time\boss_murozond.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\end_of_time\end_of_time.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\end_of_time\instance_end_of_time.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\hyjal\boss_archimonde.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\hyjal\hyjal.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\hyjal\hyjalAI.cpp" />
@@ -502,6 +509,10 @@
     <ClCompile Include="..\scripts\kalimdor\thousand_needles.cpp" />
     <ClCompile Include="..\scripts\kalimdor\thunder_bluff.cpp" />
     <ClCompile Include="..\scripts\kalimdor\ungoro_crater.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\vortex_pinnacle\boss_altairus.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\vortex_pinnacle\boss_asaad.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\vortex_pinnacle\boss_grand_vizier_ertan.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\vortex_pinnacle\instance_vortex_pinnacle.cpp" />
     <ClCompile Include="..\scripts\kalimdor\wailing_caverns\instance_wailing_caverns.cpp" />
     <ClCompile Include="..\scripts\kalimdor\wailing_caverns\wailing_caverns.cpp" />
     <ClCompile Include="..\scripts\kalimdor\winterspring.cpp" />
@@ -813,6 +824,7 @@
     <ClInclude Include="..\scripts\kalimdor\blackfathom_deeps\blackfathom_deeps.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\culling_of_stratholme\culling_of_stratholme.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\dark_portal\dark_portal.h" />
+    <ClInclude Include="..\scripts\kalimdor\caverns_of_time\end_of_time\end_of_time.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\hyjal\hyjal.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\hyjal\hyjalAI.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\old_hillsbrad\old_hillsbrad.h" />
@@ -824,6 +836,7 @@
     <ClInclude Include="..\scripts\kalimdor\razorfen_kraul\razorfen_kraul.h" />
     <ClInclude Include="..\scripts\kalimdor\ruins_of_ahnqiraj\ruins_of_ahnqiraj.h" />
     <ClInclude Include="..\scripts\kalimdor\temple_of_ahnqiraj\temple_of_ahnqiraj.h" />
+    <ClInclude Include="..\scripts\kalimdor\vortex_pinnacle\vortex_pinnacle.h" />
     <ClInclude Include="..\scripts\kalimdor\wailing_caverns\wailing_caverns.h" />
     <ClInclude Include="..\scripts\kalimdor\zulfarrak\zulfarrak.h" />
     <ClInclude Include="..\scripts\maelstrom\stonecore\stonecore.h" />
