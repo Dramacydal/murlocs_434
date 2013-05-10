@@ -1020,7 +1020,7 @@ TunnelHelperStruct tunnelLocations[MAX_WIND_TUNNELS] =
 bool OnGossipHello_npc_wind_tunnel(Player* who, Creature* creature)
 {
     if (who->IsInCombat())
-        return;
+        return true;
 
     for (int i = 0; i < MAX_WIND_TUNNELS; ++i)
         if (who->GetDistance2d(tunnelLocations[i].srcX, tunnelLocations[i].srcY) < 5.0f)
