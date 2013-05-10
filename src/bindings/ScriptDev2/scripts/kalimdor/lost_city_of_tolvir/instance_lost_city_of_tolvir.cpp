@@ -32,6 +32,7 @@ instance_lost_city_of_tolvir::instance_lost_city_of_tolvir(Map* pMap) : Scripted
 void instance_lost_city_of_tolvir::Initialize()
 {
     memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
+    tunnelList.clear();
 }
 
 void instance_lost_city_of_tolvir::OnCreatureCreate(Creature* pCreature)
@@ -45,16 +46,28 @@ void instance_lost_city_of_tolvir::OnCreatureCreate(Creature* pCreature)
         case NPC_SIAMAT:
             m_mNpcEntryGuidStore[pCreature->GetEntry()] = pCreature->GetObjectGuid();
             break;
+        case NPC_WIND_TUNNEL:
+            tunnelList.push_back(pCreature->GetObjectGuid());
+            pCreature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            if (!SiamatAvailable())
+                pCreature->SetVisibility(VISIBILITY_OFF);
+            break;
     }
+}
+
+bool instance_lost_city_of_tolvir::SiamatAvailable()
+{
+    return m_auiEncounter[TYPE_HUSAM] == DONE && m_auiEncounter[TYPE_BARIM] == DONE && m_auiEncounter[TYPE_LOCKMAW] == DONE;
 }
 
 void instance_lost_city_of_tolvir::OnObjectCreate(GameObject* pGo)
 {
     if (pGo->GetEntry() == GO_SIAMAT_PLATFORM)
     {
-        if (m_auiEncounter[TYPE_HUSAM] == DONE && m_auiEncounter[TYPE_BARIM] == DONE && m_auiEncounter[TYPE_LOCKMAW] == DONE)
+        if (SiamatAvailable())
             pGo->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
         m_mGoEntryGuidStore[pGo->GetEntry()] = pGo->GetObjectGuid();
+        pGo->SetActiveObjectState(true);
     }
 }
 
@@ -72,9 +85,15 @@ void instance_lost_city_of_tolvir::SetData(uint32 uiType, uint32 uiData)
 
     if (uiData == DONE)
     {
-        if (m_auiEncounter[TYPE_HUSAM] == DONE && m_auiEncounter[TYPE_BARIM] == DONE && m_auiEncounter[TYPE_LOCKMAW] == DONE)
+        if (SiamatAvailable())
+        {
             if (GameObject* pGo = GetSingleGameObjectFromStorage(GO_SIAMAT_PLATFORM))
                 pGo->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
+
+            for (std::list<ObjectGuid>::iterator itr = tunnelList.begin(); itr != tunnelList.end(); ++itr)
+                if (Creature* tunnel = instance->GetAnyTypeCreature(*itr))
+                    tunnel->SetVisibility(VISIBILITY_ON);
+        }
 
         OUT_SAVE_INST_DATA;
 
@@ -977,6 +996,42 @@ CreatureAI* GetAI_npc_pygmy_scout(Creature* pCreature)
     return new npc_pygmy_scoutAI(pCreature);
 }
 
+struct TunnelHelperStruct
+{
+    float srcX;
+    float srcY;
+    float destX;
+    float destY;
+    float destZ;
+};
+
+#define MAX_WIND_TUNNELS 6
+
+TunnelHelperStruct tunnelLocations[MAX_WIND_TUNNELS] =
+{
+    { -10891.0f, -1379.0f, -10917.14f, -1388.46f, 35.53f },
+    { -10887.0f, -1447.0f, -10917.21f, -1426.66f, 35.53f },
+    { -10964.0f, -1481.0f, -10954.76f, -1437.18f, 35.71f },
+    { -11027.0f, -1427.0f, -10986.18f, -1413.69f, 35.53f },
+    { -10998.0f, -1356.0f, -10977.65f, -1375.88f, 35.71f },
+    { -10930.0f, -1302.0f, -10941.38f, -1359.28f, 35.53f },
+};
+
+bool OnGossipHello_npc_wind_tunnel(Player* who, Creature* creature)
+{
+    if (who->IsInCombat())
+        return;
+
+    for (int i = 0; i < MAX_WIND_TUNNELS; ++i)
+        if (who->GetDistance2d(tunnelLocations[i].srcX, tunnelLocations[i].srcY) < 5.0f)
+        {
+            who->GetMotionMaster()->MoveJump(tunnelLocations[i].destX, tunnelLocations[i].destY, tunnelLocations[i].destZ, 55.0f, 10.0f);
+            break;
+        }
+
+    return true;
+}
+
 void AddSC_instance_lost_city_of_tolvir()
 {
     Script* pNewScript;
@@ -1050,5 +1105,10 @@ void AddSC_instance_lost_city_of_tolvir()
     pNewScript = new Script;
     pNewScript->Name = "npc_pygmy_scout";
     pNewScript->GetAI = &GetAI_npc_pygmy_scout;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name = "npc_wind_tunnel";
+    pNewScript->pGossipHello = &OnGossipHello_npc_wind_tunnel;
     pNewScript->RegisterSelf();
 }

@@ -69,8 +69,12 @@ class MANGOS_DLL_DECL instance_lost_city_of_tolvir : public ScriptedInstance
 
     private:
 
+        bool SiamatAvailable();
+
         uint32 m_auiEncounter[MAX_ENCOUNTER];
         std::string m_strInstData;
+
+        std::list<ObjectGuid> tunnelList;
 };
 
 #endif
