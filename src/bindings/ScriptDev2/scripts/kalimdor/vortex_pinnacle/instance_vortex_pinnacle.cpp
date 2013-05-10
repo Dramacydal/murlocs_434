@@ -38,7 +38,7 @@ struct SlipStreamHelperStruct
 SlipStreamHelperStruct slipstreamLocations[MAX_SLIPSTREAM] =
 {
     { -310.0f, -29.74f, -902.12f, -180.40f, 664.51f },      // entrance to Altairus
-    { -771.0f, -29.74f, -902.12f, -180.40f, 664.51f },      // Ertan to Altairus
+    { -771.0f, -58.74f, -902.12f, -180.40f, 664.51f },      // Ertan to Altairus
     { -382.0f,  42.31f, -1190.00f, 475.71f, 634.78f },      // entrance to Asaad
     { -1198.79f, 107.05f, -1190.00f, 475.71f, 634.78f },    // Altairus to Asaad
 };
@@ -59,6 +59,7 @@ void instance_vortex_pinnacle::OnCreatureCreate(Creature* pCreature)
     {
         case NPC_SLIPSTREAM:
             pCreature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            pCreature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
             pCreature->SetActiveObjectState(true);
 
             if (pCreature->GetDistance2d(slipstreamLocations[0].srcX, slipstreamLocations[0].srcY) < 5.0f)

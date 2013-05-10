@@ -10,7 +10,7 @@ enum
     TYPE_ALTAIRUS           = 1,
     TYPE_ASSAD              = 2,
 
-    NPC_ERTRAN              = 43878,
+    NPC_ERTAN               = 43878,
     NPC_ALTAIRUS            = 43873,
     NPC_ASAAD               = 43875,
 
