@@ -571,6 +571,12 @@ extern void AddSC_boss_rahj();
 extern void AddSC_boss_setesh();
 extern void AddSC_boss_temple_guardian_anhuur();
 
+// Vortex Pinnacle
+extern void AddSC_instance_vortex_pinnacle();
+extern void AddSC_boss_altairus();
+extern void AddSC_boss_asaad();
+extern void AddSC_boss_grand_vizier_ertan();
+
 void AddScripts()
 {
     // battlegrounds
@@ -1134,4 +1140,9 @@ void AddScripts()
     AddSC_boss_rahj();
     AddSC_boss_setesh();
     AddSC_boss_temple_guardian_anhuur();
+
+    AddSC_instance_vortex_pinnacle();
+    AddSC_boss_altairus();
+    AddSC_boss_asaad();
+    AddSC_boss_grand_vizier_ertan();
 }

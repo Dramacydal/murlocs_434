@@ -1101,7 +1101,6 @@ void AddSC_instance_lost_city_of_tolvir()
     pNewScript->GetAI = &GetAI_npc_pygmy_firebreather;
     pNewScript->RegisterSelf();
 
-
     pNewScript = new Script;
     pNewScript->Name = "npc_pygmy_scout";
     pNewScript->GetAI = &GetAI_npc_pygmy_scout;

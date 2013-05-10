@@ -56,25 +56,24 @@ void instance_halls_of_origination::OnObjectCreate(GameObject* pGo)
                 pGo->SetGoState(GO_STATE_ACTIVE);
             break;
         case GO_ULDUM_LIGHT_MACHINE_02:
+        case GO_ULDUM_LASERS_02:
             if (m_auiEncounter[TYPE_EARTH_WARDEN] == DONE)
                 pGo->SetGoState(GO_STATE_ACTIVE);
             break;
         case GO_ULDUM_LIGHT_MACHINE_01:
+        case GO_ULDUM_LASERS_01:
             if (m_auiEncounter[TYPE_WATER_WARDEN] == DONE)
                 pGo->SetGoState(GO_STATE_ACTIVE);
             break;
         case GO_ULDUM_LIGHT_MACHINE_04:
+        case GO_ULDUM_LASERS_04:
             if (m_auiEncounter[TYPE_AIR_WARDEN] == DONE)
                 pGo->SetGoState(GO_STATE_ACTIVE);
             break;
         case GO_ULDUM_LIGHT_MACHINE_03:
+        case GO_ULDUM_LASERS_03:
             if (m_auiEncounter[TYPE_FLAME_WARDEN] == DONE)
                 pGo->SetGoState(GO_STATE_ACTIVE);
-            break;
-        case GO_ULDUM_LASERS_02:
-        case GO_ULDUM_LASERS_01:
-        case GO_ULDUM_LASERS_04:
-        case GO_ULDUM_LASERS_03:
             break;
         default:
             return;
