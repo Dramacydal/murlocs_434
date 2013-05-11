@@ -11456,6 +11456,9 @@ int32 Unit::GetMinPowerByIndex(uint32 index) const
     if (power == INVALID_POWER)
         return 0;
 
+    if (power == POWER_ALTERNATIVE)
+        return std::numeric_limits<int32>::min();
+
     return power == POWER_ECLIPSE ? -100 : 0;
 }
 
@@ -11464,6 +11467,9 @@ int32 Unit::GetMinPower(Powers power) const
     uint32 powerIndex = GetPowerIndex(power);
     if (powerIndex == INVALID_POWER_INDEX)
         return 0;
+
+    if (power == POWER_ALTERNATIVE)
+        return std::numeric_limits<int32>::min();
 
     return power == POWER_ECLIPSE ? -100 : 0;
 }
@@ -11477,12 +11483,18 @@ int32 Unit::GetMaxPower(Powers power) const
     if (powerIndex == INVALID_POWER_INDEX)
         return 0;
 
+    if (power == POWER_ALTERNATIVE)
+        return std::numeric_limits<int32>::max();
+
     return GetInt32Value(UNIT_FIELD_MAXPOWER1 + powerIndex);
 }
 
 int32 Unit::GetMaxPowerByIndex(uint32 index) const
 {
     MANGOS_ASSERT(index < MAX_STORED_POWERS);
+
+    if (GetInt32Value(UNIT_FIELD_POWER1 + index) == POWER_ALTERNATIVE)
+        return std::numeric_limits<int32>::max();
 
     return GetInt32Value(UNIT_FIELD_MAXPOWER1 + index);
 }
