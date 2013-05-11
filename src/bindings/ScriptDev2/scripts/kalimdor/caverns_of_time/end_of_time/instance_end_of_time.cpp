@@ -167,12 +167,6 @@ struct SaveStruct
     std::list<AuraInfo> auraInfo;
 };
 
-enum
-{
-    SPELL_SANDS_OF_THE_HOURGLASS            = 102668,   // progress bar
-    SPELL_REWIND_TIME                       = 101590,   // casted by go
-};
-
 void instance_end_of_time::OnHourglassUse(Player* who)
 {
     if (GetData(TYPE_MUROZOND) != IN_PROGRESS)
