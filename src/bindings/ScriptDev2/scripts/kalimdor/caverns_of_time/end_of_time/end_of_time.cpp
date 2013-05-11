@@ -57,6 +57,8 @@ bool OnGossipHello_go_time_transit_device(Player* who, GameObject* go)
     if (pInstance->GetData(TYPE_SYLVANAS) == DONE || pInstance->GetData(TYPE_TYRANDE) == DONE)
         who->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, TEXT_TELE_BRONZE, GOSSIP_SENDER_MAIN, 5);
 
+    who->SEND_GOSSIP_MENU(who->GetGossipTextId(go), go->GetObjectGuid());
+
     return true;
 }
 
