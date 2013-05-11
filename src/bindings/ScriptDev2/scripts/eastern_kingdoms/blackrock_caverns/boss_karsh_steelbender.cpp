@@ -161,13 +161,13 @@ struct MANGOS_DLL_DECL boss_karsh_steelbenderAI : public ScriptedAI
                         m_creature->RemoveAurasDueToSpell(SPELL_QUECKSILVER_ARMOR);
 
                         // We cant do that with CastSpell because with the Spell the Normal Armor is applied too
-                        Aura* aura = m_creature->GetAura(SPELL_SUPERHEATED_QUECKSILVER_ARMOR, EFFECT_INDEX_1);
-                        if (!aura)
-                            aura = m_creature->_AddAura(SPELL_SUPERHEATED_QUECKSILVER_ARMOR, 17000);
-                        if (aura)
+                        SpellAuraHolder* holder = m_creature->GetSpellAuraHolder(SPELL_SUPERHEATED_QUECKSILVER_ARMOR, m_creature->GetObjectGuid());
+                        if (!holder)
+                            holder = m_creature->_AddAura(SPELL_SUPERHEATED_QUECKSILVER_ARMOR, 17000);
+                        if (holder)
                         {
-                            aura->GetHolder()->ModStackAmount(1);
-                            aura->GetHolder()->RefreshHolder();
+                            holder->ModStackAmount(1);
+                            holder->RefreshHolder();
                         }
 
                         DoCastAOE(SPELL_HEAT_WAVE);

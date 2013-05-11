@@ -359,19 +359,19 @@ struct mob_corla_netheressence_triggerAI : public ScriptedAI
                 }
             }
 
-            Aura* aura = channelTarget->GetAura(SPELL_EVOLUTION, EFFECT_INDEX_0);
-            if (!aura)
-                aura = channelTarget->_AddAura(SPELL_EVOLUTION, 15000, zealot);
+            SpellAuraHolder* holder = channelTarget->GetSpellAuraHolder(SPELL_EVOLUTION, zealot->GetObjectGuid());
+            if (!holder)
+                holder = channelTarget->_AddAura(SPELL_EVOLUTION, 15000, zealot);
 
-            if (aura)
+            if (holder)
             {
-                aura->GetHolder()->ModStackAmount(1);
-                aura->GetHolder()->RefreshHolder();
+                holder->ModStackAmount(1);
+                holder->RefreshHolder();
 
-                if (aura->GetStackAmount() >= aura->GetSpellProto()->GetStackAmount())
+                if (holder->GetStackAmount() >= holder->GetSpellProto()->GetStackAmount())
                 {
                     if(channelTarget == zealot)
-                    channelTarget->RemoveAllAuras();
+                        channelTarget->RemoveAllAuras();
 
                     zealot->CastSpell(channelTarget, SPELL_TWILIGHT_EVOLUTION, true);
                 }

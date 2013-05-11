@@ -14313,7 +14313,7 @@ float Unit::GetPathLength(float destX, float destY, float destZ, bool forceDest,
     return dist;
 }
 
-Aura* Unit::_AddAura(uint32 spellID, uint32 duration, Unit* caster)
+SpellAuraHolder* Unit::_AddAura(uint32 spellID, uint32 duration, Unit* caster)
 {
     SpellEntry const *spellInfo = sSpellStore.LookupEntry( spellID );
 
@@ -14344,10 +14344,11 @@ Aura* Unit::_AddAura(uint32 spellID, uint32 duration, Unit* caster)
                 }
             }
             AddSpellAuraHolder(holder);
+            return holder;
         }
     }
 
-    return aura;
+    return NULL;
 }
 
 void Unit::SendMonsterMoveExitVehicle(float x, float y, float z)

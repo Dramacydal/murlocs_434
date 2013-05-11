@@ -20,6 +20,7 @@ enum
     NPC_MUROZOND                        = 54432,
 
     GO_MUROZOND_CACHE                   = 209547,
+    GO_HOURGLASS_OF_TIME                = 209249,
 
     SPELL_TELEPORT_ENTRANCE             = 102564,
     SPELL_TELEPORT_BLUE_DRAGONSHRINE    = 102126,
@@ -28,8 +29,13 @@ enum
     SPELL_TELEPORT_EMERALD_DRAGONSHRINE = 104761,
     SPELL_TELEPORT_BRONZE_DRAGONSHRINE  = 104764,
 
+    SPELL_SANDS_OF_THE_HOURGLASS        = 102668,   // progress bar
+    SPELL_REWIND_TIME                   = 101590,   // casted by go
+
     GO_STAFF_FRAGMENT                   = 209318,
 };
+
+struct SaveStruct;
 
 class MANGOS_DLL_DECL instance_end_of_time : public ScriptedInstance
 {
@@ -46,6 +52,11 @@ class MANGOS_DLL_DECL instance_end_of_time : public ScriptedInstance
 
         const char* Save() override { return m_strInstData.c_str(); }
         void Load(const char* chrIn) override;
+
+        void OnHourglassUse(Player* who);
+
+        int32 hourglassUseCount;
+        std::map<uint32, SaveStruct> savedData;
 
     private:
 

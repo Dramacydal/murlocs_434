@@ -96,6 +96,7 @@ class MANGOS_DLL_DECL ScriptedInstance : public InstanceData
             DoOrSimulateScriptTextForMap(iTextEntry, uiCreatureEntry, instance, GetSingleCreatureFromStorage(uiCreatureEntry, true));
         }
 
+        void DoCastSpellOnPlayers(uint32 spellId, int32* bp0 = NULL, int32* bp1 = NULL, int32* bp2 = NULL);
         void DoRemoveAurasDueToSpellOnPlayers(uint32 spellId);
 
         // Starts a timed achievement criteria for all players in instance

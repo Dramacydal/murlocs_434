@@ -60,6 +60,7 @@ void instance_end_of_time::OnObjectCreate(GameObject* pGo)
     switch (pGo->GetEntry())
     {
         case GO_MUROZOND_CACHE:
+        case GO_HOURGLASS_OF_TIME:
             break;
         default:
             return;
@@ -81,6 +82,19 @@ void instance_end_of_time::SetData(uint32 uiType, uint32 uiData)
             break;
         case TYPE_MUROZOND:
             m_auiEncounter[uiType] = uiData;
+
+            if (GameObject* go = GetSingleGameObjectFromStorage(GO_HOURGLASS_OF_TIME))
+                if (uiData == IN_PROGRESS)
+                {
+                    go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
+                    hourglassUseCount = 0;
+                    DoCastSpellOnPlayers(SPELL_SANDS_OF_THE_HOURGLASS);
+                }
+                else
+                {
+                    go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
+                    DoRemoveAurasDueToSpellOnPlayers(SPELL_SANDS_OF_THE_HOURGLASS);
+                }
 
             if (uiData == DONE)
                 DoRespawnGameObject(GO_MUROZOND_CACHE, HOUR);
@@ -133,6 +147,123 @@ void instance_end_of_time::Load(const char* chrIn)
     }
 
     OUT_LOAD_INST_DATA_COMPLETE;
+}
+
+struct AuraInfo
+{
+    uint32 spellId;
+    uint32 duration;
+    uint32 bp[MAX_EFFECT_INDEX];
+    ObjectGuid casterGuid;
+};
+
+struct SaveStruct
+{
+    float posX;
+    float posY;
+    float posZ;
+    float posO;
+
+    std::list<AuraInfo> auraInfo;
+};
+
+enum
+{
+    SPELL_SANDS_OF_THE_HOURGLASS            = 102668,   // progress bar
+    SPELL_REWIND_TIME                       = 101590,   // casted by go
+};
+
+void instance_end_of_time::OnHourglassUse(Player* who)
+{
+    if (GetData(TYPE_MUROZOND) != IN_PROGRESS)
+        return;
+
+    if (hourglassUseCount >= 5)
+        return;
+
+    ++hourglassUseCount;
+
+    DoCastSpellOnPlayers(SPELL_SANDS_OF_THE_HOURGLASS, &hourglassUseCount);
+
+    if (hourglassUseCount == 1)
+    {
+        savedData.clear();
+
+        Map::PlayerList const& players = instance->GetPlayers();
+        for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+            if (Player* player = itr->getSource())
+            {
+                if (player->isGameMaster())
+                    continue;
+
+                player->RemoveArenaSpellCooldowns();
+
+                savedData[player->GetGUIDLow()].posX = player->GetPositionX();
+                savedData[player->GetGUIDLow()].posY = player->GetPositionY();
+                savedData[player->GetGUIDLow()].posZ = player->GetPositionZ();
+                savedData[player->GetGUIDLow()].posO = player->GetOrientation();
+
+                for(Unit::SpellAuraHolderMap::iterator iter = player->GetSpellAuraHolderMap.begin(); iter != player->GetSpellAuraHolderMap.end(); ++itr)
+                {
+                    if (!iter->second->GetSpellProto()->HasAttribute(SPELL_ATTR_EX4_UNK21) &&
+                                                                        // don't remove stances, shadowform, pally/hunter auras
+                        !iter->second->IsPassive() &&                   // don't remove passive auras
+                        (!iter->second->GetSpellProto()->HasAttribute(SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY) ||
+                        !iter->second->GetSpellProto()->HasAttribute(SPELL_ATTR_UNK8)) &&
+                                                                        // not unaffected by invulnerability auras or not having that unknown flag (that seemed the most probable)
+                        iter->second->IsPositive() &&
+                        iter->second->GetAuraDuration() > 0 &&
+                        iter->second->GetId() != 101591)
+                    {
+                        AuraInfo info;
+                        info.spellId = iter->second->GetId();
+                        info.duration = iter->second->GetAuraDuration();
+                        info.casterGuid = iter->second->GetCasterGuid();
+
+                        for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+                            if (Aura const* aura = iter->second->GetAuraByEffectIndex(SpellEffectIndex(i)))
+                                info.bp[i] = aura->GetModifier()->m_amount;
+                            else
+                                info.bp[i] = 0;
+                    }
+                }
+            }
+        return;
+    }
+
+    Map::PlayerList const& players = instance->GetPlayers();
+    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+        if (Player* player = itr->getSource())
+        {
+            if (player->isGameMaster())
+                continue;
+
+            player->RemoveArenaSpellCooldowns();
+
+            std::map<uint32, SaveStruct>::iterator itr2 = savedData.find(player->GetGUIDLow());
+            if (itr2 == savedData.end())
+                continue;
+
+            for (std::list<AuraInfo>::iterator itr3 = itr2->second.auraInfo.begin(); itr3 != itr2->second.auraInfo.end(); ++itr3)
+            {
+                Unit* caster = instance->GetUnit(itr3->casterGuid);
+                if (!caster)
+                    continue;
+
+                player->RemoveAurasByCasterSpell(itr3->spellId, itr3->casterGuid);
+                if (SpellAuraHolder* holder = player->_AddAura(itr3->spellId, itr3->duration, caster))
+                    for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
+                        if (Aura* aura = holder->GetAuraByEffectIndex(SpellEffectIndex(i)))
+                            if (aura->GetModifier()->m_amount != itr3->bp[i])
+                            {
+                                aura->ApplyModifier(false, true);
+                                aura->ChangeAmount(itr3->bp[i]);
+                                aura->ApplyModifier(true, true);
+                            }
+            }
+
+            player->NearTeleportTo(itr2->second.posX, itr2->second.posY, itr2->second.posZ, itr2->second.posO);
+        }
 }
 
 InstanceData* GetInstanceData_instance_end_of_time(Map* pMap)

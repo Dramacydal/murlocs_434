@@ -423,9 +423,21 @@ void ScriptedInstance::UpdateAchievementCriteria(uint32 type, uint32 miscvalue1,
         debug_log("BSW: UpdateAchievementCriteria attempt set data, but no players in map.");
 }
 
+void ScriptedInstance::DoCastSpellOnPlayers(uint32 spellId, int32* bp0, int32* bp1, int32* bp2)
+{
+    Map::PlayerList const &PlayerList = instance->GetPlayers();
+    for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+        if (Player* player = i->getSource())
+            if (bp0 || bp1 || bp2)
+                player->CastCustomSpell(player, spellId, bp0, bp1, bp2, true);
+            else
+                player->CastSpell(player, spellId, true);
+}
+
 void ScriptedInstance::DoRemoveAurasDueToSpellOnPlayers(uint32 spellId)
 {
     Map::PlayerList const &PlayerList = instance->GetPlayers();
     for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-        i->getSource()->RemoveAurasDueToSpell(spellId);
+        if (Player* player = i->getSource())
+            player->RemoveAurasDueToSpell(spellId);
 }

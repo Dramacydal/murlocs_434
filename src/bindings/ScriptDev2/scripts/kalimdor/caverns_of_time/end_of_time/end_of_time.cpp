@@ -36,7 +36,7 @@ enum
 
 bool OnGossipHello_go_time_transit_device(Player* who, GameObject* go)
 {
-    ScriptedInstance *pInstance = (ScriptedInstance *) go->GetInstanceData();
+    ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
     if (!pInstance || !who)
         return true;
 
@@ -83,6 +83,16 @@ bool OnGossipSelect_go_time_transit_device(Player* who, GameObject* go, uint32 s
     return true;
 }
 
+bool OnGoUse_go_hourglass_of_time(Player* who, GameObject* go)
+{
+    ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
+    if (!pInstance || !who)
+        return true;
+
+    ((instance_end_of_time*)pInstance)->OnHourglassUse(who);
+    return true;
+}
+
 void AddSC_end_of_time()
 {
     Script* pNewScript;
@@ -91,5 +101,10 @@ void AddSC_end_of_time()
     pNewScript->Name = "go_time_transit_device_end_of_time";
     pNewScript->pGossipHelloGO = &OnGossipHello_go_time_transit_device;
     pNewScript->pGossipSelectGO = &OnGossipSelect_go_time_transit_device;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name = "go_hourglass_of_time";
+    pNewScript->pGOUse = &OnGoUse_go_hourglass_of_time;
     pNewScript->RegisterSelf();
 }

@@ -1697,7 +1697,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool CheckAllControlledUnits(Func const& func, uint32 controlledMask) const;
 
         bool AddSpellAuraHolder(SpellAuraHolder *holder);
-        Aura* _AddAura(uint32 spellID, uint32 duration = 60000, Unit* caster = NULL);
+        SpellAuraHolder* _AddAura(uint32 spellID, uint32 duration = 60000, Unit* caster = NULL);
         void AddAuraToModList(Aura *aura);
 
         // removing specific aura stack
