@@ -186,7 +186,7 @@ void WorldSession::HandleVoidStorageTransfer(WorldPacket& recvData)
     recvData.ReadGuidBytes<5, 6>(npcGuid);
 
     for (uint32 i = 0; i < countWithdraw; ++i)
-        recvData.ReadGuidBytes<3, 1, 0, 6, 2, 7, 5, 4>(itemIds[i]);
+        recvData.ReadGuidBytes<3, 0, 1, 6, 2, 7, 5, 4>(itemIds[i]);
 
     recvData.ReadGuidBytes<1, 4, 7, 3, 2, 0>(npcGuid);
 
