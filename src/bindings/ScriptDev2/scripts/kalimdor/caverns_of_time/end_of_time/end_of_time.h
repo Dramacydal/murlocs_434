@@ -19,6 +19,8 @@ enum
     NPC_ECHO_OF_TYRANDE                 = 54544,
     NPC_MUROZOND                        = 54432,
 
+    GO_MUROZOND_CACHE                   = 209547,
+
     SPELL_TELEPORT_ENTRANCE             = 102564,
     SPELL_TELEPORT_BLUE_DRAGONSHRINE    = 102126,
     SPELL_TELEPORT_RUBY_DRAGONSHRINE    = 102579,

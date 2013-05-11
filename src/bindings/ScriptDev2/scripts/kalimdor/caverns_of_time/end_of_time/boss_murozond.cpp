@@ -43,6 +43,8 @@ struct MANGOS_DLL_DECL boss_murozondAI : public ScriptedAI
 
     void Reset() override
     {
+        m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
     }
 
     void Aggro(Unit* pWho) override

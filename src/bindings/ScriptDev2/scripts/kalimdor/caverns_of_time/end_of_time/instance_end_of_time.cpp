@@ -59,6 +59,8 @@ void instance_end_of_time::OnObjectCreate(GameObject* pGo)
 {
     switch (pGo->GetEntry())
     {
+        case GO_MUROZOND_CACHE:
+            break;
         default:
             return;
     }
@@ -75,8 +77,13 @@ void instance_end_of_time::SetData(uint32 uiType, uint32 uiData)
         case TYPE_JAINA:
         case TYPE_SYLVANAS:
         case TYPE_TYRANDE:
+            m_auiEncounter[uiType] = uiData;
+            break;
         case TYPE_MUROZOND:
             m_auiEncounter[uiType] = uiData;
+
+            if (uiData == DONE)
+                DoRespawnGameObject(GO_MUROZOND_CACHE, HOUR);
             break;
         default:
             return;
