@@ -197,7 +197,7 @@ void instance_end_of_time::OnHourglassUse(Player* who)
                 savedData[player->GetGUIDLow()].posZ = player->GetPositionZ();
                 savedData[player->GetGUIDLow()].posO = player->GetOrientation();
 
-                for(Unit::SpellAuraHolderMap::iterator iter = player->GetSpellAuraHolderMap.begin(); iter != player->GetSpellAuraHolderMap.end(); ++itr)
+                for(Unit::SpellAuraHolderMap::iterator iter = player->GetSpellAuraHolderMap().begin(); iter != player->GetSpellAuraHolderMap().end(); ++itr)
                 {
                     if (!iter->second->GetSpellProto()->HasAttribute(SPELL_ATTR_EX4_UNK21) &&
                                                                         // don't remove stances, shadowform, pally/hunter auras
