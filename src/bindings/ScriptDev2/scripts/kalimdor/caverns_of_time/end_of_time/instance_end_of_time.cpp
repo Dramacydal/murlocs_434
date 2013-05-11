@@ -26,6 +26,7 @@ EndScriptData */
 
 instance_end_of_time::instance_end_of_time(Map* pMap) : ScriptedInstance(pMap)
 {
+    bainePlatforms.clear();
     Initialize();
 };
 
@@ -67,6 +68,14 @@ void instance_end_of_time::OnObjectCreate(GameObject* pGo)
 {
     switch (pGo->GetEntry())
     {
+        case GO_BAINE_PLATFORM_01:
+        case GO_BAINE_PLATFORM_02:
+        case GO_BAINE_PLATFORM_03:
+        case GO_BAINE_PLATFORM_04:
+            bainePlatforms.push_back(pGo->GetObjectGuid());
+            if (m_auiEncounter[TYPE_BAINE] != DONE)
+                pGo->Rebuild(NULL);
+            return;
         case GO_MUROZOND_CACHE:
         case GO_HOURGLASS_OF_TIME:
             break;
@@ -82,12 +91,21 @@ void instance_end_of_time::SetData(uint32 uiType, uint32 uiData)
     switch (uiType)
     {
         case TYPE_ENCOUNTER_MASK:
-        case TYPE_BAINE:
         case TYPE_JAINA:
         case TYPE_SYLVANAS:
         case TYPE_TYRANDE:
         case TYPE_FRAGMENTS:
             m_auiEncounter[uiType] = uiData;
+            break;
+        case TYPE_BAINE:
+            m_auiEncounter[uiType] = uiData;
+
+            if (uiData == FAIL)
+            {
+                for (std::list<ObjectGuid>::iterator itr = bainePlatforms.begin(); itr != bainePlatforms.end; ++itr)
+                    if (GameObject* go = instance->GetGameObject(*itr))
+                        go->Rebuild(NULL);
+            }
             break;
         case TYPE_MUROZOND:
             m_auiEncounter[uiType] = uiData;

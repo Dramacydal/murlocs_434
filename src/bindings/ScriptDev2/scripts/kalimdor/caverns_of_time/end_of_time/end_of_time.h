@@ -24,6 +24,11 @@ enum
     GO_MUROZOND_CACHE                   = 209547,
     GO_HOURGLASS_OF_TIME                = 209249,
 
+    GO_BAINE_PLATFORM_01                = 209693,
+    GO_BAINE_PLATFORM_02                = 209694,
+    GO_BAINE_PLATFORM_03                = 209695,
+    GO_BAINE_PLATFORM_04                = 209670,
+
     SPELL_TELEPORT_ENTRANCE             = 102564,
     SPELL_TELEPORT_BLUE_DRAGONSHRINE    = 102126,
     SPELL_TELEPORT_RUBY_DRAGONSHRINE    = 102579,
@@ -70,6 +75,7 @@ class MANGOS_DLL_DECL instance_end_of_time : public ScriptedInstance
         void OnPlayerEnterZone(Player* who, uint32 uiNewZoneId, uint32 uiNewAreaId) override;
 
         int32 hourglassUseCount;
+        std::list<ObjectGuid> bainePlatforms;
         std::map<uint32, SaveStruct> savedData;
 
     private:
