@@ -131,6 +131,9 @@ struct MANGOS_DLL_DECL boss_echo_of_jainaAI : public ScriptedAI
         if (me->IsInCombat())
             summon->SetInCombatWithZone();
 
+        summon->SetLevel(m_creature->getLevel());
+        summon->setFaction(m_creature->getFaction());
+
         switch(summon->GetEntry())
         {
             case NPC_FROSTBLADES:
@@ -210,9 +213,9 @@ struct MANGOS_DLL_DECL boss_echo_of_jainaAI : public ScriptedAI
                     break;
                 case EVENT_FROST_BLADES:
                     //Talk(SAY_FROST_BLADES);
-                    me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation() - 0.1f, TEMPSUMMON_TIMED_DESPAWN, 10000);
+                    me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation() - 0.15f, TEMPSUMMON_TIMED_DESPAWN, 10000);
                     me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 10000);
-                    me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation() + 0.1f, TEMPSUMMON_TIMED_DESPAWN, 10000);
+                    me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation() + 0.15f, TEMPSUMMON_TIMED_DESPAWN, 10000);
                     break;
             }
         }
@@ -237,17 +240,18 @@ struct MANGOS_DLL_DECL npc_flarecoreAI : public ScriptedAI
     ScriptedInstance* m_pInstance;
     EventMap events;
 
-    void Reset()
+    void Reset() override
     {
         if (!me->HasAura(SPELL_CHECK_PLAYER_DIST))
             me->CastSpell(me, SPELL_CHECK_PLAYER_DIST, true);
         events.Reset();
-    }
 
-    void EnterCombat(Unit* /*who*/)
-    {
         events.ScheduleEvent(EVENT_CHECK_PLAYER, 500);
         events.ScheduleEvent(EVENT_EXPLODE, 10000);
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
     }
 
     void MoveInLineOfSight(Unit* pWho) override
@@ -255,7 +259,7 @@ struct MANGOS_DLL_DECL npc_flarecoreAI : public ScriptedAI
         return;
     }
 
-    void UpdateAI(uint32 const diff)
+    void UpdateAI(uint32 const diff) override
     {
         if (!UpdateVictim() || me->IsNonMeleeSpellCasted(false))
             return;
@@ -272,7 +276,6 @@ struct MANGOS_DLL_DECL npc_flarecoreAI : public ScriptedAI
                         DoCast(me, SPELL_UNSTABLE_FLARE);
                         me->ForcedDespawn(100);
                     }
-
                     events.ScheduleEvent(EVENT_CHECK_PLAYER, 500);
                     break;
                 case EVENT_EXPLODE:
@@ -287,6 +290,33 @@ struct MANGOS_DLL_DECL npc_flarecoreAI : public ScriptedAI
 CreatureAI* GetAI_npc_flarecore(Creature* pCreature)
 {
     return new npc_flarecoreAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL npc_frostbladeAI : public ScriptedAI
+{
+    npc_frostbladeAI(Creature* creature) : ScriptedAI(creature)
+    {
+        Reset();
+    }
+
+    void Reset() override
+    {
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        return;
+    }
+
+    void MoveInLineOfSight(Unit* pWho) override
+    {
+        return;
+    }
+};
+
+CreatureAI* GetAI_npc_frostblade(Creature* pCreature)
+{
+    return new npc_frostbladeAI(pCreature);
 }
 
 bool OnGOUse_go_jaina_staff_fragment(Player* player, GameObject* go)
@@ -335,6 +365,11 @@ void AddSC_boss_echo_of_jaina()
     pNewScript = new Script;
     pNewScript->Name = "npc_flarecore";
     pNewScript->GetAI = &GetAI_npc_flarecore;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name = "npc_frostblade";
+    pNewScript->GetAI = &GetAI_npc_frostblade;
     pNewScript->RegisterSelf();
 
     pNewScript = new Script;
