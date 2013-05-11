@@ -98,6 +98,7 @@ class MANGOS_DLL_DECL ScriptedInstance : public InstanceData
 
         void DoCastSpellOnPlayers(uint32 spellId, int32* bp0 = NULL, int32* bp1 = NULL, int32* bp2 = NULL);
         void DoRemoveAurasDueToSpellOnPlayers(uint32 spellId);
+        void DoSetAlternativePowerOnPlayers(int32 amt);
 
         // Starts a timed achievement criteria for all players in instance
         void DoStartTimedAchievement(AchievementCriteriaTypes criteriaType, uint32 uiTimedCriteriaMiscId);

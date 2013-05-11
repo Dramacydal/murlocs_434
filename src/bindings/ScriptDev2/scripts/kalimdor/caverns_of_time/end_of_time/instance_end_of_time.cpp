@@ -88,6 +88,7 @@ void instance_end_of_time::SetData(uint32 uiType, uint32 uiData)
                 {
                     go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
                     hourglassUseCount = 0;
+                    DoSetAlternativePowerOnPlayers(0);
                     DoCastSpellOnPlayers(SPELL_SANDS_OF_THE_HOURGLASS);
                 }
                 else
@@ -149,6 +150,20 @@ void instance_end_of_time::Load(const char* chrIn)
     OUT_LOAD_INST_DATA_COMPLETE;
 }
 
+void instance_end_of_time::OnPlayerEnter(Player* who)
+{
+    if (m_auiEncounter[TYPE_MUROZOND] == IN_PROGRESS)
+    {
+        who->SetPower(POWER_ALTERNATIVE, hourglassUseCount);
+        who->CastSpell(who, SPELL_SANDS_OF_THE_HOURGLASS, true);
+    }
+}
+
+void instance_end_of_time::OnPlayerLeave(Player* who)
+{
+    who->RemoveAurasDueToSpell(SPELL_SANDS_OF_THE_HOURGLASS);
+}
+
 struct AuraInfo
 {
     uint32 spellId;
@@ -173,11 +188,16 @@ void instance_end_of_time::OnHourglassUse(Player* who)
         return;
 
     if (hourglassUseCount >= 5)
+    {
+        if (GameObject* go = GetSingleGameObjectFromStorage(GO_HOURGLASS_OF_TIME))
+            go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
         return;
+    }
 
     ++hourglassUseCount;
 
-    DoCastSpellOnPlayers(SPELL_SANDS_OF_THE_HOURGLASS, &hourglassUseCount);
+    DoSetAlternativePowerOnPlayers(hourglassUseCount);
+    who->CastSpell(who, SPELL_REWIND_TIME, true);
 
     if (hourglassUseCount == 1)
     {

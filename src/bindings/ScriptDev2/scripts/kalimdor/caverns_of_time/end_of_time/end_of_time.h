@@ -55,6 +55,9 @@ class MANGOS_DLL_DECL instance_end_of_time : public ScriptedInstance
 
         void OnHourglassUse(Player* who);
 
+        void OnPlayerEnter(Player* who) override;
+        void OnPlayerLeave(Player* who) override;
+
         int32 hourglassUseCount;
         std::map<uint32, SaveStruct> savedData;
 

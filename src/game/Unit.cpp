@@ -11456,9 +11456,6 @@ int32 Unit::GetMinPowerByIndex(uint32 index) const
     if (power == INVALID_POWER)
         return 0;
 
-    if (power == POWER_ALTERNATIVE)
-        return std::numeric_limits<int32>::min();
-
     return power == POWER_ECLIPSE ? -100 : 0;
 }
 
@@ -11467,9 +11464,6 @@ int32 Unit::GetMinPower(Powers power) const
     uint32 powerIndex = GetPowerIndex(power);
     if (powerIndex == INVALID_POWER_INDEX)
         return 0;
-
-    if (power == POWER_ALTERNATIVE)
-        return std::numeric_limits<int32>::min();
 
     return power == POWER_ECLIPSE ? -100 : 0;
 }
@@ -11482,9 +11476,6 @@ int32 Unit::GetMaxPower(Powers power) const
     uint32 powerIndex = GetPowerIndex(power);
     if (powerIndex == INVALID_POWER_INDEX)
         return 0;
-
-    if (power == POWER_ALTERNATIVE)
-        return std::numeric_limits<int32>::max();
 
     return GetInt32Value(UNIT_FIELD_MAXPOWER1 + powerIndex);
 }
@@ -11673,6 +11664,7 @@ int32 Unit::GetCreatePowers(Powers power) const
         case POWER_SOUL_SHARDS: return 0;
         case POWER_ECLIPSE:     return 0;
         case POWER_HOLY_POWER:  return 0;
+        case POWER_ALTERNATIVE: return 0;
     }
 
     return 0;
@@ -11686,6 +11678,8 @@ int32 Unit::GetCreateMaxPowers(Powers power) const
             return GetTypeId() == TYPEID_PLAYER && ((Player const*)this)->getClass() == CLASS_PALADIN ? 3 : 0;
         case POWER_SOUL_SHARDS:
             return GetTypeId() == TYPEID_PLAYER && ((Player const*)this)->getClass() == CLASS_WARLOCK ? 3 : 0;
+        case POWER_ALTERNATIVE:
+            return 100;
         case POWER_ECLIPSE:
             return 100;
         default:

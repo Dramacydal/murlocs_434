@@ -441,3 +441,11 @@ void ScriptedInstance::DoRemoveAurasDueToSpellOnPlayers(uint32 spellId)
         if (Player* player = i->getSource())
             player->RemoveAurasDueToSpell(spellId);
 }
+
+void ScriptedInstance::DoSetAlternativePowerOnPlayers(int32 amt)
+{
+    Map::PlayerList const &PlayerList = instance->GetPlayers();
+    for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+        if (Player* player = i->getSource())
+            player->SetPower(POWER_ALTERNATIVE, amt);
+}
