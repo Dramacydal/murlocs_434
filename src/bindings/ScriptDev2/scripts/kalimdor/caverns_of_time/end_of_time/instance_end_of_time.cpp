@@ -52,6 +52,15 @@ void instance_end_of_time::OnCreatureCreate(Creature* pCreature)
     switch (pCreature->GetEntry())
     {
         case NPC_ECHO_OF_JAINA:
+            if (m_auiEncounter[TYPE_FRAGMENTS] != MAX_FRAGMENTS_COUNT)
+            {
+                pCreature->SetVisibility(VISIBILITY_OFF);
+                pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+            }
+            pCreature->SetActiveObjectState(true);
+            break;
         case NPC_JAINA_CIRCLE_VISUAL:
             if (m_auiEncounter[TYPE_FRAGMENTS] != MAX_FRAGMENTS_COUNT)
                 pCreature->SetVisibility(VISIBILITY_OFF);

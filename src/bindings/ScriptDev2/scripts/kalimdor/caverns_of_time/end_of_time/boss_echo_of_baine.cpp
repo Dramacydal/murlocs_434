@@ -92,14 +92,14 @@ struct MANGOS_DLL_DECL boss_echo_of_baineAI : public ScriptedAI
 
     void MoveInLineOfSight(Unit* who) override
     {
-        if (introDone)
+        if (!introDone && me->IsWithinDistInMap(who, 40.0f, false))
+        {
+            introDone = true;
+            //Talk(SAY_INTRO);
             return;
+        }
 
-        if (!me->IsWithinDistInMap(who, 40.0f, false))
-            return;
-
-        //Talk(SAY_INTRO);
-        introDone = true;
+        ScriptedAI::MoveInLineOfSight(who);
     }
 
     void Aggro(Unit* pWho) override

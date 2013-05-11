@@ -308,7 +308,12 @@ bool OnGOUse_go_jaina_staff_fragment(Player* player, GameObject* go)
         pInstance->SetData(TYPE_FRAGMENTS, MAX_FRAGMENTS_COUNT);
         pInstance->DoUpdateWorldState(WORLDSTATE_FRAGMENTS_COLLECTED, MAX_FRAGMENTS_COUNT);
         if (Creature* creature = pInstance->GetSingleCreatureFromStorage(NPC_ECHO_OF_JAINA))
+        {
             creature->SetVisibility(VISIBILITY_ON);
+            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+        }
         if (Creature* creature = pInstance->GetSingleCreatureFromStorage(NPC_JAINA_CIRCLE_VISUAL))
             creature->SetVisibility(VISIBILITY_ON);
 
@@ -333,7 +338,7 @@ void AddSC_boss_echo_of_jaina()
     pNewScript->RegisterSelf();
 
     pNewScript = new Script;
-    pNewScript->Name == "go_jaina_staff_fragment";
+    pNewScript->Name = "go_jaina_staff_fragment";
     pNewScript->pGOUse = &OnGOUse_go_jaina_staff_fragment;
     pNewScript->RegisterSelf();
 }

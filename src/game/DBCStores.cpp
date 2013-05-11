@@ -1584,12 +1584,12 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectMiscValue = 15;
                 break;
             }
-            case 101815:                        // Pulverize
-            {
-                if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
-                    eff->EffectRadiusIndex = 50;    // 15 yd
-                break;
-            }
+            //case 101815:                        // Pulverize
+            //{
+            //    if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
+            //        eff->EffectRadiusIndex = 50;    // 15 yd
+            //    break;
+            //}
             case 105722:                        // Item - Druid T13 Balance 2P Bonus (Insect Swarm)
             {
                 if (SpellEffectEntry* eff = (SpellEffectEntry*)spell->GetSpellEffect(EFFECT_INDEX_0))
