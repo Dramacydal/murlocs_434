@@ -72,7 +72,7 @@ class MANGOS_DLL_DECL instance_end_of_time : public ScriptedInstance
         void OnPlayerEnter(Player* who) override;
         void OnPlayerLeave(Player* who) override;
 
-        void OnPlayerEnterZone(Player* who, uint32 uiNewZoneId, uint32 uiNewAreaId) override;
+        void OnPlayerEnterArea(Player* who, uint32 uiNewAreaId) override;
 
         int32 hourglassUseCount;
         std::list<ObjectGuid> bainePlatforms;

@@ -7431,6 +7431,13 @@ void Player::UpdateArea(uint32 newArea)
     sOutdoorPvPMgr.HandlePlayerLeaveArea(this, m_zoneUpdateId, m_areaUpdateId);
     sOutdoorPvPMgr.HandlePlayerEnterArea(this, m_zoneUpdateId, newArea);
 
+    // Called when a player leaves area
+    if (InstanceData* mapInstance = GetInstanceData())
+    {
+        mapInstance->OnPlayerLeaveArea(this, m_areaUpdateId);
+        mapInstance->OnPlayerEnterArea(this, newArea);
+    }
+
     m_areaUpdateId = newArea;
 
     phaseMgr->AddUpdateFlag(PHASE_UPDATE_FLAG_AREA_UPDATE);

@@ -203,7 +203,7 @@ void instance_end_of_time::OnPlayerLeave(Player* who)
     who->RemoveAurasDueToSpell(SPELL_SANDS_OF_THE_HOURGLASS);
 }
 
-void instance_end_of_time::OnPlayerEnterZone(Player* who, uint32 uiNewZoneId, uint32 uiNewAreaId)
+void instance_end_of_time::OnPlayerEnterArea(Player* who, uint32 uiNewAreaId)
 {
     who->SendUpdateWorldState(WORLDSTATE_SHOW_FRAGMENTS, uiNewAreaId == AREA_AZURE_DRAGONSHRINE ? 1 : 0);
     who->SendUpdateWorldState(WORLDSTATE_FRAGMENTS_COLLECTED, GetData(TYPE_FRAGMENTS));
