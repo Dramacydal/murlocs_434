@@ -19492,10 +19492,13 @@ void Player::_SaveVoidStorage()
     {
         SqlStatement stmt = CharacterDatabase.CreateStatement(delVoidStorage, "DELETE FROM character_void_storage WHERE slot = ? AND playerGuid = ?");
         stmt.PExecute(i, GetObjectGuid().GetCounter());
+    }
 
+    for (uint8 i = 0; i < VOID_STORAGE_MAX_SLOT; ++i)
+    {
         if (m_voidStorageItems[i])
         {
-            stmt = CharacterDatabase.CreateStatement(insVoidStorage, "INSERT INTO character_void_storage (itemId, playerGuid, itemEntry, slot, creatorGuid, randomProperty, suffixFactor) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            SqlStatement stmt = CharacterDatabase.CreateStatement(insVoidStorage, "INSERT INTO character_void_storage (itemId, playerGuid, itemEntry, slot, creatorGuid, randomProperty, suffixFactor) VALUES (?, ?, ?, ?, ?, ?, ?)");
             stmt.addUInt64(m_voidStorageItems[i]->ItemId);
             stmt.addUInt32(GetObjectGuid().GetCounter());
             stmt.addUInt32(m_voidStorageItems[i]->ItemEntry);
