@@ -137,10 +137,6 @@ struct MANGOS_DLL_DECL boss_echo_of_jainaAI : public ScriptedAI
         switch(summon->GetEntry())
         {
             case NPC_FROSTBLADES:
-                summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
-                float x, y, z;
-                summon->GetClosePoint(x, y, z, me->GetObjectBoundingRadius() / 3, 100.0f);
-                summon->GetMotionMaster()->MovePoint(1, x, y, z);
                 summon->ForcedDespawn(10000);
                 break;
             default:
@@ -165,10 +161,10 @@ struct MANGOS_DLL_DECL boss_echo_of_jainaAI : public ScriptedAI
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
+        events.Update(diff);
+
         if (me->IsNonMeleeSpellCasted(false))
             return;
-
-        events.Update(diff);
 
         while (uint32 eventId = events.ExecuteEvent())
         {
@@ -299,8 +295,27 @@ struct MANGOS_DLL_DECL npc_frostbladeAI : public ScriptedAI
         Reset();
     }
 
+    uint32 counter;
+    bool init;
+    float orientation;
+
     void Reset() override
     {
+        init = false;
+        counter = 0;
+    }
+
+    void MovementInform(uint32 uiMoveType, uint32 uiPointId) override
+    {
+        if (counter >= 20 || uiMoveType != POINT_MOTION_TYPE || !uiPointId)
+            return;
+
+        ++counter;
+
+        Position pos;
+        m_creature->GetPosition(pos.x, pos.y, pos.z);
+        m_creature->GetNearPoint(m_creature, pos.x, pos.y, pos.z, m_creature->GetObjectBoundingRadius(), 5.0f, orientation);
+        m_creature->GetMotionMaster()->MovePoint(1, pos.x, pos.y, pos.z);
     }
 
     void EnterCombat(Unit* /*who*/) override
@@ -311,6 +326,24 @@ struct MANGOS_DLL_DECL npc_frostbladeAI : public ScriptedAI
     void MoveInLineOfSight(Unit* pWho) override
     {
         return;
+    }
+
+    void UpadateAI(uint32 diff)
+    {
+        if (!init)
+        {
+            init = true;
+            if (Unit* creator = m_creature->GetCreator())
+            {
+                orientation = creator->GetOrientation();
+                m_creature->SetWalk(false);
+
+                Position pos;
+                m_creature->GetPosition(pos.x, pos.y, pos.z);
+                m_creature->GetNearPoint(m_creature, pos.x, pos.y, pos.z, m_creature->GetObjectBoundingRadius(), 5.0f, orientation);
+                m_creature->GetMotionMaster()->MovePoint(1, pos.x, pos.y, pos.z);
+            }
+        }
     }
 };
 
