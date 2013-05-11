@@ -102,7 +102,7 @@ void instance_end_of_time::SetData(uint32 uiType, uint32 uiData)
 
             if (uiData == FAIL)
             {
-                for (std::list<ObjectGuid>::iterator itr = bainePlatforms.begin(); itr != bainePlatforms.end; ++itr)
+                for (std::list<ObjectGuid>::iterator itr = bainePlatforms.begin(); itr != bainePlatforms.end(); ++itr)
                     if (GameObject* go = instance->GetGameObject(*itr))
                         go->Rebuild(NULL);
             }
