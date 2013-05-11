@@ -219,6 +219,8 @@ void instance_end_of_time::OnHourglassUse(Player* who)
                                 info.bp[i] = aura->GetModifier()->m_amount;
                             else
                                 info.bp[i] = 0;
+
+                        savedData[player->GetGUIDLow()].auraInfo.push_back(info);
                     }
                 }
             }
