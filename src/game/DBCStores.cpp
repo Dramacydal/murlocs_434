@@ -1522,7 +1522,17 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectImplicitTargetA = TARGET_CURRENT_ENEMY_COORDINATES;
                 break;
             }
+            case 687:                           // Demon Armor
+            case 28176:                         // Fel Armor
+            case 48517:                         // Eclipse (Solar)
+            case 48518:                         // Eclipse (Lunar)
+            case 67483:                         // Eclipse Marker
+            case 67484:                         // Eclipse Marker
+            case 81206:                         // Chakra: Sanctuary
+            case 81208:                         // Chakra: Serenity
+            case 81209:                         // Chakra: Chastice
             case 83582:                         // Pyromaniac
+            case 94338:                         // Eclipse (Solar)
             case 96206:                         // Nature's Bounty
             {
                 spell->AttributesEx6 |= SPELL_ATTR_EX6_REMOVED_AT_SPEC_SWITCH;
