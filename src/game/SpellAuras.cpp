@@ -2061,6 +2061,13 @@ void Aura::TriggerSpell()
                                 caster->CastSpell(caster, 82897, true);
                         return;
                     }
+                    case 107837:                            // Throw Totem
+                    {
+                        // Throw Totem
+                        if (target->HasAura(101601))
+                            return;
+                        break;
+                    }
                     default:
                         break;
                 }

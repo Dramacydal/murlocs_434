@@ -413,6 +413,17 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
         cast_count = 0;
     }
 
+    Unit::AuraList const& m363auras = mover->GetAurasByType(SPELL_AURA_363);
+    for (Unit::AuraList::const_iterator itr = m363auras.begin(); itr != m363auras.end(); ++itr)
+        if ((*itr)->GetSpellEffect()->EffectTriggerSpell == spellId)
+        {
+            triggered = true;
+            triggeredBy = (*itr)->GetSpellProto();
+            triggeredByAura = *itr;
+            break;
+        }
+
+
     if (!spellInfo->HasAttribute(SPELL_ATTR_EX8_RAID_MARKER))
     {
         if (mover->GetTypeId()==TYPEID_PLAYER)
@@ -753,7 +764,7 @@ void WorldSession::HandleSpellClick( WorldPacket & recv_data )
 
             // Wild Wolpertinger
             // TODO: move to script
-            if (unit->GetEntry() == 23487)
+            if (unit->GetEntry() == 23487 || itr->second.castFlags & SPELL_CLICK_FLAG_DESPAWN_AFTER_USE)
                 unit->ForcedDespawn();
         }
     }

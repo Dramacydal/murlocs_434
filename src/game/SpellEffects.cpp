@@ -5910,6 +5910,13 @@ void Spell::EffectTriggerMissileSpell(SpellEffectEntry const* effect)
         return;
     }
 
+    // Throw Totem
+    if (m_spellInfo->Id == 101603)
+    {
+        m_caster->RemoveAurasDueToSpell(101601);    // Throw Totem
+        m_caster->RemoveAurasDueToSpell(107837);    // Throw Totem
+    }
+
     if (m_CastItem)
         DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "WORLD: cast Item spellId - %i", spellInfo->Id);
 
