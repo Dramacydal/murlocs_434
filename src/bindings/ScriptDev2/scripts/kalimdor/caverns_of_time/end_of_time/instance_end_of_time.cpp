@@ -88,7 +88,7 @@ void instance_end_of_time::SetData(uint32 uiType, uint32 uiData)
                 {
                     go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
                     hourglassUseCount = 0;
-                    DoSetAlternativePowerOnPlayers(0);
+                    DoSetAlternativePowerOnPlayers(5);
                     DoCastSpellOnPlayers(SPELL_SANDS_OF_THE_HOURGLASS);
                 }
                 else
@@ -196,7 +196,7 @@ void instance_end_of_time::OnHourglassUse(Player* who)
 
     ++hourglassUseCount;
 
-    DoSetAlternativePowerOnPlayers(hourglassUseCount);
+    DoSetAlternativePowerOnPlayers(5 - hourglassUseCount);
     who->CastSpell(who, SPELL_REWIND_TIME, true);
 
     if (hourglassUseCount == 1)
