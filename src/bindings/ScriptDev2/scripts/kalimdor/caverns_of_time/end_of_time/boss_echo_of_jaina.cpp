@@ -88,7 +88,6 @@ struct MANGOS_DLL_DECL boss_echo_of_jainaAI : public ScriptedAI
     uint32 VolleyCount;
     EventMap events;
     std::list<ObjectGuid> summons;
-    EventMap events;
 
     void DespawnAllSummons()
     {
