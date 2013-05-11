@@ -4,7 +4,7 @@
 
 enum
 {
-    MAX_ENCOUNTER                       = 6,
+    MAX_ENCOUNTER                       = 7,
 
     TYPE_ENCOUNTER_MASK                 = 0,
     TYPE_BAINE                          = 1,
@@ -12,12 +12,14 @@ enum
     TYPE_SYLVANAS                       = 3,
     TYPE_TYRANDE                        = 4,
     TYPE_MUROZOND                       = 5,
+    TYPE_FRAGMENTS                      = 6,
 
     NPC_ECHO_OF_BAINE                   = 54431,
     NPC_ECHO_OF_JAINA                   = 54445,
     NPC_ECHO_OF_SYLVANAS                = 54123,
     NPC_ECHO_OF_TYRANDE                 = 54544,
     NPC_MUROZOND                        = 54432,
+    NPC_JAINA_CIRCLE_VISUAL             = 54639,
 
     GO_MUROZOND_CACHE                   = 209547,
     GO_HOURGLASS_OF_TIME                = 209249,
@@ -31,8 +33,15 @@ enum
 
     SPELL_SANDS_OF_THE_HOURGLASS        = 102668,   // progress bar
     SPELL_REWIND_TIME                   = 101590,   // casted by go
+    MAX_HOURGLASS_USES                  = 5,
 
     GO_STAFF_FRAGMENT                   = 209318,
+    MAX_FRAGMENTS_COUNT                 = 16,
+
+    WORLDSTATE_FRAGMENTS_COLLECTED      = 6025,
+    WORLDSTATE_SHOW_FRAGMENTS           = 6046,
+
+    AREA_AZURE_DRAGONSHRINE             = 5793,
 };
 
 struct SaveStruct;
@@ -57,6 +66,8 @@ class MANGOS_DLL_DECL instance_end_of_time : public ScriptedInstance
 
         void OnPlayerEnter(Player* who) override;
         void OnPlayerLeave(Player* who) override;
+
+        void OnPlayerEnterZone(Player* who, uint32 uiNewZoneId, uint32 uiNewAreaId) override;
 
         int32 hourglassUseCount;
         std::map<uint32, SaveStruct> savedData;

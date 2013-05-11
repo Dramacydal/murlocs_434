@@ -50,9 +50,17 @@ void instance_end_of_time::OnCreatureCreate(Creature* pCreature)
 {
     switch (pCreature->GetEntry())
     {
+        case NPC_ECHO_OF_JAINA:
+        case NPC_JAINA_CIRCLE_VISUAL:
+            if (m_auiEncounter[TYPE_FRAGMENTS] != MAX_FRAGMENTS_COUNT)
+                pCreature->SetVisibility(VISIBILITY_OFF);
+            pCreature->SetActiveObjectState(true);
+            break;
         default:
             return;
     }
+
+    m_mNpcEntryGuidStore[pCreature->GetEntry()] = pCreature->GetObjectGuid();
 }
 
 void instance_end_of_time::OnObjectCreate(GameObject* pGo)
@@ -78,6 +86,7 @@ void instance_end_of_time::SetData(uint32 uiType, uint32 uiData)
         case TYPE_JAINA:
         case TYPE_SYLVANAS:
         case TYPE_TYRANDE:
+        case TYPE_FRAGMENTS:
             m_auiEncounter[uiType] = uiData;
             break;
         case TYPE_MUROZOND:
@@ -88,7 +97,7 @@ void instance_end_of_time::SetData(uint32 uiType, uint32 uiData)
                 {
                     go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
                     hourglassUseCount = 0;
-                    DoSetAlternativePowerOnPlayers(5);
+                    DoSetAlternativePowerOnPlayers(MAX_HOURGLASS_USES);
                     DoCastSpellOnPlayers(SPELL_SANDS_OF_THE_HOURGLASS);
                 }
                 else
@@ -104,13 +113,13 @@ void instance_end_of_time::SetData(uint32 uiType, uint32 uiData)
             return;
     }
 
-    if (uiData == DONE || uiType == TYPE_ENCOUNTER_MASK)
+    if (uiData == DONE || uiType == TYPE_ENCOUNTER_MASK || uiType == TYPE_FRAGMENTS)
     {
         OUT_SAVE_INST_DATA;
 
         std::ostringstream saveStream;
         saveStream << m_auiEncounter[0] << " " << m_auiEncounter[1] << " " << m_auiEncounter[2] << " " <<
-            m_auiEncounter[3] << " " << m_auiEncounter[4] << " " << m_auiEncounter[5];
+            m_auiEncounter[3] << " " << m_auiEncounter[4] << " " << m_auiEncounter[5] << " " << m_auiEncounter[6];
 
         m_strInstData = saveStream.str();
 
@@ -139,10 +148,13 @@ void instance_end_of_time::Load(const char* chrIn)
 
     std::istringstream loadStream(chrIn);
     loadStream >> m_auiEncounter[0] >> m_auiEncounter[1] >> m_auiEncounter[2] >>
-        m_auiEncounter[3] >> m_auiEncounter[4] >> m_auiEncounter[5];
+        m_auiEncounter[3] >> m_auiEncounter[4] >> m_auiEncounter[5] >> m_auiEncounter[6];
 
     for (uint8 i = 1; i < MAX_ENCOUNTER; ++i)
     {
+        if (i == TYPE_FRAGMENTS)
+            continue;
+
         if (m_auiEncounter[i] == IN_PROGRESS)
             m_auiEncounter[i] = NOT_STARTED;
     }
@@ -162,6 +174,12 @@ void instance_end_of_time::OnPlayerEnter(Player* who)
 void instance_end_of_time::OnPlayerLeave(Player* who)
 {
     who->RemoveAurasDueToSpell(SPELL_SANDS_OF_THE_HOURGLASS);
+}
+
+void instance_end_of_time::OnPlayerEnterZone(Player* who, uint32 uiNewZoneId, uint32 uiNewAreaId)
+{
+    who->SendUpdateWorldState(WORLDSTATE_SHOW_FRAGMENTS, uiNewAreaId == AREA_AZURE_DRAGONSHRINE ? 1 : 0);
+    who->SendUpdateWorldState(WORLDSTATE_FRAGMENTS_COLLECTED, GetData(TYPE_FRAGMENTS));
 }
 
 struct AuraInfo
@@ -187,7 +205,7 @@ void instance_end_of_time::OnHourglassUse(Player* who)
     if (GetData(TYPE_MUROZOND) != IN_PROGRESS)
         return;
 
-    if (hourglassUseCount >= 5)
+    if (hourglassUseCount >= MAX_HOURGLASS_USES)
     {
         if (GameObject* go = GetSingleGameObjectFromStorage(GO_HOURGLASS_OF_TIME))
             go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
@@ -196,7 +214,7 @@ void instance_end_of_time::OnHourglassUse(Player* who)
 
     ++hourglassUseCount;
 
-    DoSetAlternativePowerOnPlayers(5 - hourglassUseCount);
+    DoSetAlternativePowerOnPlayers(MAX_HOURGLASS_USES - hourglassUseCount);
     who->CastSpell(who, SPELL_REWIND_TIME, true);
 
     if (hourglassUseCount == 1)
