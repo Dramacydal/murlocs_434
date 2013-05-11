@@ -88,7 +88,7 @@ void AddSC_end_of_time()
     Script* pNewScript;
 
     pNewScript = new Script;
-    pNewScript->Name = "go_time_transit_device";
+    pNewScript->Name = "go_time_transit_device_end_of_time";
     pNewScript->pGossipHelloGO = &OnGossipHello_go_time_transit_device;
     pNewScript->pGossipSelectGO = &OnGossipSelect_go_time_transit_device;
     pNewScript->RegisterSelf();
