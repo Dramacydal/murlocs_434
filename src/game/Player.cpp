@@ -26304,6 +26304,12 @@ AreaLockStatus Player::GetAreaTriggerLockStatus(AreaTrigger const* at, Difficult
         if (opvp && (opvp->GetState() == BF_STATE_IN_PROGRESS || opvp->GetDefender() != GetTeamIndex(GetTeam())))
             return AREA_LOCKSTATUS_NOT_ALLOWED;
     }
+    // End of Time, Well of Eternity, Hour of Twilight
+    else if (at->target_mapId == 938 || at->target_mapId == 939 || at->target_mapId == 940)
+    {
+        if (isRegularTargetMap)
+            return AREA_LOCKSTATUS_MISSING_DIFFICULTY;
+    }
 
     return AREA_LOCKSTATUS_OK;
 }
