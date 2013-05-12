@@ -117,7 +117,7 @@ void WorldSession::HandleVoidStorageQuery(WorldPacket& recvData)
         itemData << uint32(i);
 
         itemData.WriteGuidBytes<0, 6>(itemId);
-        itemData.WriteGuidBytes<0>(creatorGuid);
+        itemData.WriteGuidBytes<0, 1>(creatorGuid);
 
         itemData << uint32(item->ItemRandomPropertyId);
 
