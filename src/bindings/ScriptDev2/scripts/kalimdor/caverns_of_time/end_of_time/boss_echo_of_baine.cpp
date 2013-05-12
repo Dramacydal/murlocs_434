@@ -173,6 +173,8 @@ struct MANGOS_DLL_DECL boss_echo_of_baineAI : public ScriptedAI
                         if (Player* player = i->getSource())
                             if (player->IsInWater())
                                 player->CastSpell(player, SPELL_MOLTEN_FIST, true); // Add the damage aura to players in Magma.
+                    events.ScheduleEvent(EVENT_LAVA_CHECK, 1000);
+                    break;
                 }
             }
         }
