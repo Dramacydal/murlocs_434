@@ -333,7 +333,7 @@ struct MANGOS_DLL_DECL npc_frostbladeAI : public ScriptedAI
             init = true;
             if (Unit* summoner = ((TemporarySummon*)m_creature)->GetSummoner())
             {
-                orientation = summoner->GetOrientation();
+                orientation = me->GetOrientation();
                 m_creature->SetWalk(false);
 
                 Position pos;
