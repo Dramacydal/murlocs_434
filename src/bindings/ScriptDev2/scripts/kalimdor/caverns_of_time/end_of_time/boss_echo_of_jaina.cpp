@@ -131,7 +131,6 @@ struct MANGOS_DLL_DECL boss_echo_of_jainaAI : public ScriptedAI
         if (me->IsInCombat())
             summon->SetInCombatWithZone();
 
-        summon->SetLevel(m_creature->getLevel());
         summon->setFaction(m_creature->getFaction());
 
         switch(summon->GetEntry())
@@ -140,6 +139,7 @@ struct MANGOS_DLL_DECL boss_echo_of_jainaAI : public ScriptedAI
                 summon->ForcedDespawn(10000);
                 break;
             default:
+                summon->SetLevel(m_creature->getLevel());
                 break;
         }
     }
@@ -209,9 +209,9 @@ struct MANGOS_DLL_DECL boss_echo_of_jainaAI : public ScriptedAI
                     break;
                 case EVENT_FROST_BLADES:
                     //Talk(SAY_FROST_BLADES);
-                    me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation() - 0.15f, TEMPSUMMON_TIMED_DESPAWN, 10000);
-                    me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 10000);
-                    me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation() + 0.15f, TEMPSUMMON_TIMED_DESPAWN, 10000);
+                    me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation() - 0.15f, TEMPSUMMON_TIMED_DESPAWN, 10000, false, me->getLevel());
+                    me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 10000, false, me->getLevel());
+                    me->SummonCreature(NPC_FROSTBLADES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation() + 0.15f, TEMPSUMMON_TIMED_DESPAWN, 10000, false, me->getLevel());
                     break;
             }
         }
@@ -328,7 +328,7 @@ struct MANGOS_DLL_DECL npc_frostbladeAI : public ScriptedAI
         return;
     }
 
-    void UpadateAI(uint32 diff)
+    void UpdateAI(uint32 diff) override
     {
         if (!init)
         {

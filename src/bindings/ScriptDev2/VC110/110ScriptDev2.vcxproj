@@ -448,6 +448,10 @@
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\old_hillsbrad\boss_leutenant_drake.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\old_hillsbrad\instance_old_hillsbrad.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\old_hillsbrad\old_hillsbrad.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\well_of_eternity\boss_mannoroth_and_varothen.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\well_of_eternity\boss_perotharn.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\well_of_eternity\boss_queen_azshara.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\well_of_eternity\instance_well_of_eternity.cpp" />
     <ClCompile Include="..\scripts\kalimdor\darkshore.cpp" />
     <ClCompile Include="..\scripts\kalimdor\desolace.cpp" />
     <ClCompile Include="..\scripts\kalimdor\dire_maul\dire_maul.cpp" />
@@ -828,6 +832,7 @@
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\hyjal\hyjal.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\hyjal\hyjalAI.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\old_hillsbrad\old_hillsbrad.h" />
+    <ClInclude Include="..\scripts\kalimdor\caverns_of_time\well_of_eternity\well_of_eternity.h" />
     <ClInclude Include="..\scripts\kalimdor\dire_maul\dire_maul.h" />
     <ClInclude Include="..\scripts\kalimdor\firelands\firelands.h" />
     <ClInclude Include="..\scripts\kalimdor\halls_of_origination\halls_of_origination.h" />
