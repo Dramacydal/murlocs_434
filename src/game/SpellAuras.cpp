@@ -4223,7 +4223,23 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
         // need send to client not form active state, or at re-apply form client go crazy
         // target->SendForcedObjectUpdate();
 
-        if (modelid > 0)
+        Unit::AuraList const& transforms = target->GetAurasByType(SPELL_AURA_TRANSFORM);
+        if (!transforms.empty())
+        {
+            // look for other transform auras
+            Aura* handledAura = *transforms.begin();
+            for(Unit::AuraList::const_iterator i = transforms.begin(); i != transforms.end(); ++i)
+            {
+                // negative auras are preferred
+                if (!IsPositiveSpell((*i)->GetSpellProto()->Id))
+                {
+                    handledAura = *i;
+                    break;
+                }
+            }
+            handledAura->ApplyModifier(true);
+        }
+        else if (modelid > 0)
             target->SetDisplayId(modelid);
 
         // now only powertype must be set

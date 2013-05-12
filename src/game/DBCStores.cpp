@@ -1596,6 +1596,11 @@ void LoadDBCStores(const std::string& dataPath)
                     eff->EffectSpellClassMask.Flags &= ~UI64LIT(0x10);
                 break;
             }
+            case 108464:                        // Night Elf Illusion
+            {
+                spell->Attributes |= SPELL_ATTR_CASTABLE_WHILE_DEAD;
+                break;
+            }
          }
 
         // Lightwell, enable healing spd scale
