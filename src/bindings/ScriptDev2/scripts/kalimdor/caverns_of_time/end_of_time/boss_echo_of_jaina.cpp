@@ -312,7 +312,7 @@ struct MANGOS_DLL_DECL npc_frostbladeAI : public ScriptedAI
 
         Position pos;
         m_creature->GetPosition(pos.x, pos.y, pos.z);
-        m_creature->GetNearPoint(m_creature, pos.x, pos.y, pos.z, m_creature->GetObjectBoundingRadius(), 5.0f, orientation);
+        m_creature->GetNearPoint(m_creature, pos.x, pos.y, pos.z, m_creature->GetObjectBoundingRadius(), 10.0f, orientation);
         m_creature->GetMotionMaster()->MovePoint(1, pos.x, pos.y, pos.z);
     }
 
@@ -338,7 +338,7 @@ struct MANGOS_DLL_DECL npc_frostbladeAI : public ScriptedAI
 
                 Position pos;
                 m_creature->GetPosition(pos.x, pos.y, pos.z);
-                m_creature->GetNearPoint(m_creature, pos.x, pos.y, pos.z, m_creature->GetObjectBoundingRadius(), 5.0f, orientation);
+                m_creature->GetNearPoint(m_creature, pos.x, pos.y, pos.z, m_creature->GetObjectBoundingRadius(), 10.0f, orientation);
                 m_creature->GetMotionMaster()->MovePoint(1, pos.x, pos.y, pos.z);
             }
         }
