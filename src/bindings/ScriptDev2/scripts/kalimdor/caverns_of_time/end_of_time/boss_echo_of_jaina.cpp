@@ -23,6 +23,7 @@ EndScriptData */
 
 #include "precompiled.h"
 #include "end_of_time.h"
+#include "TemporarySummon.h"
 
 enum Yells
 {
@@ -257,9 +258,6 @@ struct MANGOS_DLL_DECL npc_flarecoreAI : public ScriptedAI
 
     void UpdateAI(uint32 const diff) override
     {
-        if (!UpdateVictim() || me->IsNonMeleeSpellCasted(false))
-            return;
-
         events.Update(diff);
 
         while (uint32 eventId = events.ExecuteEvent())
@@ -330,12 +328,12 @@ struct MANGOS_DLL_DECL npc_frostbladeAI : public ScriptedAI
 
     void UpdateAI(uint32 diff) override
     {
-        if (!init)
+        if (!init && m_creature->IsTemporarySummon())
         {
             init = true;
-            if (Unit* creator = m_creature->GetCreator())
+            if (Unit* summoner = ((TemporarySummon*)m_creature)->GetSummoner())
             {
-                orientation = creator->GetOrientation();
+                orientation = summoner->GetOrientation();
                 m_creature->SetWalk(false);
 
                 Position pos;
