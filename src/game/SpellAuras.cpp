@@ -2061,13 +2061,6 @@ void Aura::TriggerSpell()
                                 caster->CastSpell(caster, 82897, true);
                         return;
                     }
-                    case 107837:                            // Throw Totem
-                    {
-                        // Throw Totem
-                        if (target->HasAura(101601))
-                            return;
-                        break;
-                    }
                     default:
                         break;
                 }
@@ -2440,7 +2433,13 @@ void Aura::TriggerSpell()
                 target->SummonCreature(53089,target->GetPositionX()-urand(5,30),target->GetPositionY()-urand(-5,-30),56.500f, target->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN, 0);
                 return;
             }
-
+            case 107837:                            // Throw Totem
+            {
+                // Throw Totem
+                if (target->HasAura(101601))
+                    return;
+                break;
+            }
             default:
                 break;
         }
