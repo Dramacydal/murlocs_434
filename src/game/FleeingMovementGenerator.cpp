@@ -153,7 +153,6 @@ void FleeingMovementGenerator<Creature>::Finalize(Creature &owner)
 template<class T>
 void FleeingMovementGenerator<T>::Interrupt(T &owner)
 {
-    owner.InterruptMoving(); 
     // flee state still applied while movegen disabled
     owner.clearUnitState(UNIT_STAT_FLEEING_MOVE);
 }
