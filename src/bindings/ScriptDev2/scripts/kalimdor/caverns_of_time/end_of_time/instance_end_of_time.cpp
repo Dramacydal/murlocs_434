@@ -256,6 +256,10 @@ void instance_end_of_time::OnHourglassUse(Player* who)
                     continue;
 
                 player->RemoveArenaSpellCooldowns();
+                player->RemoveAurasDueToSpell(57723);   // Exhaustion
+                player->RemoveAurasDueToSpell(57724);   // Sated
+                player->RemoveAurasDueToSpell(80354);   // Temporal Displacement
+
 
                 savedData[player->GetGUIDLow()].posX = player->GetPositionX();
                 savedData[player->GetGUIDLow()].posY = player->GetPositionY();
@@ -300,6 +304,9 @@ void instance_end_of_time::OnHourglassUse(Player* who)
                 continue;
 
             player->RemoveArenaSpellCooldowns();
+            player->RemoveAurasDueToSpell(57723);   // Exhaustion
+            player->RemoveAurasDueToSpell(57724);   // Sated
+            player->RemoveAurasDueToSpell(80354);   // Temporal Displacement
 
             std::map<uint32, SaveStruct>::iterator itr2 = savedData.find(player->GetGUIDLow());
             if (itr2 == savedData.end())
