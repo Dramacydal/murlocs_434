@@ -10313,7 +10313,7 @@ void Unit::SetDeathState(DeathState s)
 
         i_motionMaster.Clear(false,true);
         i_motionMaster.MoveIdle();
-        StopMoving(true);
+        StopMoving();
         DisableSpline();
 
         ModifyAuraState(AURA_STATE_HEALTHLESS_20_PERCENT, false);
