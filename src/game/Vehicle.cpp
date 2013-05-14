@@ -262,7 +262,7 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
             break;
     }
 
-    if (seatInfo->m_flags & SEAT_FLAG_CAN_CONTROL)
+    if ((seatInfo->m_flags & SEAT_FLAG_CAN_CONTROL) && m_pBase->GetTypeId() == TYPEID_UNIT)
     {
         if (!(GetVehicleInfo()->m_flags & VEHICLE_FLAG_ACCESSORY))
         {
@@ -384,7 +384,7 @@ void VehicleKit::RemovePassenger(Unit *passenger)
             break;
     }
 
-    if (seat->second.seatInfo->m_flags & SEAT_FLAG_CAN_CONTROL)
+    if (seat->second.seatInfo->m_flags & SEAT_FLAG_CAN_CONTROL && m_pBase->GetTypeId() == TYPEID_UNIT)
     {
         passenger->SetCharm(NULL);
         passenger->RemoveSpellsCausingAura(SPELL_AURA_CONTROL_VEHICLE);
