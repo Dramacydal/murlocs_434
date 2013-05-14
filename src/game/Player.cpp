@@ -20343,7 +20343,7 @@ void Player::VehicleSpellInitialize()
     if (!_charm || _charm->GetTypeId() != TYPEID_UNIT)
         return;
 
-    Creature* charm = (Creature*)charm;
+    Creature* charm = (Creature*)_charm;
 
     CharmInfo *charmInfo = charm->GetCharmInfo();
 
