@@ -2135,8 +2135,6 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool CreateVehicleKit(uint32 vehicleId);
         void RemoveVehicleKit();
 
-        bool CheckCanCastDispellOn(Unit* target, SpellEntry const * spellInfo);
-
         void SetPanic(Unit* caster, uint32 panictime = 0)
         {
              GetMotionMaster()->MoveFleeing(caster, panictime);

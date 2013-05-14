@@ -14219,62 +14219,6 @@ void Unit::DisableSpline()
     movespline->_Interrupt();
 }
 
-bool Unit::CheckCanCastDispellOn(Unit* target, SpellEntry const * spellInfo)
-{
-    if (!spellInfo)
-        return true;
-
-    if (GetTypeId() != TYPEID_PLAYER)
-        return true;
-
-    bool offensive = !target->IsFriendlyTo(this);
-    // Priest Dispel Magic has dummy effect
-    if (spellInfo->Id == 527)
-    {
-        // check Absolution talent
-        if (!offensive && target != this && !HasAura(33167))
-            return false;
-
-        spellInfo = sSpellStore.LookupEntry(offensive ? 97691 : 97690);
-    }
-
-    uint32 dispelMask = 0;
-    for (uint8 i = 0; i < MAX_EFFECT_INDEX; ++i)
-    {
-        SpellEffectEntry const * spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(i));
-        if (!spellEffect)
-            continue;
-
-        bool isDispelEffect = false;
-        switch (spellEffect->Effect)
-        {
-            case SPELL_EFFECT_DISPEL:
-            case SPELL_EFFECT_STEAL_BENEFICIAL_BUFF:
-                isDispelEffect = true;
-                break;
-        }
-
-        // spells with other effects 
-        if (!isDispelEffect && spellEffect->Effect != SPELL_EFFECT_NONE)
-            return true;
-        else if (isDispelEffect)
-        {
-            // skip dispel effects with null target amount
-            if (!CalculateSpellDamage(target, spellInfo, SpellEffectIndex(i)))
-                continue;
-
-            dispelMask |= GetDispelMask(DispelType(spellEffect->EffectMiscValue));
-        }
-    }
-
-    // actually, no dispel spells with DISPEL_NONE
-    if (dispelMask == 1)
-        return true;
-
-    return true;
-    //return offensive && target->HasPositiveAuraByDispelMask(dispelMask) || !offensive && target->HasNegativeAuraByDispelMask(dispelMask);
-}
-
 ObjectGuid Unit::GetTransportGuid() const
 {
     if (m_pVehicle)

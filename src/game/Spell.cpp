@@ -7797,10 +7797,6 @@ SpellCastResult Spell::CheckCast(bool strict)
         }
     }
 
-    if (Unit* target = m_targets.getUnitTarget())
-        if (!m_IsTriggeredSpell && !m_caster->CheckCanCastDispellOn(target, m_spellInfo))
-            return SPELL_FAILED_NOTHING_TO_DISPEL;
-
     if (m_caster->GetTypeId() == TYPEID_PLAYER && ((Player*)m_caster)->IsSpectator() && m_spellInfo->Id != 39870)
         return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
 
