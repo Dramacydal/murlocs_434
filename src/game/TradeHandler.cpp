@@ -111,7 +111,7 @@ void WorldSession::SendUpdateTrade(bool trader_state /*= true*/, bool spellOnly 
 
     data.WriteBits(itemCount, 22);
 
-    for (uint8 i = 0; i < TRADE_SLOT_COUNT; ++i)
+    for (uint8 i = 0; i < TRADE_SLOT_COUNT && !spellOnly; ++i)
     {
         if (Item* item = view_trade->GetItem(TradeSlots(i)))
         {
@@ -131,7 +131,7 @@ void WorldSession::SendUpdateTrade(bool trader_state /*= true*/, bool spellOnly 
         }
     }
 
-    for (uint8 i = 0; i < TRADE_SLOT_COUNT; ++i)
+    for (uint8 i = 0; i < TRADE_SLOT_COUNT && !spellOnly; ++i)
     {
         if (Item* item = view_trade->GetItem(TradeSlots(i)))
         {
