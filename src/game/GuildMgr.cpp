@@ -146,8 +146,8 @@ void GuildMgr::LoadGuilds()
         "BankResetTimeTab3,BankRemSlotsTab3,BankResetTimeTab4,BankRemSlotsTab4,BankResetTimeTab5,BankRemSlotsTab5,"
     //   19               20                21                22               23                      24                  25
         "characters.name, characters.level, characters.class, characters.zone, characters.logout_time, characters.account, thisWeekReputation, "
-    //   26                 27               28                   29                    30                  31                    32
-        "achievementPoints, firstProfession, firstProfessionRank, firstProfessionValue, secondProfessionId, secondProfessionRank, secondProfessionValue "
+    //   26                 27                 28                   29                    30                  31                    32
+        "achievementPoints, firstProfessionId, firstProfessionRank, firstProfessionValue, secondProfessionId, secondProfessionRank, secondProfessionValue "
         "FROM guild_member LEFT JOIN characters ON characters.guid = guild_member.guid WHERE guild_member.guildid >= %u AND guild_member.guildid < %u  ORDER BY guildid ASC", startGuid, hiGuid);
 
     // load guild bank tab rights

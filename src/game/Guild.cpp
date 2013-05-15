@@ -77,7 +77,7 @@ void MemberSlot::SetMemberStats(Player* player, bool save /*=true*/)
 
     if (save)
     {
-        CharacterDatabase.PExecute("UPDATE guild_member SET achievementPoints = %u, firstProfession = %u, firstProfessionRank = %u, firstProfessionValue = %u, "
+        CharacterDatabase.PExecute("UPDATE guild_member SET achievementPoints = %u, firstProfessionId = %u, firstProfessionRank = %u, firstProfessionValue = %u, "
             "secondProfessionId = %u, secondProfessionRank = %u, secondProfessionValue = %u "
             "WHERE guid='%u'",
             AchievementPoints, m_professions[0].skillId, m_professions[0].rank, m_professions[0].value,
@@ -289,7 +289,7 @@ bool Guild::AddMember(ObjectGuid plGuid, uint32 plRank)
     CharacterDatabase.escape_string(dbPnote);
     CharacterDatabase.escape_string(dbOFFnote);
 
-    CharacterDatabase.PExecute("INSERT INTO guild_member (guildid,guid,rank,pnote,offnote,achievementPoints,firstProfession,firstProfessionRank,firstProfessionValue,secondProfessionId,secondProfessionRank,secondProfessionValue) VALUES "
+    CharacterDatabase.PExecute("INSERT INTO guild_member (guildid,guid,rank,pnote,offnote,achievementPoints,firstProfessionId,firstProfessionRank,firstProfessionValue,secondProfessionId,secondProfessionRank,secondProfessionValue) VALUES "
         "('%u', '%u', '%u','%s','%s', '%u', '%u', '%u', '%u', '%u', '%u', '%u')",
         m_Id, lowguid, newmember.RankId, dbPnote.c_str(), dbOFFnote.c_str(),
         newmember.AchievementPoints,
