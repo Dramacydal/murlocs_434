@@ -180,6 +180,8 @@ struct MANGOS_DLL_DECL boss_echo_of_baineAI : public ScriptedAI
         }
 
         DoMeleeAttackIfReady();
+
+        EnterEvadeIfOutOfCombatArea(diff);
     }
 };
 

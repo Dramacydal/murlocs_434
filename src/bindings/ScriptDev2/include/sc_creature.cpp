@@ -541,6 +541,7 @@ enum
     NPC_TALON_KING_IKISS        = 18473,
     NPC_KARGATH_BLADEFIST       = 16808,
     NPC_ANUBARAK                = 29120,
+    NPC_ECHO_OF_BAINE           = 54431,
 };
 
 bool ScriptedAI::EnterEvadeIfOutOfCombatArea(const uint32 uiDiff)
@@ -594,6 +595,9 @@ bool ScriptedAI::EnterEvadeIfOutOfCombatArea(const uint32 uiDiff)
             if (fY < 281.0f && fY > 228.0f)
                 return false;
             break;
+        case NPC_ECHO_OF_BAINE:
+            if (fY > 1384.0f)
+                return false;
         default:
             error_log("SD2: EnterEvadeIfOutOfCombatArea used for creature entry %u, but does not have any definition.", m_creature->GetEntry());
             return false;
