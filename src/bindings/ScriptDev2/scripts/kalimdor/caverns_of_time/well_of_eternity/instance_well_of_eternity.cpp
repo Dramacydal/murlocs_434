@@ -49,8 +49,13 @@ void instance_well_of_eternity::OnCreatureCreate(Creature* pCreature)
             break;
         case NPC_GUARDIAN_DEMON:
             guardianDemons.push_back(pCreature->GetObjectGuid());
-            if (m_auiEncounter[TYPE_ENERGY_FOCUS] == MAX_FOCUS)
+            if (m_auiEncounter[TYPE_ENERGY_FOCUS] >= MAX_FOCUS)
                 pCreature->ForcedDespawn();
+            return;
+        case NPC_DRAKE_VEHICLE:
+            if (m_auiEncounter[TYPE_AZSHARA] != DONE)
+                pCreature->SetVisibility(VISIBILITY_OFF);
+            drakes.push_back(pCreature->GetObjectGuid());
             return;
         default:
             return;
@@ -85,7 +90,7 @@ void instance_well_of_eternity::OnObjectCreate(GameObject* pGo)
             if (pGo->GetDistance2d(3335.0f, -4890.0f) < 100.0f)
             {
                 perotharnDoors.push_back(pGo->GetObjectGuid());
-                if (m_auiEncounter[TYPE_ENERGY_FOCUS] == MAX_FOCUS)
+                if (m_auiEncounter[TYPE_ENERGY_FOCUS] >= MAX_FOCUS)
                     pGo->SetGoState(GO_STATE_ACTIVE);
             }
             return;
@@ -101,7 +106,7 @@ void instance_well_of_eternity::OnObjectCreate(GameObject* pGo)
             else if (pGo->GetDistance2d(3335.0f, -4890.0f) < 100.0f)
             {
                 perotharnDoors.push_back(pGo->GetObjectGuid());
-                if (m_auiEncounter[TYPE_ENERGY_FOCUS] == MAX_FOCUS)
+                if (m_auiEncounter[TYPE_ENERGY_FOCUS] >= MAX_FOCUS)
                     pGo->SetGoState(GO_STATE_ACTIVE);
             }
             // before last energy focus
@@ -117,6 +122,13 @@ void instance_well_of_eternity::OnObjectCreate(GameObject* pGo)
             if (m_auiEncounter[TYPE_GUARDS_SLAIN] > 0)
                 pGo->SetGoState(GO_STATE_ACTIVE);
             return;
+        case GO_PORTAL_ENERGY_FOCUS_1:
+        case GO_PORTAL_ENERGY_FOCUS_2:
+        case GO_PORTAL_ENERGY_FOCUS_3:
+            pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
+            if (m_auiEncounter[TYPE_ENERGY_FOCUS] >= MAX_FOCUS)
+                pGo->Delete();
+            break;
         default:
             return;
     }
@@ -132,20 +144,20 @@ void instance_well_of_eternity::SetData(uint32 uiType, uint32 uiData)
             m_auiEncounter[uiType] = uiData;
             // open last enery focus door
             if (uiType >= MAX_GUARDS)
-                for (GUIDList::iterator itr = energyFocusDoors.begin(); itr != energyFocusDoors.end(); ++itr)
+                for (GuidList::iterator itr = energyFocusDoors.begin(); itr != energyFocusDoors.end(); ++itr)
                     DoUseDoorOrButton(*itr);
             // open courtyard doors
             if (uiType > 0)
-                for (GUIDList::iterator itr = courtyardDoors.begin(); itr != courtyardDoors.end(); ++itr)
+                for (GuidList::iterator itr = courtyardDoors.begin(); itr != courtyardDoors.end(); ++itr)
                     DoUseDoorOrButton(*itr);
             break;
         case TYPE_ENERGY_FOCUS:
             m_auiEncounter[uiType] = uiData;
             if (uiType == MAX_FOCUS)
             {
-                for (GUIDList::iterator itr = perotharnDoors.begin(); itr != perotharnDoors.end(); ++itr)
+                for (GuidList::iterator itr = perotharnDoors.begin(); itr != perotharnDoors.end(); ++itr)
                     DoUseDoorOrButton(*itr);
-                for (GUIDList::iterator itr = guardianDemons.begin(); itr != guardianDemons.end(); ++itr)
+                for (GuidList::iterator itr = guardianDemons.begin(); itr != guardianDemons.end(); ++itr)
                     if (Creature* demon = instance->GetAnyTypeCreature(*itr))
                         demon->ForcedDespawn();
                 if (Creature* pCreature = GetSingleCreatureFromStorage(NPC_PEROTHARN))
@@ -163,6 +175,12 @@ void instance_well_of_eternity::SetData(uint32 uiType, uint32 uiData)
                 DoUseDoorOrButton(GO_INVISIBLE_FIRE_WALL);
             break;
         case TYPE_AZSHARA:
+            m_auiEncounter[uiType] = uiData;
+            if (uiData == DONE)
+                for (GuidList::iterator itr = drakes.begin(); itr != drakes.end(); ++itr)
+                    if (Creature* drake = instance->GetAnyTypeCreature(*itr))
+                        drake->SetVisibility(VISIBILITY_ON);
+            break;
         case TYPE_MANNOROTH:
             m_auiEncounter[uiType] = uiData;
             break;
@@ -222,6 +240,36 @@ InstanceData* GetInstanceData_instance_well_of_eternity(Map* pMap)
     return new instance_well_of_eternity(pMap);
 }
 
+bool OnGOUse_go_portal_energy_focus(Player* player, GameObject* go)
+{
+    ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
+    if (!pInstance)
+        return true;
+
+    uint32 usedCount = pInstance->GetData(TYPE_ENERGY_FOCUS) + 1;
+
+    if (usedCount < MAX_FOCUS)
+    {
+        pInstance->SetData(TYPE_ENERGY_FOCUS, usedCount);
+        go->Delete();
+    }
+    else
+    {
+        pInstance->SetData(TYPE_ENERGY_FOCUS, MAX_FOCUS);
+        if (Creature* creature = pInstance->GetSingleCreatureFromStorage(NPC_PEROTHARN))
+        {
+            creature->SetVisibility(VISIBILITY_ON);
+            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+        }
+
+        go->Delete();
+    }
+
+    return true;
+}
+
 void AddSC_instance_well_of_eternity()
 {
     Script* pNewScript;
@@ -229,5 +277,10 @@ void AddSC_instance_well_of_eternity()
     pNewScript = new Script;
     pNewScript->Name = "instance_well_of_eternity";
     pNewScript->GetInstanceData = &GetInstanceData_instance_well_of_eternity;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name = "go_portal_energy_focus";
+    pNewScript->pGOUse = &OnGOUse_go_portal_energy_focus;
     pNewScript->RegisterSelf();
 }

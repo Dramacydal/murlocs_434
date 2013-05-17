@@ -586,6 +586,12 @@ extern void AddSC_boss_echo_of_sylvanas();
 extern void AddSC_boss_echo_of_tyrande();
 extern void AddSC_boss_murozond();
 
+// Well of Eternity
+extern void AddSC_instance_well_of_eternity();
+extern void AddSC_boss_mannoroth_and_varothen();
+extern void AddSC_boss_perotharn();
+extern void AddSC_boss_queen_azshara();
+
 void AddScripts()
 {
     // battlegrounds
@@ -1162,4 +1168,9 @@ void AddScripts()
     AddSC_boss_echo_of_sylvanas();
     AddSC_boss_echo_of_tyrande();
     AddSC_boss_murozond();
+
+    AddSC_instance_well_of_eternity();
+    AddSC_boss_mannoroth_and_varothen();
+    AddSC_boss_perotharn();
+    AddSC_boss_queen_azshara();
 }

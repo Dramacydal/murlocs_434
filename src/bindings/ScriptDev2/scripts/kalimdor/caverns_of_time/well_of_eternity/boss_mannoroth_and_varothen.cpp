@@ -85,4 +85,10 @@ CreatureAI* GetAI_boss_mannoroth(Creature* pCreature)
 
 void AddSC_boss_mannoroth_and_varothen()
 {
+    Script* pNewScript;
+
+    pNewScript = new Script;
+    pNewScript->Name = "boss_mannoroth";
+    pNewScript->GetAI = &GetAI_boss_mannoroth;
+    pNewScript->RegisterSelf();
 }

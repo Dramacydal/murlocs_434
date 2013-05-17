@@ -85,4 +85,10 @@ CreatureAI* GetAI_boss_perotharn(Creature* pCreature)
 
 void AddSC_boss_perotharn()
 {
+    Script* pNewScript;
+
+    pNewScript = new Script;
+    pNewScript->Name = "boss_perotharn";
+    pNewScript->GetAI = &GetAI_boss_perotharn;
+    pNewScript->RegisterSelf();
 }

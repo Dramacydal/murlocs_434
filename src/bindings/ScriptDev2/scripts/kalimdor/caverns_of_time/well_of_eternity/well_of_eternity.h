@@ -12,9 +12,14 @@ enum
     TYPE_AZSHARA                = 3,
     TYPE_MANNOROTH              = 4,
 
+    NPC_AZSHARA                 = 54853,
     NPC_GUARDIAN_DEMON          = 54927,
+    NPC_MANNOROTH               = 54969,
     NPC_PEROTHARN               = 55085,
     NPC_LEGION_DEMON            = 55503,
+    NPC_DRAKE_VEHICLE           = 57107,
+    
+    NPC_VAROTHEN                = 55419,
 
     GO_WOE_COURTYARD_DOOR       = 210084,   // before courtyard
     GO_INVISIBLE_FIRE_WALL      = 210097,   // after peroth'arn
@@ -32,6 +37,9 @@ enum
     SPELL_SHADOWCLOAK_ILLIDAN   = 105915,
 
     AREATRIGGER_MEET_ILLIDAN    = 7066,
+
+    WORLDSTATE_DEMONS_PRESENT   = 6017,
+    WORLDSTATE_DEMONS_SHOW      = 6018,
 
     MAX_FOCUS                   = 3,
     MAX_GUARDS                  = 2,
@@ -60,6 +68,7 @@ class MANGOS_DLL_DECL instance_well_of_eternity : public ScriptedInstance
         GuidList perotharnDoors;
         GuidList energyFocusDoors;
         GuidList guardianDemons;
+        GuidList drakes;
 
         uint32 m_auiEncounter[MAX_ENCOUNTER];
         std::string m_strInstData;

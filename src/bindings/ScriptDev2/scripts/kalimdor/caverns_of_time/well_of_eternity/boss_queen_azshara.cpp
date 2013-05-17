@@ -67,11 +67,17 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
     }
 };
 
-CreatureAI* GetAI_boss_murozond(Creature* pCreature)
+CreatureAI* GetAI_boss_queen_azshara(Creature* pCreature)
 {
     return new boss_queen_azsharaAI(pCreature);
 }
 
 void AddSC_boss_queen_azshara()
 {
+    Script* pNewScript;
+
+    pNewScript = new Script;
+    pNewScript->Name = "boss_queen_azshara";
+    pNewScript->GetAI = &GetAI_boss_queen_azshara;
+    pNewScript->RegisterSelf();
 }
