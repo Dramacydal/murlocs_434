@@ -18,8 +18,8 @@ UPDATE `gameobject_template` SET `faction` = 14 WHERE `entry` IN (192549, 190727
 
 -- Support Vehichles
 -- Battleground Demolisher
-UPDATE `creature_template` SET `npcflag` = 0, `minlevel` = 70, `maxlevel` = 70, `minhealth` = 60000, `maxhealth` = 60000, `spell1` = 52338, `spell2` = 60206, `mechanic_immune_mask` = 1|2|8|0x10|0x20|0x80|0x200|0x800|0x2000|0x10000|0x800000|0x1000000|0x4000000|0x20000000, `RegenHealth` = 0, `speed_walk` = 1, `speed_run` = 1.14286, unit_flags = 0x8000, flags_extra = flags_extra | 0x1000 WHERE `entry` = 28781;
-UPDATE `creature_template` SET `npcflag` = 0, `minlevel` = 80, `maxlevel` = 80, `minhealth` = 130000, `maxhealth` = 130000, `spell1` = 52338, `spell2` = 60206, `mechanic_immune_mask` = 1|2|8|0x10|0x20|0x80|0x200|0x800|0x2000|0x10000|0x800000|0x1000000|0x4000000|0x20000000, `RegenHealth` = 0, `speed_walk` = 1, `speed_run` = 1.14286, unit_flags = 0x8000, flags_extra = flags_extra | 0x1000 WHERE `entry` = 32796;
+UPDATE `creature_template` SET `npcflag` = 0, `minlevel` = 70, `maxlevel` = 70, `minhealth` = 60000, `maxhealth` = 60000, `spell1` = 52338, `spell2` = 60206, `mechanic_immune_mask` = 1|2|8|0x10|0x20|0x80|0x200|0x800|0x2000|0x10000|0x800000|0x1000000|0x4000000|0x20000000, `RegenHealth` = 0, `speed_walk` = 1, `speed_run` = 1.14286, unit_flags = 0x8000, flags_extra = flags_extra | 0x1000, mingold=0 ,maxgold = 0 WHERE `entry` = 28781;
+UPDATE `creature_template` SET `npcflag` = 0, `minlevel` = 80, `maxlevel` = 80, `minhealth` = 130000, `maxhealth` = 130000, `spell1` = 52338, `spell2` = 60206, `mechanic_immune_mask` = 1|2|8|0x10|0x20|0x80|0x200|0x800|0x2000|0x10000|0x800000|0x1000000|0x4000000|0x20000000, `RegenHealth` = 0, `speed_walk` = 1, `speed_run` = 1.14286, unit_flags = 0x8000, flags_extra = flags_extra | 0x1000, mingold=0, maxgold = 0 WHERE `entry` = 32796;
 
 -- Demolisher
 DELETE FROM creature_template_addon WHERE entry IN (28781, 32796);
@@ -34,8 +34,8 @@ INSERT INTO `npc_spellclick_spells` VALUES
 UPDATE `creature_template` SET `difficulty_entry_1` = 32796 WHERE `entry` = 28781;
 UPDATE `creature_template` SET `armor` = 13622 WHERE `entry` = 32796;
 -- Antipersonnel Cannon
-UPDATE `creature_template` SET `npcflag` = 0, `minlevel` = 70, `maxlevel` = 70, `unit_flags`=`unit_flags`|4|8|4096, `minhealth` = 44910, `maxhealth` = 44910, `faction_A` = 35, `faction_H` = 35, `spell1` = 49872, `mechanic_immune_mask` = `mechanic_immune_mask`|32|64, `RegenHealth` = 0, unit_flags = 0x8004, flags_extra = flags_extra | 0x1000 WHERE `entry` = 27894;
-UPDATE `creature_template` SET `npcflag` = 0, `minlevel` = 80, `maxlevel` = 80, `unit_flags`=`unit_flags`|4|8|4096, `minhealth` = 63000, `maxhealth` = 63000, `faction_A` = 35, `faction_H` = 35, `spell1` = 49872, `mechanic_immune_mask` = `mechanic_immune_mask`|32|64, `RegenHealth` = 0, unit_flags = 0x8004, flags_extra = flags_extra | 0x1000 WHERE `entry` = 32795;
+UPDATE `creature_template` SET `npcflag` = 0, `minlevel` = 70, `maxlevel` = 70, `unit_flags`=`unit_flags`|4|8|4096, `minhealth` = 44910, `maxhealth` = 44910, `faction_A` = 35, `faction_H` = 35, `spell1` = 49872, `mechanic_immune_mask` = `mechanic_immune_mask`|32|64, `RegenHealth` = 0, unit_flags = 0x8004, flags_extra = flags_extra | 0x1000, mingold = 0,maxgold = 0 WHERE `entry` = 27894;
+UPDATE `creature_template` SET `npcflag` = 0, `minlevel` = 80, `maxlevel` = 80, `unit_flags`=`unit_flags`|4|8|4096, `minhealth` = 63000, `maxhealth` = 63000, `faction_A` = 35, `faction_H` = 35, `spell1` = 49872, `mechanic_immune_mask` = `mechanic_immune_mask`|32|64, `RegenHealth` = 0, unit_flags = 0x8004, flags_extra = flags_extra | 0x1000, mingold = 0,maxgold = 0 WHERE `entry` = 32795;
 DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (27894, 32795);
 INSERT INTO `npc_spellclick_spells` VALUES
 (27894, 60682, 0, 0, 0, 1),
