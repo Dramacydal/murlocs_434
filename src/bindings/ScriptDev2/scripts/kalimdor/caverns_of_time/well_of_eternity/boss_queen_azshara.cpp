@@ -26,7 +26,7 @@ EndScriptData */
 
 enum
 {
-    // ToDo: add spells and yells here
+    EVENT_ACTIVATE_MAGUS    = 1,
 };
 
 struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
@@ -40,14 +40,46 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
 
     ScriptedInstance* m_pInstance;
     bool m_bIsRegularMode;
+    bool started;
+    EventMap events;
+    GuidSet deadMagus;
 
     void Reset() override
     {
-        m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        for (GuidSet::iterator itr = deadMagus.begin(); itr != deadMagus.end(); ++itr)
+            if (Creature* unit = m_creature->GetMap()->GetAnyTypeCreature(*itr))
+            {
+                unit->Respawn();
+                unit->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+                unit->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            }
+        deadMagus.clear();
+
+        started = false;
+        m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+        events.Reset();
+    }
+
+    void DamageTaken(Unit* who, uint32& damage) override
+    {
+        damage = 0;
     }
 
     void MoveInLineOfSight(Unit* who) override
     {
+        if (!started && who->GetDistance2d(m_creature) < 80.0f && m_pInstance->GetData(TYPE_AZSHARA) != DONE)
+        {
+            started = true;
+            m_creature->SetInCombatWithZone();
+            events.ScheduleEvent(EVENT_ACTIVATE_MAGUS, 10000);
+        }
+    }
+
+    void EnterEvadeMode() override
+    {
+        started = false;
+        ScriptedAI::EnterEvadeMode();
     }
 
     void Aggro(Unit* pWho) override
@@ -58,12 +90,60 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
     {
     }
 
-    void UpdateAI(const uint32 uiDiff) override
+    void SetData(uint32 type, uint32 value) override
     {
-        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        if (type != DATA_MAGUS_DEAD)
             return;
 
-        DoMeleeAttackIfReady();
+        deadMagus.insert(ObjectGuid(HIGHGUID_UNIT, value));
+    }
+
+    void UpdateAI(const uint32 uiDiff) override
+    {
+        if (!started)
+            return;
+
+        events.Update(uiDiff);
+
+        if (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+                case EVENT_ACTIVATE_MAGUS:
+                {
+                    std::list<Creature*> creatures;
+                    GetCreatureListWithEntryInGrid(creatures, m_creature, NPC_ENCHANTED_MAGUS_1, 100.0f);
+                    GetCreatureListWithEntryInGrid(creatures, m_creature, NPC_ENCHANTED_MAGUS_2, 100.0f);
+                    GetCreatureListWithEntryInGrid(creatures, m_creature, NPC_ENCHANTED_MAGUS_3, 100.0f);
+
+                    Unit* unit = GetClosestAttackableUnit(m_creature, 100.0f);
+
+                    uint8 counter = 0;
+                    for (std::list<Creature*>::iterator itr = creatures.begin(); itr != creatures.end() && counter < 2; ++itr)
+                    {
+                        if ((*itr)->isDead())
+                            continue;
+
+                        if (deadMagus.find((*itr)->GetObjectGuid()) != deadMagus.end())
+                            continue;
+
+                        ++counter;
+
+                        (*itr)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                        (*itr)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+                        if (unit)
+                            (*itr)->Attack(unit, false);
+                    }
+
+                    if (counter == 0)
+                    {
+                        m_pInstance->SetData(TYPE_AZSHARA, DONE);
+                        EnterEvadeMode();
+                    }
+                    break;
+                }
+            }
+        }
     }
 };
 

@@ -38,6 +38,8 @@ void instance_well_of_eternity::OnCreatureCreate(Creature* pCreature)
 {
     switch (pCreature->GetEntry())
     {
+        case NPC_AZSHARA:
+            break;
         case NPC_PEROTHARN:
             if (m_auiEncounter[TYPE_ENERGY_FOCUS] != MAX_FOCUS)
             {
@@ -62,6 +64,15 @@ void instance_well_of_eternity::OnCreatureCreate(Creature* pCreature)
             pCreature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
             pCreature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
             return;
+        case NPC_ESCORT_VAROTHEN:
+            pCreature->SetPhaseMask(2, true);
+            return;
+        case NPC_ENCHANTED_MAGUS_1:
+        case NPC_ENCHANTED_MAGUS_2:
+        case NPC_ENCHANTED_MAGUS_3:
+            pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+            pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            return;
         default:
             return;
     }
@@ -71,14 +82,26 @@ void instance_well_of_eternity::OnCreatureCreate(Creature* pCreature)
 
 void instance_well_of_eternity::OnCreatureDeath(Creature* pCreature)
 {
-    if (pCreature->GetEntry() == NPC_LEGION_DEMON)
+    switch (pCreature->GetEntry())
     {
-        uint32 val = m_auiEncounter[TYPE_GUARDS_SLAIN];
-        ++val;
-        if (val > MAX_GUARDS)
-            val = MAX_GUARDS;
+        case NPC_LEGION_DEMON:
+        {
+            uint32 val = m_auiEncounter[TYPE_GUARDS_SLAIN];
+            ++val;
+            if (val > MAX_GUARDS)
+                val = MAX_GUARDS;
 
-        SetData(TYPE_GUARDS_SLAIN, val);
+            SetData(TYPE_GUARDS_SLAIN, val);
+            break;
+        }
+        case NPC_ENCHANTED_MAGUS_1:
+        case NPC_ENCHANTED_MAGUS_2:
+        case NPC_ENCHANTED_MAGUS_3:
+        {
+            if (Creature* azshara = GetSingleCreatureFromStorage(NPC_AZSHARA))
+                azshara->AI()->SetData(DATA_MAGUS_DEAD, pCreature->GetGUIDLow());
+            break;
+        }
     }
 }
 
@@ -115,10 +138,10 @@ void instance_well_of_eternity::OnObjectCreate(GameObject* pGo)
                     pGo->SetGoState(GO_STATE_ACTIVE);
             }
             // before last energy focus
-            else if (pGo->GetDistance2d(3465.0f, -4826.0f) < 30.0f)
+            else if (pGo->GetDistance2d(3452.0f, -4822.0f) < 30.0f)
             {
                 energyFocusDoors.push_back(pGo->GetObjectGuid());
-                if (m_auiEncounter[TYPE_GUARDS_SLAIN] == MAX_GUARDS)
+                if (m_auiEncounter[TYPE_GUARDS_SLAIN] >= MAX_GUARDS)
                     pGo->SetGoState(GO_STATE_ACTIVE);
             }
             return;

@@ -13,6 +13,9 @@ enum
     TYPE_MANNOROTH              = 4,
 
     NPC_AZSHARA                 = 54853,
+    NPC_ENCHANTED_MAGUS_1       = 54882,
+    NPC_ENCHANTED_MAGUS_2       = 54883,
+    NPC_ENCHANTED_MAGUS_3       = 54884,
     NPC_GUARDIAN_DEMON          = 54927,
     NPC_MANNOROTH               = 54969,
     NPC_PEROTHARN               = 55085,
@@ -21,6 +24,7 @@ enum
     NPC_CORRUPTED_ARCANIST      = 55654,
     NPC_DREADLORD_DEFENDER      = 55656,
     NPC_DRAKE_VEHICLE           = 57107,
+    NPC_ESCORT_VAROTHEN         = 57118,
 
     GO_WOE_COURTYARD_DOOR       = 210084,   // before courtyard
     GO_INVISIBLE_FIRE_WALL      = 210097,   // after peroth'arn
@@ -44,6 +48,8 @@ enum
 
     MAX_FOCUS                   = 3,
     MAX_GUARDS                  = 2,
+
+    DATA_MAGUS_DEAD             = 1
 };
 
 class MANGOS_DLL_DECL instance_well_of_eternity : public ScriptedInstance
