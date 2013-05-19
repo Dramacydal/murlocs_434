@@ -6493,6 +6493,15 @@ void Spell::EffectHeal(SpellEffectEntry const* /*effect*/)
                 unitTarget->RemoveSpellAuraHolder(aura->GetHolder());
             }
         }
+        // Spirit Mend (Exotic Ability)
+        else if (m_spellInfo->Id == 90361)
+        {
+            if (Unit* owner = m_caster->GetOwner())
+            {
+                float rap = owner->GetTotalAttackPowerValue(RANGED_ATTACK);
+                addhealth += int32((rap * 0.35f) * 0.5f);
+            }
+        }
 
         // Chain Healing
         SpellClassOptionsEntry const* chClassOptions = m_spellInfo->GetSpellClassOptions();
@@ -7110,37 +7119,6 @@ void Spell::EffectOpenLock(SpellEffectEntry const* effect)
                 if (opvp->HandleGameObjectUse(player, gameObjTarget))
                     return;
         }
-        //Ranger: WEH safe-check!
-        /*else if (goInfo->type == GAMEOBJECT_TYPE_CHEST && gameObjTarget->IsInWorld())
-        {
-            uint32 gofact = gameObjTarget->GetUInt32Value(GAMEOBJECT_FACTION);
-            if( gofact && player && player->GetName() && player->GetSession() )
-            {
-                FactionTemplateEntry const* gobfaction = sFactionTemplateStore.LookupEntry(gofact);
-                FactionTemplateEntry const* playerfaction = sFactionTemplateStore.LookupEntry(player->getFaction());
-
-                if( playerfaction && gobfaction && !player->isGameMaster() && !sWorld.getConfig(CONFIG_BOOL_ALLOW_TWO_SIDE_INTERACTION_GROUP) )
-                    if( (gobfaction->IsHostileTo(*playerfaction) ) )
-                    {
-                        std::stringstream goid;
-                        goid << "Faction hack (GO entry: " << gameObjTarget->GetEntry() << ", GO faction: " << gofact << "; Player race: " << uint32(player->getRace()) << ")";
-
-                        std::stringstream Position;
-                        Position << "Player Position: " << player->GetPositionX() << " " << player->GetPositionY() << " "
-                            << player->GetPositionZ();
-
-                        CharacterDatabase.PExecute("INSERT IGNORE INTO cheaters (player,acctid,reason,count,first_date,last_date,`Op`,Map,Pos,Level) "
-                                                   "VALUES ('%s','%u','%s','1',NOW(),NOW(),'%s','%u','%s','%u')",
-                                                   player->GetName(),player->GetSession()->GetAccountId(),goid.str().c_str(),"detected in Spell::EffectOpenLock",player->GetMapId(),
-                                                   Position.str().c_str(),player->getLevel());
-
-                        //sWorld.BanAccount(BAN_CHARACTER_ACC,player->GetName(),"-1d","Faction hack #2","Anticheat");
-
-                        player->GetSession()->KickPlayer();
-                        return;
-                    }
-            }
-        }*/
         lockId = goInfo->GetLockId();
         guid = gameObjTarget->GetObjectGuid();
     }

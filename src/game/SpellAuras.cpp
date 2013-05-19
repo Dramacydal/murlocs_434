@@ -6776,6 +6776,16 @@ void Aura::HandlePeriodicHeal(bool apply, bool /*Real*/)
             int32 healthBonus = int32 (0.0032f * caster->GetMaxHealth());
             m_modifier.m_amount += healthBonus;
         }
+        // Spirit Mend (Exotic Ability)
+        else if (GetId() == 90361)
+        {
+            if (Unit* owner = caster->GetOwner())
+            {
+                float rap = owner->GetTotalAttackPowerValue(RANGED_ATTACK);
+                int32 healthBonus = int32((rap * 0.35f) * 0.335f);
+                m_modifier.m_amount += healthBonus;
+            }
+        }
 
         uint32 stackAmount = GetStackAmount() > 0 ? GetStackAmount() : 1;
         // Amaru: lifebloom special case
