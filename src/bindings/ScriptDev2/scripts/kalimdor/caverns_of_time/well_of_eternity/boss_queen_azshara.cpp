@@ -106,8 +106,10 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
         deadMagus.insert(ObjectGuid(HIGHGUID_UNIT, value));
         --magusCounter;
 
-        if (magusCounter <= 0)
+        if (deadMagus.size() == 6)
             events.ScheduleEvent(EVENT_ACTIVATE_MAGUS, 10000);
+        else if (magusCounter <= 0)
+            events.ScheduleEvent(EVENT_ACTIVATE_MAGUS, 15000);
     }
 
     void UpdateAI(const uint32 uiDiff) override
@@ -123,34 +125,42 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
             {
                 case EVENT_ACTIVATE_MAGUS:
                 {
-                    std::list<Creature*> creatures;
-                    GetCreatureListWithEntryInGrid(creatures, m_creature, NPC_ENCHANTED_MAGUS_1, 100.0f);
-                    GetCreatureListWithEntryInGrid(creatures, m_creature, NPC_ENCHANTED_MAGUS_2, 100.0f);
-                    GetCreatureListWithEntryInGrid(creatures, m_creature, NPC_ENCHANTED_MAGUS_3, 100.0f);
-
-                    Unit* unit = GetClosestAttackableUnit(m_creature, 100.0f);
-
-                    magusCounter = 0;
-                    for (std::list<Creature*>::iterator itr = creatures.begin(); itr != creatures.end() && magusCounter < 2; ++itr)
-                    {
-                        if ((*itr)->isDead())
-                            continue;
-
-                        if (deadMagus.find((*itr)->GetObjectGuid()) != deadMagus.end())
-                            continue;
-
-                        ++magusCounter;
-
-                        (*itr)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                        (*itr)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
-                        if (unit)
-                            (*itr)->Attack(unit, false);
-                    }
-
-                    if (magusCounter == 0)
+                    if (deadMagus.size() == 6)
                     {
                         m_pInstance->SetData(TYPE_AZSHARA, DONE);
                         EnterEvadeMode();
+                    }
+                    else
+                    {
+                        std::list<Creature*> creatures;
+                        GetCreatureListWithEntryInGrid(creatures, m_creature, NPC_ENCHANTED_MAGUS_1, 100.0f);
+                        GetCreatureListWithEntryInGrid(creatures, m_creature, NPC_ENCHANTED_MAGUS_2, 100.0f);
+                        GetCreatureListWithEntryInGrid(creatures, m_creature, NPC_ENCHANTED_MAGUS_3, 100.0f);
+
+                        Unit* unit = GetClosestAttackableUnit(m_creature, 100.0f);
+
+                        magusCounter = 0;
+                        for (std::list<Creature*>::iterator itr = creatures.begin(); itr != creatures.end() && magusCounter < 2; ++itr)
+                        {
+                            if ((*itr)->isDead())
+                                continue;
+
+                            if (deadMagus.find((*itr)->GetObjectGuid()) != deadMagus.end())
+                                continue;
+
+                            ++magusCounter;
+
+                            (*itr)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                            (*itr)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+                            if (unit)
+                                (*itr)->Attack(unit, false);
+                        }
+
+                        if (magusCounter == 0)
+                        {
+                            m_pInstance->SetData(TYPE_AZSHARA, DONE);
+                            EnterEvadeMode();
+                        }
                     }
                     break;
                 }

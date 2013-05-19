@@ -72,6 +72,8 @@ void instance_well_of_eternity::OnCreatureCreate(Creature* pCreature)
         case NPC_ENCHANTED_MAGUS_3:
             pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
             pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            pCreature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+            pCreature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
             return;
         default:
             return;
@@ -157,6 +159,8 @@ void instance_well_of_eternity::OnObjectCreate(GameObject* pGo)
             if (m_auiEncounter[TYPE_ENERGY_FOCUS] >= MAX_FOCUS)
                 pGo->Delete();
             break;
+        case GO_ROYAL_CACHE:
+            break;
         default:
             return;
     }
@@ -205,9 +209,16 @@ void instance_well_of_eternity::SetData(uint32 uiType, uint32 uiData)
         case TYPE_AZSHARA:
             m_auiEncounter[uiType] = uiData;
             if (uiData == DONE)
+            {
                 for (GuidList::iterator itr = drakes.begin(); itr != drakes.end(); ++itr)
                     if (Creature* drake = instance->GetAnyTypeCreature(*itr))
                         drake->SetVisibility(VISIBILITY_ON);
+
+                if (Creature* pCreature = GetSingleCreatureFromStorage(NPC_AZSHARA))
+                    pCreature->SetVisibility(VISIBILITY_OFF);
+
+                DoRespawnGameObject(GO_ROYAL_CACHE, HOUR);
+            }
             break;
         case TYPE_MANNOROTH:
             m_auiEncounter[uiType] = uiData;
