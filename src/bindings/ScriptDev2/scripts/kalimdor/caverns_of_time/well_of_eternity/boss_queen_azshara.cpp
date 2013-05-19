@@ -79,6 +79,7 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
         if (who->GetDistance2d(m_creature) < 80.0f && m_pInstance->GetData(TYPE_AZSHARA) != DONE)
         {
             started = true;
+            m_pInstance->SetData(TYPE_AZSHARA, IN_PROGRESS);
             m_creature->SetInCombatWithZone();
             events.ScheduleEvent(EVENT_ACTIVATE_MAGUS, 10000);
         }
@@ -88,6 +89,16 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
     {
         started = false;
         ScriptedAI::EnterEvadeMode();
+        if (m_pInstance)
+            m_pInstance->SetData(TYPE_AZSHARA, FAIL);
+
+        for (GuidSet::iterator itr = deadMagus.begin(); itr != deadMagus.end(); ++itr)
+            if (Creature* unit = m_creature->GetMap()->GetAnyTypeCreature(*itr))
+            {
+                unit->Respawn();
+                unit->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+                unit->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            }
     }
 
     void Aggro(Unit* pWho) override
@@ -152,6 +163,7 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
 
                             (*itr)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                             (*itr)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
+                            (*itr)->CastStop();
                             if (unit)
                                 (*itr)->Attack(unit, false);
                         }
@@ -159,7 +171,7 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
                         if (magusCounter == 0)
                         {
                             m_pInstance->SetData(TYPE_AZSHARA, DONE);
-                            EnterEvadeMode();
+                            m_creature->ClearInCombat();
                         }
                     }
                     break;

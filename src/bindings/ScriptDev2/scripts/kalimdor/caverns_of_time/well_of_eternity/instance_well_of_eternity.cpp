@@ -39,6 +39,8 @@ void instance_well_of_eternity::OnCreatureCreate(Creature* pCreature)
     switch (pCreature->GetEntry())
     {
         case NPC_AZSHARA:
+            if (m_auiEncounter[TYPE_AZSHARA] == DONE)
+                pCreature->SetVisibility(VISIBILITY_OFF);
             break;
         case NPC_PEROTHARN:
             if (m_auiEncounter[TYPE_ENERGY_FOCUS] != MAX_FOCUS)
@@ -149,7 +151,7 @@ void instance_well_of_eternity::OnObjectCreate(GameObject* pGo)
             return;
         case GO_WOE_COURTYARD_DOOR:
             courtyardDoors.push_back(pGo->GetObjectGuid());
-            if (m_auiEncounter[TYPE_GUARDS_SLAIN] > 0)
+            if (m_auiEncounter[TYPE_GUARDS_SLAIN] == 1)
                 pGo->SetGoState(GO_STATE_ACTIVE);
             return;
         case GO_PORTAL_ENERGY_FOCUS_1:
@@ -160,6 +162,7 @@ void instance_well_of_eternity::OnObjectCreate(GameObject* pGo)
                 pGo->Delete();
             break;
         case GO_ROYAL_CACHE:
+            pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
             break;
         default:
             return;
@@ -179,7 +182,7 @@ void instance_well_of_eternity::SetData(uint32 uiType, uint32 uiData)
                 for (GuidList::iterator itr = energyFocusDoors.begin(); itr != energyFocusDoors.end(); ++itr)
                     DoUseDoorOrButton(*itr);
             // open courtyard doors
-            if (uiData > 0)
+            if (uiData == 1)
                 for (GuidList::iterator itr = courtyardDoors.begin(); itr != courtyardDoors.end(); ++itr)
                     DoUseDoorOrButton(*itr);
             break;
