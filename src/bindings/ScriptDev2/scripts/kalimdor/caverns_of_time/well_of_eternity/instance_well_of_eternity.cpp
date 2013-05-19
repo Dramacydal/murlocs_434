@@ -57,7 +57,7 @@ void instance_well_of_eternity::OnCreatureCreate(Creature* pCreature)
                 pCreature->SetVisibility(VISIBILITY_OFF);
             drakes.push_back(pCreature->GetObjectGuid());
             return;
-        case NPC_CURRUPTED_ARCANIST:
+        case NPC_CORRUPTED_ARCANIST:
         case NPC_DREADLORD_DEFENDER:
             pCreature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
             pCreature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
@@ -88,7 +88,7 @@ void instance_well_of_eternity::OnObjectCreate(GameObject* pGo)
     {
         case GO_INVISIBLE_FIRE_WALL:
             if (m_auiEncounter[TYPE_PEROTHARN] == DONE)
-                pGo->Delete();
+                pGo->SetGoState(GO_STATE_ACTIVE);
             break;
         case GO_SMALL_FIREWALL_DOOR:
             // block Pero'tharn
@@ -96,7 +96,7 @@ void instance_well_of_eternity::OnObjectCreate(GameObject* pGo)
             {
                 perotharnDoors.push_back(pGo->GetObjectGuid());
                 if (m_auiEncounter[TYPE_ENERGY_FOCUS] >= MAX_FOCUS)
-                    pGo->Delete();
+                    pGo->SetGoState(GO_STATE_ACTIVE);
             }
             return;
         case GO_LARGE_FIREWALL_DOOR:
@@ -105,27 +105,27 @@ void instance_well_of_eternity::OnObjectCreate(GameObject* pGo)
             {
                 courtyardDoors.push_back(pGo->GetObjectGuid());
                 if (m_auiEncounter[TYPE_GUARDS_SLAIN] > 0)
-                    pGo->Delete();
+                    pGo->SetGoState(GO_STATE_ACTIVE);
             }
             // block Pero'tharn
             else if (pGo->GetDistance2d(3335.0f, -4890.0f) < 100.0f)
             {
                 perotharnDoors.push_back(pGo->GetObjectGuid());
                 if (m_auiEncounter[TYPE_ENERGY_FOCUS] >= MAX_FOCUS)
-                    pGo->Delete();
+                    pGo->SetGoState(GO_STATE_ACTIVE);
             }
             // before last energy focus
             else if (pGo->GetDistance2d(3465.0f, -4826.0f) < 30.0f)
             {
                 energyFocusDoors.push_back(pGo->GetObjectGuid());
                 if (m_auiEncounter[TYPE_GUARDS_SLAIN] == MAX_GUARDS)
-                    pGo->Delete();
+                    pGo->SetGoState(GO_STATE_ACTIVE);
             }
             return;
         case GO_WOE_COURTYARD_DOOR:
             courtyardDoors.push_back(pGo->GetObjectGuid());
             if (m_auiEncounter[TYPE_GUARDS_SLAIN] > 0)
-                pGo->Delete();
+                pGo->SetGoState(GO_STATE_ACTIVE);
             return;
         case GO_PORTAL_ENERGY_FOCUS_1:
         case GO_PORTAL_ENERGY_FOCUS_2:
@@ -148,23 +148,20 @@ void instance_well_of_eternity::SetData(uint32 uiType, uint32 uiData)
         case TYPE_GUARDS_SLAIN:
             m_auiEncounter[uiType] = uiData;
             // open last enery focus door
-            if (uiType >= MAX_GUARDS)
+            if (uiData >= MAX_GUARDS)
                 for (GuidList::iterator itr = energyFocusDoors.begin(); itr != energyFocusDoors.end(); ++itr)
-                    if (GameObject* go = instance->GetGameObject(*itr))
-                        go->Delete();
+                    DoUseDoorOrButton(*itr);
             // open courtyard doors
-            if (uiType > 0)
+            if (uiData > 0)
                 for (GuidList::iterator itr = courtyardDoors.begin(); itr != courtyardDoors.end(); ++itr)
-                    if (GameObject* go = instance->GetGameObject(*itr))
-                        go->Delete();
+                    DoUseDoorOrButton(*itr);
             break;
         case TYPE_ENERGY_FOCUS:
             m_auiEncounter[uiType] = uiData;
-            if (uiType == MAX_FOCUS)
+            if (uiData == MAX_FOCUS)
             {
                 for (GuidList::iterator itr = perotharnDoors.begin(); itr != perotharnDoors.end(); ++itr)
-                    if (GameObject* go = instance->GetGameObject(*itr))
-                        go->Delete();
+                    DoUseDoorOrButton(*itr);
                 for (GuidList::iterator itr = guardianDemons.begin(); itr != guardianDemons.end(); ++itr)
                     if (Creature* demon = instance->GetAnyTypeCreature(*itr))
                         demon->ForcedDespawn();
@@ -179,9 +176,8 @@ void instance_well_of_eternity::SetData(uint32 uiType, uint32 uiData)
             break;
         case TYPE_PEROTHARN:
             m_auiEncounter[uiType] = uiData;
-            if (uiType == DONE)
-                if (GameObject* go = GetSingleGameObjectFromStorage(GO_INVISIBLE_FIRE_WALL))
-                    go->Delete();
+            if (uiData == DONE)
+                DoUseDoorOrButton(GO_INVISIBLE_FIRE_WALL);
             break;
         case TYPE_AZSHARA:
             m_auiEncounter[uiType] = uiData;
