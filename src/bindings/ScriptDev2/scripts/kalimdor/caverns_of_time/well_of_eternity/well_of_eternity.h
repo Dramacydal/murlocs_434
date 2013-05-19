@@ -16,10 +16,11 @@ enum
     NPC_GUARDIAN_DEMON          = 54927,
     NPC_MANNOROTH               = 54969,
     NPC_PEROTHARN               = 55085,
-    NPC_LEGION_DEMON            = 55503,
-    NPC_DRAKE_VEHICLE           = 57107,
-    
     NPC_VAROTHEN                = 55419,
+    NPC_LEGION_DEMON            = 55503,
+    NPC_CURRUPTED_ARCANIST      = 55654,
+    NPC_DREADLORD_DEFENDER      = 55656,
+    NPC_DRAKE_VEHICLE           = 57107,
 
     GO_WOE_COURTYARD_DOOR       = 210084,   // before courtyard
     GO_INVISIBLE_FIRE_WALL      = 210097,   // after peroth'arn
