@@ -312,6 +312,70 @@ bool OnGOUse_go_portal_energy_focus(Player* player, GameObject* go)
     return true;
 }
 
+// start 110089
+// 3224.693359 Y: -5000.938477 Z: 194.093
+// after perotharn  110090 
+// 3492.743896 Y: -5005.039062 Z: 197.619
+// azshara palace 110087
+// 3489.691895 Y: -5203.373535 Z: 229.94
+// after azshara 110088
+// 3061.922119 Y: -5564.629395 Z: 18.128
+
+
+enum
+{
+    SPELL_COURTYARD_ENTRANCE    = 107934,
+    SPELL_AZSHARAS_PALACE       = 107690,
+    SPELL_AZSHARAS_OVERLOOK     = 107979,
+    SPELL_WELL_OF_ETERNITY      = 107691,
+};
+
+enum
+{
+    TELE_TEXT_START             = 2000006865,
+    TELE_TEXT_PALACE            = 2000006866,
+    TELE_TEXT_OVERLOOK          = 2000006867,
+    TELE_TEXT_WELL              = 2000006868,
+};
+
+bool OnGossipHello_go_time_transit_device_woe(Player* who, GameObject* go)
+{
+    ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
+    if (!pInstance || !who)
+        return true;
+
+    who->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, TELE_TEXT_START, GOSSIP_SENDER_MAIN, 0);
+    if (pInstance->GetData(TYPE_PEROTHARN) == DONE)
+        who->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, TELE_TEXT_PALACE, GOSSIP_SENDER_MAIN, 1);
+    if (pInstance->GetData(TYPE_AZSHARA) != NOT_STARTED)
+        who->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, TELE_TEXT_OVERLOOK, GOSSIP_SENDER_MAIN, 2);
+    if (pInstance->GetData(TYPE_AZSHARA) == DONE)
+        who->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, TELE_TEXT_WELL, GOSSIP_SENDER_MAIN, 3);
+
+    who->SEND_GOSSIP_MENU(who->GetGossipTextId(go), go->GetObjectGuid());
+
+    return true;
+}
+
+bool OnGossipSelect_go_time_transit_device_woe(Player* who, GameObject* go, uint32 sender, uint32 action)
+{
+    if (who->IsInCombat())
+        return true;
+
+    if (sender != GOSSIP_SENDER_MAIN)
+        return true;
+
+    switch (action)
+    {
+        case 0: who->CastSpell(who, SPELL_COURTYARD_ENTRANCE, true); break;
+        case 1: who->CastSpell(who, SPELL_AZSHARAS_PALACE, true); break;
+        case 2: who->CastSpell(who, SPELL_AZSHARAS_OVERLOOK, true); break;
+        case 3: who->CastSpell(who, SPELL_WELL_OF_ETERNITY, true); break;
+    }
+
+    return true;
+}
+
 void AddSC_instance_well_of_eternity()
 {
     Script* pNewScript;
@@ -324,5 +388,11 @@ void AddSC_instance_well_of_eternity()
     pNewScript = new Script;
     pNewScript->Name = "go_portal_energy_focus";
     pNewScript->pGOUse = &OnGOUse_go_portal_energy_focus;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name = "go_time_transit_device_woe";
+    pNewScript->pGossipHelloGO = &OnGossipHello_go_time_transit_device_woe;
+    pNewScript->pGossipSelectGO = &OnGossipSelect_go_time_transit_device_woe;
     pNewScript->RegisterSelf();
 }
