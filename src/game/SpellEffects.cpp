@@ -1336,7 +1336,7 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                 if (m_spellInfo->Id == 83381)
                 {
                     float rap = m_caster->GetTotalAttackPowerValue(RANGED_ATTACK);
-                    damage += int32(rap * 0.700f);
+                    damage = int32((damage + (rap * 0.516f)));
                 }
                 break;
             }
