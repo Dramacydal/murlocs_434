@@ -1332,6 +1332,12 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                     if (m_caster->HasAura(57627))           // Charge 6 sec post-affect
                         damage *= 2;
                 }
+                // Kill Command
+                if (m_spellInfo->Id == 83381)
+                {
+                    float rap = m_caster->GetTotalAttackPowerValue(RANGED_ATTACK);
+                    damage += int32(rap * 0.700f);
+                }
                 break;
             }
             case SPELLFAMILY_PALADIN:
