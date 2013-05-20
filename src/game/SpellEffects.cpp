@@ -8122,6 +8122,10 @@ void Spell::DoSummonGuardian(SpellEffectEntry const * effect, uint32 forceFactio
         // Ghoul emote
         if (spawnCreature->GetEntry() == 24207 || spawnCreature->GetEntry() == 26125 || spawnCreature->GetEntry() == 28528)
             spawnCreature->HandleEmote(EMOTE_ONESHOT_EMERGE);
+
+        // reload creature addon for Moonwel because of creator-dependent auras
+        if (spawnCreature->GetEntry() == 53883)
+            spawnCreature->LoadCreatureAddon(true);
     }
 }
 
