@@ -5518,6 +5518,7 @@ void Player::RepopAtGraveyard()
             data << ClosestGrave->z;
             GetSession()->SendPacket(&data);
         }
+        UpdateVisibilityAndView();
     }
     else if (!zone || GetPositionZ() < zone->MaxDepth)
     {
