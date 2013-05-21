@@ -23,6 +23,7 @@ enum
     NPC_LEGION_DEMON            = 55503,
     NPC_CORRUPTED_ARCANIST      = 55654,
     NPC_DREADLORD_DEFENDER      = 55656,
+    NPC_FEL_CRYSTAL             = 55917,
     NPC_DRAKE_VEHICLE           = 57107,
     NPC_ESCORT_VAROTHEN         = 57118,
 
@@ -37,6 +38,7 @@ enum
     GO_PORTAL_ENERGY_FOCUS_3    = 209448,
 
     GO_ROYAL_CACHE              = 210025,
+    GO_MINOR_CACHE_OF_THE_ASPECTS = 209541,
 
     SPELL_SHADOWCLOAK_PERIODIC  = 103004,
     SPELL_FORCE_SHADOWCLOAK     = 105635,
@@ -71,13 +73,16 @@ class MANGOS_DLL_DECL instance_well_of_eternity : public ScriptedInstance
         const char* Save() override { return m_strInstData.c_str(); }
         void Load(const char* chrIn) override;
 
+        GuidSet& GetFelCrystals() { return felCrystals; }
+
     private:
 
-        GuidList courtyardDoors;
-        GuidList perotharnDoors;
-        GuidList energyFocusDoors;
-        GuidList guardianDemons;
-        GuidList drakes;
+        GuidSet courtyardDoors;
+        GuidSet perotharnDoors;
+        GuidSet energyFocusDoors;
+        GuidSet guardianDemons;
+        GuidSet drakes;
+        GuidSet felCrystals;
 
         uint32 m_auiEncounter[MAX_ENCOUNTER];
         std::string m_strInstData;

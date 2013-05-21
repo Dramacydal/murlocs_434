@@ -53,6 +53,11 @@ struct MANGOS_DLL_DECL boss_mannorothAI : public ScriptedAI
             m_pInstance->SetData(TYPE_MANNOROTH, IN_PROGRESS);
     }
 
+    void DamageTaken(Unit* who, uint32& damage) override
+    {
+        damage *= 5;
+    }
+
     void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
