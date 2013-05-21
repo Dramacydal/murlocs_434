@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
         if (who->GetTypeId() == TYPEID_PLAYER && ((Player*)who)->isGameMaster())
             return;
 
-        if (who->GetDistance2d(m_creature) < 80.0f && m_pInstance->GetData(TYPE_AZSHARA) != DONE)
+        if (who->GetDistance2d(m_creature) < 27.0f && m_pInstance->GetData(TYPE_AZSHARA) != DONE)
         {
             started = true;
             m_pInstance->SetData(TYPE_AZSHARA, IN_PROGRESS);
@@ -164,8 +164,8 @@ struct MANGOS_DLL_DECL boss_queen_azsharaAI : public ScriptedAI
                             (*itr)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                             (*itr)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
                             (*itr)->CastStop();
-                            if (unit)
-                                (*itr)->Attack(unit, false);
+                            if (unit && (*itr)->AI())
+                                AttackStart(unit);
                         }
 
                         if (magusCounter == 0)
