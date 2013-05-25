@@ -43,6 +43,7 @@ struct MANGOS_DLL_DECL boss_arcurionAI : public ScriptedAI
 
     void Reset() override
     {
+        m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
     }
 
     void Aggro(Unit* pWho) override

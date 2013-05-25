@@ -144,7 +144,7 @@ Position2 const teleLocs[] =
     { 3945.524414f, 298.948242f, 12.480674f, 0.0f },
 };
 
-bool OnGossipHello_go_portal_hot(Player* who, GameObject* go)
+bool OnGoUse_go_portal_hot(Player* who, GameObject* go)
 {
     ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
     if (!pInstance || !who)
@@ -186,7 +186,7 @@ void AddSC_instance_hour_of_twilight()
 
     pNewScript = new Script;
     pNewScript->Name = "go_portal_hot";
-    pNewScript->pGossipHelloGO = &OnGossipHello_go_portal_hot;
+    pNewScript->pGOUse = &OnGoUse_go_portal_hot;
     pNewScript->pGossipSelectGO = &OnGossipSelect_go_portal_hot;
     pNewScript->RegisterSelf();
 }
