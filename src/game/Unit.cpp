@@ -7367,6 +7367,18 @@ int32 Unit::SpellBonusWithCoeffs(SpellEntry const *spellProto, int32 total, int3
     {
         coeff = damagetype == DOT ? bonus->dot_damage : bonus->direct_damage;
 
+        // Shield of the Righteousness
+        if (spellProto->Id == 53600)
+        {
+            if (Spell const* spell = GetCurrentSpell(CURRENT_GENERIC_SPELL))
+                if (spell->m_spellInfo->Id == spellProto->Id)
+                    switch (spell->GetUsedHolyPower())
+                    {
+                        case 2: coeff *= 3; break;
+                        case 3: coeff *= 6; break;
+                    }
+        }
+
         // apply ap bonus at done part calculation only (it flat total mod so common with taken)
         if (donePart && (bonus->ap_bonus || bonus->ap_dot_bonus))
         {
