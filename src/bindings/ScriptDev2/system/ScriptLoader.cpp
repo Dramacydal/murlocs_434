@@ -592,6 +592,12 @@ extern void AddSC_boss_mannoroth_and_varothen();
 extern void AddSC_boss_perotharn();
 extern void AddSC_boss_queen_azshara();
 
+// Hour of Twilight
+extern void AddSC_instance_hour_of_twilight();
+extern void AddSC_boss_archbishop_benedictus();
+extern void AddSC_boss_arcurion();
+extern void AddSC_boss_asira_dawnslayer();
+
 void AddScripts()
 {
     // battlegrounds
@@ -1173,4 +1179,9 @@ void AddScripts()
     AddSC_boss_mannoroth_and_varothen();
     AddSC_boss_perotharn();
     AddSC_boss_queen_azshara();
+
+    AddSC_instance_hour_of_twilight();
+    AddSC_boss_archbishop_benedictus();
+    AddSC_boss_arcurion();
+    AddSC_boss_asira_dawnslayer();
 }
