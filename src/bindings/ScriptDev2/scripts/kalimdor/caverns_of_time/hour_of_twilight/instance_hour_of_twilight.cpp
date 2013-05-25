@@ -139,7 +139,7 @@ enum
 
 Position2 const teleLocs[] =
 {
-    { 921.965820f, 294.830963f, 96.212616f, 0.0f },
+    { 4921.965820f, 294.830963f, 96.212616f, 0.0f },
     { 4320.004883f, 573.422424f, -6.957148f, 0.0f },
     { 3945.524414f, 298.948242f, 12.480674f, 0.0f },
 };
@@ -149,6 +149,8 @@ bool OnGoUse_go_portal_hot(Player* who, GameObject* go)
     ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
     if (!pInstance || !who)
         return true;
+
+    who->CLOSE_GOSSIP_MENU();
 
     who->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, TELE_TEXT_START, GOSSIP_SENDER_MAIN, 0);
     if (pInstance->GetData(TYPE_ASIRA) == DONE)
@@ -163,6 +165,8 @@ bool OnGoUse_go_portal_hot(Player* who, GameObject* go)
 
 bool OnGossipSelect_go_portal_hot(Player* who, GameObject* go, uint32 sender, uint32 action)
 {
+    who->CLOSE_GOSSIP_MENU();
+
     if (who->IsInCombat())
         return true;
 
