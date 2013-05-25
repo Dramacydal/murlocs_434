@@ -9224,6 +9224,10 @@ bool Spell::CheckTarget(Unit* target, SpellEffectIndex eff)
             if (target->GetEntry() != 40004)
                 return false;
             break;
+        case 103762:    // Engulfing Twilight
+            if (target->GetCharmerOrOwnerOrOwnGuid().IsPlayer())
+                return false;
+            break;
         case 105739:    // Mass Regeneration
             // Mass Regeneration (Bear Form)
             if (!target->HasAura(105737))

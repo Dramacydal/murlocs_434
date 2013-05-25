@@ -48,10 +48,12 @@ struct MANGOS_DLL_DECL boss_archbishop_benedictusAI : public ScriptedAI
     ScriptedInstance* m_pInstance;
     bool m_bIsRegularMode;
     bool transformed;
+    bool intro;
     EventMap events;
 
     void Reset() override
     {
+        intro = false;
         transformed = false;
         m_creature->SetDisplayId(m_creature->GetNativeDisplayId());
     }
@@ -62,6 +64,20 @@ struct MANGOS_DLL_DECL boss_archbishop_benedictusAI : public ScriptedAI
             m_pInstance->SetData(TYPE_BENEDICTUS, IN_PROGRESS);
 
         DoScriptText(SAY_AGGRO, m_creature);
+    }
+
+    void MoveInLineOfSight(Unit* who)
+    {
+        if (who->GetTypeId() == TYPEID_PLAYER && ((Player*)who)->isGameMaster())
+            return;
+
+        if (!intro && who->GetDistance2d(m_creature) < 20.0f)
+        {
+            intro = true;
+            m_creature->setFaction(2324);
+        }
+
+        ScriptedAI::MoveInLineOfSight(who);
     }
 
     void JustDied(Unit* pKiller) override
