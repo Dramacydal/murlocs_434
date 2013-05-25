@@ -7379,8 +7379,8 @@ int32 Unit::SpellBonusWithCoeffs(SpellEntry const *spellProto, int32 total, int3
                     if (spell->m_spellInfo->Id == spellProto->Id)
                         switch (spell->GetUsedHolyPower())
                         {
-                            case 2: coeff *= 3; break;
-                            case 3: coeff *= 6; break;
+                            case 2: ap_bonus *= 3; break;
+                            case 3: ap_bonus *= 6; break;
                         }
             }
 
