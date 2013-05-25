@@ -236,7 +236,7 @@ void instance_well_of_eternity::SetData(uint32 uiType, uint32 uiData)
             return;
     }
 
-    if (uiData == DONE)
+    if (uiData == DONE || uiType == TYPE_ENERGY_FOCUS || uiType == TYPE_GUARDS_SLAIN)
     {
         OUT_SAVE_INST_DATA;
 
