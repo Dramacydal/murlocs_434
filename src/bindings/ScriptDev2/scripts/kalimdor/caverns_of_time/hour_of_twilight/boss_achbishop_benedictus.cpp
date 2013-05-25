@@ -83,7 +83,10 @@ struct MANGOS_DLL_DECL boss_archbishop_benedictusAI : public ScriptedAI
     void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_BENEDICTUS, DONE);
+            m_pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_TWILIGHT_EPITAPHY_2);
+        }
 
         DoScriptText(SAY_DEATH, m_creature);
     }
@@ -96,7 +99,10 @@ struct MANGOS_DLL_DECL boss_archbishop_benedictusAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_BENEDICTUS, FAIL);
+            m_pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_TWILIGHT_EPITAPHY_2);
+        }
     }
 
     void SpellHitTarget(Unit* target, SpellEntry const* spell) override
