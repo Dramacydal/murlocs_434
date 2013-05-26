@@ -6396,6 +6396,10 @@ SpellAuraProcResult Unit::HandleModResistanceAuraProc(Unit* /*pVictim*/, uint32 
 
 SpellAuraProcResult Unit::HandleRemoveByDamageProc(Unit* pVictim, uint32 damage, uint32 absorb, Aura* triggeredByAura, SpellEntry const *procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown)
 {
+    // do not proc from positives
+    if (procFlag & (PROC_FLAG_TAKEN_POSITIVE_AOE | PROC_FLAG_TAKEN_POSITIVE_SPELL) || procEx & PROC_EX_PERIODIC_POSITIVE)
+        return SPELL_AURA_PROC_OK;
+
     uint32 fullDamage = damage + absorb;
     if (!fullDamage)
         return SPELL_AURA_PROC_FAILED;
