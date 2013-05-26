@@ -1240,7 +1240,7 @@ void AchievementMgr<T>::UpdateAchievementCriteria(AchievementCriteriaTypes type,
         if (IsCompletedCriteria(achievementCriteria,achievement))
             continue;
 
-        if (!AdditionalRequirementsSatisfied(criteria, miscValue1, miscValue2, unit, referencePlayer))
+        if (!AdditionalRequirementsSatisfied(achievementCriteria, miscvalue1, miscvalue2, unit, referencePlayer))
             return false;
 
         // init values, real set in switch
