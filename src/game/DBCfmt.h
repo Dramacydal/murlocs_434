@@ -20,7 +20,7 @@
 #define MANGOS_DBCSFRM_H
 
 const char Achievementfmt[]="niiissiiiiisii";
-const char AchievementCriteriafmt[]="niiiiiiiixsiiiiixxxxxxx";
+const char AchievementCriteriafmt[]="niiiiiiiiisiiiiixxxxxxx";
 const char AreaTableEntryfmt[]="iiinixxxxxisiiiiifxxxxxxxx";
 const char AreaGroupEntryfmt[]="niiiiiii";
 const char AreaTriggerEntryfmt[]="nifffxxxfffff";
