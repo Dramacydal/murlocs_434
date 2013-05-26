@@ -3179,7 +3179,7 @@ bool AchievementMgr<T>::AdditionalRequirementsSatisfied(AchievementCriteriaEntry
                     return false;
 
                 // Hack for Bros. Before Ho Ho Ho's
-                if (criteria->achievement == 1685 || criteria->achievement == 1686)
+                if (criteria->referredAchievement == 1685 || criteria->referredAchievement == 1686)
                     break;
 
                 if (unit->GetEntry() != reqValue)
@@ -3199,7 +3199,7 @@ bool AchievementMgr<T>::AdditionalRequirementsSatisfied(AchievementCriteriaEntry
                 break;
             case ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_SOURCE_HAS_AURA: // 8
                 // Hack for Fa-la-la-la-Ogri'la, there are wrong auras in dbc
-                if (criteria->achievement == 1282)
+                if (criteria->referredAchievement == 1282)
                 {
                     if (referencePlayer->HasAura(62061))
                         break;
@@ -3302,7 +3302,7 @@ bool AchievementMgr<T>::AdditionalRequirementsSatisfied(AchievementCriteriaEntry
                 break;
             case ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_ITEM_CLASS: // 33
             {
-                ItemTemplate const* pItem = sObjectMgr->GetItemTemplate(miscValue1);
+                ItemPrototype const* pItem = sObjectMgr.GetItemPrototype(miscValue1);
                 if (!pItem)
                     return false;
 
@@ -3312,7 +3312,7 @@ bool AchievementMgr<T>::AdditionalRequirementsSatisfied(AchievementCriteriaEntry
             }
             case ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_ITEM_SUBCLASS: // 34
             {
-                ItemTemplate const* pItem = sObjectMgr->GetItemTemplate(miscValue1);
+                ItemPrototype const* pItem = sObjectMgr.GetItemPrototype(miscValue1);
                 if (!pItem)
                     return false;
 
@@ -3344,7 +3344,7 @@ bool AchievementMgr<T>::AdditionalRequirementsSatisfied(AchievementCriteriaEntry
                     return false;
                 break;
             case ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_TARGET_HEALTH_PERCENT_BELOW: // 46
-                if (!unit || !unit->IsInWorld() || unit->GetHealthPct() >= reqValue)
+                if (!unit || !unit->IsInWorld() || unit->GetHealthPercent() >= reqValue)
                     return false;
                 break;
             case ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_MIN_ACHIEVEMENT_POINTS: // 56
