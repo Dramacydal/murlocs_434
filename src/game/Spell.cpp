@@ -51,6 +51,8 @@
 #include "DB2Stores.h"
 #include "SQLStorages.h"
 #include "TemporarySummon.h"
+#include "GuildMgr.h"
+#include "Guild.h"
 #include "SQLStorages.h"
 
 extern pEffect SpellEffects[TOTAL_SPELL_EFFECTS];
@@ -3828,6 +3830,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                     }
                     break;
                 case SPELL_EFFECT_SUMMON_RAID_MARKER:
+                case SPELL_EFFECT_BUY_GUILD_BANKSLOT:
                     targetUnitMap.push_back(m_caster);
                     break;
                 default:
@@ -7555,6 +7558,30 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (m_spellInfo->Id == 73981 && (!m_caster->GetComboPoints() ||
                     m_targets.getUnitTarget() && m_targets.getUnitTarget()->GetObjectGuid() == m_caster->GetComboTargetGuid()))
                     return SPELL_FAILED_NO_COMBO_POINTS;
+                break;
+            }
+            case SPELL_EFFECT_BUY_GUILD_BANKSLOT:
+            {
+                Unit* target = m_targets.getUnitTarget();
+                if (!target || target->GetTypeId() != TYPEID_PLAYER)
+                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
+                Player* player = (Player*)target;
+
+                uint32 guildId = player->GetGuildId();
+                if (!guildId)
+                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
+                Guild* guild = sGuildMgr.GetGuildById(guildId);
+                if (!guild)
+                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
+                if (guild->GetLeaderGuid() != player->GetObjectGuid())
+                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
+                uint8 slot = uint8(spellEffect->CalculateSimpleValue());
+                if (slot <= guild->GetPurchasedTabs())
+                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
                 break;
             }
             default:
