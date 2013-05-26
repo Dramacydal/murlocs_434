@@ -3357,7 +3357,7 @@ bool AchievementMgr<T>::AdditionalRequirementsSatisfied(AchievementCriteriaEntry
                 if (!pGroup)
                     return false;
 
-                Map const* map = referencePlayer->GetMap();
+                Map* map = referencePlayer->GetMap();
                 if (!map)
                     return false;
 
