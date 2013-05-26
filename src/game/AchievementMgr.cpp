@@ -1241,7 +1241,7 @@ void AchievementMgr<T>::UpdateAchievementCriteria(AchievementCriteriaTypes type,
             continue;
 
         if (!AdditionalRequirementsSatisfied(achievementCriteria, miscvalue1, miscvalue2, unit, referencePlayer))
-            return false;
+            continue;
 
         // init values, real set in switch
         uint32 change = 0;
