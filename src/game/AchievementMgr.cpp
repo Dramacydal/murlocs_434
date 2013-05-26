@@ -3818,7 +3818,7 @@ void AchievementMgr<T>::SetCriteriaProgress(AchievementCriteriaEntry const* crit
         if (IsCompletedCriteria(criteria, achievement))
         {
             if (achievement->flags & ACHIEVEMENT_FLAG_SHOW_CRITERIA_MEMBERS && !progress->CompletedGUID)
-                progress->CompletedGUID = referencePlayer->GetGUID();
+                progress->CompletedGUID = referencePlayer->GetObjectGuid();
 
             CompletedCriteriaFor(achievement, referencePlayer);
         }

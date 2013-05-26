@@ -1877,6 +1877,7 @@ bool ChatHandler::HandleWhispersCommand(char* args)
 bool ChatHandler::HandleSaveAllCommand(char* /*args*/)
 {
     sObjectAccessor.SaveAllPlayers();
+    sGuildMgr.SaveGuilds();
     SendSysMessage(LANG_PLAYERS_SAVED);
     return true;
 }
