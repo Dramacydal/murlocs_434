@@ -3361,7 +3361,7 @@ bool AchievementMgr<T>::AdditionalRequirementsSatisfied(AchievementCriteriaEntry
                 if (!map)
                     return false;
 
-                if (!map->HasGuildGroup(referencePlayer->GetGuildId(), referencePlayer))
+                if (!map->HasGuildGroup(referencePlayer->GetGuildGuid(), referencePlayer))
                     return false;
                 break;
             }
