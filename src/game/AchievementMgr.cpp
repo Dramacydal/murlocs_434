@@ -1798,7 +1798,7 @@ void AchievementMgr<T>::UpdateAchievementCriteria(AchievementCriteriaTypes type,
                     continue;
 
                 change = 1;
-                progressType = PROGRESS_HIGHEST;
+                progressType = PROGRESS_ACCUMULATE;
                 break;
             }
             case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET:
@@ -3474,7 +3474,7 @@ uint32 AchievementMgr<T>::GetCriteriaProgressMaxCounter(AchievementCriteriaEntry
             resultValue = achievementCriteria->fall_without_dying.fallHeight;
             break;
         case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
-            resultValue = 1;
+            resultValue = std::max(achievementCriteria->complete_quest.questCount, 1);
             break;
         case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET:
         case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET2:
