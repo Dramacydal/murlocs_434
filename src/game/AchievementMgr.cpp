@@ -3292,7 +3292,7 @@ bool AchievementMgr<T>::AdditionalRequirementsSatisfied(AchievementCriteriaEntry
                 if (!unit || unit->GetTypeId() != TYPEID_UNIT)
                     return false;
 
-                if ((Creature const*)unit->GetCreatureType() != reqValue)
+                if (((Creature const*)unit)->GetCreatureType() != reqValue)
                     return false;
                 break;
             }
