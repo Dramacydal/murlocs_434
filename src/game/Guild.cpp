@@ -2917,6 +2917,11 @@ void Guild::OnLogin(Player* player)
     data.Initialize(SMSG_GUILD_MEMBER_DAILY_RESET, 0);  // tells the client to request bank withdrawal limit
     player->GetSession()->SendPacket(&data);
 
+    SendReputationWeeklyCap(player);
+
+    GetAchievementMgr().CheckAllAchievementCriteria(player);
+    GetAchievementMgr().SendAllAchievementData(player);
+
     if (!sWorld.getConfig(CONFIG_BOOL_GUILD_LEVELING_ENABLED))
         return;
 
@@ -2924,11 +2929,6 @@ void Guild::OnLogin(Player* player)
         if (GuildPerkSpellsEntry const* entry = sGuildPerkSpellsStore.LookupEntry(i))
             if (entry->Level <= GetLevel())
                 player->learnSpell(entry->SpellId, true);
-
-    SendReputationWeeklyCap(player);
-
-    GetAchievementMgr().CheckAllAchievementCriteria(player);
-    GetAchievementMgr().SendAllAchievementData(player);
 }
 
 void Guild::SendReputationWeeklyCap(Player* player)
