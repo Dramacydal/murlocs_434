@@ -1428,6 +1428,7 @@ enum Opcodes
     SMSG_GUILD_ACHIEVEMENT_DATA                           = 0x54B7, // 4.3.4 15595
     SMSG_GUILD_ACHIEVEMENT_DELETED                        = 0x35A0, // 4.3.4 15595
     SMSG_GUILD_ACHIEVEMENT_EARNED                         = 0x50B5, // 4.3.4 15595
+    CMSG_GUILD_ACHIEVEMENT_PROGRESS_QUERY                 = 0x3235, // 4.3.4 15595
     SMSG_GUILD_CRITERIA_DATA                              = 0x14B4, // 4.3.4 15595
     SMSG_GUILD_CRITERIA_DELETED                           = 0x55B1, // 4.3.4 15595
     CMSG_GUILD_REQUEST_PARTY_STATE                        = 0x3900, // 4.3.4 15595
