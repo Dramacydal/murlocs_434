@@ -3289,10 +3289,10 @@ bool AchievementMgr<T>::AdditionalRequirementsSatisfied(AchievementCriteriaEntry
                 break;
             case ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_TARGET_CREATURE_TYPE: // 30
             {
-                if (!unit)
+                if (!unit || unit->GetTypeId() != TYPEID_UNIT)
                     return false;
-                Creature const * const creature = unit->ToCreature();
-                if (!creature || creature->GetCreatureType() != reqValue)
+
+                if ((Creature const*)unit->GetCreatureType() != reqValue)
                     return false;
                 break;
             }
