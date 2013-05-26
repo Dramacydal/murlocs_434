@@ -4211,8 +4211,8 @@ void AchievementMgr<Guild>::SendRespondInspectAchievements(Player* player, uint3
     }
 
     uint32 numCriteria = 0;
-    ByteBuffer criteriaData(criteria->size() * (8 + 8 + 4 + 4 + 4));
     ByteBuffer criteriaBits(criteria->size() * (8 + 8) / 8);
+    ByteBuffer criteriaData(criteria->size() * (8 + 8 + 4 + 4 + 4));
     for (AchievementCriteriaEntryList::const_iterator itr = criteria->begin(); itr != criteria->end(); ++itr)
     {
         uint32 criteriaId = (*itr)->ID;
@@ -4221,6 +4221,17 @@ void AchievementMgr<Guild>::SendRespondInspectAchievements(Player* player, uint3
             continue;
 
         ++numCriteria;
+    }
+
+    criteriaBits.WriteBits(numCriteria, 21);
+
+    for (AchievementCriteriaEntryList::const_iterator itr = criteria->begin(); itr != criteria->end(); ++itr)
+    {
+        uint32 criteriaId = (*itr)->ID;
+        CriteriaProgressMap::const_iterator progress = m_criteriaProgress.find(criteriaId);
+        if (progress == m_criteriaProgress.end())
+            continue;
+
         ObjectGuid criteriaProgress = ObjectGuid(uint64(progress->second.counter));
         ObjectGuid criteriaGuid = progress->second.CompletedGUID;
 
@@ -4259,14 +4270,10 @@ void AchievementMgr<Guild>::SendRespondInspectAchievements(Player* player, uint3
     }
 
     criteriaBits.FlushBits();
-
     WorldPacket data(SMSG_GUILD_CRITERIA_DATA, 3 + criteriaBits.size() + criteriaData.size());
-    data.WriteBits(numCriteria, 21);
+    data.append(criteriaBits);
     if (numCriteria)
-    {
-        data.append(criteriaBits);
         data.append(criteriaData);
-    }
 
     player->GetSession()->SendPacket(&data);
  }
