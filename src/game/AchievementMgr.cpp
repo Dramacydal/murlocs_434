@@ -4237,26 +4237,28 @@ void AchievementMgr<Guild>::SendRespondInspectAchievements(Player* player, uint3
         criteriaBits.WriteGuidMask<7>(criteriaProgress);
         criteriaBits.WriteGuidMask<4>(criteriaGuid);
 
-        criteriaBits.WriteGuidBytes<5>(criteriaGuid);
+        criteriaData.WriteGuidBytes<5>(criteriaGuid);
         criteriaData << uint32(progress->second.date);      // unknown date
-        criteriaBits.WriteGuidBytes<3, 7>(criteriaProgress);
+        criteriaData.WriteGuidBytes<3, 7>(criteriaProgress);
         criteriaData << uint32(progress->second.date);      // unknown date
-        criteriaBits.WriteGuidBytes<6>(criteriaProgress);
-        criteriaBits.WriteGuidBytes<4, 1>(criteriaGuid);
-        criteriaBits.WriteGuidBytes<4>(criteriaProgress);
-        criteriaBits.WriteGuidBytes<3>(criteriaGuid);
-        criteriaBits.WriteGuidBytes<0>(criteriaProgress);
-        criteriaBits.WriteGuidBytes<2>(criteriaGuid);
-        criteriaBits.WriteGuidBytes<1>(criteriaProgress);
-        criteriaBits.WriteGuidBytes<6>(criteriaGuid);
+        criteriaData.WriteGuidBytes<6>(criteriaProgress);
+        criteriaData.WriteGuidBytes<4, 1>(criteriaGuid);
+        criteriaData.WriteGuidBytes<4>(criteriaProgress);
+        criteriaData.WriteGuidBytes<3>(criteriaGuid);
+        criteriaData.WriteGuidBytes<0>(criteriaProgress);
+        criteriaData.WriteGuidBytes<2>(criteriaGuid);
+        criteriaData.WriteGuidBytes<1>(criteriaProgress);
+        criteriaData.WriteGuidBytes<6>(criteriaGuid);
         criteriaData << uint32(progress->second.date);      // last update time (not packed!)
         criteriaData << uint32(criteriaId);
-        criteriaBits.WriteGuidBytes<5>(criteriaProgress);
+        criteriaData.WriteGuidBytes<5>(criteriaProgress);
         criteriaData << uint32(0);
-        criteriaBits.WriteGuidBytes<7>(criteriaGuid);
-        criteriaBits.WriteGuidBytes<2>(criteriaProgress);
-        criteriaBits.WriteGuidBytes<0>(criteriaGuid);
+        criteriaData.WriteGuidBytes<7>(criteriaGuid);
+        criteriaData.WriteGuidBytes<2>(criteriaProgress);
+        criteriaData.WriteGuidBytes<0>(criteriaGuid);
     }
+
+    criteriaBits.FlushBits();
 
     WorldPacket data(SMSG_GUILD_CRITERIA_DATA, 3 + criteriaBits.size() + criteriaData.size());
     data.WriteBits(numCriteria, 21);
