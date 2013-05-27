@@ -7562,11 +7562,10 @@ SpellCastResult Spell::CheckCast(bool strict)
             }
             case SPELL_EFFECT_BUY_GUILD_BANKSLOT:
             {
-                Unit* target = m_targets.getUnitTarget();
-                if (!target || target->GetTypeId() != TYPEID_PLAYER)
+                if (!m_caster || m_caster->GetTypeId() != TYPEID_PLAYER)
                     return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
 
-                Player* player = (Player*)target;
+                Player* player = (Player*)m_caster;
 
                 uint32 guildId = player->GetGuildId();
                 if (!guildId)
@@ -7579,8 +7578,8 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (guild->GetLeaderGuid() != player->GetObjectGuid())
                     return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
 
-                uint8 slot = uint8(spellEffect->CalculateSimpleValue());
-                if (slot <= guild->GetPurchasedTabs())
+                uint8 slot = uint8(spellEffect->CalculateSimpleValue() - 1);
+                if (slot != guild->GetPurchasedTabs())
                     return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
                 break;
             }

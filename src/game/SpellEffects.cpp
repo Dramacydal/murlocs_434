@@ -14958,14 +14958,14 @@ void Spell::EffectDestroyItem(SpellEffectEntry const* effect)
 
 void Spell::EffectBuyGuildBankSlot(SpellEffectEntry const* effect)
 {
-    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+    if (m_caster->GetTypeId() != TYPEID_PLAYER)
         return;
 
     if (!damage)
         return;
 
     uint8 TabId = damage - 1;
-    Player* player = (Player*)unitTarget;
+    Player* player = (Player*)m_caster;
 
     uint32 GuildId = player->GetGuildId();
     if (!GuildId)
