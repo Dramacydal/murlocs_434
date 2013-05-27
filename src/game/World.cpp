@@ -1118,6 +1118,19 @@ void World::LoadConfigSettings(bool reload)
     //- Player played time dependent restrictions
     setConfig(CONFIG_UINT32_PLAYED_TIME_BEFORE_TRADE, "PlayedTime.Trade", 0);
     setConfig(CONFIG_UINT32_PLAYED_TIME_BEFORE_LFG_SPEAK, "PlayedTime.LFG", 0);
+
+    //- Fake Online
+    setConfig(CONFIG_BOOL_FAKE_ONLINE_ENABLED, "FakeOnline.Enabled", false);
+    setConfig(CONFIG_UINT32_FAKE_ONLINE_UPDATE_INTERVAL, "FakeOnline.UpdateInterval", 5);
+    setConfig(CONFIG_FLOAT_FAKE_ONLINE_COUNT_FRACTION, "FakeOnline.CountFraction", 0.3f);
+    setConfig(CONFIG_UINT32_FAKE_ONLINE_MIN_PLAYERS, "FakeOnline.MinPlayers", 10);
+    setConfig(CONFIG_UINT32_FAKE_ONLINE_MAX_PLAYERS, "FakeOnline.MaxPlayers", 25);
+    setConfig(CONFIG_UINT32_FAKE_ONLINE_TIMEDIFF, "FakeOnline.TimeDiff", DAY);
+    if (reload)
+    {
+        m_timers[WUPDATE_FAKE_ONLINE].SetInterval(getConfig(CONFIG_UINT32_FAKE_ONLINE_UPDATE_INTERVAL) * MINUTE * IN_MILLISECONDS);
+        m_timers[WUPDATE_FAKE_ONLINE].SetCurrent(0);
+    }
 }
 
 /// Initialize the World
@@ -1627,6 +1640,8 @@ void World::SetInitialWorldSettings()
 
     m_timers[WUPDATE_GUILD_SAVE].SetInterval(getConfig(CONFIG_UINT32_GUILD_SAVE_INTERVAL) * MINUTE * IN_MILLISECONDS);
 
+    m_timers[WUPDATE_FAKE_ONLINE].SetInterval(getConfig(CONFIG_UINT32_FAKE_ONLINE_UPDATE_INTERVAL) * MINUTE * IN_MILLISECONDS);
+
     //to set mailtimer to return mails every day between 4 and 5 am
     //mailtimer is increased when updating auctions
     //one second is 1000 -(tested on win system)
@@ -1927,6 +1942,12 @@ void World::Update(uint32 diff)
     {
         m_timers[WUPDATE_GUILD_SAVE].Reset();
         sGuildMgr.SaveGuilds();
+    }
+
+    if (m_timers[WUPDATE_FAKE_ONLINE].Passed())
+    {
+        m_timers[WUPDATE_FAKE_ONLINE].Reset();
+        sObjectMgr.InitFakeOnline();
     }
 
     /// </ul>

@@ -10966,3 +10966,44 @@ bool ObjectMgr::IsSpellDisabled(uint32 spellId, uint32 type) const
 
     return itr->second & type;
 }
+
+void ObjectMgr::InitFakeOnline()
+{
+    m_fakeOnlineList.clear();
+    if (!sWorld.getConfig(CONFIG_BOOL_FAKE_ONLINE_ENABLED))
+        return;
+
+    float fraction = sWorld.getConfig(CONFIG_FLOAT_FAKE_ONLINE_COUNT_FRACTION);
+    uint32 count = 0;
+    if (fraction > 0.01f)
+        count = uint32(sWorld.GetActiveSessionCount() * fraction);
+    else
+        count = urand(sWorld.getConfig(CONFIG_UINT32_FAKE_ONLINE_MIN_PLAYERS), sWorld.getConfig(CONFIG_UINT32_FAKE_ONLINE_MAX_PLAYERS));
+
+    if (!count)
+        return;
+
+    //                                                     0     1      2     3      4     5       6
+    QueryResult* result = CharacterDatabase.PQuery("SELECT guid, level, name, class, race, gender, zone FROM characters WHERE online = 0 AND logout_time < UNIT_TIMESTAMP() - %u ORDER BY logout_time DESC LIMIT %u",
+        sWorld.getConfig(CONFIG_UINT32_FAKE_ONLINE_TIMEDIFF), count);
+    if (!result)
+        return;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        FakeOnlinePlayer plr;
+        plr.guid = ObjectGuid(HIGHGUID_PLAYER, fields[0].GetUInt32());
+        plr.name = fields[1].GetCppString();
+        plr.level = fields[2].GetUInt32();
+        plr.class_ = fields[3].GetUInt32();
+        plr.race = fields[4].GetUInt32();
+        plr.gender = fields[5].GetUInt32();
+        plr.zone = fields[6].GetUInt32();
+
+        m_fakeOnlineList.push_back(plr);
+    }
+    while (result->NextRow());
+    delete result;
+}

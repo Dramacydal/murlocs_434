@@ -603,6 +603,19 @@ enum DisableSpellType
 
 typedef std::vector<HotfixInfo> HotfixData;
 
+struct FakeOnlinePlayer
+{
+    ObjectGuid guid;
+    std::string name;
+    uint32 level;
+    uint32 class_;
+    uint32 race;
+    uint8 gender;
+    uint32 zone;
+};
+
+typedef std::list<FakeOnlinePlayer> FakeOnlineList;
+
 class ObjectMgr
 {
     friend class PlayerDumpReader;
@@ -1271,6 +1284,9 @@ class ObjectMgr
         void LoadDisabledSpells();
         bool IsSpellDisabled(uint32 spellId, uint32 type = DISABLE_SPELL_TYPE_ALL) const;
 
+        FakeOnlineList& GetFakeOnline() { return m_fakeOnlineList; }
+        void InitFakeOnline();
+
     protected:
 
         // first free id for selected id type
@@ -1432,6 +1448,8 @@ class ObjectMgr
 
         typedef std::map<uint32, uint32> DisabledSpells;
         DisabledSpells m_disabledSpells;
+
+        FakeOnlineList m_fakeOnlineList;
 };
 
 #define sObjectMgr MaNGOS::Singleton<ObjectMgr>::Instance()

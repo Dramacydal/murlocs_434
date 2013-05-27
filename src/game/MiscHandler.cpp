@@ -263,9 +263,92 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
             break;
     }
 
+    FakeOnlineList& fakeOnline = sObjectMgr.GetFakeOnline();
+    if (sWorld.getConfig(CONFIG_BOOL_FAKE_ONLINE_ENABLED))
+    {
+        for (FakeOnlineList::const_iterator itr = fakeOnline.begin(); itr != fakeOnline.end(); ++itr)
+        {
+            FakeOnlinePlayer pl = *itr;
+
+            if (pl.level < level_min || pl.level > level_max)
+                continue;
+
+            if (!(classmask & (1 << pl.class_)))
+                continue;
+
+            if (!(racemask & (1 << pl.race)))
+                continue;
+
+            bool z_show = true;
+            for (uint32 i = 0; i < zones_count; ++i)
+            {
+                if (zoneids[i] == pl.zone)
+                {
+                    z_show = true;
+                    break;
+                }
+
+                z_show = false;
+            }
+            if (!z_show)
+                continue;
+
+            std::string pname = pl.name;
+            std::wstring wpname;
+            if(!Utf8toWStr(pname,wpname))
+                continue;
+            wstrToLower(wpname);
+
+            if (!(wplayer_name.empty() || wpname.find(wplayer_name) != std::wstring::npos))
+                continue;
+
+            if (!wguild_name.empty())
+                continue;
+
+            std::string aname;
+            if (AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(pl.zone))
+                aname = areaEntry->area_name[GetSessionDbcLocale()];
+
+            bool s_show = true;
+            for (uint32 i = 0; i < str_count; ++i)
+            {
+                if (!str[i].empty())
+                {
+                    if (wpname.find(str[i]) != std::wstring::npos ||
+                        Utf8FitTo(aname, str[i]) )
+                    {
+                        s_show = true;
+                        break;
+                    }
+                    s_show = false;
+                }
+            }
+            if (!s_show)
+                continue;
+
+            if (_player->isGameMaster())
+                data << '<' << 'f' << '>';
+
+            data << pname;                                  // player name
+            data << "";                                     // guild name
+            data << uint32(pl.level);                       // player level
+            data << uint32(pl.class_);                      // player class
+            data << uint32(pl.race);                        // player race
+            data << uint8(pl.gender);                       // player gender
+            data << uint32(pl.zone);                        // player zone id
+
+            // 50 is maximum player count sent to client
+            if ((++clientcount) == 50)
+                break;
+        }
+    }
+
     uint32 count = m.size();
-    data.put( 0, clientcount );                             // insert right count, listed count
-    data.put( 4, count > 50 ? count : clientcount );        // insert right count, online count
+    if (sWorld.getConfig(CONFIG_BOOL_FAKE_ONLINE_ENABLED))
+        count += fakeOnline.size();
+
+    data.put(0, clientcount);                               // insert right count, listed count
+    data.put(4, count > 50 ? count : clientcount);          // insert right count, online count
 
     SendPacket(&data);
     DEBUG_LOG( "WORLD: Send SMSG_WHO Message" );
