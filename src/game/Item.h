@@ -128,7 +128,11 @@ enum InventoryResult
     EQUIP_ERR_SCALING_STAT_ITEM_LEVEL_EXCEEDED              = 86,
     EQUIP_ERR_PURCHASE_LEVEL_TOO_LOW                        = 87,
     EQUIP_ERR_CANT_EQUIP_NEED_TALENT                        = 88,
-    EQUIP_ERR_ITEM_MAX_LIMIT_CATEGORY_EQUIPPED_EXCEEDED_IS  = 89
+    EQUIP_ERR_ITEM_MAX_LIMIT_CATEGORY_EQUIPPED_EXCEEDED_IS  = 89,
+    EQUIP_ERR_SHAPESHIFT_FORM_CANNOT_EQUIP      = 90, // Cannot equip item in this form
+    EQUIP_ERR_ITEM_INVENTORY_FULL_SATCHEL       = 91, // Your inventory is full. Your satchel has been delivered to your mailbox.
+    EQUIP_ERR_SCALING_STAT_ITEM_LEVEL_TOO_LOW   = 92, // Your level is too low to use that item
+    EQUIP_ERR_CANT_BUY_QUANTITY                 = 93, // You can't buy the specified quantity of that item.
 };
 
 enum BuyResult

@@ -1468,7 +1468,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         Item* GetItemFromBuyBackSlot( uint32 slot );
         void RemoveItemFromBuyBackSlot( uint32 slot, bool del );
 
-        void TakeExtendedCost(uint32 extendedCostId, uint32 count);
+        void TakeExtendedCost(uint32 extendedCostId);
 
         void SendEquipError(InventoryResult msg, Item* pItem, Item* pItem2 = NULL, uint32 itemid = 0) const;
         void SendBuyError(BuyResult msg, Creature* pCreature, uint32 item, uint32 param);

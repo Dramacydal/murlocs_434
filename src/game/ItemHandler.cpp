@@ -506,7 +506,7 @@ void WorldSession::HandleBuyItemOpcode(WorldPacket& recv_data)
     else
         return;                                             // cheating
 
-    switch(type)
+    switch (type)
     {
         case VENDOR_ITEM_TYPE_NONE:
             break;
@@ -537,7 +537,7 @@ void WorldSession::HandleBuyItemOpcode(WorldPacket& recv_data)
         }
         case VENDOR_ITEM_TYPE_CURRENCY:
         {
-            GetPlayer()->BuyCurrencyFromVendorSlot(vendorGuid, slot, item, 1);
+            GetPlayer()->BuyCurrencyFromVendorSlot(vendorGuid, slot, item, count);
             break;
         }
     }
