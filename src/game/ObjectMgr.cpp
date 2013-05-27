@@ -10983,8 +10983,8 @@ void ObjectMgr::InitFakeOnline()
     if (!count)
         return;
 
-    //                                                     0     1      2     3      4     5       6
-    QueryResult* result = CharacterDatabase.PQuery("SELECT guid, level, name, class, race, gender, zone FROM characters WHERE online = 0 AND logout_time < UNIX_TIMESTAMP() - %u ORDER BY logout_time DESC LIMIT %u",
+    //                                                     0     1     2      3      4     5       6
+    QueryResult* result = CharacterDatabase.PQuery("SELECT guid, name, level, class, race, gender, zone FROM characters WHERE online = 0 AND logout_time < UNIX_TIMESTAMP() - %u ORDER BY logout_time DESC LIMIT %u",
         sWorld.getConfig(CONFIG_UINT32_FAKE_ONLINE_TIMEDIFF), count);
     if (!result)
         return;
