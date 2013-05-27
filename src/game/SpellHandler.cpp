@@ -418,8 +418,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
         if ((*itr)->GetSpellEffect()->EffectTriggerSpell == spellId)
         {
             triggered = true;
-            triggeredBy = (*itr)->GetSpellProto();
-            triggeredByAura = *itr;
+            mover->RemoveSpellAuraHolder((*itr)->GetHolder());
             break;
         }
 
