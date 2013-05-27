@@ -330,7 +330,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
                 continue;
 
             if (_player->isGameMaster())
-                data << '*';
+                data << 'f' << 'a' << 'k' << 'e';
 
             data << pname;                                  // player name
             data << "";                                     // guild name
