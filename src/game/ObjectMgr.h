@@ -605,7 +605,6 @@ typedef std::vector<HotfixInfo> HotfixData;
 
 struct FakeOnlinePlayer
 {
-    ObjectGuid guid;
     uint32 account;
     std::string name;
     uint32 level;

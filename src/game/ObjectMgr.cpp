@@ -10983,8 +10983,8 @@ void ObjectMgr::InitFakeOnline()
     if (!count)
         return;
 
-    //                                                     0     1        2     3      4      5     6       7
-    QueryResult* result = CharacterDatabase.PQuery("SELECT guid, account, name, level, class, race, gender, zone FROM characters WHERE "
+    //                                                     0        1     2      3      4     5       6
+    QueryResult* result = CharacterDatabase.PQuery("SELECT account, name, level, class, race, gender, zone FROM characters WHERE "
         "online = 0 AND logout_time < UNIX_TIMESTAMP() - %u AND level >= %u AND level <= %u "
         "ORDER BY logout_time DESC LIMIT %u",
         sWorld.getConfig(CONFIG_UINT32_FAKE_ONLINE_TIMEDIFF),
@@ -10999,14 +10999,13 @@ void ObjectMgr::InitFakeOnline()
         Field* fields = result->Fetch();
 
         FakeOnlinePlayer plr;
-        plr.guid = ObjectGuid(HIGHGUID_PLAYER, fields[0].GetUInt32());
-        plr.account = fields[1].GetUInt32();
-        plr.name = fields[2].GetCppString();
-        plr.level = fields[3].GetUInt32();
-        plr.class_ = fields[4].GetUInt32();
-        plr.race = fields[5].GetUInt32();
-        plr.gender = fields[6].GetUInt32();
-        plr.zone = fields[7].GetUInt32();
+        plr.account = fields[0].GetUInt32();
+        plr.name = fields[1].GetCppString();
+        plr.level = fields[2].GetUInt32();
+        plr.class_ = fields[3].GetUInt32();
+        plr.race = fields[4].GetUInt32();
+        plr.gender = fields[5].GetUInt32();
+        plr.zone = fields[6].GetUInt32();
 
         AreaTableEntry const* zone = GetAreaEntryByAreaID(plr.zone);
         if (!zone)
