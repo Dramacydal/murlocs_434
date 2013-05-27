@@ -326,7 +326,10 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
             if (!s_show)
                 continue;
 
-            if (sObjectAccessor.FindPlayer(pl.guid,false))
+            if (sObjectAccessor.FindPlayer(pl.guid, false))
+                continue;
+
+            if (sWorld.FindSession(pl.account))
                 continue;
 
             if (_player->isGameMaster())

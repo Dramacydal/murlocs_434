@@ -1127,6 +1127,8 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_UINT32_FAKE_ONLINE_MIN_PLAYERS, "FakeOnline.MinPlayers", 10);
     setConfig(CONFIG_UINT32_FAKE_ONLINE_MAX_PLAYERS, "FakeOnline.MaxPlayers", 25);
     setConfig(CONFIG_UINT32_FAKE_ONLINE_TIMEDIFF, "FakeOnline.TimeDiff", DAY);
+    setConfig(CONFIG_UINT32_FAKE_ONLINE_MIN_LEVEL, "FakeOnline.MinLevel", 1);
+    setConfig(CONFIG_UINT32_FAKE_ONLINE_MAX_LEVEL, "FakeOnline.MaxLevel", 80);
     if (reload)
     {
         m_timers[WUPDATE_FAKE_ONLINE].SetInterval(getConfig(CONFIG_UINT32_FAKE_ONLINE_UPDATE_INTERVAL) * MINUTE * IN_MILLISECONDS);

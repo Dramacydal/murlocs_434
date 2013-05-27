@@ -1697,11 +1697,10 @@ int32 GetAreaFlagByAreaID(uint32 area_id)
 
 WMOAreaTableEntry const* GetWMOAreaTableEntryByTripple(int32 rootid, int32 adtid, int32 groupid)
 {
-        WMOAreaInfoByTripple::iterator i = sWMOAreaInfoByTripple.find(WMOAreaTableTripple(rootid, adtid, groupid));
-            if(i == sWMOAreaInfoByTripple.end())
-                        return NULL;
-                return i->second;
-
+    WMOAreaInfoByTripple::iterator i = sWMOAreaInfoByTripple.find(WMOAreaTableTripple(rootid, adtid, groupid));
+    if(i == sWMOAreaInfoByTripple.end())
+        return NULL;
+    return i->second;
 }
 
 AreaTableEntry const* GetAreaEntryByAreaID(uint32 area_id)
