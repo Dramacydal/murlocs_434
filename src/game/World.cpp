@@ -189,6 +189,7 @@ World::~World()
 void World::CleanupsBeforeStop()
 {
     KickAll();                                       // save and kick all players
+    sGuildMgr.SaveGuilds();
     UpdateSessions(1);                               // real players unload required UpdateSessions call
     sBattleGroundMgr.DeleteAllBattleGrounds();       // unload battleground templates before different singletons destroyed
 }
