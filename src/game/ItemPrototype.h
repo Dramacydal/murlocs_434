@@ -678,7 +678,7 @@ struct ItemPrototype
         if (!(Flags & ITEM_FLAG_REFUNDABLE))
             return false;
 
-        if (MaxCount > 1)
+        if (MaxCount > 1 || Stackable > 1)
             return false;
 
         for (int i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
