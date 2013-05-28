@@ -659,12 +659,16 @@ void Player::_LoadArchaeology(QueryResult* result)
     for (uint8 i = 0; i < MAX_RESEARCH_SITES; ++i)
         _digSites[i].count = 0;
 
-    if (!result)
-        return;
-
     if (!sWorld.getConfig(CONFIG_BOOL_ARCHAEOLOGY_ENABLED))
     {
         delete result;
+        return;
+    }
+
+    if (!result)
+    {
+        GenerateResearchSites();
+        GenerateResearchProjects();
         return;
     }
 
