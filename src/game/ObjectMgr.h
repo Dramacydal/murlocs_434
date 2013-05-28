@@ -616,7 +616,7 @@ struct FakeOnlinePlayer
 
 typedef std::list<FakeOnlinePlayer> FakeOnlineList;
 
-struct ResearchLoot
+struct DigSitePosition
 {
     uint16 site_id;
     float x;
@@ -624,7 +624,8 @@ struct ResearchLoot
     uint8 branch_id;
 };
 
-typedef std::vector<ResearchLoot> ResearchLootVector;
+typedef std::vector<DigSitePosition> DigSitePositionVector;
+typedef std::map<uint32, uint32> SiteToZoneMap;
 
 class ObjectMgr
 {
@@ -1297,9 +1298,18 @@ class ObjectMgr
         FakeOnlineList& GetFakeOnline() { return m_fakeOnlineList; }
         void InitFakeOnline();
 
-        void LoadResearchSiteLoot();
+        void LoadResearchSiteToZoneData();
+        void LoadDigSitePositions();
 
-        ResearchLootVector const& GetResearchLoot() const { return _researchLoot; }
+        DigSitePositionVector const& GetResearchLoot() const { return m_digSitePositions; }
+        uint32 GetZoneByResearchSite(uint32 site_id) const
+        {
+            SiteToZoneMap::const_iterator itr = _zoneByResearchSite.find(site_id);
+            if (itr == _zoneByResearchSite.end())
+                return 0;
+
+            return itr->second;
+        }
 
     protected:
 
@@ -1465,7 +1475,8 @@ class ObjectMgr
 
         FakeOnlineList m_fakeOnlineList;
 
-        ResearchLootVector _researchLoot;
+        DigSitePositionVector m_digSitePositions;
+        SiteToZoneMap _zoneByResearchSite;
 };
 
 #define sObjectMgr MaNGOS::Singleton<ObjectMgr>::Instance()

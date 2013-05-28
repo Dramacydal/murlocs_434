@@ -73,18 +73,18 @@ typedef std::map<uint32, SiteSet> Sites;
 typedef std::set<uint32> ProjectSet;
 typedef std::map<uint32, ProjectSet> Projects;
 
-bool Player::GenerateDigitLoot(uint16 siteId, DigSite &site)
+bool Player::GenerateDigSiteLoot(uint16 siteId, DigSite &site)
 {
-    ResearchLootVector const& loot = sObjectMgr.GetResearchLoot();
+    DigSitePositionVector const& loot = sObjectMgr.GetResearchLoot();
     if (loot.empty())
         return false;
 
     site.find_id = 0;
 
-    ResearchLootVector lootList;
-    for (ResearchLootVector::const_iterator itr = loot.begin(); itr != loot.end(); ++itr)
+    DigSitePositionVector lootList;
+    for (DigSitePositionVector::const_iterator itr = loot.begin(); itr != loot.end(); ++itr)
     {
-        ResearchLoot entry = (*itr);
+        DigSitePosition entry = (*itr);
         if (entry.site_id != siteId)
             continue;
 
@@ -111,7 +111,7 @@ bool Player::GenerateDigitLoot(uint16 siteId, DigSite &site)
     if (lootList.empty())
         return false;
 
-    ResearchLootVector::const_iterator entry = lootList.begin();
+    DigSitePositionVector::const_iterator entry = lootList.begin();
     std::advance(entry, urand(0, lootList.size() - 1));
 
     site.loot_x = entry->x;
@@ -159,7 +159,7 @@ uint32 Player::GetSurveyBotEntry(float &orientation)
     DigSite &site = _digSites[at_pos];
     if (site.site_id != siteId)
     {
-        if (!GenerateDigitLoot(siteId, site))
+        if (!GenerateDigSiteLoot(siteId, site))
             return 0;
 
         site.site_id = siteId;
@@ -215,7 +215,7 @@ uint32 Player::GetSurveyBotEntry(float &orientation)
     if (site.count < 2)
     {
         ++site.count;
-        if (!GenerateDigitLoot(siteId, site))
+        if (!GenerateDigSiteLoot(siteId, site))
             return 0;
     }
     else
@@ -236,7 +236,7 @@ uint16 Player::GetResearchSiteID()
     pt.x = int32(GetPositionX());
     pt.y = int32(GetPositionY());
 
-    for (ResearchZoneData::iterator itr = sResearchZones.begin(); itr != sResearchZones.end(); ++itr)
+    for (ResearchSiteDataMap::iterator itr = sResearchZones.begin(); itr != sResearchZones.end(); ++itr)
     {
         if (itr->second.zone != GetCachedZoneId())
             continue;
@@ -363,7 +363,7 @@ bool Player::CanResearchWithLevel(uint32 POIid)
     if (!GetSkillValue(SKILL_ARCHAEOLOGY))
         return false;
 
-    ResearchZoneData::const_iterator itr = sResearchZones.find(POIid);
+    ResearchSiteDataMap::const_iterator itr = sResearchZones.find(POIid);
     if (itr != sResearchZones.end())
         return getLevel() + 19 >= itr->second.level;
 
@@ -376,10 +376,10 @@ uint8 Player::CanResearchWithSkillLevel(uint32 POIid)
     if (!skill_now)
         return 0;
 
-    ResearchZoneData::const_iterator itr = sResearchZones.find(POIid);
+    ResearchSiteDataMap::const_iterator itr = sResearchZones.find(POIid);
     if (itr != sResearchZones.end())
     {
-        ResearchZone const& entry = itr->second;
+        ResearchSiteData const& entry = itr->second;
 
         uint16 skill_cap = 0;
         switch (entry.map)
@@ -718,7 +718,3 @@ void Player::_LoadArchaeology(QueryResult* result)
 
     delete result;
 }
-
-
-
-

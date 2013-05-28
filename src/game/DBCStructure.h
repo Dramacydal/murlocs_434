@@ -2745,9 +2745,9 @@ struct ResearchPOIPoint
 
 typedef std::vector<ResearchPOIPoint> ResearchPOIPointVector;
 
-struct ResearchZone
+struct ResearchSiteData
 {
-    ResearchZone() : siteId(0), map(0xFFFF), zone(0), level(0) { }
+    ResearchSiteData() : siteId(0), zone(0), map(0xFFFF), level(0) { }
 
     uint16 siteId;
     uint16 map;
@@ -2757,6 +2757,6 @@ struct ResearchZone
     ResearchPOIPointVector points;
 };
 
-typedef std::map<uint32 /*POIId*/, ResearchZone> ResearchZoneData;
+typedef std::map<uint32 /*POIId*/, ResearchSiteData> ResearchSiteDataMap;
 
 #endif

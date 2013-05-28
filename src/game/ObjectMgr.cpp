@@ -11024,12 +11024,14 @@ void ObjectMgr::InitFakeOnline()
     delete result;
 }
 
-void ObjectMgr::LoadResearchSiteLoot()
+void ObjectMgr::LoadResearchSiteToZoneData()
 {
-    QueryResult* result = WorldDatabase.Query("SELECT site_id, x, y, branch_id FROM research_loot");
+    _zoneByResearchSite.clear();
+
+    QueryResult* result = WorldDatabase.Query("SELECT site_id, zone_id FROM archaeology_zones");
     if (!result)
     {
-        sLog.outString(">> Loaded 0 research loot. DB table `research_positions` is empty.");
+        sLog.outString(">> Loaded 0 archaeology zones. DB table `archaeology_zones` is empty.");
         return;
     }
 
@@ -11039,18 +11041,69 @@ void ObjectMgr::LoadResearchSiteLoot()
     {
         Field* fields = result->Fetch();
 
-        ResearchLoot dg;
+        _zoneByResearchSite[fields[0].GetUInt16()] = fields[1].GetUInt16();
+        ++counter;
+    }
+    while (result->NextRow());
+    delete result;
+
+    for (ResearchSiteDataMap::iterator itr = sResearchZones.begin(); itr != sResearchZones.end(); ++itr)
+    {
+        ResearchSiteData& researchZone = itr->second;
+
+        uint32 zoneId = GetZoneByResearchSite(researchZone.siteId);
+        if (!zoneId)
+        {
+            sLog.outErrorDb("DB table `archaeology_zones` does not have data for site id %u", researchZone.siteId);
+            continue;
+        }
+
+        researchZone.zone = zoneId;
+
+        for (uint32 i = 0; i < sAreaStore.GetNumRows(); ++i)
+        {
+            AreaTableEntry const* area = sAreaStore.LookupEntry(i);
+            if (!area)
+                continue;
+
+            if (area->zone == zoneId)
+            {
+                researchZone.level = area->area_level;
+                break;
+            }
+        }
+    }
+
+    sLog.outString(">> Loaded %u archaeology zones.", counter);
+}
+
+void ObjectMgr::LoadDigSitePositions()
+{
+    QueryResult* result = WorldDatabase.Query("SELECT site_id, x, y, branch_id FROM archaeology_digsites");
+    if (!result)
+    {
+        sLog.outString(">> Loaded 0 dig site positions. DB table `archaeology_digsites` is empty.");
+        return;
+    }
+
+    uint32 counter = 0;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        DigSitePosition dg;
         dg.site_id = uint16(fields[0].GetUInt32());
         dg.x = fields[1].GetFloat();
         dg.y = fields[2].GetFloat();
-        dg.branch_id = fields[4].GetUInt8();
+        dg.branch_id = fields[3].GetUInt8();
 
-        _researchLoot.push_back(dg);
+        m_digSitePositions.push_back(dg);
 
         ++counter;
     }
     while (result->NextRow());
     delete result;
 
-    sLog.outString(">> Loaded %u research site loot.", counter);
+    sLog.outString(">> Loaded %u dig site positions.", counter);
 }

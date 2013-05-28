@@ -213,7 +213,7 @@ extern DBCStorage <ResearchSiteEntry>            sResearchSiteStore;
 extern std::set<ResearchSiteEntry const*>        sResearchSiteSet;
 extern DBCStorage <ResearchProjectEntry>         sResearchProjectStore;
 extern std::set<ResearchProjectEntry const*>     sResearchProjectSet;
-extern ResearchZoneData                          sResearchZones;
+extern ResearchSiteDataMap                       sResearchZones;
 extern DBCStorage <ScalingStatDistributionEntry> sScalingStatDistributionStore;
 extern DBCStorage <ScalingStatValuesEntry>       sScalingStatValuesStore;
 extern DBCStorage <SkillLineEntry>               sSkillLineStore;

@@ -181,7 +181,7 @@ DBCStorage <ResearchSiteEntry> sResearchSiteStore(ResearchSitefmt);
 std::set<ResearchSiteEntry const*> sResearchSiteSet;
 DBCStorage <ResearchProjectEntry> sResearchProjectStore(ResearchProjectfmt);
 std::set<ResearchProjectEntry const*> sResearchProjectSet;
-ResearchZoneData sResearchZones;
+ResearchSiteDataMap sResearchZones;
 
 DBCStorage <ScalingStatDistributionEntry> sScalingStatDistributionStore(ScalingStatDistributionfmt);
 DBCStorage <ScalingStatValuesEntry> sScalingStatValuesStore(ScalingStatValuesfmt);
@@ -984,33 +984,7 @@ void LoadDBCStores(const std::string& dataPath)
                     sResearchZones[entry->POIid].points.push_back(ResearchPOIPoint(poi->x, poi->y));
 
         if (sResearchZones[entry->POIid].points.size() == 0)
-        {
             sLog.outDebug("Research site %u POI %u map %u has 0 POI points in DBC!", entry->ID, entry->POIid, entry->mapId);
-            continue;
-        }
-
-        ResearchPOIPoint& point = sResearchZones[entry->POIid].points[0];
-        uint32 zoneId = GetZoneByWorldCoordinatesAndMap(point.x, point.y, entry->mapId);
-        if (!zoneId)
-        {
-            sLog.outDebug("Research site %u POI %u has boundary x:%f y:%f that does not fits in any zone (map %u)!", entry->ID, entry->POIid, point.x, point.y, entry->mapId);
-            continue;
-        }
-
-        sResearchZones[entry->POIid].zone = zoneId;
-
-        for (uint32 i = 0; i < sAreaStore.GetNumRows(); ++i)
-        {
-            AreaTableEntry const* area = sAreaStore.LookupEntry(i);
-            if (!area)
-                continue;
-
-            if (area->zone == zoneId)
-            {
-                sResearchZones[entry->POIid].level = area->area_level;
-                break;
-            }
-        }
     }
 
     // error checks

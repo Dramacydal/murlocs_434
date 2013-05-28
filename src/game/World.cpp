@@ -1564,6 +1564,12 @@ void World::SetInitialWorldSettings()
     sLog.outString("Loading disabled spells...");
     sObjectMgr.LoadDisabledSpells();
 
+    sLog.outString("Loading research site to zone mapping data...");
+    sObjectMgr.LoadResearchSiteToZoneData();
+
+    sLog.outString("Loading archaeology digsite positions...");
+    sObjectMgr.LoadDigSitePositions();
+
     ///- Handle outdated emails (delete/return)
     sLog.outString( "Returning old mails..." );
     sObjectMgr.ReturnOrDeleteOldMails(false);
