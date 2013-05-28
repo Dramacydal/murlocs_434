@@ -1134,6 +1134,8 @@ void World::LoadConfigSettings(bool reload)
         m_timers[WUPDATE_FAKE_ONLINE].SetInterval(getConfig(CONFIG_UINT32_FAKE_ONLINE_UPDATE_INTERVAL) * MINUTE * IN_MILLISECONDS);
         m_timers[WUPDATE_FAKE_ONLINE].SetCurrent(0);
     }
+
+    setConfig(CONFIG_BOOL_ARCHAEOLOGY_ENABLED, "Archaeology.Enabled", false);
 }
 
 /// Initialize the World

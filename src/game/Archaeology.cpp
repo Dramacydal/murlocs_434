@@ -19,6 +19,7 @@
 #include "Player.h"
 #include "ObjectMgr.h"
 #include "Util.h"
+#include "World.h"
 
 #define MAX_RESEARCH_PROJECTS 9
 
@@ -609,8 +610,11 @@ bool Player::IsCompletedProject(uint32 id)
     return false;
 }
 
-void Player::SaveArchaeology()
+void Player::_SaveArchaeology()
 {
+    if (!sWorld.getConfig(CONFIG_BOOL_ARCHAEOLOGY_ENABLED))
+        return;
+
     if (!GetSkillValue(SKILL_ARCHAEOLOGY))
         return;
 
@@ -650,13 +654,19 @@ void Player::SaveArchaeology()
     _archaeologyChanged = false;
 }
 
-void Player::LoadArchaeology(QueryResult* result)
+void Player::_LoadArchaeology(QueryResult* result)
 {
     for (uint8 i = 0; i < MAX_RESEARCH_SITES; ++i)
         _digSites[i].count = 0;
 
     if (!result)
         return;
+
+    if (!sWorld.getConfig(CONFIG_BOOL_ARCHAEOLOGY_ENABLED))
+    {
+        delete result;
+        return;
+    }
 
     Field* fields = result->Fetch();
 

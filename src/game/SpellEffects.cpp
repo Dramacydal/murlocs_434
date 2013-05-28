@@ -8262,7 +8262,7 @@ void Spell::EffectLearnSkill(SpellEffectEntry const* effect)
     ((Player*)unitTarget)->SetSkill(skillid, skillval ? skillval : 1, damage * 75, damage);
 
     // Archaeology
-    if (skillid == SKILL_ARCHAEOLOGY)
+    if (skillid == SKILL_ARCHAEOLOGY && sWorld.getConfig(CONFIG_BOOL_ARCHAEOLOGY_ENABLED))
     {
         ((Player*)unitTarget)->GenerateResearchSites();
         ((Player*)unitTarget)->GenerateResearchProjects();

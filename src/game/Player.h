@@ -2556,8 +2556,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         /***                 ARCHAEOLOGY SYSTEM                ***/
         /*********************************************************/
 
-        void SaveArchaeology();
-        void LoadArchaeology(QueryResult* result);
+        void _SaveArchaeology();
+        void _LoadArchaeology(QueryResult* result);
         bool HasResearchSite(uint32 id) const
         {
             return _researchSites.find(id) != _researchSites.end();
