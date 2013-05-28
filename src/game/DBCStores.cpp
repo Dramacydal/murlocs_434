@@ -167,6 +167,7 @@ DBCStorage <NumTalentsAtLevelEntry> sNumTalentsAtLevelStore(NumTalentsAtLevelfmt
 
 DBCStorage <OverrideSpellDataEntry> sOverrideSpellDataStore(OverrideSpellDatafmt);
 DBCStorage <QuestFactionRewardEntry> sQuestFactionRewardStore(QuestFactionRewardfmt);
+DBCStorage <QuestPOIPointEntry> sQuestPOIPointStore(QuestPOIPointfmt);
 DBCStorage <QuestSortEntry> sQuestSortStore(QuestSortEntryfmt);
 DBCStorage <QuestXPLevel> sQuestXPLevelStore(QuestXPLevelfmt);
 
@@ -174,6 +175,14 @@ DBCStorage <PhaseEntry> sPhaseStore(Phasefmt);
 DBCStorage <PvPDifficultyEntry> sPvPDifficultyStore(PvPDifficultyfmt);
 
 DBCStorage <RandomPropertiesPointsEntry> sRandomPropertiesPointsStore(RandomPropertiesPointsfmt);
+
+DBCStorage <ResearchBranchEntry> sResearchBranchStore(ResearchBranchfmt);
+DBCStorage <ResearchSiteEntry> sResearchSiteStore(ResearchSitefmt);
+std::set<ResearchSiteEntry const*> sResearchSiteSet;
+DBCStorage <ResearchProjectEntry> sResearchProjectStore(ResearchProjectfmt);
+std::set<ResearchProjectEntry const*> sResearchProjectSet;
+ResearchZoneData sResearchZones;
+
 DBCStorage <ScalingStatDistributionEntry> sScalingStatDistributionStore(ScalingStatDistributionfmt);
 DBCStorage <ScalingStatValuesEntry> sScalingStatValuesStore(ScalingStatValuesfmt);
 
@@ -667,6 +676,7 @@ void LoadDBCStores(const std::string& dataPath)
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sNumTalentsAtLevelStore,   dbcPath,"NumTalentsAtLevel.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sOverrideSpellDataStore,   dbcPath,"OverrideSpellData.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sQuestFactionRewardStore,  dbcPath,"QuestFactionReward.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sQuestPOIPointStore,       dbcPath,"QuestPOIPoint.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sQuestSortStore,           dbcPath,"QuestSort.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sQuestXPLevelStore,        dbcPath,"QuestXP.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sPhaseStore,               dbcPath,"Phase.dbc");
@@ -677,6 +687,28 @@ void LoadDBCStores(const std::string& dataPath)
                 MANGOS_ASSERT(false && "Need update MAX_BATTLEGROUND_BRACKETS by DBC data");
 
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sRandomPropertiesPointsStore, dbcPath,"RandPropPoints.dbc");
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sResearchBranchStore,      dbcPath,"ResearchBranch.dbc");
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sResearchProjectStore,     dbcPath,"ResearchProject.dbc");
+    for (uint32 i = 0; i < sResearchProjectStore.GetNumRows(); ++i)
+    {
+        ResearchProjectEntry const* rp = sResearchProjectStore.LookupEntry(i);
+        if (!rp || !rp->IsVaid())
+            continue;
+
+        sResearchProjectSet.insert(rp);
+    }
+
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sResearchSiteStore,        dbcPath,"ResearchSite.dbc");
+    for (uint32 i = 0; i < sResearchSiteStore.GetNumRows(); ++i)
+    {
+        ResearchSiteEntry const* rs = sResearchSiteStore.LookupEntry(i);
+        if (!rs || !rs->IsValid())
+            continue;
+
+        sResearchSiteSet.insert(rs);
+    }
+
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sScalingStatDistributionStore, dbcPath,"ScalingStatDistribution.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sScalingStatValuesStore,   dbcPath,"ScalingStatValues.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSkillLineStore,           dbcPath,"SkillLine.dbc");
@@ -937,6 +969,49 @@ void LoadDBCStores(const std::string& dataPath)
         entry->areatableID[1] = 153;
 
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWorldSafeLocsStore,       dbcPath,"WorldSafeLocs.dbc");
+
+    // fill archaeology data
+    for (std::set<ResearchSiteEntry const*>::iterator itr = sResearchSiteSet.begin(); itr != sResearchSiteSet.end(); ++itr)
+    {
+        ResearchSiteEntry const* entry = *itr;
+
+        sResearchZones[entry->POIid].siteId = entry->ID;
+        sResearchZones[entry->POIid].map = entry->mapId;
+
+        for (uint32 i = 0; i < sQuestPOIPointStore.GetNumRows(); ++i)
+            if (QuestPOIPointEntry const* poi = sQuestPOIPointStore.LookupEntry(i))
+                if (poi->POIId == entry->POIid)
+                    sResearchZones[entry->POIid].points.push_back(ResearchPOIPoint(poi->x, poi->y));
+
+        if (sResearchZones[entry->POIid].points.size() == 0)
+        {
+            sLog.outDebug("Research site %u POI %u map %u has 0 POI points in DBC!", entry->ID, entry->POIid, entry->mapId);
+            continue;
+        }
+
+        ResearchPOIPoint& point = sResearchZones[entry->POIid].points[0];
+        uint32 zoneId = GetZoneByWorldCoordinatesAndMap(point.x, point.y, entry->mapId);
+        if (!zoneId)
+        {
+            sLog.outDebug("Research site %u POI %u has boundary x:%f y:%f that does not fits in any zone (map %u)!", entry->ID, entry->POIid, point.x, point.y, entry->mapId);
+            continue;
+        }
+
+        sResearchZones[entry->POIid].zone = zoneId;
+
+        for (uint32 i = 0; i < sAreaStore.GetNumRows(); ++i)
+        {
+            AreaTableEntry const* area = sAreaStore.LookupEntry(i);
+            if (!area)
+                continue;
+
+            if (area->zone == zoneId)
+            {
+                sResearchZones[entry->POIid].level = area->area_level;
+                break;
+            }
+        }
+    }
 
     // error checks
     if (bad_dbc_files.size() >= DBCFilesCount )
@@ -1853,6 +1928,24 @@ bool Map2ZoneCoordinates(float& x,float& y,uint32 zone)
     std::swap(x,y);                                         // client have map coords swapped
 
     return true;
+}
+
+uint32 GetZoneByWorldCoordinatesAndMap(float x, float y, uint32 map)
+{
+    for (uint32 i = 0; i < sWorldMapAreaStore.GetNumRows(); ++i)
+    {
+        WorldMapAreaEntry const* maEntry = sWorldMapAreaStore.LookupEntry(i);
+        if (!maEntry)
+            continue;
+
+        if (!maEntry->area_id || maEntry->map_id != map)
+            continue;
+
+        if (x > maEntry->x2 && x < maEntry->x1 && y > maEntry->y2 && y < maEntry->y1)
+            return maEntry->area_id;
+    }
+
+    return 0;
 }
 
 MapDifficultyEntry const* GetMapDifficultyData(uint32 mapId, Difficulty difficulty)

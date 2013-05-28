@@ -3118,6 +3118,18 @@ bool SpellMgr::IsSkillBonusSpell(uint32 spellId) const
     return false;
 }
 
+bool SpellMgr::IsAbilityOfSkillType(SpellEntry const* spellInfo, uint32 skillType) const
+{
+    SkillLineAbilityMapBounds bounds = sSpellMgr.GetSkillLineAbilityMapBounds(spellInfo->Id);
+
+    for (SkillLineAbilityMap::const_iterator _spell_idx = bounds.first; _spell_idx != bounds.second; ++_spell_idx)
+        if (SkillLineAbilityEntry const* pAbility = _spell_idx->second)
+            if (pAbility->skillId == skillType)
+                return true;
+
+    return false;
+}
+
 bool SpellMgr::IsGroupBuff(SpellEntry const *spellInfo)
 {
     // some custom cases

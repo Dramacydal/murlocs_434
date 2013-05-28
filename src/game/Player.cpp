@@ -16973,6 +16973,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
 
     // load skills after InitStatsForLevel because it triggering aura apply also
     _LoadSkills(holder->GetResult(PLAYER_LOGIN_QUERY_LOADSKILLS));
+    LoadArchaeology(holder->GetResult(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY));
 
     // apply original stats mods before spell loading or item equipment that call before equip _RemoveStatsMods()
 
@@ -19098,6 +19099,7 @@ void Player::SaveToDB()
     _SaveCUFProfiles();
     _SaveVoidStorage();
     _SaveTalents();
+    SaveArchaeology();
 
     CharacterDatabase.CommitTransaction();
 
@@ -22364,6 +22366,12 @@ void Player::SendInitialPacketsAfterAddToMap()
 
     if (getClass() == CLASS_HUNTER)
         GetSession()->SendStablePet(ObjectGuid());
+
+    if (GetSkillValue(SKILL_ARCHAEOLOGY))
+    {
+        ShowResearchSites();
+        ShowResearchProjects();
+    }
 
     // fix client movement freeze after teleport?
     GetMap()->PlayerRelocation(this, GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());

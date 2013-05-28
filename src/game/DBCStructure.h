@@ -1584,6 +1584,14 @@ struct QuestFactionRewardEntry
     int32       rewardValue[10];                            // 1-10     m_Difficulty
 };
 
+struct QuestPOIPointEntry
+{
+    //unk                                                   // 0
+    int32       x;                                          // 1
+    int32       y;                                          // 2
+    uint32      POIId;                                      // 3
+};
+
 struct QuestSortEntry
 {
     uint32      id;                                         // 0        m_ID
@@ -1602,6 +1610,53 @@ struct RandomPropertiesPointsEntry
     uint32    EpicPropertiesPoints[5];                      // 1-5      m_Epic
     uint32    RarePropertiesPoints[5];                      // 6-10     m_Superior
     uint32    UncommonPropertiesPoints[5];                  // 11-15    m_Good
+};
+
+struct ResearchBranchEntry
+{
+    uint32      ID;                                         // 0
+    DBCString   name;                                       // 1
+    //uint32    FieldID;                                    // 2
+    uint32      currency;                                   // 3
+    //char*     icon;                                       // 4
+    uint32      specItemId;                                 // 5
+};
+
+struct ResearchProjectEntry
+{
+    uint32      ID;                                         // 0
+    DBCString   name;                                       // 1
+    DBCString   description;                                // 2
+    uint32      rare;                                       // 3
+    uint32      branchId;                                   // 4
+    uint32      spellId;                                    // 5
+    //uint32    Complexity;                                 // 6
+    //char*     Path;                                       // 7
+    uint32      req_currency_amt;                           // 8
+
+    bool IsVaid() const
+    {
+        return branchId != 29;
+    }
+};
+
+struct ResearchSiteEntry
+{
+    uint32 ID;                                              // 0
+    uint32 mapId;                                           // 1
+    uint32 POIid;                                           // 2
+    DBCString areaName;                                     // 3
+    //uint32 flags;                                         // 4 all entries have same flags
+
+    bool IsValid() const
+    {
+        return ID != 140 && // template
+            ID != 142 &&    // template
+            ID != 161 &&    // template
+            ID != 471 &&    // vashj'ir
+            ID != 473 &&    // vashj'ir
+            ID != 475;      // vashj'ir
+    }
 };
 
 struct ScalingStatDistributionEntry
@@ -2677,4 +2732,31 @@ typedef UNORDERED_MAP<uint32, TransportAnimationEntryMap> TransportAnimationsByE
 
 #define TaxiMaskSize 114
 typedef uint8 TaxiMask[TaxiMaskSize];
+
+// artifact point
+struct ResearchPOIPoint
+{
+    ResearchPOIPoint() : x(0), y(0) { }
+    ResearchPOIPoint(int32 _x, int32 _y) : x(_x), y(_y) { }
+
+    int32 x;
+    int32 y;
+};
+
+typedef std::vector<ResearchPOIPoint> ResearchPOIPointVector;
+
+struct ResearchZone
+{
+    ResearchZone() : siteId(0), map(0xFFFF), zone(0), level(0) { }
+
+    uint16 siteId;
+    uint16 map;
+    uint16 zone;
+    uint8 level;
+
+    ResearchPOIPointVector points;
+};
+
+typedef std::map<uint32 /*POIId*/, ResearchZone> ResearchZoneData;
+
 #endif

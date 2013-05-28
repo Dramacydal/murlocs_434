@@ -64,6 +64,7 @@ bool IsTotemCategoryCompatiableWith(uint32 itemTotemCategoryId, uint32 requiredT
 
 bool Zone2MapCoordinates(float& x,float& y,uint32 zone);
 bool Map2ZoneCoordinates(float& x,float& y,uint32 zone);
+uint32 GetZoneByWorldCoordinatesAndMap(float x, float y, uint32 map);
 
 typedef std::map<uint32/* pair32(dungeonId,expansion) */,LFGDungeonExpansionEntry const*> LFGDungeonExpansionMap;
 LFGDungeonExpansionEntry const* GetLFGExpansionEntry(uint32 dungeonId, uint32 expansion);
@@ -201,11 +202,18 @@ extern DBCStorage <MovieEntry>                   sMovieStore;
 extern DBCStorage <NumTalentsAtLevelEntry>       sNumTalentsAtLevelStore;
 extern DBCStorage <OverrideSpellDataEntry>       sOverrideSpellDataStore;
 extern DBCStorage <QuestFactionRewardEntry>      sQuestFactionRewardStore;
+extern DBCStorage <QuestPOIPointEntry>           sQuestPOIPointStore;
 extern DBCStorage <QuestSortEntry>               sQuestSortStore;
 extern DBCStorage <QuestXPLevel>                 sQuestXPLevelStore;
 extern DBCStorage <PhaseEntry>                   sPhaseStore;
 //extern DBCStorage <PvPDifficultyEntry>           sPvPDifficultyStore; -- use GetBattlegroundSlotByLevel for access
 extern DBCStorage <RandomPropertiesPointsEntry>  sRandomPropertiesPointsStore;
+extern DBCStorage <ResearchBranchEntry>          sResearchBranchStore;
+extern DBCStorage <ResearchSiteEntry>            sResearchSiteStore;
+extern std::set<ResearchSiteEntry const*>        sResearchSiteSet;
+extern DBCStorage <ResearchProjectEntry>         sResearchProjectStore;
+extern std::set<ResearchProjectEntry const*>     sResearchProjectSet;
+extern ResearchZoneData                          sResearchZones;
 extern DBCStorage <ScalingStatDistributionEntry> sScalingStatDistributionStore;
 extern DBCStorage <ScalingStatValuesEntry>       sScalingStatValuesStore;
 extern DBCStorage <SkillLineEntry>               sSkillLineStore;

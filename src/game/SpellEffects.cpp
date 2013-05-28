@@ -6727,6 +6727,10 @@ void Spell::DoCreateItem(SpellEffectEntry const* effect, uint32 itemtype)
 
 void Spell::EffectCreateItem(SpellEffectEntry const* effect)
 {
+    if (m_caster->GetTypeId() == TYPEID_PLAYER && sSpellMgr.IsAbilityOfSkillType(m_spellInfo, SKILL_ARCHAEOLOGY))
+        if (!((Player*)m_caster)->SolveResearchProject(m_spellInfo->Id))
+            return;
+
     DoCreateItem(effect, effect->EffectItemType);
 }
 
@@ -8256,6 +8260,13 @@ void Spell::EffectLearnSkill(SpellEffectEntry const* effect)
     uint32 skillid =  effect->EffectMiscValue;
     uint16 skillval = ((Player*)unitTarget)->GetPureSkillValue(skillid);
     ((Player*)unitTarget)->SetSkill(skillid, skillval ? skillval : 1, damage * 75, damage);
+
+    // Archaeology
+    if (skillid == SKILL_ARCHAEOLOGY)
+    {
+        ((Player*)unitTarget)->GenerateResearchSites();
+        ((Player*)unitTarget)->GenerateResearchProjects();
+    }
 }
 
 void Spell::EffectPlayMovie(SpellEffectEntry const* effect)
@@ -13368,6 +13379,22 @@ void Spell::EffectSummonObject(SpellEffectEntry const* effect)
     if (slot >= MAX_OBJECT_SLOT)
         return;
 
+    int32 duration = m_duration;
+    float o = m_caster->GetOrientation();
+
+    if (effect->Effect == SPELL_EFFECT_SURVEY)
+    {
+        if (m_caster->GetTypeId() != TYPEID_PLAYER)
+            return;
+
+        go_id = ((Player*)m_caster)->GetSurveyBotEntry(o);
+
+        duration = 15000;
+    }
+
+    if (!go_id)
+        return;
+
     if (ObjectGuid guid = m_caster->m_ObjectSlotGuid[slot])
     {
         if (GameObject* obj = m_caster ? m_caster->GetMap()->GetGameObject(guid) : NULL)
@@ -13396,16 +13423,16 @@ void Spell::EffectSummonObject(SpellEffectEntry const* effect)
             m_caster->GetClosePoint(x, y, z, DEFAULT_WORLD_OBJECT_SIZE);
     }
 
-    Map *map = m_caster->GetMap();
-    if(!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), go_id, map,
-        m_caster->GetPhaseMask(), x, y, z, m_caster->GetOrientation()))
+    Map* map = m_caster->GetMap();
+    if (!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), go_id, map,
+        m_caster->GetPhaseMask(), x, y, z, o))
     {
         delete pGameObj;
         return;
     }
 
     pGameObj->SetUInt32Value(GAMEOBJECT_LEVEL, m_caster->getLevel());
-    pGameObj->SetRespawnTime(m_duration > 0 ? m_duration/IN_MILLISECONDS : 0);
+    pGameObj->SetRespawnTime(duration > 0 ? duration / IN_MILLISECONDS : 0);
     pGameObj->SetSpellId(m_spellInfo->Id);
     m_caster->AddGameObject(pGameObj);
 

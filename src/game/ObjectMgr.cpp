@@ -11023,3 +11023,34 @@ void ObjectMgr::InitFakeOnline()
     while (result->NextRow());
     delete result;
 }
+
+void ObjectMgr::LoadResearchSiteLoot()
+{
+    QueryResult* result = WorldDatabase.Query("SELECT site_id, x, y, branch_id FROM research_loot");
+    if (!result)
+    {
+        sLog.outString(">> Loaded 0 research loot. DB table `research_positions` is empty.");
+        return;
+    }
+
+    uint32 counter = 0;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        ResearchLoot dg;
+        dg.site_id = uint16(fields[0].GetUInt32());
+        dg.x = fields[1].GetFloat();
+        dg.y = fields[2].GetFloat();
+        dg.branch_id = fields[4].GetUInt8();
+
+        _researchLoot.push_back(dg);
+
+        ++counter;
+    }
+    while (result->NextRow());
+    delete result;
+
+    sLog.outString(">> Loaded %u research site loot.", counter);
+}

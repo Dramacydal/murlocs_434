@@ -616,6 +616,16 @@ struct FakeOnlinePlayer
 
 typedef std::list<FakeOnlinePlayer> FakeOnlineList;
 
+struct ResearchLoot
+{
+    uint16 site_id;
+    float x;
+    float y;
+    uint8 branch_id;
+};
+
+typedef std::vector<ResearchLoot> ResearchLootVector;
+
 class ObjectMgr
 {
     friend class PlayerDumpReader;
@@ -1287,6 +1297,10 @@ class ObjectMgr
         FakeOnlineList& GetFakeOnline() { return m_fakeOnlineList; }
         void InitFakeOnline();
 
+        void LoadResearchSiteLoot();
+
+        ResearchLootVector const& GetResearchLoot() const { return _researchLoot; }
+
     protected:
 
         // first free id for selected id type
@@ -1450,6 +1464,8 @@ class ObjectMgr
         DisabledSpells m_disabledSpells;
 
         FakeOnlineList m_fakeOnlineList;
+
+        ResearchLootVector _researchLoot;
 };
 
 #define sObjectMgr MaNGOS::Singleton<ObjectMgr>::Instance()

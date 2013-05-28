@@ -981,6 +981,7 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOADCURRENCIES,
     PLAYER_LOGIN_QUERY_LOAD_CUF_PROFILES,
     PLAYER_LOGIN_QUERY_LOAD_VOID_STORAGE,
+    PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY,
 
     MAX_PLAYER_LOGIN_QUERY
 };
@@ -1215,6 +1216,30 @@ struct VoidStorageItem
 };
 
 typedef std::list<Unit*> SummonUnitList;
+
+struct DigSite
+{
+    uint8 count;
+    uint16 site_id;
+    uint32 find_id;
+    float loot_x;
+    float loot_y;
+
+    void clear()
+    {
+        site_id = find_id = 0;
+        loot_x = loot_y = 0.0f;
+        count = 0;
+    }
+
+    bool empty() { return site_id == 0; }
+};
+
+typedef std::set<uint32> ResearchSiteSet;
+typedef std::set<uint32> ResearchProjectSet;
+typedef std::set<uint32> CompletedProjectSet;
+
+#define MAX_RESEARCH_SITES 16
 
 class MANGOS_DLL_SPEC Player : public Unit
 {
@@ -2526,6 +2551,46 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         void SendCinematicStart(uint32 CinematicSequenceId);
         void SendMovieStart(uint32 MovieId);
+
+        /*********************************************************/
+        /***                 ARCHAEOLOGY SYSTEM                ***/
+        /*********************************************************/
+
+        void SaveArchaeology();
+        void LoadArchaeology(QueryResult* result);
+        bool HasResearchSite(uint32 id) const
+        {
+            return _researchSites.find(id) != _researchSites.end();
+        }
+
+        bool HasResearchProject(uint32 id) const
+        {
+            return _researchProjects.find(id) != _researchProjects.end();
+        }
+
+        void ShowResearchSites();
+        void ShowResearchProjects();
+        void GenerateResearchSites();
+        void GenerateResearchSiteInMap(uint32 mapId);
+        void GenerateResearchProjects();
+        bool SolveResearchProject(uint32 spellId);
+        void UseResearchSite(uint32 id);
+        bool IsPointInZone(ResearchPOIPoint &test, ResearchPOIPointVector &polygon);
+        uint16 GetResearchSiteID();
+        uint32 GetSurveyBotEntry(float &orientation);
+        bool CanResearchWithLevel(uint32 POIid);
+        uint8 CanResearchWithSkillLevel(uint32 POIid);
+        ResearchSiteEntry const* GetResearchSiteEntryById(uint32 id);
+        bool GenerateDigitLoot(uint16 zoneid, DigSite &site);
+        bool IsCompletedProject(uint32 id);
+
+        DigSite _digSites[MAX_RESEARCH_SITES];
+        ResearchSiteSet _researchSites;
+        ResearchProjectSet _researchProjects;
+        CompletedProjectSet _completedProjects;
+        bool _archaeologyChanged;
+
+        // END
 
         /*********************************************************/
         /***                 INSTANCE SYSTEM                   ***/

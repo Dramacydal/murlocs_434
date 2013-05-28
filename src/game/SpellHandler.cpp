@@ -29,6 +29,7 @@
 #include "Totem.h"
 #include "SpellAuras.h"
 #include "CreatureAI.h"
+#include "SharedDefines.h"
 
 void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 {
@@ -428,7 +429,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
         if (mover->GetTypeId()==TYPEID_PLAYER)
         {
             // not have spell in spellbook or spell passive and not casted by client
-            if (!((Player*)mover)->HasActiveSpell(spellId) && !triggered || IsPassiveSpell(spellInfo))
+            if ((!((Player*)mover)->HasActiveSpell(spellId) && !triggered || IsPassiveSpell(spellInfo)) && !sSpellMgr.IsAbilityOfSkillType(SKILL_ARCHAEOLOGY))
             {
                 ERROR_LOG("World: Player %u casts spell %u which he shouldn't have", mover->GetGUIDLow(), spellId);
                 //cheater? kick? ban?
