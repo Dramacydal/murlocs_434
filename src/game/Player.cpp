@@ -21147,7 +21147,7 @@ void Player::TakeExtendedCost(uint32 extendedCostId)
 }
 
 // Return true is the bought item has a max count to force refresh of window by caller
-bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uint32 item, uint8 count, uint8 bag, uint8 slot)
+bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uint32 item, uint32 count, uint8 bag, uint8 slot)
 {
     // cheating attempt
     if (count < 1) count = 1;
@@ -21392,7 +21392,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uin
     return crItem->maxcount != 0;
 }
 
-bool Player::BuyCurrencyFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uint32 currencyId, uint8 count)
+bool Player::BuyCurrencyFromVendorSlot(ObjectGuid vendorGuid, uint32 vendorslot, uint32 currencyId, uint32 count)
 {
     // cheating attempt
     if (count < 1) count = 1;
