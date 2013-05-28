@@ -429,7 +429,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
         if (mover->GetTypeId()==TYPEID_PLAYER)
         {
             // not have spell in spellbook or spell passive and not casted by client
-            if ((!((Player*)mover)->HasActiveSpell(spellId) && !triggered || IsPassiveSpell(spellInfo)) && !sSpellMgr.IsAbilityOfSkillType(SKILL_ARCHAEOLOGY))
+            if ((!((Player*)mover)->HasActiveSpell(spellId) && !triggered || IsPassiveSpell(spellInfo)) && !sSpellMgr.IsAbilityOfSkillType(spellInfo, SKILL_ARCHAEOLOGY))
             {
                 ERROR_LOG("World: Player %u casts spell %u which he shouldn't have", mover->GetGUIDLow(), spellId);
                 //cheater? kick? ban?
