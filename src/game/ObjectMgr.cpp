@@ -11077,7 +11077,7 @@ void ObjectMgr::LoadResearchSiteToZoneData()
     // recheck all research sites
     for (ResearchSiteDataMap::const_iterator itr = sResearchSiteDataMap.begin(); itr != sResearchSiteDataMap.end(); ++itr)
     {
-        if (itr->second.zone == 0 || itr->second.level == 0 || itr->second.branch_id == 0)
+        if (itr->second.zone == 0 || itr->second.level == 0xFF || itr->second.branch_id == 0)
             sLog.outErrorDb("DB table `archaeology_zones` has not full or does not have data for site id %u: "
             "zone %u level %u branch_id %u",
             itr->second.entry->areaName, itr->second.zone, itr->second.level, itr->second.branch_id);

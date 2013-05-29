@@ -2757,7 +2757,7 @@ typedef std::vector<DigSitePosition> DigSitePositionVector;
 
 struct ResearchSiteData
 {
-    ResearchSiteData() : zone(0), level(0), branch_id(0) { }
+    ResearchSiteData() : zone(0), level(0xFF), branch_id(0) { }
 
     ResearchSiteEntry const* entry;
     uint16 zone;
