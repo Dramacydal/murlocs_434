@@ -64,7 +64,6 @@ bool IsTotemCategoryCompatiableWith(uint32 itemTotemCategoryId, uint32 requiredT
 
 bool Zone2MapCoordinates(float& x,float& y,uint32 zone);
 bool Map2ZoneCoordinates(float& x,float& y,uint32 zone);
-uint32 GetZoneByWorldCoordinatesAndMap(float x, float y, uint32 map);
 
 typedef std::map<uint32/* pair32(dungeonId,expansion) */,LFGDungeonExpansionEntry const*> LFGDungeonExpansionMap;
 LFGDungeonExpansionEntry const* GetLFGExpansionEntry(uint32 dungeonId, uint32 expansion);
@@ -107,6 +106,7 @@ PvPDifficultyEntry const* GetBattlegroundBracketById(uint32 mapid, BattleGroundB
 MANGOS_DLL_SPEC uint32 GetCreatureModelRace(uint32 model_id);
 
 float GetCurrencyPrecision(uint32 currencyId);
+ResearchSiteEntry const* GetResearchSiteEntryById(uint32 id);
 
 extern DBCStorage <AchievementEntry>             sAchievementStore;
 extern DBCStorage <AchievementCriteriaEntry>     sAchievementCriteriaStore;

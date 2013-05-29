@@ -1463,6 +1463,9 @@ enum Opcodes
     SMSG_RAID_MARKERS_CHANGED                             = 0x10A1, // 4.3.4 15595
     CMSG_SET_EVERYONE_IS_ASSISTANT                        = 0x2530, // 4.3.4 15595
     SMSG_START_TIMER                                      = 0x59A5, // 4.3.4 15595
+    CMSG_REQUEST_RESEARCH_HISTORY                         = 0x3306, // 4.3.4 15595
+    SMSG_RESEARCH_SETUP_HISTORY                           = 0x10B6, // 4.3.4 15595
+    SMSG_RESEARCH_COMPLETE                                = 0x35A6, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF

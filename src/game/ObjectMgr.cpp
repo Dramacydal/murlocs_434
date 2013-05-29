@@ -11099,8 +11099,21 @@ void ObjectMgr::LoadDigSitePositions()
         dg.branch_id = fields[3].GetUInt8();
 
         m_digSitePositions.push_back(dg);
-
         ++counter;
+
+        for (ResearchSiteDataMap::iterator itr = sResearchZones.begin(); itr != sResearchZones.end(); ++itr)
+        {
+            ResearchSiteData& data = itr->second;
+
+            if (data.siteId != dg.site_id)
+                continue;
+
+            ResearchPOIPoint p(dg.x, dg.y);
+
+            if (!Player::IsPointInZone(p, data.points))
+                sLog.outErrorDb("Archaeology research site %u has dig point x:%f y:%f that is out of site bounds!", dg.x, dg.y);
+            break;
+        }
     }
     while (result->NextRow());
     delete result;

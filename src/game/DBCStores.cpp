@@ -1904,24 +1904,6 @@ bool Map2ZoneCoordinates(float& x,float& y,uint32 zone)
     return true;
 }
 
-uint32 GetZoneByWorldCoordinatesAndMap(float x, float y, uint32 map)
-{
-    for (uint32 i = 0; i < sWorldMapAreaStore.GetNumRows(); ++i)
-    {
-        WorldMapAreaEntry const* maEntry = sWorldMapAreaStore.LookupEntry(i);
-        if (!maEntry)
-            continue;
-
-        if (!maEntry->area_id || maEntry->map_id != map)
-            continue;
-
-        if (x > maEntry->x2 && x < maEntry->x1 && y > maEntry->y2 && y < maEntry->y1)
-            return maEntry->area_id;
-    }
-
-    return 0;
-}
-
 MapDifficultyEntry const* GetMapDifficultyData(uint32 mapId, Difficulty difficulty)
 {
     MapDifficultyMap::const_iterator itr = sMapDifficultyMap.find(MAKE_PAIR32(mapId,difficulty));
@@ -2059,6 +2041,18 @@ float GetCurrencyPrecision(uint32 currencyId)
     CurrencyTypesEntry const * entry = sCurrencyTypesStore.LookupEntry(currencyId);
 
     return entry ? entry->GetPrecision() : 1.0f;
+}
+
+ResearchSiteEntry const* GetResearchSiteEntryById(uint32 id)
+{
+    if (sResearchSiteSet.empty())
+        return NULL;
+
+    for (std::set<ResearchSiteEntry const*>::const_iterator itr = sResearchSiteSet.begin(); itr != sResearchSiteSet.end(); ++itr)
+        if ((*itr)->ID == id)
+            return *itr;
+
+    return NULL;
 }
 
 // script support functions

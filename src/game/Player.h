@@ -2575,12 +2575,11 @@ class MANGOS_DLL_SPEC Player : public Unit
         void GenerateResearchProjects();
         bool SolveResearchProject(uint32 spellId);
         void UseResearchSite(uint32 id);
-        bool IsPointInZone(ResearchPOIPoint &test, ResearchPOIPointVector &polygon);
+        static bool IsPointInZone(ResearchPOIPoint &test, ResearchPOIPointVector &polygon);
         uint16 GetResearchSiteID();
         uint32 GetSurveyBotEntry(float &orientation);
         bool CanResearchWithLevel(uint32 POIid);
         uint8 CanResearchWithSkillLevel(uint32 POIid);
-        ResearchSiteEntry const* GetResearchSiteEntryById(uint32 id);
         bool GenerateDigSiteLoot(uint16 zoneid, DigSite &site);
         bool IsCompletedProject(uint32 id);
 

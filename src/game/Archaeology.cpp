@@ -412,18 +412,6 @@ uint8 Player::CanResearchWithSkillLevel(uint32 POIid)
     return 0;
 }
 
-ResearchSiteEntry const* Player::GetResearchSiteEntryById(uint32 id)
-{
-    if (sResearchSiteSet.empty())
-        return NULL;
-
-    for (std::set<ResearchSiteEntry const*>::const_iterator itr = sResearchSiteSet.begin(); itr != sResearchSiteSet.end(); ++itr)
-        if ((*itr)->ID == id)
-            return *itr;
-
-    return NULL;
-}
-
 void Player::GenerateResearchSiteInMap(uint32 mapId)
 {
     if (sResearchSiteSet.empty())
