@@ -11137,5 +11137,13 @@ void ObjectMgr::LoadDigSitePositions()
     while (result->NextRow());
     delete result;
 
+    for (ResearchSiteDataMap::iterator itr = sResearchSiteDataMap.begin(); itr != sResearchSiteDataMap.end(); ++itr)
+    {
+        ResearchSiteData& data = itr->second;
+
+        if (data.digSites.size() < 3)
+            sLog.outErrorDb("Archaeology research site %u has less that 3 dig site positions!", data.entry->ID);
+    }
+
     sLog.outString(">> Loaded %u dig site positions.", counter);
 }

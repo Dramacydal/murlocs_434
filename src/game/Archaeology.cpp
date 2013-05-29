@@ -118,10 +118,8 @@ uint32 Player::GetSurveyBotEntry(float &orientation)
 
     uint8 i = 0;
     for(; i < MAX_RESEARCH_SITES; ++i)
-    {
         if (GetUInt16Value(PLAYER_FIELD_RESERACH_SITE_1 + i / 2, i % 2) == site_id)
             break;
-    }
 
     MANGOS_ASSERT(i < MAX_RESEARCH_SITES);
 
