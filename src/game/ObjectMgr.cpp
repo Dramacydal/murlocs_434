@@ -11111,7 +11111,7 @@ void ObjectMgr::LoadDigSitePositions()
             ResearchPOIPoint p(dg.x, dg.y);
 
             if (!Player::IsPointInZone(p, data.points))
-                sLog.outErrorDb("Archaeology research site %u has dig point x:%f y:%f that is out of site bounds!", dg.x, dg.y);
+                sLog.outErrorDb("Archaeology research site %u has dig point x:%f y:%f that is out of site bounds!", data.siteId, dg.x, dg.y);
             break;
         }
     }

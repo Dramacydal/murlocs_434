@@ -260,7 +260,7 @@ bool Player::IsPointInZone(ResearchPOIPoint &test, ResearchPOIPointVector &polyg
     pred_pt.x -= test.x;
     pred_pt.y -= test.y;
 
-    int pred_q = q_patt[pred_pt.y < 0][pred_pt.x<  0];
+    int pred_q = q_patt[pred_pt.y < 0][pred_pt.x < 0];
 
     int w = 0;
 
