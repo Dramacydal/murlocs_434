@@ -530,7 +530,7 @@ bool Player::SolveResearchProject(uint32 spellId)
     return true;
 }
 
-bool Player::AddCompletedProject(ResearchProjectEntry const* entry)
+void Player::AddCompletedProject(ResearchProjectEntry const* entry)
 {
     for (CompletedProjectList::iterator itr = _completedProjects.begin(); itr != _completedProjects.end(); ++itr)
     {

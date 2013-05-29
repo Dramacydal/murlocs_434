@@ -2593,7 +2593,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool CanResearchWithLevel(uint32 site_id);
         uint8 CanResearchWithSkillLevel(uint32 site_id);
         bool GenerateDigSiteLoot(uint16 zoneid, DigSite &site);
-        bool AddCompletedProject(ResearchProjectEntry const* entry);
+        void AddCompletedProject(ResearchProjectEntry const* entry);
         bool IsCompletedRareProject(uint32 id);
         void SendCompletedProjects();
 
