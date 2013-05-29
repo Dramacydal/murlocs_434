@@ -11101,12 +11101,9 @@ void ObjectMgr::LoadDigSitePositions()
     {
         Field* fields = result->Fetch();
 
-        //DigSitePosition dg;
-        uint32 map = fields[1].GetUInt32();
+        uint32 map = fields[0].GetUInt32();
         float x = fields[1].GetFloat();
         float y = fields[2].GetFloat();
-
-        //m_digSitePositions.push_back(dg);
 
         bool added = false;
         for (ResearchSiteDataMap::iterator itr = sResearchSiteDataMap.begin(); itr != sResearchSiteDataMap.end(); ++itr)
@@ -11116,7 +11113,7 @@ void ObjectMgr::LoadDigSitePositions()
             if (data.entry->mapId != map)
                 continue;
 
-            ResearchPOIPoint p(x, y);
+            ResearchPOIPoint p(int32(x), int32(y));
 
             if (Player::IsPointInZone(p, data.points))
             {
