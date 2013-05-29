@@ -698,6 +698,23 @@ struct ItemPrototype
 
     uint32 GetSpecialPrice(uint32 minimumPrice = 10000) const;
     uint32 GetSellPrice(bool& normalSellPrice) const;
+
+    uint32 GetCurrencySubstitutionId() const
+    {
+        switch (CurrencySubstitutionId)
+        {
+            case 4: return CURRENCY_TROLL_ARCHAEOLOGY_FRAGMENT;
+            case 5: return CURRENCY_DWARF_ARCHAEOLOGY_FRAGMENT;
+            case 9: return CURRENCY_NIGHT_ELF_ARCHAEOLOGY_FRAGMENT;
+            case 10: return CURRENCY_ORC_ARCHAEOLOGY_FRAGMENT;
+            case 11: return CURRENCY_DRAENEI_ARCHAEOLOGY_FRAGMENT;
+            case 12: return CURRENCY_VRYKUL_ARCHAEOLOGY_FRAGMENT;
+            case 13: return CURRENCY_NERUBIAN_ARCHAEOLOGY_FRAGMENT;
+            case 14: return CURRENCY_TOLVIR_ARCHAEOLOGY_FRAGMENT;
+        }
+
+        return 0;
+    }
 };
 
 // GCC have alternative #pragma pack() syntax and old gcc version not support pack(pop), also any gcc version not support it at some platform

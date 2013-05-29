@@ -1630,8 +1630,8 @@ struct ResearchProjectEntry
     uint32      rare;                                       // 3
     uint32      branchId;                                   // 4
     uint32      spellId;                                    // 5
-    //uint32    Complexity;                                 // 6
-    //char*     Path;                                       // 7
+    uint32      Complexity;                                 // 6
+    //char*     iconPath;                                   // 7
     uint32      req_currency_amt;                           // 8
 
     bool IsVaid() const

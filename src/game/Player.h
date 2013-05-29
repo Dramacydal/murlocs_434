@@ -2585,7 +2585,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void GenerateResearchSites();
         void GenerateResearchSiteInMap(uint32 mapId);
         void GenerateResearchProjects();
-        bool SolveResearchProject(uint32 spellId);
+        bool SolveResearchProject(uint32 spellId, SpellCastTargets& targets);
         void UseResearchSite(uint32 id);
         static bool IsPointInZone(ResearchPOIPoint &test, ResearchPOIPointVector &polygon);
         uint16 GetResearchSiteID();

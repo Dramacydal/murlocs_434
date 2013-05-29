@@ -16,8 +16,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "Player.h"
 #include "ObjectMgr.h"
+#include "Player.h"
+#include "Spell.h"
 #include "Util.h"
 #include "World.h"
 #include "WorldSession.h"
@@ -458,7 +459,7 @@ void Player::GenerateResearchProjects()
     ShowResearchProjects();
 }
 
-bool Player::SolveResearchProject(uint32 spellId)
+bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
 {
     uint16 skill_now = GetSkillValue(SKILL_ARCHAEOLOGY);
     if (!skill_now)
@@ -477,20 +478,59 @@ bool Player::SolveResearchProject(uint32 spellId)
     if (!entry || !HasResearchProject(entry->ID))
         return false;
 
+    ResearchBranchEntry const* branch = NULL;
     for (uint32 i = 0; i < sResearchBranchStore.GetNumRows(); ++i)
     {
-        ResearchBranchEntry const* branch = sResearchBranchStore.LookupEntry(i);
-        if (!branch)
+        ResearchBranchEntry const* _branch = sResearchBranchStore.LookupEntry(i);
+        if (!_branch)
             continue;
 
-        if (branch->ID != entry->branchId)
+        if (_branch->ID != entry->branchId)
             continue;
 
-        if (!HasCurrencyCount(branch->currency, entry->req_currency_amt))
-            return false;
-
-        ModifyCurrencyCount(branch->currency, -int32(entry->req_currency_amt));
+        branch = branch;
         break;
+    }
+
+    if (!branch)
+        return false;
+
+    uint32 currencyId = branch->currency;
+    int32 currencyAmt = int32(entry->req_currency_amt);
+
+    ArchaeologyWeights weights = targets.GetWeights();
+    for (ArchaeologyWeights::iterator itr = weights.begin(); itr != weights.end(); ++itr)
+    {
+        ArchaeologyWeight& w = *itr;
+        if (w.type == WEIGHT_KEYSTONE)
+        {
+            ItemPrototype const* proto = sObjectMgr.GetItemPrototype(w.keystone.itemId);
+            if (!proto)
+                return false;
+
+            if (proto->GetCurrencySubstitutionId() != currencyId)
+                return false;
+
+            if (w.keystone.itemCount > entry->Complexity)
+                return false;
+
+            if (!HasItemCount(w.keystone.itemId, w.keystone.itemCount))
+                return false;
+
+            currencyAmt -= int32(proto->CurrencySubstitutionCount * w.keystone.itemCount);
+        }
+    }
+
+    if (currencyAmt > 0 && !HasCurrencyCount(currencyId, currencyAmt))
+        return false;
+
+    ModifyCurrencyCount(currencyId, -currencyAmt);
+
+    for (ArchaeologyWeights::iterator itr = weights.begin(); itr != weights.end(); ++itr)
+    {
+        ArchaeologyWeight& w = *itr;
+        if (w.type == WEIGHT_KEYSTONE)
+            DestroyItemCount(w.keystone.itemId, w.keystone.itemCount, true);
     }
 
     _researchProjects.erase(entry->ID);
@@ -537,7 +577,6 @@ void Player::AddCompletedProject(ResearchProjectEntry const* entry)
         if (itr->entry->ID == entry->ID)
         {
             ++itr->count;
-            itr->date = uint32(time(NULL));
             return;
         }
     }
