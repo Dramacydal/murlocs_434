@@ -952,6 +952,9 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleClearRaidMarkerOpcode(WorldPacket& recv_data);
         void HandeSetEveryoneIsAssistant(WorldPacket& recv_data);
 
+        // Archaeology
+        void HandleRequestResearchHistory(WorldPacket& recv_data);
+
     private:
         // private trade methods
         void moveItems(Item* myItems[], Item* hisItems[]);

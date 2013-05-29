@@ -16974,6 +16974,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
     // load skills after InitStatsForLevel because it triggering aura apply also
     _LoadSkills(holder->GetResult(PLAYER_LOGIN_QUERY_LOADSKILLS));
     _LoadArchaeology(holder->GetResult(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY));
+    _LoadArchaeologyFinds(holder->GetResult(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_FINDS));
 
     // apply original stats mods before spell loading or item equipment that call before equip _RemoveStatsMods()
 

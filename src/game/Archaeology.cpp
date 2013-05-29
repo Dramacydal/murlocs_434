@@ -20,6 +20,7 @@
 #include "ObjectMgr.h"
 #include "Util.h"
 #include "World.h"
+#include "WorldSession.h"
 
 #define MAX_RESEARCH_PROJECTS 9
 
@@ -436,7 +437,7 @@ void Player::GenerateResearchProjects()
     for (std::set<ResearchProjectEntry const*>::const_iterator itr = sResearchProjectSet.begin(); itr != sResearchProjectSet.end(); ++itr)
     {
         ResearchProjectEntry const* entry = (*itr);
-        if (entry->rare && urand(0, 100) > chance_mod || IsCompletedProject(entry->ID))
+        if (entry->rare && urand(0, 100) > chance_mod || IsCompletedRareProject(entry->ID))
             continue;
 
         tempProjects[entry->branchId].insert(entry->ID);
@@ -496,8 +497,7 @@ bool Player::SolveResearchProject(uint32 spellId)
 
     UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ARCHAEOLOGY_PROJECTS, entry->ID, 1, NULL, 0);
 
-    if (entry->rare)
-        _completedProjects.insert(entry->ID);
+    AddCompletedProject(entry);
 
     ProjectSet tempProjects;
     uint32 chance_mod = skill_now / 50;
@@ -507,7 +507,7 @@ bool Player::SolveResearchProject(uint32 spellId)
         ResearchProjectEntry const* project = (*itr);
         if (project->branchId == entry->branchId)
         {
-            if (project->rare && urand(0, 100) > chance_mod || IsCompletedProject(project->ID))
+            if (project->rare && urand(0, 100) > chance_mod || IsCompletedRareProject(project->ID))
                 continue;
 
             tempProjects.insert(project->ID);
@@ -520,20 +520,36 @@ bool Player::SolveResearchProject(uint32 spellId)
     _researchProjects.insert((*itr));
     _archaeologyChanged = true;
 
+    WorldPacket data (SMSG_RESEARCH_COMPLETE, 4*3);
+    data << uint32(entry->branchId);
+    data << uint32(time(NULL));
+    data << uint32(entry->ID);
+    SendDirectMessage(&data);
+
     ShowResearchProjects();
     return true;
 }
 
-bool Player::IsCompletedProject(uint32 id)
+bool Player::AddCompletedProject(ResearchProjectEntry const* entry)
 {
-    if (_completedProjects.empty())
-        return false;
-
-    for (CompletedProjectSet::const_iterator itr = _completedProjects.begin(); itr != _completedProjects.end(); ++itr)
+    for (CompletedProjectList::iterator itr = _completedProjects.begin(); itr != _completedProjects.end(); ++itr)
     {
-        if (id == (*itr))
-            return true;
+        if (itr->entry->ID == entry->ID)
+        {
+            ++itr->count;
+            itr->date = uint32(time(NULL));
+            return;
+        }
     }
+
+    _completedProjects.push_back(CompletedProject(entry));
+}
+
+bool Player::IsCompletedRareProject(uint32 id)
+{
+    for (CompletedProjectList::const_iterator itr = _completedProjects.begin(); itr != _completedProjects.end(); ++itr)
+        if (id == itr->entry->ID && itr->entry->rare)
+            return true;
 
     return false;
 }
@@ -549,11 +565,12 @@ void Player::_SaveArchaeology()
     if (!_archaeologyChanged)
         return;
 
+    CharacterDatabase.BeginTransaction();
     CharacterDatabase.PExecute("DELETE FROM character_archaeology WHERE guid = '%u'", GetGUIDLow());
 
     std::ostringstream ss;
 
-    ss << "INSERT INTO character_archaeology  (guid, sites, counts, projects, completed) VALUES (";
+    ss << "INSERT INTO character_archaeology (guid, sites, counts, projects) VALUES (";
 
     ss << GetGUIDLow() << ", '";
 
@@ -570,14 +587,17 @@ void Player::_SaveArchaeology()
     for (ResearchProjectSet::const_iterator itr = _researchProjects.begin(); itr != _researchProjects.end(); ++itr)
         ss << (*itr) << " ";
 
-    ss << "', '";
-
-    for (CompletedProjectSet::const_iterator itr = _completedProjects.begin(); itr != _completedProjects.end(); ++itr)
-        ss << (*itr) << " ";
-
     ss << "')";
 
     CharacterDatabase.Execute(ss.str().c_str());
+
+    for (CompletedProjectList::iterator itr = _completedProjects.begin(); itr != _completedProjects.end(); ++itr)
+    {
+        CharacterDatabase.PExecute("REPLACE INTO character_archaeology_finds (guid, id, count, date) VALUES (%u, %u, %u, FROM_UNIXTIME(%u))",
+            GetGUIDLow(), itr->entry->ID, itr->count, itr->date);
+    }
+
+    CharacterDatabase.CommitTransaction();
 
     _archaeologyChanged = false;
 }
@@ -609,9 +629,7 @@ void Player::_LoadArchaeology(QueryResult* result)
         _researchSites.clear();
 
         for (uint8 i = 0; i < tokens.size(); ++i)
-        {
             _researchSites.insert(uint32(atoi(tokens[i].c_str())));
-        }
     }
     else
         GenerateResearchSites();
@@ -631,18 +649,66 @@ void Player::_LoadArchaeology(QueryResult* result)
         _researchProjects.clear();
 
         for (uint8 i = 0; i < MAX_RESEARCH_PROJECTS; ++i)
-        {
             _researchProjects.insert(uint32(atoi(tokens[i].c_str())));
-        }
     }
     else
         GenerateResearchProjects();
 
-    // Loading completed projects
-    tokens = StrSplit(fields[3].GetCppString(), " ");
-
-    for (Tokens::const_iterator itr = tokens.begin(); itr != tokens.end(); ++itr)
-        _completedProjects.insert(atoi(itr->c_str()));
-
     delete result;
+}
+
+void Player::_LoadArchaeologyFinds(QueryResult* result)
+{
+    // "SELECT id, count, UNIX_TIMESTAMP(date) FROM character_archaeology_finds WHERE guid = %u"
+    if (!result)
+        return;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 id = fields[0].GetUInt32();
+        uint32 count = fields[1].GetUInt32();
+        uint32 date = fields[2].GetUInt32();
+
+        ResearchProjectEntry const* rs = sResearchProjectStore.LookupEntry(id);
+        if (!rs)
+            continue;
+
+        CompletedProject cp;
+        cp.entry = rs;
+        cp.count = count;
+        cp.date = date;
+
+        _completedProjects.push_back(cp);
+    }
+    while (result->NextRow());
+    delete result;
+}
+
+void Player::SendCompletedProjects()
+{
+    if (!HasSkill(SKILL_ARCHAEOLOGY))
+        return;
+
+    WorldPacket data(SMSG_RESEARCH_SETUP_HISTORY, 3 + _completedProjects.size() * 3 * 4);
+
+    data.WriteBits(_completedProjects.size(), 22);
+
+    for (CompletedProjectList::iterator itr = _completedProjects.begin(); itr != _completedProjects.end(); ++itr)
+    {
+        data << uint32(itr->entry->ID);
+        data << uint32(itr->count);
+        data << uint32(itr->date);
+    }
+
+    SendDirectMessage(&data);
+}
+
+void WorldSession::HandleRequestResearchHistory(WorldPacket& recv_data)
+{
+    // null opcode
+    DEBUG_LOG("World: received CMSG_REQUEST_RESEARCH_HISTORY from %s (account %u)", GetPlayerName(), GetAccountId());
+
+    _player->SendCompletedProjects();
 }

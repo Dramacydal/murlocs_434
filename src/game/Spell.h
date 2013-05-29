@@ -106,6 +106,37 @@ struct SpellCastTargetsReader
     Unit* caster;
 };
 
+enum WeightType
+{
+    WEIGHT_FRAGMENT = 1,
+    WEIGHT_KEYSTONE = 2,
+};
+
+struct ArchaeologyWeight
+{
+    uint8 type;
+    union
+    {
+        struct
+        {
+            uint32 currencyId;
+            uint32 currencyCount;
+        } fragment;
+        struct
+        {
+            uint32 itemId;
+            uint32 itemCount;
+        } keystone;
+        struct
+        {
+            uint32 id;
+            uint32 count;
+        } raw;
+    };
+};
+
+typedef std::list<ArchaeologyWeight> ArchaeologyWeights;
+
 class SpellCastTargets
 {
     public:
@@ -206,6 +237,8 @@ class SpellCastTargets
         float GetElevation() const { return m_elevation; }
         float GetSpeed() const { return m_speed; }
 
+        ArchaeologyWeights const& GetWeights() { return m_weights; }
+
         uint32 m_targetMask;
 
     private:
@@ -225,6 +258,8 @@ class SpellCastTargets
 
         float m_elevation;
         float m_speed;
+
+        ArchaeologyWeights m_weights;
 };
 
 inline ByteBuffer& operator<< (ByteBuffer& buf, SpellCastTargets const& targets)

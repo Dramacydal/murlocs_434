@@ -417,18 +417,24 @@ void SpellCastTargets::ReadAdditionalData(WorldPacket& data, uint8& cast_flags)
         data >> count;
         for (uint32 i = 0; i < count; ++i)
         {
+            ArchaeologyWeight w;
             data >> type;
+            w.type = type;
+
             switch (type)
             {
-                case 1:                         // Fragments
-                    data >> Unused<uint32>();   // Currency entry
-                    data >> Unused<uint32>();   // Currency count
+                case WEIGHT_FRAGMENT:                   // Fragments
+                    data >> w.fragment.currencyId;      // Currency entry
+                    data >> w.fragment.currencyCount;   // Currency count
                     break;
-                case 2:                         // Keystones
-                    data >> Unused<uint32>();   // Item entry
-                    data >> Unused<uint32>();   // Item count
+                case WEIGHT_KEYSTONE:                   // Keystones
+                    data >> w.keystone.itemId;          // Item entry
+                    data >> w.keystone.itemCount;       // Item count
                     break;
             }
+
+            DEBUG_LOG("SpellCastTargets::ReadAdditionalData: type %u id %u count %u", w.type, w.raw.id, w.raw.count);
+            m_weights.push_back(w);
         }
     }
 }

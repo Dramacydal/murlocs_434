@@ -982,6 +982,7 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOAD_CUF_PROFILES,
     PLAYER_LOGIN_QUERY_LOAD_VOID_STORAGE,
     PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY,
+    PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_FINDS,
 
     MAX_PLAYER_LOGIN_QUERY
 };
@@ -1235,9 +1236,19 @@ struct DigSite
     bool empty() { return site_id == 0; }
 };
 
+struct CompletedProject
+{
+    CompletedProject() : entry(NULL), count(1), date(time(NULL)) { }
+    CompletedProject(ResearchProjectEntry const* _entry) : entry(_entry), count(1), date(time(NULL)) { }
+
+    ResearchProjectEntry const* entry;
+    uint32 count;
+    uint32 date;
+};
+
 typedef std::set<uint32> ResearchSiteSet;
 typedef std::set<uint32> ResearchProjectSet;
-typedef std::set<uint32> CompletedProjectSet;
+typedef std::list<CompletedProject> CompletedProjectList;
 
 #define MAX_RESEARCH_SITES 16
 
@@ -2558,6 +2569,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         void _SaveArchaeology();
         void _LoadArchaeology(QueryResult* result);
+        void _LoadArchaeologyFinds(QueryResult* result);
         bool HasResearchSite(uint32 id) const
         {
             return _researchSites.find(id) != _researchSites.end();
@@ -2581,12 +2593,14 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool CanResearchWithLevel(uint32 site_id);
         uint8 CanResearchWithSkillLevel(uint32 site_id);
         bool GenerateDigSiteLoot(uint16 zoneid, DigSite &site);
-        bool IsCompletedProject(uint32 id);
+        bool AddCompletedProject(ResearchProjectEntry const* entry);
+        bool IsCompletedRareProject(uint32 id);
+        void SendCompletedProjects();
 
         DigSite _digSites[MAX_RESEARCH_SITES];
         ResearchSiteSet _researchSites;
         ResearchProjectSet _researchProjects;
-        CompletedProjectSet _completedProjects;
+        CompletedProjectList _completedProjects;
         bool _archaeologyChanged;
 
         // END

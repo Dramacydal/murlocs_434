@@ -619,8 +619,8 @@ struct ItemPrototype
     uint32 DisenchantID;
     uint32 FoodType;
     float  StatScalingFactor;
-    uint32 Unknown400_1;
-    uint32 Unknown400_2;
+    uint32 CurrencySubstitutionId;
+    uint32 CurrencySubstitutionCount;
     uint32 MinMoneyLoot;
     uint32 MaxMoneyLoot;
     uint32 ExtraFlags;                                      // see ItemExtraFlags
