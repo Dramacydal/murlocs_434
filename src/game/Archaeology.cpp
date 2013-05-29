@@ -112,42 +112,26 @@ uint32 Player::GetSurveyBotEntry(float &orientation)
     if (!skill_now)
         return 0;
 
-    uint16 siteId = GetResearchSiteID();
-    if (!siteId)
+    uint16 site_id = GetResearchSiteID();
+    if (!site_id)
         return 0;
 
-    uint32 at_pos = 0xFFFF;
-
-    for(uint8 i = 0; i < MAX_RESEARCH_SITES / 2; ++i)
+    uint8 i = 0;
+    for(; i < MAX_RESEARCH_SITES; ++i)
     {
-        //Replace by GetUInt16Value
-        uint32 site_now_1 = GetUInt32Value(PLAYER_FIELD_RESERACH_SITE_1 + i) & 0xFFFF;
-        uint32 site_now_2 = GetUInt32Value(PLAYER_FIELD_RESERACH_SITE_1 + i) >> 16;
-
-        if (siteId == site_now_1)
-        {
-            at_pos = i * 2;
+        if (GetUInt16Value(PLAYER_FIELD_RESERACH_SITE_1 + i / 2, i % 2) == site_id)
             break;
-        }
-        if (siteId == site_now_2)
-        {
-            at_pos = i * 2 + 1;
-            break;
-        }
     }
 
-    if (at_pos == 0xFFFF)
-        return 0;
+    MANGOS_ASSERT(i < MAX_RESEARCH_SITES);
 
-    MANGOS_ASSERT(at_pos < MAX_RESEARCH_SITES);
-
-    DigSite &site = _digSites[at_pos];
-    if (site.site_id != siteId)
+    DigSite &site = _digSites[i];
+    if (site.site_id != site_id)
     {
-        if (!GenerateDigSiteLoot(siteId, site))
+        if (!GenerateDigSiteLoot(site_id, site))
             return 0;
 
-        site.site_id = siteId;
+        site.site_id = site_id;
     }
 
     orientation = GetAngle(site.loot_x, site.loot_y);
@@ -166,15 +150,15 @@ uint32 Player::GetSurveyBotEntry(float &orientation)
     uint32 currencyId = 0;
     switch (site.find_id)
     {
-        case 204282: currencyId = 384; break;
-        case 207188: currencyId = 398; break;
-        case 206836: currencyId = 393; break;
-        case 203071: currencyId = 394; break;
-        case 203078: currencyId = 400; break;
-        case 207187: currencyId = 397; break;
-        case 207190: currencyId = 401; break;
-        case 202655: currencyId = 385; break;
-        case 207189: currencyId = 399; break;
+        case GO_DWARF_FIND: currencyId = 384; break;
+        case GO_DRAENEI_FIND: currencyId = 398; break;
+        case GO_FOSSIL_FIND: currencyId = 393; break;
+        case GO_NIGHT_ELF_FIND: currencyId = 394; break;
+        case GO_NERUBIAN_FIND: currencyId = 400; break;
+        case GO_ORC_FIND: currencyId = 397; break;
+        case GO_TOLVIR_FIND: currencyId = 401; break;
+        case GO_TROLL_FIND: currencyId = 385; break;
+        case GO_VRYKUL_FIND: currencyId = 399; break;
     }
 
     if (currencyId)
@@ -200,13 +184,13 @@ uint32 Player::GetSurveyBotEntry(float &orientation)
     if (site.count < 2)
     {
         ++site.count;
-        if (!GenerateDigSiteLoot(siteId, site))
+        if (!GenerateDigSiteLoot(site_id, site))
             return 0;
     }
     else
     {
         site.clear();
-        UseResearchSite(siteId);
+        UseResearchSite(site_id);
     }
 
     _archaeologyChanged = true;
@@ -294,7 +278,6 @@ void Player::ShowResearchSites()
         return;
 
     uint8 count = 0;
-    uint32 newvalue;
 
     for (ResearchSiteSet::const_iterator itr = _researchSites.begin(); itr != _researchSites.end(); ++itr)
     {
@@ -304,15 +287,7 @@ void Player::ShowResearchSites()
         if (!rs || CanResearchWithSkillLevel(rs->ID) == 2)
             id = 0;
 
-        if (count % 2 == 1)
-        {
-            newvalue |= id;
-            SetUInt32Value(PLAYER_FIELD_RESERACH_SITE_1 + count / 2, newvalue);
-            newvalue = 0;
-        }
-        else
-            newvalue = id << 16;
-
+        SetUInt16Value(PLAYER_FIELD_RESERACH_SITE_1 + count / 2, count % 2, id);
         ++count;
     }
 }
@@ -323,24 +298,10 @@ void Player::ShowResearchProjects()
         return;
 
     uint8 count = 0;
-    uint32 newvalue;
 
     for (ResearchProjectSet::const_iterator itr = _researchProjects.begin(); itr != _researchProjects.end(); ++itr)
     {
-        if (count % 2 == 1)
-        {
-            newvalue |= (*itr);
-            SetUInt32Value(PLAYER_FIELD_RESEARCHING_1 + count / 2, newvalue);
-            newvalue = 0;
-        }
-        else if (count == 8)
-        {
-            SetUInt32Value(PLAYER_FIELD_RESEARCHING_1 + count / 2, (*itr));
-            break;
-        }
-        else
-            newvalue = (*itr) << 16;
-
+        SetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + count / 2, count % 2, (*itr));
         ++count;
     }
 }
