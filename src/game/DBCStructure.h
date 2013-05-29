@@ -2743,20 +2743,31 @@ struct ResearchPOIPoint
     int32 y;
 };
 
+struct DigSitePosition
+{
+    DigSitePosition() : x(0.0f), y(0.0f) { }
+    DigSitePosition(float _x, float _y) : x(_x), y(_y) { }
+
+    float x;
+    float y;
+};
+
 typedef std::vector<ResearchPOIPoint> ResearchPOIPointVector;
+typedef std::vector<DigSitePosition> DigSitePositionVector;
 
 struct ResearchSiteData
 {
-    ResearchSiteData() : siteId(0), zone(0), map(0xFFFF), level(0) { }
+    ResearchSiteData() : zone(0), level(0), branch_id(0) { }
 
-    uint16 siteId;
-    uint16 map;
+    ResearchSiteEntry const* entry;
     uint16 zone;
     uint8 level;
+    uint8 branch_id;
 
     ResearchPOIPointVector points;
+    DigSitePositionVector digSites;
 };
 
-typedef std::map<uint32 /*POIId*/, ResearchSiteData> ResearchSiteDataMap;
+typedef std::map<uint32 /*site_id*/, ResearchSiteData> ResearchSiteDataMap;
 
 #endif

@@ -34,7 +34,7 @@ enum ArchaeologyFinds
 {
     GO_DWARF_FIND       = 204282,
     GO_DRAENEI_FIND     = 207188,
-    GO_FISSIL_FIND      = 206836,
+    GO_FOSSIL_FIND      = 206836,
     GO_NIGHT_ELF_FIND   = 203071,
     GO_NERUBIAN_FIND    = 203078,
     GO_ORC_FIND         = 207187,
@@ -75,48 +75,33 @@ typedef std::map<uint32, ProjectSet> Projects;
 
 bool Player::GenerateDigSiteLoot(uint16 siteId, DigSite &site)
 {
-    DigSitePositionVector const& loot = sObjectMgr.GetResearchLoot();
+    ResearchSiteDataMap::iterator dataItr = sResearchSiteDataMap.find(siteId);
+    if (dataItr == sResearchSiteDataMap.end())
+        return false;
+
+    DigSitePositionVector const& loot = dataItr->second.digSites;
     if (loot.empty())
         return false;
 
-    site.find_id = 0;
-
-    DigSitePositionVector lootList;
-    for (DigSitePositionVector::const_iterator itr = loot.begin(); itr != loot.end(); ++itr)
+    switch (dataItr->second.branch_id)
     {
-        DigSitePosition entry = (*itr);
-        if (entry.site_id != siteId)
-            continue;
-
-        if (site.find_id == 0)
-        {
-            switch (entry.branch_id)
-            {
-                case 1: site.find_id = GO_DWARF_FIND; break;
-                case 2: site.find_id = GO_DRAENEI_FIND; break;
-                case 3: site.find_id = GO_FISSIL_FIND; break;
-                case 4: site.find_id = GO_NIGHT_ELF_FIND; break;
-                case 5: site.find_id = GO_NERUBIAN_FIND; break;
-                case 6: site.find_id = GO_ORC_FIND; break;
-                case 7: site.find_id = GO_TOLVIR_FIND; break;
-                case 8: site.find_id = GO_TROLL_FIND; break;
-                case 27: site.find_id = GO_VRYKUL_FIND; break;
-                default: site.find_id = 0; break;
-            }
-        }
-
-        lootList.push_back(entry);
+        case 1: site.find_id = GO_DWARF_FIND; break;
+        case 2: site.find_id = GO_DRAENEI_FIND; break;
+        case 3: site.find_id = GO_FOSSIL_FIND; break;
+        case 4: site.find_id = GO_NIGHT_ELF_FIND; break;
+        case 5: site.find_id = GO_NERUBIAN_FIND; break;
+        case 6: site.find_id = GO_ORC_FIND; break;
+        case 7: site.find_id = GO_TOLVIR_FIND; break;
+        case 8: site.find_id = GO_TROLL_FIND; break;
+        case 27: site.find_id = GO_VRYKUL_FIND; break;
+        default: site.find_id = 0; break;
     }
 
-    if (lootList.empty())
-        return false;
-
-    DigSitePositionVector::const_iterator entry = lootList.begin();
-    std::advance(entry, urand(0, lootList.size() - 1));
+    DigSitePositionVector::const_iterator entry = loot.begin();
+    std::advance(entry, urand(0, loot.size() - 1));
 
     site.loot_x = entry->x;
     site.loot_y = entry->y;
-    //site.loot_z = entry->z;
 
     return true;
 }
@@ -236,7 +221,7 @@ uint16 Player::GetResearchSiteID()
     pt.x = int32(GetPositionX());
     pt.y = int32(GetPositionY());
 
-    for (ResearchSiteDataMap::iterator itr = sResearchZones.begin(); itr != sResearchZones.end(); ++itr)
+    for (ResearchSiteDataMap::iterator itr = sResearchSiteDataMap.begin(); itr != sResearchSiteDataMap.end(); ++itr)
     {
         if (itr->second.zone != GetCachedZoneId())
             continue;
@@ -244,7 +229,7 @@ uint16 Player::GetResearchSiteID()
         if (!IsPointInZone(pt, itr->second.points))
             continue;
 
-        return itr->second.siteId;
+        return itr->second.entry->ID;
     }
 
     return 0;
@@ -316,13 +301,14 @@ void Player::ShowResearchSites()
         uint32 id = (*itr);
         ResearchSiteEntry const* rs = GetResearchSiteEntryById(id);
 
-        if (!rs || CanResearchWithSkillLevel(rs->POIid) == 2)
+        if (!rs || CanResearchWithSkillLevel(rs->ID) == 2)
             id = 0;
 
         if (count % 2 == 1)
         {
             newvalue |= id;
             SetUInt32Value(PLAYER_FIELD_RESERACH_SITE_1 + count / 2, newvalue);
+            newvalue = 0;
         }
         else
             newvalue = id << 16;
@@ -345,6 +331,7 @@ void Player::ShowResearchProjects()
         {
             newvalue |= (*itr);
             SetUInt32Value(PLAYER_FIELD_RESEARCHING_1 + count / 2, newvalue);
+            newvalue = 0;
         }
         else if (count == 8)
         {
@@ -358,31 +345,31 @@ void Player::ShowResearchProjects()
     }
 }
 
-bool Player::CanResearchWithLevel(uint32 POIid)
+bool Player::CanResearchWithLevel(uint32 site_id)
 {
     if (!GetSkillValue(SKILL_ARCHAEOLOGY))
         return false;
 
-    ResearchSiteDataMap::const_iterator itr = sResearchZones.find(POIid);
-    if (itr != sResearchZones.end())
+    ResearchSiteDataMap::const_iterator itr = sResearchSiteDataMap.find(site_id);
+    if (itr != sResearchSiteDataMap.end())
         return getLevel() + 19 >= itr->second.level;
 
     return true;
 }
 
-uint8 Player::CanResearchWithSkillLevel(uint32 POIid)
+uint8 Player::CanResearchWithSkillLevel(uint32 site_id)
 {
     uint16 skill_now = GetSkillValue(SKILL_ARCHAEOLOGY);
     if (!skill_now)
         return 0;
 
-    ResearchSiteDataMap::const_iterator itr = sResearchZones.find(POIid);
-    if (itr != sResearchZones.end())
+    ResearchSiteDataMap::const_iterator itr = sResearchSiteDataMap.find(site_id);
+    if (itr != sResearchSiteDataMap.end())
     {
         ResearchSiteData const& entry = itr->second;
 
         uint16 skill_cap = 0;
-        switch (entry.map)
+        switch (entry.entry->mapId)
         {
             case 0:
                 if (entry.zone == 4922) // Twilight Hightlands
@@ -405,7 +392,7 @@ uint8 Player::CanResearchWithSkillLevel(uint32 POIid)
         if (skill_now >= skill_cap)
             return 1;
 
-        if (entry.map == 530 || entry.map == 571)
+        if (entry.entry->mapId == 530 || entry.entry->mapId == 571)
             return 2;
     }
 
@@ -414,18 +401,15 @@ uint8 Player::CanResearchWithSkillLevel(uint32 POIid)
 
 void Player::GenerateResearchSiteInMap(uint32 mapId)
 {
-    if (sResearchSiteSet.empty())
-        return;
-
     SiteSet tempSites;
 
-    for (std::set<ResearchSiteEntry const*>::const_iterator itr = sResearchSiteSet.begin(); itr != sResearchSiteSet.end(); ++itr)
+    for (ResearchSiteDataMap::const_iterator itr = sResearchSiteDataMap.begin(); itr != sResearchSiteDataMap.end(); ++itr)
     {
-        ResearchSiteEntry const* entry = (*itr);
+        ResearchSiteEntry const* entry = itr->second.entry;
         if (!HasResearchSite(entry->ID) &&
             entry->mapId == mapId &&
-            CanResearchWithLevel(entry->POIid) &&
-            CanResearchWithSkillLevel(entry->POIid))
+            CanResearchWithLevel(entry->ID) &&
+            CanResearchWithSkillLevel(entry->ID))
             tempSites.insert(entry->ID);
     }
 
@@ -443,16 +427,13 @@ void Player::GenerateResearchSiteInMap(uint32 mapId)
 
 void Player::GenerateResearchSites()
 {
-    if (sResearchSiteSet.empty())
-        return;
-
     _researchSites.clear();
 
     Sites tempSites;
-    for (std::set<ResearchSiteEntry const*>::const_iterator itr = sResearchSiteSet.begin(); itr != sResearchSiteSet.end(); ++itr)
+    for (ResearchSiteDataMap::const_iterator itr = sResearchSiteDataMap.begin(); itr != sResearchSiteDataMap.end(); ++itr)
     {
-        ResearchSiteEntry const* entry = (*itr);
-        if (CanResearchWithLevel(entry->POIid) && CanResearchWithSkillLevel(entry->POIid))
+        ResearchSiteEntry const* entry = itr->second.entry;
+        if (CanResearchWithLevel(entry->ID) && CanResearchWithSkillLevel(entry->ID))
             tempSites[entry->mapId].insert(entry->ID);
     }
 

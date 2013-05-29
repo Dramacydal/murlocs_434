@@ -11028,7 +11028,7 @@ void ObjectMgr::LoadResearchSiteToZoneData()
 {
     _zoneByResearchSite.clear();
 
-    QueryResult* result = WorldDatabase.Query("SELECT site_id, zone_id FROM archaeology_zones");
+    QueryResult* result = WorldDatabase.Query("SELECT site_id, zone_id, branch_id FROM archaeology_zones");
     if (!result)
     {
         sLog.outString(">> Loaded 0 archaeology zones. DB table `archaeology_zones` is empty.");
@@ -11041,24 +11041,20 @@ void ObjectMgr::LoadResearchSiteToZoneData()
     {
         Field* fields = result->Fetch();
 
-        _zoneByResearchSite[fields[0].GetUInt16()] = fields[1].GetUInt16();
-        ++counter;
-    }
-    while (result->NextRow());
-    delete result;
+        uint32 site_id = fields[0].GetUInt32();
+        uint32 zone_id = fields[1].GetUInt32();
+        uint32 branch_id = fields[2].GetUInt32();
 
-    for (ResearchSiteDataMap::iterator itr = sResearchZones.begin(); itr != sResearchZones.end(); ++itr)
-    {
-        ResearchSiteData& researchZone = itr->second;
-
-        uint32 zoneId = GetZoneByResearchSite(researchZone.siteId);
-        if (!zoneId)
+        ResearchSiteDataMap::iterator itr = sResearchSiteDataMap.find(site_id);
+        if (itr == sResearchSiteDataMap.end())
         {
-            sLog.outErrorDb("DB table `archaeology_zones` does not have data for site id %u", researchZone.siteId);
+            sLog.outErrorDb("DB table `archaeology_zones` has data for nonexistant site id %u", site_id);
             continue;
         }
 
-        researchZone.zone = zoneId;
+        ResearchSiteData& data = itr->second;
+        data.zone = zone_id;
+        data.branch_id = branch_id;
 
         for (uint32 i = 0; i < sAreaStore.GetNumRows(); ++i)
         {
@@ -11066,12 +11062,25 @@ void ObjectMgr::LoadResearchSiteToZoneData()
             if (!area)
                 continue;
 
-            if (area->zone == zoneId)
+            if (area->zone == zone_id)
             {
-                researchZone.level = area->area_level;
+                data.level = area->area_level;
                 break;
             }
         }
+
+        ++counter;
+    }
+    while (result->NextRow());
+    delete result;
+
+    // recheck all research sites
+    for (ResearchSiteDataMap::const_iterator itr = sResearchSiteDataMap.begin(); itr != sResearchSiteDataMap.end(); ++itr)
+    {
+        if (itr->second.zone == 0 || itr->second.level == 0 || itr->second.branch_id == 0)
+            sLog.outErrorDb("DB table `archaeology_zones` has not full or does not have data for site id %u: "
+            "zone %u level %u branch_id %u",
+            itr->second.zone, itr->second.level, itr->second.branch_id);
     }
 
     sLog.outString(">> Loaded %u archaeology zones.", counter);
@@ -11079,7 +11088,7 @@ void ObjectMgr::LoadResearchSiteToZoneData()
 
 void ObjectMgr::LoadDigSitePositions()
 {
-    QueryResult* result = WorldDatabase.Query("SELECT site_id, x, y, branch_id FROM archaeology_digsites");
+    QueryResult* result = WorldDatabase.Query("SELECT map, x, y FROM archaeology_digsites");
     if (!result)
     {
         sLog.outString(">> Loaded 0 dig site positions. DB table `archaeology_digsites` is empty.");
@@ -11092,28 +11101,38 @@ void ObjectMgr::LoadDigSitePositions()
     {
         Field* fields = result->Fetch();
 
-        DigSitePosition dg;
-        dg.site_id = uint16(fields[0].GetUInt32());
-        dg.x = fields[1].GetFloat();
-        dg.y = fields[2].GetFloat();
-        dg.branch_id = fields[3].GetUInt8();
+        //DigSitePosition dg;
+        uint32 map = fields[1].GetUInt32();
+        float x = fields[1].GetFloat();
+        float y = fields[2].GetFloat();
 
-        m_digSitePositions.push_back(dg);
-        ++counter;
+        //m_digSitePositions.push_back(dg);
 
-        for (ResearchSiteDataMap::iterator itr = sResearchZones.begin(); itr != sResearchZones.end(); ++itr)
+        bool added = false;
+        for (ResearchSiteDataMap::iterator itr = sResearchSiteDataMap.begin(); itr != sResearchSiteDataMap.end(); ++itr)
         {
             ResearchSiteData& data = itr->second;
 
-            if (data.siteId != dg.site_id)
+            if (data.entry->mapId != map)
                 continue;
 
-            ResearchPOIPoint p(dg.x, dg.y);
+            ResearchPOIPoint p(x, y);
 
-            if (!Player::IsPointInZone(p, data.points))
-                sLog.outErrorDb("Archaeology research site %u has dig point x:%f y:%f that is out of site bounds! Polygon size: %u", data.siteId, dg.x, dg.y, data.points.size());
-            break;
+            if (Player::IsPointInZone(p, data.points))
+            {
+                data.digSites.push_back(DigSitePosition(x, y));
+                added = true;
+            }
         }
+
+        if (!added)
+        {
+            sLog.outErrorDb("DB table `archaeology_digsites` has data for point x:%f y:%f at map %u that does not belong to any digsite!",
+                x, y, map);
+            continue;
+        }
+
+        ++counter;
     }
     while (result->NextRow());
     delete result;

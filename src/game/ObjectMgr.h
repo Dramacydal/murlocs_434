@@ -616,15 +616,6 @@ struct FakeOnlinePlayer
 
 typedef std::list<FakeOnlinePlayer> FakeOnlineList;
 
-struct DigSitePosition
-{
-    uint16 site_id;
-    float x;
-    float y;
-    uint8 branch_id;
-};
-
-typedef std::vector<DigSitePosition> DigSitePositionVector;
 typedef std::map<uint32, uint32> SiteToZoneMap;
 
 class ObjectMgr
@@ -1300,16 +1291,6 @@ class ObjectMgr
 
         void LoadResearchSiteToZoneData();
         void LoadDigSitePositions();
-
-        DigSitePositionVector const& GetResearchLoot() const { return m_digSitePositions; }
-        uint32 GetZoneByResearchSite(uint32 site_id) const
-        {
-            SiteToZoneMap::const_iterator itr = _zoneByResearchSite.find(site_id);
-            if (itr == _zoneByResearchSite.end())
-                return 0;
-
-            return itr->second;
-        }
 
     protected:
 

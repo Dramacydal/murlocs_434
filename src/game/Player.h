@@ -2578,8 +2578,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         static bool IsPointInZone(ResearchPOIPoint &test, ResearchPOIPointVector &polygon);
         uint16 GetResearchSiteID();
         uint32 GetSurveyBotEntry(float &orientation);
-        bool CanResearchWithLevel(uint32 POIid);
-        uint8 CanResearchWithSkillLevel(uint32 POIid);
+        bool CanResearchWithLevel(uint32 site_id);
+        uint8 CanResearchWithSkillLevel(uint32 site_id);
         bool GenerateDigSiteLoot(uint16 zoneid, DigSite &site);
         bool IsCompletedProject(uint32 id);
 

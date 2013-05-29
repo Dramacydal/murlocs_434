@@ -178,10 +178,9 @@ DBCStorage <RandomPropertiesPointsEntry> sRandomPropertiesPointsStore(RandomProp
 
 DBCStorage <ResearchBranchEntry> sResearchBranchStore(ResearchBranchfmt);
 DBCStorage <ResearchSiteEntry> sResearchSiteStore(ResearchSitefmt);
-std::set<ResearchSiteEntry const*> sResearchSiteSet;
 DBCStorage <ResearchProjectEntry> sResearchProjectStore(ResearchProjectfmt);
 std::set<ResearchProjectEntry const*> sResearchProjectSet;
-ResearchSiteDataMap sResearchZones;
+ResearchSiteDataMap sResearchSiteDataMap;
 
 DBCStorage <ScalingStatDistributionEntry> sScalingStatDistributionStore(ScalingStatDistributionfmt);
 DBCStorage <ScalingStatValuesEntry> sScalingStatValuesStore(ScalingStatValuesfmt);
@@ -706,7 +705,17 @@ void LoadDBCStores(const std::string& dataPath)
         if (!rs || !rs->IsValid())
             continue;
 
-        sResearchSiteSet.insert(rs);
+        ResearchSiteData& data = sResearchSiteDataMap[rs->ID];
+
+        data.entry = rs;
+
+        for (uint32 i = 0; i < sQuestPOIPointStore.GetNumRows(); ++i)
+            if (QuestPOIPointEntry const* poi = sQuestPOIPointStore.LookupEntry(i))
+                if (poi->POIId == rs->POIid)
+                    data.points.push_back(ResearchPOIPoint(poi->x, poi->y));
+
+        if (data.points.size() == 0)
+            sLog.outDebug("Research site %u POI %u map %u has 0 POI points in DBC!", rs->ID, rs->POIid, rs->mapId);
     }
 
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sScalingStatDistributionStore, dbcPath,"ScalingStatDistribution.dbc");
@@ -969,23 +978,6 @@ void LoadDBCStores(const std::string& dataPath)
         entry->areatableID[1] = 153;
 
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sWorldSafeLocsStore,       dbcPath,"WorldSafeLocs.dbc");
-
-    // fill archaeology data
-    for (std::set<ResearchSiteEntry const*>::iterator itr = sResearchSiteSet.begin(); itr != sResearchSiteSet.end(); ++itr)
-    {
-        ResearchSiteEntry const* entry = *itr;
-
-        sResearchZones[entry->POIid].siteId = entry->ID;
-        sResearchZones[entry->POIid].map = entry->mapId;
-
-        for (uint32 i = 0; i < sQuestPOIPointStore.GetNumRows(); ++i)
-            if (QuestPOIPointEntry const* poi = sQuestPOIPointStore.LookupEntry(i))
-                if (poi->POIId == entry->POIid)
-                    sResearchZones[entry->POIid].points.push_back(ResearchPOIPoint(poi->x, poi->y));
-
-        if (sResearchZones[entry->POIid].points.size() == 0)
-            sLog.outDebug("Research site %u POI %u map %u has 0 POI points in DBC!", entry->ID, entry->POIid, entry->mapId);
-    }
 
     // error checks
     if (bad_dbc_files.size() >= DBCFilesCount )
@@ -2045,14 +2037,11 @@ float GetCurrencyPrecision(uint32 currencyId)
 
 ResearchSiteEntry const* GetResearchSiteEntryById(uint32 id)
 {
-    if (sResearchSiteSet.empty())
+    ResearchSiteDataMap::const_iterator itr = sResearchSiteDataMap.find(id);
+    if (itr == sResearchSiteDataMap.end())
         return NULL;
 
-    for (std::set<ResearchSiteEntry const*>::const_iterator itr = sResearchSiteSet.begin(); itr != sResearchSiteSet.end(); ++itr)
-        if ((*itr)->ID == id)
-            return *itr;
-
-    return NULL;
+    return itr->second.entry;
 }
 
 // script support functions
