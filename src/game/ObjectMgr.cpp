@@ -11113,7 +11113,9 @@ void ObjectMgr::LoadDigSitePositions()
             if (data.entry->mapId != map)
                 continue;
 
-            ResearchPOIPoint p(int32(x), int32(y));
+            ResearchPOIPoint p;
+            p.x = int32(x);
+            p.y = int32(y);
 
             if (Player::IsPointInZone(p, data.points))
             {
