@@ -285,20 +285,6 @@ void Player::ShowResearchSites()
     }
 }
 
-void Player::ShowResearchProjects()
-{
-    if (!GetSkillValue(SKILL_ARCHAEOLOGY))
-        return;
-
-    uint8 count = 0;
-
-    for (ResearchProjectSet::const_iterator itr = _researchProjects.begin(); itr != _researchProjects.end(); ++itr)
-    {
-        SetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + count / 2, count % 2, (*itr)->ID);
-        ++count;
-    }
-}
-
 bool Player::CanResearchWithLevel(uint32 site_id)
 {
     if (!GetSkillValue(SKILL_ARCHAEOLOGY))
@@ -422,7 +408,8 @@ void Player::GenerateResearchProjects()
     if (!skill_now)
         return;
 
-    _researchProjects.clear();
+    for (uint32 i = 0; i < MAX_RESEARCH_PROJECTS / 2; ++i)
+        SetUInt32Value(PLAYER_FIELD_RESEARCHING_1 + i, 0);
 
     typedef std::map<uint32, ResearchProjectSet> Projects;
     Projects tempProjects;
@@ -434,19 +421,36 @@ void Player::GenerateResearchProjects()
         if (entry->rare && urand(0, 100) > chance_mod || IsCompletedRareProject(entry->ID))
             continue;
 
-        tempProjects[entry->branchId].insert(entry);
+        tempProjects[entry->branchId].insert(entry->ID);
     }
 
     for (Projects::const_iterator itr = tempProjects.begin(); itr != tempProjects.end(); ++itr)
     {
         ResearchProjectSet::const_iterator itr2 = itr->second.begin();
         std::advance(itr, urand(0, itr->second.size() - 1));
-        _researchProjects.insert(*itr2);
+        ReplaceResearchProject(0, *itr2);
     }
 
     _archaeologyChanged = true;
+}
 
-    ShowResearchProjects();
+bool Player::HasResearchProject(uint32 id) const
+{
+    for (uint32 i = 0; i < MAX_RESEARCH_PROJECTS; ++i)
+        if (GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2) == id)
+            return true;
+
+    return false;
+}
+
+void Player::ReplaceResearchProject(uint32 oldId, uint32 newId)
+{
+    for (uint32 i = 0; i < MAX_RESEARCH_PROJECTS; ++i)
+        if (GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2) == oldId)
+        {
+            SetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2, newId);
+            return;
+        }
 }
 
 bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
@@ -465,7 +469,7 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
         break;
     }
 
-    if (!entry || !HasResearchProject(entry))
+    if (!entry || !HasResearchProject(entry->ID))
         return false;
 
     ResearchBranchEntry const* branch = NULL;
@@ -523,8 +527,6 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
             DestroyItemCount(w.keystone.itemId, w.keystone.itemCount, true);
     }
 
-    _researchProjects.erase(entry);
-
     UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ARCHAEOLOGY_PROJECTS, entry->ID, 1, NULL, 0);
 
     AddCompletedProject(entry);
@@ -535,19 +537,20 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
     for (std::set<ResearchProjectEntry const*>::const_iterator itr = sResearchProjectSet.begin(); itr != sResearchProjectSet.end(); ++itr)
     {
         ResearchProjectEntry const* project = *itr;
-        if (project->branchId == entry->branchId)
-        {
-            if (project->rare && urand(0, 100) > chance_mod || IsCompletedRareProject(project->ID))
-                continue;
+        if (project->branchId != entry->branchId)
+            continue;
 
-            tempProjects.insert(project);
-        }
+        if (project->rare && urand(0, 100) > chance_mod || IsCompletedRareProject(project->ID))
+            continue;
+
+        tempProjects.insert(project->ID);
     }
 
     ResearchProjectSet::const_iterator itr = tempProjects.begin();
     std::advance(itr, urand(0, tempProjects.size() - 1));
 
-    _researchProjects.insert(*itr);
+    ReplaceResearchProject(entry->ID, *itr);
+
     _archaeologyChanged = true;
 
     WorldPacket data (SMSG_RESEARCH_COMPLETE, 4 * 3);
@@ -556,7 +559,6 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
     data << uint32(*itr);
     SendDirectMessage(&data);
 
-    ShowResearchProjects();
     return true;
 }
 
@@ -612,8 +614,9 @@ void Player::_SaveArchaeology()
 
     ss << "', '";
 
-    for (ResearchProjectSet::const_iterator itr = _researchProjects.begin(); itr != _researchProjects.end(); ++itr)
-        ss << (*itr)->ID << " ";
+    for (uint32 i = 0; i < MAX_RESEARCH_PROJECTS; ++i)
+        if (uint16 val = GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2))
+            ss << val << " ";
 
     ss << "')";
 
@@ -672,12 +675,10 @@ void Player::_LoadArchaeology(QueryResult* result)
     tokens = StrSplit(fields[2].GetCppString(), " ");
     if (tokens.size() == MAX_RESEARCH_PROJECTS)
     {
-        _researchProjects.clear();
-
         for (uint8 i = 0; i < MAX_RESEARCH_PROJECTS; ++i)
             if (ResearchProjectEntry const* entry = sResearchProjectStore.LookupEntry(atoi(tokens[i].c_str())))
                 if (entry->IsVaid())
-                    _researchProjects.insert(entry);
+                    ReplaceResearchProject(0, entry->ID);
     }
     else
         GenerateResearchProjects();

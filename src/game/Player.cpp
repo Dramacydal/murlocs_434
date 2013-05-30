@@ -22369,10 +22369,7 @@ void Player::SendInitialPacketsAfterAddToMap()
         GetSession()->SendStablePet(ObjectGuid());
 
     if (GetSkillValue(SKILL_ARCHAEOLOGY) && sWorld.getConfig(CONFIG_BOOL_ARCHAEOLOGY_ENABLED))
-    {
         ShowResearchSites();
-        ShowResearchProjects();
-    }
 
     // fix client movement freeze after teleport?
     GetMap()->PlayerRelocation(this, GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());

@@ -1246,18 +1246,9 @@ struct CompletedProject
     uint32 date;
 };
 
-class SiteComp
-{
-    public:
-        bool operator() (ResearchProjectEntry const* left, ResearchProjectEntry const* right)
-        {
-            return left->branchId > right->branchId;
-        }
-};
-
 typedef std::set<uint32> ResearchSiteSet;
 typedef std::list<CompletedProject> CompletedProjectList;
-typedef std::set<ResearchProjectEntry const*, SiteComp> ResearchProjectSet;
+typedef std::set<uint32> ResearchProjectSet;
 
 #define MAX_RESEARCH_SITES 16
 
@@ -2584,13 +2575,10 @@ class MANGOS_DLL_SPEC Player : public Unit
             return _researchSites.find(id) != _researchSites.end();
         }
 
-        bool HasResearchProject(ResearchProjectEntry const* entry) const
-        {
-            return _researchProjects.find(entry) != _researchProjects.end();
-        }
+        bool HasResearchProject(uint32 id) const;
+        void ReplaceResearchProject(uint32 oldId, uint32 newId);
 
         void ShowResearchSites();
-        void ShowResearchProjects();
         void GenerateResearchSites();
         void GenerateResearchSiteInMap(uint32 mapId);
         void GenerateResearchProjects();
@@ -2608,7 +2596,6 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         DigSite _digSites[MAX_RESEARCH_SITES];
         ResearchSiteSet _researchSites;
-        ResearchProjectSet _researchProjects;
         CompletedProjectList _completedProjects;
         bool _archaeologyChanged;
 
