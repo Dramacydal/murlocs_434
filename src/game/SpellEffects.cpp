@@ -177,7 +177,7 @@ pEffect SpellEffects[TOTAL_SPELL_EFFECTS]=
     &Spell::EffectDismissPet,                               //102 SPELL_EFFECT_DISMISS_PET
     &Spell::EffectReputation,                               //103 SPELL_EFFECT_REPUTATION
     &Spell::EffectSummonObject,                             //104 SPELL_EFFECT_SUMMON_OBJECT_SLOT
-    &Spell::EffectSummonObject,                             //105 SPELL_EFFECT_SURVEY
+    &Spell::EffectSurvey,                                   //105 SPELL_EFFECT_SURVEY
     &Spell::EffectSummonRaidMarker,                         //106 SPELL_EFFECT_SUMMON_RAID_MARKER
     &Spell::EffectNULL,                                     //107 SPELL_EFFECT_LOOT_CORPSE
     &Spell::EffectDispelMechanic,                           //108 SPELL_EFFECT_DISPEL_MECHANIC
@@ -13372,27 +13372,11 @@ void Spell::EffectDismissPet(SpellEffectEntry const* /*effect*/)
 void Spell::EffectSummonObject(SpellEffectEntry const* effect)
 {
     uint32 go_id = effect->EffectMiscValue;
-    uint8 slot = effect->EffectMiscValueB;
-    if (effect->Effect == SPELL_EFFECT_SURVEY)
-        slot = 4;
-
-    if (slot >= MAX_OBJECT_SLOT)
+    if (!go_id)
         return;
 
-    int32 duration = m_duration;
-    float o = m_caster->GetOrientation();
-
-    if (effect->Effect == SPELL_EFFECT_SURVEY)
-    {
-        if (m_caster->GetTypeId() != TYPEID_PLAYER)
-            return;
-
-        go_id = ((Player*)m_caster)->GetSurveyBotEntry(o);
-
-        duration = 15000;
-    }
-
-    if (!go_id)
+    uint8 slot = effect->EffectMiscValueB;
+    if (slot >= MAX_OBJECT_SLOT)
         return;
 
     if (ObjectGuid guid = m_caster->m_ObjectSlotGuid[slot])
@@ -13425,14 +13409,14 @@ void Spell::EffectSummonObject(SpellEffectEntry const* effect)
 
     Map* map = m_caster->GetMap();
     if (!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), go_id, map,
-        m_caster->GetPhaseMask(), x, y, z, o))
+        m_caster->GetPhaseMask(), x, y, z, m_caster->GetOrientation()))
     {
         delete pGameObj;
         return;
     }
 
     pGameObj->SetUInt32Value(GAMEOBJECT_LEVEL, m_caster->getLevel());
-    pGameObj->SetRespawnTime(duration > 0 ? duration / IN_MILLISECONDS : 0);
+    pGameObj->SetRespawnTime(m_duration > 0 ? m_duration / IN_MILLISECONDS : 0);
     pGameObj->SetSpellId(m_spellInfo->Id);
     m_caster->AddGameObject(pGameObj);
 
@@ -15015,4 +14999,65 @@ void Spell::EffectBuyGuildBankSlot(SpellEffectEntry const* effect)
     pGuild->SetBankRightsAndSlots(player->GetRank(), TabId, GUILD_BANK_RIGHT_FULL, WITHDRAW_SLOT_UNLIMITED, true);
     pGuild->Roster();                                       // broadcast for tab rights update
     pGuild->DisplayGuildBankTabsInfo(player->GetSession());
+}
+
+void Spell::EffectSurvey(SpellEffectEntry const* effect)
+{
+    if (m_caster->GetTypeId() != TYPEID_PLAYER)
+        return;
+
+    if (!sWorld.getConfig(CONFIG_BOOL_ARCHAEOLOGY_ENABLED))
+        return;
+
+    uint32 go_id = 0;
+    uint8 slot = 4;
+
+    float x, y, z, o;
+    x = m_caster->GetPositionX();
+    y = m_caster->GetPositionY();
+    z = m_caster->GetPositionZ();
+    o = m_caster->GetOrientation();
+
+    int32 duration;
+    if (!((Player*)m_caster)->OnSurvey(go_id, x, y, z, o))
+        duration = 10000;
+    else
+        duration = 60000;
+
+    if (!go_id)
+        return;
+
+    if (ObjectGuid guid = m_caster->m_ObjectSlotGuid[slot])
+    {
+        if (GameObject* obj = m_caster ? m_caster->GetMap()->GetGameObject(guid) : NULL)
+            obj->SetLootState(GO_JUST_DEACTIVATED);
+
+        m_caster->m_ObjectSlotGuid[slot].Clear();
+    }
+
+    GameObject* pGameObj = new GameObject;
+
+    Map* map = m_caster->GetMap();
+    if (!pGameObj->Create(map->GenerateLocalLowGuid(HIGHGUID_GAMEOBJECT), go_id, map,
+        m_caster->GetPhaseMask(), x, y, z, o))
+    {
+        delete pGameObj;
+        return;
+    }
+
+    pGameObj->SetUInt32Value(GAMEOBJECT_LEVEL, m_caster->getLevel());
+    pGameObj->SetRespawnTime(duration > 0 ? duration / IN_MILLISECONDS : 0);
+    pGameObj->SetSpellId(m_spellInfo->Id);
+    m_caster->AddGameObject(pGameObj);
+
+    map->Add(pGameObj);
+
+    m_caster->m_ObjectSlotGuid[slot] = pGameObj->GetObjectGuid();
+
+    pGameObj->SummonLinkedTrapIfAny();
+
+    if (m_caster->GetTypeId() == TYPEID_UNIT && ((Creature*)m_caster)->AI())
+        ((Creature*)m_caster)->AI()->JustSummoned(pGameObj);
+    if (m_originalCaster && m_originalCaster != m_caster && m_originalCaster->GetTypeId() == TYPEID_UNIT && ((Creature*)m_originalCaster)->AI())
+        ((Creature*)m_originalCaster)->AI()->JustSummoned(pGameObj);
 }

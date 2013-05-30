@@ -27,9 +27,9 @@
 
 enum ArchaeologyBotDistance
 {
-    ARCHAEOLOGY_DIG_SITE_FAR_DIST   = 40,
+    ARCHAEOLOGY_DIG_SITE_FAR_DIST   = 60,
     ARCHAEOLOGY_DIG_SITE_MED_DIST   = 20,
-    ARCHAEOLOGY_DIG_SITE_CLOSE_DIST = 8
+    ARCHAEOLOGY_DIG_SITE_FIND_DIST  = 5
 };
 
 enum ArchaeologyFinds
@@ -53,18 +53,6 @@ enum ArchaeologyBots
 };
 
 const static int q_patt[2][2] = { { 0, 1 }, { 3, 2 } };
-
-const static uint8 currencyAmountForLevel[8][2] =
-{
-    { 3, 5 },   // 1
-    { 5, 7 },   // 75
-    { 7, 8 },   // 150
-    { 8, 10 },  // 225
-    { 10, 11 }, // 300
-    { 11, 12 }, // 375
-    { 12, 13 }, // 450
-    { 13, 14 }  // 525
-};
 
 typedef std::set<uint32> SiteSet;
 
@@ -101,15 +89,17 @@ bool Player::GenerateDigSiteLoot(uint16 siteId, DigSite &site)
     return true;
 }
 
-uint32 Player::GetSurveyBotEntry(float &orientation)
+bool Player::OnSurvey(uint32& entry, float& x, float& y, float& z, float &orientation)
 {
+    entry = 0;
+
     uint16 skill_now = GetSkillValue(SKILL_ARCHAEOLOGY);
     if (!skill_now)
-        return 0;
+        return false;
 
     uint16 site_id = GetResearchSiteID();
     if (!site_id)
-        return 0;
+        return false;
 
     uint8 i = 0;
     for(; i < MAX_RESEARCH_SITES; ++i)
@@ -122,7 +112,7 @@ uint32 Player::GetSurveyBotEntry(float &orientation)
     if (site.site_id != site_id)
     {
         if (!GenerateDigSiteLoot(site_id, site))
-            return 0;
+            return false;
 
         site.site_id = site_id;
     }
@@ -131,54 +121,34 @@ uint32 Player::GetSurveyBotEntry(float &orientation)
     float dist_now = GetDistance2d(site.loot_x, site.loot_y);
 
     if (dist_now >= ARCHAEOLOGY_DIG_SITE_FAR_DIST)
-        return ARCHAEOLOGY_DIG_SITE_FAR_SURVEYBOT;
+    {
+        entry = ARCHAEOLOGY_DIG_SITE_FAR_SURVEYBOT;
+        return false;
+    }
     if (dist_now >= ARCHAEOLOGY_DIG_SITE_MED_DIST)
-        return ARCHAEOLOGY_DIG_SITE_MEDIUM_SURVEYBOT;
-    if (dist_now >= ARCHAEOLOGY_DIG_SITE_CLOSE_DIST)
-        return ARCHAEOLOGY_DIG_SITE_CLOSE_SURVEYBOT;
+    {
+        entry = ARCHAEOLOGY_DIG_SITE_MEDIUM_SURVEYBOT;
+        return false;
+    }
+    if (dist_now >= ARCHAEOLOGY_DIG_SITE_FIND_DIST)
+    {
+        entry = ARCHAEOLOGY_DIG_SITE_CLOSE_SURVEYBOT;
+        return false;
+    }
 
     if (skill_now < 50)
         UpdateSkill(SKILL_ARCHAEOLOGY, 1);
 
-    uint32 currencyId = 0;
-    switch (site.find_id)
-    {
-        case GO_DWARF_FIND: currencyId = 384; break;
-        case GO_DRAENEI_FIND: currencyId = 398; break;
-        case GO_FOSSIL_FIND: currencyId = 393; break;
-        case GO_NIGHT_ELF_FIND: currencyId = 394; break;
-        case GO_NERUBIAN_FIND: currencyId = 400; break;
-        case GO_ORC_FIND: currencyId = 397; break;
-        case GO_TOLVIR_FIND: currencyId = 401; break;
-        case GO_TROLL_FIND: currencyId = 385; break;
-        case GO_VRYKUL_FIND: currencyId = 399; break;
-    }
-
-    if (currencyId)
-    {
-        int level = int(skill_now / 75);
-
-        if (level > 8)
-            return 0;
-
-        uint32 amount = urand(uint32(currencyAmountForLevel[level][0]), uint32(currencyAmountForLevel[level][1]));
-        ModifyCurrencyCount(currencyId, amount);
-    }
-
-    // We cannot implement special race fragments, so don't  spawn go
-    /*SummonGameObject(
-        m_digSites[at_pos].find_id,
-        m_digSites[at_pos].loot_x,
-        m_digSites[at_pos].loot_y,
-        m_digSites[at_pos].loot_z,
-        0, 0, 0, 0, 0,
-        time(NULL) + 30000);*/
+    entry = site.find_id;
+    x = site.loot_x;
+    y = site.loot_y;
+    z = GetMap()->GetHeight(GetPhaseMask(), x, y, GetPositionZ());
 
     if (site.count < 2)
     {
         ++site.count;
         if (!GenerateDigSiteLoot(site_id, site))
-            return 0;
+            return true;
     }
     else
     {
@@ -188,7 +158,7 @@ uint32 Player::GetSurveyBotEntry(float &orientation)
 
     _archaeologyChanged = true;
 
-    return 0;
+    return true;
 }
 
 // find id of research site that we are on
