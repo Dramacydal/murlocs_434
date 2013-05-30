@@ -562,7 +562,7 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
 
     WorldPacket data (SMSG_RESEARCH_COMPLETE, 4*3);
     data << uint32(entry->branchId);
-    data << uint32(time(NULL));
+    data << uint32(*itr);
     data << uint32(entry->ID);
     SendDirectMessage(&data);
 
