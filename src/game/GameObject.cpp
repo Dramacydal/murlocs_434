@@ -853,24 +853,27 @@ bool GameObject::isVisibleForInState(Player const* u, WorldObject const* viewPoi
     }
 
     // hack archaeology go visibility
-    switch (GetEntry())
+    if (!u->isGameMaster())
     {
-        case GO_DWARF_FIND:
-        case GO_DRAENEI_FIND:
-        case GO_FOSSIL_FIND:
-        case GO_NIGHT_ELF_FIND:
-        case GO_NERUBIAN_FIND:
-        case GO_ORC_FIND:
-        case GO_TOLVIR_FIND:
-        case GO_TROLL_FIND:
-        case GO_VRYKUL_FIND:
-        case GO_FAR_SURVEYBOT:
-        case GO_MEDIUM_SURVEYBOT:
-        case GO_CLOSE_SURVEYBOT:
-            if (GetOwnerGuid() != u->GetObjectGuid())
-                return false;
-        default:
-            break;
+        switch (GetEntry())
+        {
+            case GO_DWARF_FIND:
+            case GO_DRAENEI_FIND:
+            case GO_FOSSIL_FIND:
+            case GO_NIGHT_ELF_FIND:
+            case GO_NERUBIAN_FIND:
+            case GO_ORC_FIND:
+            case GO_TOLVIR_FIND:
+            case GO_TROLL_FIND:
+            case GO_VRYKUL_FIND:
+            case GO_FAR_SURVEYBOT:
+            case GO_MEDIUM_SURVEYBOT:
+            case GO_CLOSE_SURVEYBOT:
+                if (GetOwnerGuid() != u->GetObjectGuid())
+                    return false;
+            default:
+                break;
+        }
     }
 
     // check distance
