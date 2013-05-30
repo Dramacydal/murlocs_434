@@ -6728,7 +6728,7 @@ void Spell::DoCreateItem(SpellEffectEntry const* effect, uint32 itemtype)
 void Spell::EffectCreateItem(SpellEffectEntry const* effect)
 {
     if (m_caster->GetTypeId() == TYPEID_PLAYER && sSpellMgr.IsAbilityOfSkillType(m_spellInfo, SKILL_ARCHAEOLOGY))
-        if (!((Player*)m_caster)->SolveResearchProject(m_spellInfo->Id, &m_targets))
+        if (!((Player*)m_caster)->SolveResearchProject(m_spellInfo->Id, m_targets))
             return;
 
     DoCreateItem(effect, effect->EffectItemType);
