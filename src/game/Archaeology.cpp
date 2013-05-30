@@ -52,10 +52,6 @@ enum ArchaeologyBots
     ARCHAEOLOGY_DIG_SITE_CLOSE_SURVEYBOT    = 204272
 };
 
-const static uint16 _mapIds[] = { 0, 1, 530, 571, 0 };
-
-const static uint8 _races[] = {1, 2, 3, 4, 5, 6, 7, 8, 27, 0 };
-
 const static int q_patt[2][2] = { { 0, 1 }, { 3, 2 } };
 
 const static uint8 currencyAmountForLevel[8][2] =
@@ -71,9 +67,6 @@ const static uint8 currencyAmountForLevel[8][2] =
 };
 
 typedef std::set<uint32> SiteSet;
-typedef std::map<uint32, SiteSet> Sites;
-typedef std::set<uint32> ProjectSet;
-typedef std::map<uint32, ProjectSet> Projects;
 
 bool Player::GenerateDigSiteLoot(uint16 siteId, DigSite &site)
 {
@@ -301,7 +294,7 @@ void Player::ShowResearchProjects()
 
     for (ResearchProjectSet::const_iterator itr = _researchProjects.begin(); itr != _researchProjects.end(); ++itr)
     {
-        SetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + count / 2, count % 2, (*itr));
+        SetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + count / 2, count % 2, (*itr)->ID);
         ++count;
     }
 }
@@ -390,6 +383,7 @@ void Player::GenerateResearchSites()
 {
     _researchSites.clear();
 
+    typedef std::map<uint32, SiteSet> Sites;
     Sites tempSites;
     for (ResearchSiteDataMap::const_iterator itr = sResearchSiteDataMap.begin(); itr != sResearchSiteDataMap.end(); ++itr)
     {
@@ -398,23 +392,21 @@ void Player::GenerateResearchSites()
             tempSites[entry->mapId].insert(entry->ID);
     }
 
-    uint16 const* map = _mapIds;
-    do
+    for (Sites::const_iterator itr = tempSites.begin(); itr != tempSites.end(); ++itr)
     {
-        uint8 mapMax = std::min<int>(tempSites[*map].size(), 4);
+        uint8 mapMax = std::min<int>(itr->second.size(), 4);
 
         for (uint8 i = 0; i < mapMax;)
         {
-            SiteSet::const_iterator itr = tempSites[*map].begin();
-            std::advance(itr, urand(0, tempSites[*map].size() - 1));
-            if (!HasResearchSite((*itr)))
+            SiteSet::const_iterator itr2 = itr->second.begin();
+            std::advance(itr2, urand(0, itr->second.size() - 1));
+            if (!HasResearchSite(*itr2))
             {
-                _researchSites.insert((*itr));
+                _researchSites.insert(*itr2);
                 ++i;
             }
         }
     }
-    while (*++map);
 
     _archaeologyChanged = true;
 
@@ -432,6 +424,7 @@ void Player::GenerateResearchProjects()
 
     _researchProjects.clear();
 
+    typedef std::map<uint32, ResearchProjectSet> Projects;
     Projects tempProjects;
     uint32 chance_mod = skill_now / 50;
 
@@ -441,18 +434,15 @@ void Player::GenerateResearchProjects()
         if (entry->rare && urand(0, 100) > chance_mod || IsCompletedRareProject(entry->ID))
             continue;
 
-        tempProjects[entry->branchId].insert(entry->ID);
+        tempProjects[entry->branchId].insert(entry);
     }
 
-    uint8 const* race = _races;
-    ProjectSet::const_iterator itr;
-    do
+    for (Projects::const_iterator itr = tempProjects.begin(); itr != tempProjects.end(); ++itr)
     {
-        itr = tempProjects[*race].begin();
-        std::advance(itr, urand(0, tempProjects[*race].size() - 1));
-        _researchProjects.insert((*itr));
+        ResearchProjectSet::const_iterator itr2 = itr->second.begin();
+        std::advance(itr, urand(0, itr->second.size() - 1));
+        _researchProjects.insert(*itr2);
     }
-    while (*++race);
 
     _archaeologyChanged = true;
 
@@ -475,7 +465,7 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
         break;
     }
 
-    if (!entry || !HasResearchProject(entry->ID))
+    if (!entry || !HasResearchProject(entry))
         return false;
 
     ResearchBranchEntry const* branch = NULL;
@@ -533,31 +523,31 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
             DestroyItemCount(w.keystone.itemId, w.keystone.itemCount, true);
     }
 
-    _researchProjects.erase(entry->ID);
+    _researchProjects.erase(entry);
 
     UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ARCHAEOLOGY_PROJECTS, entry->ID, 1, NULL, 0);
 
     AddCompletedProject(entry);
 
-    ProjectSet tempProjects;
+    ResearchProjectSet tempProjects;
     uint32 chance_mod = skill_now / 50;
 
     for (std::set<ResearchProjectEntry const*>::const_iterator itr = sResearchProjectSet.begin(); itr != sResearchProjectSet.end(); ++itr)
     {
-        ResearchProjectEntry const* project = (*itr);
+        ResearchProjectEntry const* project = *itr;
         if (project->branchId == entry->branchId)
         {
             if (project->rare && urand(0, 100) > chance_mod || IsCompletedRareProject(project->ID))
                 continue;
 
-            tempProjects.insert(project->ID);
+            tempProjects.insert(project);
         }
     }
 
-    ProjectSet::const_iterator itr = tempProjects.begin();
+    ResearchProjectSet::const_iterator itr = tempProjects.begin();
     std::advance(itr, urand(0, tempProjects.size() - 1));
 
-    _researchProjects.insert((*itr));
+    _researchProjects.insert(*itr);
     _archaeologyChanged = true;
 
     WorldPacket data (SMSG_RESEARCH_COMPLETE, 4 * 3);
@@ -623,7 +613,7 @@ void Player::_SaveArchaeology()
     ss << "', '";
 
     for (ResearchProjectSet::const_iterator itr = _researchProjects.begin(); itr != _researchProjects.end(); ++itr)
-        ss << (*itr) << " ";
+        ss << (*itr)->ID << " ";
 
     ss << "')";
 
@@ -685,7 +675,9 @@ void Player::_LoadArchaeology(QueryResult* result)
         _researchProjects.clear();
 
         for (uint8 i = 0; i < MAX_RESEARCH_PROJECTS; ++i)
-            _researchProjects.insert(uint32(atoi(tokens[i].c_str())));
+            if (ResearchProjectEntry const* entry = sResearchProjectStore.LookupEntry(atoi(tokens[i].c_str())))
+                if (entry->IsVaid())
+                    _researchProjects.insert(entry);
     }
     else
         GenerateResearchProjects();

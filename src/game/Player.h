@@ -1246,9 +1246,18 @@ struct CompletedProject
     uint32 date;
 };
 
+class SiteComp
+{
+    public:
+        bool operator() (ResearchProjectEntry const* left, ResearchProjectEntry const* right)
+        {
+            return left->branchId > right->branchId;
+        }
+};
+
 typedef std::set<uint32> ResearchSiteSet;
-typedef std::set<uint32> ResearchProjectSet;
 typedef std::list<CompletedProject> CompletedProjectList;
+typedef std::set<ResearchProjectEntry const*, SiteComp> ResearchProjectSet;
 
 #define MAX_RESEARCH_SITES 16
 
@@ -2575,9 +2584,9 @@ class MANGOS_DLL_SPEC Player : public Unit
             return _researchSites.find(id) != _researchSites.end();
         }
 
-        bool HasResearchProject(uint32 id) const
+        bool HasResearchProject(ResearchProjectEntry const* entry) const
         {
-            return _researchProjects.find(id) != _researchProjects.end();
+            return _researchProjects.find(entry) != _researchProjects.end();
         }
 
         void ShowResearchSites();
