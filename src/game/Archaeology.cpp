@@ -604,7 +604,6 @@ void Player::_SaveArchaeology()
     if (!_archaeologyChanged)
         return;
 
-    CharacterDatabase.BeginTransaction();
     CharacterDatabase.PExecute("DELETE FROM character_archaeology WHERE guid = '%u'", GetGUIDLow());
 
     std::ostringstream ss;
@@ -635,8 +634,6 @@ void Player::_SaveArchaeology()
         CharacterDatabase.PExecute("REPLACE INTO character_archaeology_finds (guid, id, count, date) VALUES (%u, %u, %u, FROM_UNIXTIME(%u))",
             GetGUIDLow(), itr->entry->ID, itr->count, itr->date);
     }
-
-    CharacterDatabase.CommitTransaction();
 
     _archaeologyChanged = false;
 }
