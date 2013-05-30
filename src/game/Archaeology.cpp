@@ -493,7 +493,7 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
             DestroyItemCount(w.keystone.itemId, w.keystone.itemCount, true);
     }
 
-    UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ARCHAEOLOGY_PROJECTS, entry->ID, 1, NULL, 0);
+    UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ARCHAEOLOGY_PROJECTS, entry->ID, 1);
 
     AddCompletedProject(entry);
 
