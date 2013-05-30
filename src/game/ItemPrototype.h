@@ -20,6 +20,7 @@
 #define _ITEMPROTOTYPE_H
 
 #include "Common.h"
+#include "DBCEnums.h"
 
 enum ItemModType
 {
