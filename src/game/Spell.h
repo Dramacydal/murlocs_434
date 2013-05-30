@@ -189,6 +189,8 @@ class SpellCastTargets
             m_elevation = target.m_elevation;
             m_speed = target.m_speed;
 
+            m_weights = target.m_weights;
+
             return *this;
         }
 
