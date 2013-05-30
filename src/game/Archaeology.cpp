@@ -272,10 +272,10 @@ uint8 Player::CanResearchWithSkillLevel(uint32 site_id)
                     skill_cap = 450;
                 break;
             case 530:
-                skill_cap = 275; // Outland
+                skill_cap = 300; // Outland
                 break;
             case 571:
-                skill_cap = 350; // Northrend
+                skill_cap = 375; // Northrend
                 break;
         }
 
