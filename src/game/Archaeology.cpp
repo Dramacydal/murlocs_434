@@ -32,26 +32,6 @@ enum ArchaeologyBotDistance
     ARCHAEOLOGY_DIG_SITE_FIND_DIST  = 5
 };
 
-enum ArchaeologyFinds
-{
-    GO_DWARF_FIND       = 204282,
-    GO_DRAENEI_FIND     = 207188,
-    GO_FOSSIL_FIND      = 206836,
-    GO_NIGHT_ELF_FIND   = 203071,
-    GO_NERUBIAN_FIND    = 203078,
-    GO_ORC_FIND         = 207187,
-    GO_TOLVIR_FIND      = 207190,
-    GO_TROLL_FIND       = 202655,
-    GO_VRYKUL_FIND      = 207189,
-};
-
-enum ArchaeologyBots
-{
-    ARCHAEOLOGY_DIG_SITE_FAR_SURVEYBOT      = 206590,
-    ARCHAEOLOGY_DIG_SITE_MEDIUM_SURVEYBOT   = 206589,
-    ARCHAEOLOGY_DIG_SITE_CLOSE_SURVEYBOT    = 204272
-};
-
 const static int q_patt[2][2] = { { 0, 1 }, { 3, 2 } };
 
 typedef std::set<uint32> SiteSet;
@@ -122,17 +102,17 @@ bool Player::OnSurvey(uint32& entry, float& x, float& y, float& z, float &orient
 
     if (dist_now >= ARCHAEOLOGY_DIG_SITE_FAR_DIST)
     {
-        entry = ARCHAEOLOGY_DIG_SITE_FAR_SURVEYBOT;
+        entry = GO_FAR_SURVEYBOT;
         return false;
     }
     if (dist_now >= ARCHAEOLOGY_DIG_SITE_MED_DIST)
     {
-        entry = ARCHAEOLOGY_DIG_SITE_MEDIUM_SURVEYBOT;
+        entry = GO_MEDIUM_SURVEYBOT;
         return false;
     }
     if (dist_now >= ARCHAEOLOGY_DIG_SITE_FIND_DIST)
     {
-        entry = ARCHAEOLOGY_DIG_SITE_CLOSE_SURVEYBOT;
+        entry = GO_CLOSE_SURVEYBOT;
         return false;
     }
 

@@ -2889,6 +2889,26 @@ enum CorpseDynFlags
 #define SPELL_ID_AUTOSHOT                       75          // used for checks in other spells interruption
 #define SPELL_ID_SHADOWMELD                     58984       // used for check ignore stealth stance state
 
+enum ArchaeologyFinds
+{
+    GO_DWARF_FIND       = 204282,
+    GO_DRAENEI_FIND     = 207188,
+    GO_FOSSIL_FIND      = 206836,
+    GO_NIGHT_ELF_FIND   = 203071,
+    GO_NERUBIAN_FIND    = 203078,
+    GO_ORC_FIND         = 207187,
+    GO_TOLVIR_FIND      = 207190,
+    GO_TROLL_FIND       = 202655,
+    GO_VRYKUL_FIND      = 207189,
+};
+
+enum ArchaeologyBots
+{
+    GO_FAR_SURVEYBOT    = 206590,
+    GO_MEDIUM_SURVEYBOT = 206589,
+    GO_CLOSE_SURVEYBOT  = 204272
+};
+
 enum WeatherType
 {
     WEATHER_TYPE_FINE       = 0,

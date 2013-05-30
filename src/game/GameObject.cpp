@@ -852,13 +852,25 @@ bool GameObject::isVisibleForInState(Player const* u, WorldObject const* viewPoi
         }*/
     }
 
-    if (uint32 lockId = GetGOInfo()->GetLockId())
+    // hack archaeology go visibility
+    switch (GetEntry())
     {
-        if (LockEntry const * lock = sLockStore.LookupEntry(lockId))
-            for (int i = 0; i < MAX_LOCK_CASE; ++i)
-                if (lock->Type[i] == LOCK_KEY_SKILL && lock->Index[i] == LOCKTYPE_ARCHAEOLOGY)
-                    if (GetOwnerGuid() != u->GetObjectGuid())
-                        return false;
+        case GO_DWARF_FIND:
+        case GO_DRAENEI_FIND:
+        case GO_FOSSIL_FIND:
+        case GO_NIGHT_ELF_FIND:
+        case GO_NERUBIAN_FIND:
+        case GO_ORC_FIND:
+        case GO_TOLVIR_FIND:
+        case GO_TROLL_FIND:
+        case GO_VRYKUL_FIND:
+        case GO_FAR_SURVEYBOT:
+        case GO_MEDIUM_SURVEYBOT:
+        case GO_CLOSE_SURVEYBOT:
+            if (GetOwnerGuid() != u->GetObjectGuid())
+                return false;
+        default:
+            break;
     }
 
     // check distance
