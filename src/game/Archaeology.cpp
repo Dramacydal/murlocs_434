@@ -560,10 +560,10 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
     _researchProjects.insert((*itr));
     _archaeologyChanged = true;
 
-    WorldPacket data (SMSG_RESEARCH_COMPLETE, 4*3);
+    WorldPacket data (SMSG_RESEARCH_COMPLETE, 4 * 3);
     data << uint32(entry->branchId);
+    data << uint32(0);
     data << uint32(*itr);
-    data << uint32(entry->ID);
     SendDirectMessage(&data);
 
     ShowResearchProjects();
