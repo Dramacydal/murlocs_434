@@ -488,7 +488,7 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
         if (_branch->ID != entry->branchId)
             continue;
 
-        branch = branch;
+        branch = _branch;
         break;
     }
 
