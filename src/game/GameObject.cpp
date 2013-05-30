@@ -852,6 +852,15 @@ bool GameObject::isVisibleForInState(Player const* u, WorldObject const* viewPoi
         }*/
     }
 
+    if (uint32 lockId = GetGOInfo()->GetLockId())
+    {
+        if (LockEntry const * lock = sLockStore.LookupEntry(lockId))
+            for (int i = 0; i < MAX_LOCK_CASE; ++i)
+                if (lock->Type[i] == LOCK_KEY_SKILL && lock->Index[i] == LOCKTYPE_ARCHAEOLOGY)
+                    if (GetOwnerGuid() != u->GetObjectGuid())
+                        return false;
+    }
+
     // check distance
     return IsWithinDistInMap(viewPoint, GetMap()->GetVisibilityDistance() +
         (inVisibleList ? World::GetVisibleObjectGreyDistance() : 0.0f), false);
