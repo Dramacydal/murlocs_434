@@ -2575,6 +2575,7 @@ class MANGOS_DLL_SPEC Player : public Unit
             return _researchSites.find(id) != _researchSites.end();
         }
 
+        bool HasResearchProjectOfBranch(uint32 id) const;
         bool HasResearchProject(uint32 id) const;
         void ReplaceResearchProject(uint32 oldId, uint32 newId);
 

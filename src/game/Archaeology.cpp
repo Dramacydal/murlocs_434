@@ -68,15 +68,15 @@ bool Player::GenerateDigSiteLoot(uint16 siteId, DigSite &site)
 
     switch (dataItr->second.branch_id)
     {
-        case 1: site.find_id = GO_DWARF_FIND; break;
-        case 2: site.find_id = GO_DRAENEI_FIND; break;
-        case 3: site.find_id = GO_FOSSIL_FIND; break;
-        case 4: site.find_id = GO_NIGHT_ELF_FIND; break;
-        case 5: site.find_id = GO_NERUBIAN_FIND; break;
-        case 6: site.find_id = GO_ORC_FIND; break;
-        case 7: site.find_id = GO_TOLVIR_FIND; break;
-        case 8: site.find_id = GO_TROLL_FIND; break;
-        case 27: site.find_id = GO_VRYKUL_FIND; break;
+        case ARCHAEOLOGY_BRANCH_DWARF:      site.find_id = GO_DWARF_FIND; break;
+        case ARCHAEOLOGY_BRANCH_DRAENEI:    site.find_id = GO_DRAENEI_FIND; break;
+        case ARCHAEOLOGY_BRANCH_FOSSIL:     site.find_id = GO_FOSSIL_FIND; break;
+        case ARCHAEOLOGY_BRANCH_NIGHT_ELF:  site.find_id = GO_NIGHT_ELF_FIND; break;
+        case ARCHAEOLOGY_BRANCH_NERUBIAN:   site.find_id = GO_NERUBIAN_FIND; break;
+        case ARCHAEOLOGY_BRANCH_ORC:        site.find_id = GO_ORC_FIND; break;
+        case ARCHAEOLOGY_BRANCH_TOLVIR:     site.find_id = GO_TOLVIR_FIND; break;
+        case ARCHAEOLOGY_BRANCH_TROLL:      site.find_id = GO_TROLL_FIND; break;
+        case ARCHAEOLOGY_BRANCH_VRYKUL:     site.find_id = GO_VRYKUL_FIND; break;
         default: site.find_id = 0; break;
     }
 
@@ -397,7 +397,7 @@ void Player::GenerateResearchProjects()
     for (Projects::const_iterator itr = tempProjects.begin(); itr != tempProjects.end(); ++itr)
     {
         ResearchProjectSet::const_iterator itr2 = itr->second.begin();
-        std::advance(itr2, urand(0, itr2->second.size() - 1));
+        std::advance(itr2, urand(0, itr2->size() - 1));
         ReplaceResearchProject(0, *itr2);
     }
 
@@ -409,6 +409,22 @@ bool Player::HasResearchProject(uint32 id) const
     for (uint32 i = 0; i < MAX_RESEARCH_PROJECTS; ++i)
         if (GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2) == id)
             return true;
+
+    return false;
+}
+
+bool Player::HasResearchProjectOfBranch(uint32 id) const
+{
+    for (uint32 i = 0; i < MAX_RESEARCH_PROJECTS; ++i)
+        if (uint16 val = GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2))
+        {
+            ResearchProjectEntry const* rp = sResearchProjectStore.LookupEntry(val);
+            if (!rp)
+                continue;
+
+            if (rp->branchId == id)
+                return true;
+        }
 
     return false;
 }

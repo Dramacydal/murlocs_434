@@ -301,6 +301,20 @@ enum AchievementCriteriaMoreReqType
     ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_PROJECT_RACE                 = 66,
 };
 
+enum ArchaeologyBranches
+{
+    ARCHAEOLOGY_BRANCH_DWARF        = 1,
+    ARCHAEOLOGY_BRANCH_DRAENEI      = 2,
+    ARCHAEOLOGY_BRANCH_FOSSIL       = 3,
+    ARCHAEOLOGY_BRANCH_NIGHT_ELF    = 4,
+    ARCHAEOLOGY_BRANCH_NERUBIAN     = 5,
+    ARCHAEOLOGY_BRANCH_ORC          = 6,
+    ARCHAEOLOGY_BRANCH_TOLVIR       = 7,
+    ARCHAEOLOGY_BRANCH_TROLL        = 8,
+    ARCHAEOLOGY_BRANCH_VRYKUL       = 27,
+    ARCHAEOLOGY_BRANCH_OTHER        = 29,
+};
+
 enum AreaFlags
 {
     AREA_FLAG_SNOW                  = 0x00000001,           // wrong - snow (only Dun Morogh, Naxxramas, Razorfen Downs and Winterspring)

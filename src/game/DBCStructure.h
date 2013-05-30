@@ -1636,7 +1636,7 @@ struct ResearchProjectEntry
 
     bool IsVaid() const
     {
-        return branchId != 29;
+        return branchId != ARCHAEOLOGY_BRANCH_OTHER;
     }
 };
 
