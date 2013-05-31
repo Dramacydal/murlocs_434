@@ -10985,7 +10985,7 @@ void ObjectMgr::InitFakeOnline()
 
     //                                                     0        1     2      3      4     5       6
     QueryResult* result = CharacterDatabase.PQuery("SELECT account, name, level, class, race, gender, zone FROM characters WHERE "
-        "online = 0 AND logout_time < UNIX_TIMESTAMP() - %u AND level >= %u AND level <= %u "
+        "online = 0 AND logout_time < UNIX_TIMESTAMP() - %u AND level >= %u AND level <= %u AND name <> '' "
         "ORDER BY logout_time DESC LIMIT %u",
         sWorld.getConfig(CONFIG_UINT32_FAKE_ONLINE_TIMEDIFF),
         sWorld.getConfig(CONFIG_UINT32_FAKE_ONLINE_MIN_LEVEL), sWorld.getConfig(CONFIG_UINT32_FAKE_ONLINE_MAX_LEVEL),
