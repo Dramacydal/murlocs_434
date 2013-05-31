@@ -377,7 +377,7 @@ void Player::GenerateResearchProjects()
     for (Projects::const_iterator itr = tempProjects.begin(); itr != tempProjects.end(); ++itr)
     {
         ResearchProjectSet::iterator itr2 = itr->second.begin();
-        std::advance(itr2, urand(0, itr->second.size()));
+        std::advance(itr2, urand(0, itr->second.size() - 1));
         ReplaceResearchProject(0, *itr2);
     }
 
