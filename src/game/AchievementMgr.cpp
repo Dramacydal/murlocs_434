@@ -1497,10 +1497,10 @@ void AchievementMgr<T>::UpdateAchievementCriteria(AchievementCriteriaTypes type,
             }
             case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ARCHAEOLOGY_PROJECTS:
             {
-                if (!miscvalue1 || !changeValue)
+                if (!miscvalue1 || !miscvalue2)
                     continue;
 
-                change = changeValue;
+                change = miscvalue2;
                 progressType = PROGRESS_ACCUMULATE;
                 break;
             }
