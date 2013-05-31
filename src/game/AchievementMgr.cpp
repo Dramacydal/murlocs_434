@@ -3449,6 +3449,9 @@ uint32 AchievementMgr<T>::GetCriteriaProgressMaxCounter(AchievementCriteriaEntry
         case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE:
             resultValue = achievementCriteria->kill_creature.creatureCount;
             break;
+        case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ARCHAEOLOGY_PROJECTS:
+            resultValue = achievementCriteria->archaeology.count;
+            break;
         case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
         case ACHIEVEMENT_CRITERIA_TYPE_REACH_GUILD_LEVEL:
             resultValue = achievementCriteria->reach_level.level;
