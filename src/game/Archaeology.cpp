@@ -368,7 +368,7 @@ void Player::GenerateResearchProjects()
     for (std::set<ResearchProjectEntry const*>::const_iterator itr = sResearchProjectSet.begin(); itr != sResearchProjectSet.end(); ++itr)
     {
         ResearchProjectEntry const* entry = (*itr);
-        if (entry->rare && urand(0, 100) > chance_mod || IsCompletedRareProject(entry->ID))
+        if (entry->rare && urand(0, 100) > chance_mod || IsCompletedProject(entry->ID, true))
             continue;
 
         tempProjects[entry->branchId].insert(entry->ID);
@@ -506,7 +506,7 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
         if (project->branchId != entry->branchId)
             continue;
 
-        if (project->rare && urand(0, 100) > chance_mod || IsCompletedRareProject(project->ID))
+        if (project->rare && urand(0, 100) > chance_mod || IsCompletedProject(project->ID, true))
             continue;
 
         tempProjects.insert(project->ID);
@@ -542,10 +542,10 @@ void Player::AddCompletedProject(ResearchProjectEntry const* entry)
     _completedProjects.push_back(CompletedProject(entry));
 }
 
-bool Player::IsCompletedRareProject(uint32 id)
+bool Player::IsCompletedProject(uint32 id, bool onlyRare)
 {
     for (CompletedProjectList::const_iterator itr = _completedProjects.begin(); itr != _completedProjects.end(); ++itr)
-        if (id == itr->entry->ID && itr->entry->rare)
+        if (id == itr->entry->ID && (!onlyRare || itr->entry->rare))
             return true;
 
     return false;

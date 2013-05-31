@@ -3406,6 +3406,9 @@ bool AchievementMgr<T>::AdditionalRequirementsSatisfied(AchievementCriteriaEntry
                 if (rp->rare != reqValue)
                     return false;
 
+                if (referencePlayer->IsCompletedProject(rp->ID, false))
+                    return false;
+
                 break;
             }
             case ACHIEVEMENT_CRITERIA_MORE_REQ_TYPE_PROJECT_RACE: // 66
