@@ -122,7 +122,7 @@ bool Player::OnSurvey(uint32& entry, float& x, float& y, float& z, float &orient
     entry = site.find_id;
     x = site.loot_x;
     y = site.loot_y;
-    z = GetMap()->GetHeight(GetPhaseMask(), x, y, GetPositionZ());
+    z = GetMap()->GetTerrain()->GetHeightStatic(x, y, GetPositionZ(), true, 5);
 
     if (site.count < 2)
     {
