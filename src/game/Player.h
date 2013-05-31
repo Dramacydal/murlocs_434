@@ -2579,6 +2579,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool HasResearchProject(uint32 id) const;
         void ReplaceResearchProject(uint32 oldId, uint32 newId);
 
+        static float GetRareArtifactChance(uint32 skill_value);
+
         void ShowResearchSites();
         void GenerateResearchSites();
         void GenerateResearchSiteInMap(uint32 mapId);

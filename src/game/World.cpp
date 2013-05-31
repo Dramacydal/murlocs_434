@@ -1136,6 +1136,8 @@ void World::LoadConfigSettings(bool reload)
     }
 
     setConfig(CONFIG_BOOL_ARCHAEOLOGY_ENABLED, "Archaeology.Enabled", false);
+    setConfig(CONFIG_FLOAT_ARCHAEOLOGY_RARE_BASE_CHANCE, "Archaeology.RareBaseChance", 10.0f);
+    setConfig(CONFIG_FLOAT_ARCHAEOLOGY_RARE_MAXLEVEL_CHANCE, "Archaeology.RareMaxLevelChance", 10.0f);
 }
 
 /// Initialize the World

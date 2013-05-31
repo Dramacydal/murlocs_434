@@ -349,6 +349,11 @@ void Player::GenerateResearchSites()
     ShowResearchSites();
 }
 
+float Player::GetRareArtifactChance(uint32 skill_value)
+{
+    return std::min<float>(sWorld.getConfig(CONFIG_FLOAT_ARCHAEOLOGY_RARE_BASE_CHANCE) + skill_value * sWorld.getConfig(CONFIG_FLOAT_ARCHAEOLOGY_RARE_MAXLEVEL_CHANCE) / 525.0f, 100.0f);
+}
+
 void Player::GenerateResearchProjects()
 {
     if (sResearchProjectSet.empty())
@@ -364,7 +369,7 @@ void Player::GenerateResearchProjects()
     typedef std::map<uint32, ResearchProjectSet> ProjectsByBranch;
     ProjectsByBranch tempProjects;
     ProjectsByBranch tempRareProjects;
-    float rare_chance = std::min<float>(10.0f + skill_now * 20.0f / 525.0f, 100.0f);
+    float rare_chance = GetRareArtifactChance(skill_now);
 
     for (std::set<ResearchProjectEntry const*>::const_iterator itr = sResearchProjectSet.begin(); itr != sResearchProjectSet.end(); ++itr)
     {
@@ -517,7 +522,7 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
 
     ResearchProjectSet tempProjects;
     ResearchProjectSet tempRareProjects;
-    float rare_chance = std::min<float>(10.0f + skill_now * 20.0f / 525.0f, 100.0f);
+    float rare_chance = GetRareArtifactChance(skill_now);
 
     for (std::set<ResearchProjectEntry const*>::const_iterator itr = sResearchProjectSet.begin(); itr != sResearchProjectSet.end(); ++itr)
     {
