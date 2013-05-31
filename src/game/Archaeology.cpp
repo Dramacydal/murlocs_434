@@ -361,23 +361,41 @@ void Player::GenerateResearchProjects()
     for (uint32 i = 0; i < MAX_RESEARCH_PROJECTS / 2; ++i)
         SetUInt32Value(PLAYER_FIELD_RESEARCHING_1 + i, 0);
 
-    typedef std::map<uint32, ResearchProjectSet> Projects;
-    Projects tempProjects;
-    uint32 chance_mod = skill_now / 50;
+    typedef std::map<uint32, ResearchProjectSet> ProjectsByBranch;
+    ProjectsByBranch tempProjects;
+    ProjectsByBranch tempRareProjects;
+    float rare_chance = std::min<float>(10.0f + skill_now * 20.0f / 525.0f, 100.0f);
 
     for (std::set<ResearchProjectEntry const*>::const_iterator itr = sResearchProjectSet.begin(); itr != sResearchProjectSet.end(); ++itr)
     {
         ResearchProjectEntry const* entry = (*itr);
-        if (entry->rare && urand(0, 100) > chance_mod || IsCompletedProject(entry->ID, true))
-            continue;
 
-        tempProjects[entry->branchId].insert(entry->ID);
+        if (entry->rare)
+        {
+            if (IsCompletedProject(entry->ID, true))
+                continue;
+
+            tempRareProjects[entry->branchId].insert(entry->ID);
+        }
+        else
+            tempProjects[entry->branchId].insert(entry->ID);
     }
 
-    for (Projects::const_iterator itr = tempProjects.begin(); itr != tempProjects.end(); ++itr)
+    for (ProjectsByBranch::const_iterator itr = tempProjects.begin(); itr != tempProjects.end(); ++itr)
     {
-        ResearchProjectSet::iterator itr2 = itr->second.begin();
-        std::advance(itr2, urand(0, itr->second.size() - 1));
+        ResearchProjectSet::iterator itr2;
+
+        if (tempRareProjects[itr->first].size() > 0 && roll_chance_f(rare_chance))
+        {
+            itr2 = tempRareProjects[itr->first].begin();
+            std::advance(itr2, urand(0, tempRareProjects[itr->first].size() - 1));
+        }
+        else
+        {
+            itr2 = itr->second.begin();
+            std::advance(itr2, urand(0, itr->second.size() - 1));
+        }
+
         ReplaceResearchProject(0, *itr2);
     }
 
@@ -498,7 +516,8 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
     AddCompletedProject(entry);
 
     ResearchProjectSet tempProjects;
-    float chance_mod = std::min<float>(10.0f + skill_now / 525.0f, 100.0f);
+    ResearchProjectSet tempRareProjects;
+    float rare_chance = std::min<float>(10.0f + skill_now * 20.0f / 525.0f, 100.0f);
 
     for (std::set<ResearchProjectEntry const*>::const_iterator itr = sResearchProjectSet.begin(); itr != sResearchProjectSet.end(); ++itr)
     {
@@ -506,14 +525,28 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
         if (project->branchId != entry->branchId)
             continue;
 
-        if (project->rare && frand(0, 100.0f) > chance_mod || IsCompletedProject(project->ID, true))
-            continue;
+        if (project->rare)
+        {
+            if (IsCompletedProject(project->ID, true))
+                continue;
 
-        tempProjects.insert(project->ID);
+            tempRareProjects.insert(project->ID);
+        }
+        else
+            tempProjects.insert(project->ID);
     }
 
-    ResearchProjectSet::const_iterator itr = tempProjects.begin();
-    std::advance(itr, urand(0, tempProjects.size() - 1));
+    ResearchProjectSet::const_iterator itr;
+    if (tempRareProjects.size() > 0 && roll_chance_f(rare_chance))
+    {
+        itr = tempRareProjects.begin();
+        std::advance(itr, urand(0, tempRareProjects.size() - 1));
+    }
+    else
+    {
+        itr = tempProjects.begin();
+        std::advance(itr, urand(0, tempProjects.size() - 1));
+    }
 
     ReplaceResearchProject(entry->ID, *itr);
 
@@ -584,7 +617,7 @@ void Player::_SaveArchaeology()
         if (uint16 val = GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2))
             ss << val << " ";
 
-    ss << "')";
+    ss << "')"; 
 
     CharacterDatabase.Execute(ss.str().c_str());
 
