@@ -498,7 +498,7 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
     AddCompletedProject(entry);
 
     ResearchProjectSet tempProjects;
-    uint32 chance_mod = skill_now / 50;
+    float chance_mod = std::min<float>(10.0f + skill_now / 525.0f, 100.0f);
 
     for (std::set<ResearchProjectEntry const*>::const_iterator itr = sResearchProjectSet.begin(); itr != sResearchProjectSet.end(); ++itr)
     {
@@ -506,7 +506,7 @@ bool Player::SolveResearchProject(uint32 spellId, SpellCastTargets& targets)
         if (project->branchId != entry->branchId)
             continue;
 
-        if (project->rare && urand(0, 100) > chance_mod || IsCompletedProject(project->ID, true))
+        if (project->rare && frand(0, 100.0f) > chance_mod || IsCompletedProject(project->ID, true))
             continue;
 
         tempProjects.insert(project->ID);
