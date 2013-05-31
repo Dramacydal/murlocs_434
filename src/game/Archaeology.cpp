@@ -150,7 +150,7 @@ uint16 Player::GetResearchSiteID()
 
     for (ResearchSiteDataMap::iterator itr = sResearchSiteDataMap.begin(); itr != sResearchSiteDataMap.end(); ++itr)
     {
-        if (itr->second.zone != GetCachedZoneId())
+        if (itr->second.entry->mapId != GetMapId())
             continue;
 
         if (!IsPointInZone(pt, itr->second.points))
