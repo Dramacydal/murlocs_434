@@ -378,6 +378,11 @@
     <ClCompile Include="..\scripts\eastern_kingdoms\sunwell_plateau\boss_muru.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\sunwell_plateau\instance_sunwell_plateau.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\swamp_of_sorrows.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\throne_of_the_tides\boss_commander_ulthok.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\throne_of_the_tides\boss_erunak_and_ghursha.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\throne_of_the_tides\boss_lady_nazjar.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\throne_of_the_tides\boss_ozumat.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\throne_of_the_tides\instance_throne_of_the_tides.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\tirisfal_glades.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\uldaman\boss_archaedas.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\uldaman\instance_uldaman.cpp" />
@@ -439,6 +444,10 @@
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\end_of_time\boss_murozond.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\end_of_time\end_of_time.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\end_of_time\instance_end_of_time.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\hour_of_twilight\boss_achbishop_benedictus.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\hour_of_twilight\boss_arcurion.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\hour_of_twilight\boss_asira_dawnslayer.cpp" />
+    <ClCompile Include="..\scripts\kalimdor\caverns_of_time\hour_of_twilight\instance_hour_of_twilight.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\hyjal\boss_archimonde.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\hyjal\hyjal.cpp" />
     <ClCompile Include="..\scripts\kalimdor\caverns_of_time\hyjal\hyjalAI.cpp" />
@@ -822,6 +831,7 @@
     <ClInclude Include="..\scripts\eastern_kingdoms\stratholme\stratholme.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\sunken_temple\sunken_temple.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\sunwell_plateau\sunwell_plateau.h" />
+    <ClInclude Include="..\scripts\eastern_kingdoms\throne_of_the_tides\throne_of_the_tides.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\uldaman\uldaman.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\zulaman\zulaman.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\zulgurub\zulgurub.h" />
@@ -829,6 +839,7 @@
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\culling_of_stratholme\culling_of_stratholme.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\dark_portal\dark_portal.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\end_of_time\end_of_time.h" />
+    <ClInclude Include="..\scripts\kalimdor\caverns_of_time\hour_of_twilight\hour_of_twilight.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\hyjal\hyjal.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\hyjal\hyjalAI.h" />
     <ClInclude Include="..\scripts\kalimdor\caverns_of_time\old_hillsbrad\old_hillsbrad.h" />

@@ -97,7 +97,7 @@ struct MANGOS_DLL_DECL npc_shadowy_apparitionAI : public ScriptedAI
         m_creature->ForcedDespawn(200);
     }
 
-    void UpdateAI(uint32 diff) override
+    void UpdateAI(const uint32 diff) override
     {
         if (!init)
         {

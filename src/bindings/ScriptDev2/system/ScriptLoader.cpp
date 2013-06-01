@@ -598,6 +598,13 @@ extern void AddSC_boss_archbishop_benedictus();
 extern void AddSC_boss_arcurion();
 extern void AddSC_boss_asira_dawnslayer();
 
+// Throne of the Tides
+extern void AddSC_instance_throne_of_the_tides();
+extern void AddSC_boss_commander_ulthok();
+extern void AddSC_boss_erunak_and_ghursha();
+extern void AddSC_boss_lady_nazjar();
+extern void AddSC_boss_ozumat();
+
 void AddScripts()
 {
     // battlegrounds
@@ -1184,4 +1191,10 @@ void AddScripts()
     AddSC_boss_archbishop_benedictus();
     AddSC_boss_arcurion();
     AddSC_boss_asira_dawnslayer();
+
+    AddSC_instance_throne_of_the_tides();
+    AddSC_boss_commander_ulthok();
+    AddSC_boss_erunak_and_ghursha();
+    AddSC_boss_lady_nazjar();
+    AddSC_boss_ozumat();
 }
