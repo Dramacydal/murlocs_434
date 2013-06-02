@@ -452,6 +452,8 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                     case 71904:                             // Chaos Bane
                     case 71386:                             // Rimefang's Frost Breath
                     case 72624: case 72625:                 // Ooze Eruption
+                    case 88942: case 95172:                 // Meteor Slash
+                    case 96913: case 101007:                // Searing Shadows
                     case 105069: case 108094:               // Seething Hate
                     {
                         uint32 count = 0;

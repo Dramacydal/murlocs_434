@@ -30,6 +30,11 @@ enum Spells
     SPELL_CONSUMING_DARKNESS  = 88954,
     SPELL_METEOR_SLASH        = 88942,
     SPELL_BERSERK             = 47008,
+
+    SPELL_FEL_FLAMES          = 88999,
+    SPELL_FEL_FLAMES_H        = 103892,
+
+    NPC_FEL_FLAME             = 47829,
 };
 
 enum ePhases
@@ -54,6 +59,7 @@ struct MANGOS_DLL_DECL boss_argalothAI : public ScriptedAI
     uint32 ConsumingDarknessTimer;
     uint32 BerserkTimer;
     uint32 ResetPhaseTimer;
+    std::list<ObjectGuid> summons;
 
     void Reset() override
     {
@@ -97,6 +103,14 @@ struct MANGOS_DLL_DECL boss_argalothAI : public ScriptedAI
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ARGALOTH, FAIL);
+    }
+
+    void JustSummoned(Creature* unit) override
+    {
+        summons.push_back(unit->GetObjectGuid());
+
+        if (unit->GetEntry() == NPC_FEL_FLAME)
+            unit->CastSpell(unit, SPELL_FEL_FLAMES, true);
     }
 
     void UpdateAI(const uint32 uiDiff) override
