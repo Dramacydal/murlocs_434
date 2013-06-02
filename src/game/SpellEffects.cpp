@@ -12364,7 +12364,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
 
                     m_caster->CastSpell(m_caster, 96932, true);
 
-                    if (Creature* eye = caster->SummonCreature(52389, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), TEMPSUMMON_MANUAL_DESPAWN, 0))
+                    if (Creature* eye = caster->SummonCreature(52389, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN, 0))
                         eye->CastSpell(m_caster, 96942, true);
                     return;
                 }
