@@ -605,6 +605,12 @@ extern void AddSC_boss_erunak_and_ghursha();
 extern void AddSC_boss_lady_nazjar();
 extern void AddSC_boss_ozumat();
 
+// Baradin Hold
+extern void AddSC_instance_baradin_hold();
+extern void AddSC_boss_argaloth();
+extern void AddSC_boss_occuthar();
+extern void AddSC_boss_alizabal();
+
 void AddScripts()
 {
     // battlegrounds
@@ -1197,4 +1203,9 @@ void AddScripts()
     AddSC_boss_erunak_and_ghursha();
     AddSC_boss_lady_nazjar();
     AddSC_boss_ozumat();
+
+    AddSC_instance_baradin_hold();
+    AddSC_boss_argaloth();
+    AddSC_boss_occuthar();
+    AddSC_boss_alizabal();
 }

@@ -2108,6 +2108,9 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 case 72091:                                 // Frozen Orb (Vault of Archavon, Toravon)
                 case 73022:                                 // Mutated Infection (Mode 2)
                 case 73023:                                 // Mutated Infection (Mode 3)
+                case 105065:                                // Seething Hate
+                case 106248:                                // Blade Dance
+                case 108090:                                // Seething Hate (H)
                     unMaxTargets = 1;
                     break;
                 case 28542:                                 // Life Drain (Naxx, Sapphiron)
@@ -10470,6 +10473,11 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
                     ++itr;
             }
 
+            return true;
+        }
+        case 96931:                                     // Eyes of Occu'thar
+        {
+            targetUnitMap.push_back(m_caster);
             return true;
         }
         default:

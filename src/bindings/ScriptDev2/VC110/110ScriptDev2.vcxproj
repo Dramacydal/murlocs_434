@@ -384,6 +384,10 @@
     <ClCompile Include="..\scripts\eastern_kingdoms\throne_of_the_tides\boss_ozumat.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\throne_of_the_tides\instance_throne_of_the_tides.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\tirisfal_glades.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\tol_barad\baradin_hold\boss_alizabal.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\tol_barad\baradin_hold\boss_argaloth.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\tol_barad\baradin_hold\boss_occuthar.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\tol_barad\baradin_hold\instance_baradin_hold.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\uldaman\boss_archaedas.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\uldaman\instance_uldaman.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\uldaman\uldaman.cpp" />
@@ -832,6 +836,7 @@
     <ClInclude Include="..\scripts\eastern_kingdoms\sunken_temple\sunken_temple.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\sunwell_plateau\sunwell_plateau.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\throne_of_the_tides\throne_of_the_tides.h" />
+    <ClInclude Include="..\scripts\eastern_kingdoms\tol_barad\baradin_hold\baradin_hold.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\uldaman\uldaman.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\zulaman\zulaman.h" />
     <ClInclude Include="..\scripts\eastern_kingdoms\zulgurub\zulgurub.h" />
