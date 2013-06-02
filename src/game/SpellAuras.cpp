@@ -2433,6 +2433,12 @@ void Aura::TriggerSpell()
                 target->SummonCreature(53089,target->GetPositionX()-urand(5,30),target->GetPositionY()-urand(-5,-30),56.500f, target->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN, 0);
                 return;
             }
+            case 105784:                            // Blade Dance
+            {
+                if (target->HasAura(triggered_spell_id))
+                    return;
+                break;
+            }
             case 107837:                            // Throw Totem
             {
                 // Throw Totem

@@ -2420,10 +2420,12 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                         return false;
 
                     // Ranger: Paragon (Item - Coliseum 25 Heroic Melee Trinket procs and Item - Coliseum 25 Normal Melee Trinket procs)
-                    if (spellInfo_1->SpellIconID == 1951 && spellInfo_2->SpellIconID == 1951 ||
-                        spellInfo_2->SpellIconID == 1951 && spellInfo_1->SpellIconID == 1951)
+                    if (spellInfo_1->SpellIconID == 1951 && spellInfo_2->SpellIconID == 1951)
                         return false;
 
+                    // Alizabal's Blade Dance and passives
+                    if (spellInfo_1->SpellIconID == 2782 && spellInfo_2->SpellIconID == 2782)
+                        return false;
                     break;
                 }
                 case SPELLFAMILY_MAGE:

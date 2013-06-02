@@ -79,6 +79,7 @@ struct MANGOS_DLL_DECL boss_alizabalAI : public ScriptedAI
         m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
+        introDone = false;
     }
 
     ScriptedInstance* m_pInstance;
@@ -101,7 +102,6 @@ struct MANGOS_DLL_DECL boss_alizabalAI : public ScriptedAI
         me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_CHARM, true);
         me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_DISORIENTED, true);
         me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_CONFUSE, true);
-        introDone = false;
     }
 
     void MoveInLineOfSight(Unit* who) override
@@ -205,12 +205,13 @@ struct MANGOS_DLL_DECL boss_alizabalAI : public ScriptedAI
                     }
                     break;
                 case EVENT_BLADE_DANCE_CHARGE:
+                    events.CancelEvent(EVENT_BLADE_DANCE);
                     DoCastAOE(SPELL_BLADE_DANCE_DUMMY);
                     uiCharges++;
                     if (uiCharges > 3)
                         uiCharges = 0;
                     else
-                        events.ScheduleEvent(EVENT_BLADE_DANCE, 4000);
+                        events.RescheduleEvent(EVENT_BLADE_DANCE, 4000);
                     break;
             }
         }
