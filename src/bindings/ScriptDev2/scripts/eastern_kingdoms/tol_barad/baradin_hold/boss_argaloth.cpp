@@ -61,6 +61,15 @@ struct MANGOS_DLL_DECL boss_argalothAI : public ScriptedAI
     uint32 ResetPhaseTimer;
     std::list<ObjectGuid> summons;
 
+    void DespawnAllSummons()
+    {
+        for (std::list<ObjectGuid>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+            if (Creature* unit = me->GetMap()->GetAnyTypeCreature(*itr))
+                unit->ForcedDespawn();
+
+        summons.clear();
+    }
+
     void Reset() override
     {
         me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
@@ -81,6 +90,7 @@ struct MANGOS_DLL_DECL boss_argalothAI : public ScriptedAI
         ConsumingDarknessTimer = 15000;
         BerserkTimer = 360000;
         Phase = PHASE_1;
+        DespawnAllSummons();
     }
 
     void Aggro(Unit* pWho) override
@@ -93,6 +103,8 @@ struct MANGOS_DLL_DECL boss_argalothAI : public ScriptedAI
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ARGALOTH, DONE);
+
+        DespawnAllSummons();
     }
 
     void KilledUnit(Unit* pVictim) override
@@ -110,10 +122,7 @@ struct MANGOS_DLL_DECL boss_argalothAI : public ScriptedAI
         summons.push_back(unit->GetObjectGuid());
 
         if (unit->GetEntry() == NPC_FEL_FLAME)
-        {
             unit->setFaction(me->getFaction());
-            unit->CastSpell(unit, SPELL_FEL_FLAMES, true);
-        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
@@ -159,7 +168,7 @@ struct MANGOS_DLL_DECL boss_argalothAI : public ScriptedAI
             ResetPhaseTimer = 16500;
         }
 
-        if (me->GetHealthPercent() < 34 && Phase == PHASE_1 && PhaseCount == 1)
+        if (me->GetHealthPercent() < 34.0f && Phase == PHASE_1 && PhaseCount == 1)
         {
             ++PhaseCount;
             Phase = PHASE_2;
@@ -185,6 +194,34 @@ struct MANGOS_DLL_DECL boss_argalothAI : public ScriptedAI
 CreatureAI* GetAI_boss_argaloth(Creature* pCreature)
 {
     return new boss_argalothAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL npc_argaloth_fel_flameAI : public Scripted_NoMovementAI
+{
+    npc_argaloth_fel_flameAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
+    {
+        Reset();
+    }
+
+    void Reset() override
+    {
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        me->CastSpell(me, SPELL_FEL_FLAMES, true);
+    }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+    }
+
+    void UpdateAI(const uint32 diff) override
+    {
+    }
+};
+
+CreatureAI* GetAI_npc_argaloth_fel_flame(Creature* pCreature)
+{
+    return new npc_argaloth_fel_flameAI(pCreature);
 }
 
 void AddSC_boss_argaloth()
