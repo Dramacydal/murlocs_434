@@ -376,7 +376,7 @@ CreatureAI* GetAI_npc_lady_nazjar_event(Creature* pCreature)
     return new npc_lady_nazjar_eventAI(pCreature);
 }
 
-bool OnGossipHello_go_totd_defense_system(Player* player, GameObject* go)
+bool OnGOUse_go_totd_defense_system(Player* player, GameObject* go)
 {
     ScriptedInstance* pInstance = (ScriptedInstance*)go->GetInstanceData();
     if (!pInstance || !player)
@@ -418,6 +418,6 @@ void AddSC_instance_throne_of_the_tides()
 
     pNewScript = new Script;
     pNewScript->Name = "go_totd_defense_system";
-    pNewScript->pGossipHelloGO = &OnGossipHello_go_totd_defense_system;
+    pNewScript->pGOUse = &OnGOUse_go_totd_defense_system;
     pNewScript->RegisterSelf();
 }
