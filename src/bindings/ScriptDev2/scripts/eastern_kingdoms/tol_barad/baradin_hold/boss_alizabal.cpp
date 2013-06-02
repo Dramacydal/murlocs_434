@@ -26,13 +26,27 @@ EndScriptData */
 
 enum ScriptTexts
 {
-    SAY_AGGRO           = 0,
-    SAY_DEATH           = 1,
-    SAY_INTRO           = 2,
-    SAY_WIPE            = 3, 
-    SAY_KILL            = 4,
-    SAY_SEETHING_HATE   = 5,
-    SAY_SKEWER          = 6,
+    SAY_INTRO               = -1002011,
+
+    SAY_SEETHING_HATE_1     = -1002012,
+    SAY_SEETHING_HATE_2     = -1002013,
+    SAY_SEETHING_HATE_3     = -1002014,
+    SAY_SEETHING_HATE_4     = -1002015,
+    SAY_SEETHING_HATE_5     = -1002016,
+
+    SAY_SKEWER_1            = -1002017,
+    SAY_SKEWER_2            = -1002018,
+
+    SAY_KILL_1              = -1002019,
+    SAY_KILL_2              = -1002020,
+    SAY_KILL_3              = -1002021,
+    SAY_KILL_4              = -1002022,
+
+    SAY_WIPE                = -1002023,
+
+    SAY_DEATH               = -1002024,
+
+    SAY_AGGRO               = -1002025,
 };
 
 enum Spells
@@ -94,7 +108,7 @@ struct MANGOS_DLL_DECL boss_alizabalAI : public ScriptedAI
     {
         if (who->GetTypeId() == TYPEID_PLAYER && !((Player*)who)->isGameMaster() && !introDone && me->IsWithinDistInMap(who, 70.0f))
         {
-            //Talk(SAY_INTRO);
+            DoScriptText(SAY_INTRO, me);
             introDone = true;
         }
 
@@ -119,12 +133,13 @@ struct MANGOS_DLL_DECL boss_alizabalAI : public ScriptedAI
             events.ScheduleEvent(EVENT_SKEWER, 16000);
             events.ScheduleEvent(EVENT_SEETHING_HATE, 8000);
         }
-        //Talk(SAY_AGGRO);
+
+        DoScriptText(SAY_AGGRO, me);
     }
 
     void JustDied(Unit* pKiller) override
     {
-        //Talk(SAY_DEATH);
+        DoScriptText(SAY_DEATH, me);
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ALIZABAL, DONE);
@@ -132,7 +147,7 @@ struct MANGOS_DLL_DECL boss_alizabalAI : public ScriptedAI
 
     void KilledUnit(Unit* pVictim) override
     {
-        //Talk(SAY_KILL);
+        DoScriptText(RAND(SAY_KILL_1, SAY_KILL_2, SAY_KILL_3, SAY_KILL_4), me);
     }
 
     void JustReachedHome() override
@@ -140,7 +155,7 @@ struct MANGOS_DLL_DECL boss_alizabalAI : public ScriptedAI
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ALIZABAL, FAIL);
 
-        //Talk(SAY_WIPE);
+        DoScriptText(SAY_WIPE, me);
     }
 
     void UpdateAI(const uint32 uiDiff) override
@@ -161,12 +176,12 @@ struct MANGOS_DLL_DECL boss_alizabalAI : public ScriptedAI
                     DoCast(me, SPELL_BERSERK, true);
                     break;
                 case EVENT_SKEWER:
-                    //Talk(SAY_SKEWER);
+                    DoScriptText(RAND(SAY_SKEWER_1, SAY_SKEWER_2), me);
                     DoCast(me->getVictim(), SPELL_SKEWER);
                     events.ScheduleEvent(EVENT_SKEWER, 20500);
                     break;
                 case EVENT_SEETHING_HATE:
-                    //Talk(SAY_SEETHING_HATE);
+                    DoScriptText(RAND(SAY_SEETHING_HATE_1, SAY_SEETHING_HATE_2, SAY_SEETHING_HATE_3, SAY_SEETHING_HATE_4, SAY_SEETHING_HATE_5), me);
                     DoCastAOE(SPELL_SEETHING_HATE_DUMMY);
                     events.ScheduleEvent(EVENT_SEETHING_HATE, 20500);
                     break;
