@@ -163,7 +163,7 @@ struct MANGOS_DLL_DECL npc_neptulonAI : public ScriptedAI
         DespawnAllSummons();
         me->SetHealth(me->GetMaxHealth());
         if (m_pInstance && m_pInstance->GetData(TYPE_OZUMAT) != DONE)
-            m_pInstance->SetBossState(TYPE_OZUMAT, NOT_STARTED);
+            m_pInstance->SetData(TYPE_OZUMAT, NOT_STARTED);
     }
 
     void DoAction(int32 action) override
@@ -264,6 +264,12 @@ struct MANGOS_DLL_DECL npc_neptulonAI : public ScriptedAI
             //Talk(SAY_DEATH);
             EnterEvadeMode();
         }
+    }
+
+    void JustReachedHome() override
+    {
+        if (m_pInstance)
+            m_pInstance->SetData(TYPE_OZUMAT, FAIL);
     }
 
     void UpdateAI(const uint32 diff) override
