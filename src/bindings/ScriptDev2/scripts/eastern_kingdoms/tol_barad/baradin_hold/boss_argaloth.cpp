@@ -232,4 +232,9 @@ void AddSC_boss_argaloth()
     pNewScript->Name = "boss_argaloth";
     pNewScript->GetAI = &GetAI_boss_argaloth;
     pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name = "npc_argaloth_fel_flame";
+    pNewScript->GetAI = &GetAI_npc_argaloth_fel_flame;
+    pNewScript->RegisterSelf();
 }
