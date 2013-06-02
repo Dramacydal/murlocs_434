@@ -2435,7 +2435,7 @@ void Aura::TriggerSpell()
             }
             case 105784:                            // Blade Dance
             {
-                if (target->HasAura(triggered_spell_id))
+                if (target->HasAura(trigger_spell_id))
                     return;
                 break;
             }
