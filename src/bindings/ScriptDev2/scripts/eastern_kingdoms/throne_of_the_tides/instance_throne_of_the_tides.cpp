@@ -92,6 +92,7 @@ void instance_throne_of_the_tides::OnObjectCreate(GameObject* pGo)
             break;
         case GO_NEPTULON_CACHE:
         case GO_NEPTULON_CACHE_H:
+            pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
             break;
         default:
             return;

@@ -258,6 +258,8 @@ struct MANGOS_DLL_DECL npc_neptulonAI : public ScriptedAI
 
     void DamageTaken(Unit* pAttacker, uint32 &damage) override
     {
+        damage /= 10;
+
         if (damage >= me->GetHealth())
         {
             damage = 0;
