@@ -50,6 +50,11 @@ void instance_throne_of_the_tides::OnCreatureCreate(Creature* pCreature)
             else
                 pCreature->SetPhaseMask(2, true);
             break;
+        case NPC_TELEPORTER_1:
+        case NPC_TELEPORTER_2:
+        case NPC_TELEPORTER_3:
+            pCreature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            return;
         default:
             return;
     }

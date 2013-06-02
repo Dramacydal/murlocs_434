@@ -24,6 +24,10 @@ enum
     NPC_CAPTAIN_TAYLOR          = 50270,
     NPC_LEGIONNAIRE_NAZGRIM     = 50272,
 
+    NPC_TELEPORTER_1            = 43403,
+    NPC_TELEPORTER_2            = 51391,
+    NPC_TELEPORTER_3            = 51395,
+
     GO_COMMANDER_ULTHOK_DOOR    = 204338,
     GO_CORALES                  = 205542,
     GO_LADY_NAZJAR_DOOR         = 204339,
