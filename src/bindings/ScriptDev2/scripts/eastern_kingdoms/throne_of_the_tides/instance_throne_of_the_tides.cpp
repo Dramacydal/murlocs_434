@@ -43,7 +43,12 @@ void instance_throne_of_the_tides::OnCreatureCreate(Creature* pCreature)
         case NPC_ERUNAK_STONESPEAKER:
         case NPC_NEPTULON:
         case NPC_LADY_NAZJAR_EVENT:
+            break;
         case NPC_COMMANDER_ULTHOK:
+            if (m_auiEncounter[TYPE_COMMANDER_ULTHOK_EVENT] == DONE)
+                pCreature->SetPhaseMask(1, true);
+            else
+                pCreature->SetPhaseMask(2, true);
             break;
         default:
             return;
@@ -61,6 +66,8 @@ void instance_throne_of_the_tides::OnObjectCreate(GameObject* pGo)
     switch (pGo->GetEntry())
     {
         case GO_CORALES:
+            if (m_auiEncounter[TYPE_COMMANDER_ULTHOK_EVENT] == DONE)
+                pGo->Delete();
             break;
         case GO_TENTACLE_LEFT:
         case GO_TENTACLE_RIGHT:
@@ -112,7 +119,6 @@ void instance_throne_of_the_tides::SetData(uint32 uiType, uint32 uiData)
                 DoRespawnGameObject(m_bIsRegularMode ? GO_NEPTULON_CACHE : GO_NEPTULON_CACHE_H, HOUR);
             break;
         case TYPE_LADY_NAZJAR_EVENT:
-        case TYPE_COMMANDER_ULTHOK_EVENT:
         case TYPE_NEPTULON_EVENT:
         case TYPE_MINDBENDER_GHURSHA:
             m_auiEncounter[uiType] = uiData;
@@ -122,6 +128,12 @@ void instance_throne_of_the_tides::SetData(uint32 uiType, uint32 uiData)
             if (uiData == DONE)
                 if (GameObject* go = GetSingleGameObjectFromStorage(GO_CONTROL_SYSTEM))
                     go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
+            break;
+        case TYPE_COMMANDER_ULTHOK_EVENT:
+            m_auiEncounter[uiType] = uiData;
+            if (uiData == DONE)
+                if (Creature* creature = GetSingleCreatureFromStorage(NPC_COMMANDER_ULTHOK))
+                    creature->SetPhaseMask(1, true);
             break;
         default:
             return;

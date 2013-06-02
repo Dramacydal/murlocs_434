@@ -207,7 +207,7 @@ bool OnTrigger_at_tott_commander_ulthok(Player* pPlayer, const AreaTriggerEntry*
         return true;
 
     if (pInstance->GetData(TYPE_COMMANDER_ULTHOK_EVENT) != DONE
-        && pInstance->GetData(TYPE_LADY_NAZJAR) != DONE)
+        && pInstance->GetData(TYPE_LADY_NAZJAR) == DONE)
     {
         pInstance->SetData(TYPE_COMMANDER_ULTHOK_EVENT, DONE);
         if (Creature* pUlthok = pInstance->GetSingleCreatureFromStorage(NPC_COMMANDER_ULTHOK))
