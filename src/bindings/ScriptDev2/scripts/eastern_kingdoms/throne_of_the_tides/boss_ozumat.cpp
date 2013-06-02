@@ -666,6 +666,7 @@ void AddSC_boss_ozumat()
     pNewScript->RegisterSelf();
 
     pNewScript = new Script;
+    pNewScript->Name = "at_tott_ozumat";
     pNewScript->pAreaTrigger = OnTrigger_at_tott_ozumat;
     pNewScript->RegisterSelf();
 }

@@ -74,6 +74,10 @@ void instance_throne_of_the_tides::OnObjectCreate(GameObject* pGo)
             if (m_auiEncounter[TYPE_COMMANDER_ULTHOK] == DONE)
                 pGo->SetGoState(GO_STATE_ACTIVE);
             break;
+        case GO_CONTROL_SYSTEM:
+            if (m_auiEncounter[TYPE_LADY_NAZJAR] == DONE)
+                pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
+            break;
         case GO_NEPTULON_CACHE:
         case GO_NEPTULON_CACHE_H:
             break;
@@ -110,9 +114,14 @@ void instance_throne_of_the_tides::SetData(uint32 uiType, uint32 uiData)
         case TYPE_LADY_NAZJAR_EVENT:
         case TYPE_COMMANDER_ULTHOK_EVENT:
         case TYPE_NEPTULON_EVENT:
-        case TYPE_LADY_NAZJAR:
         case TYPE_MINDBENDER_GHURSHA:
             m_auiEncounter[uiType] = uiData;
+            break;
+        case TYPE_LADY_NAZJAR:
+            m_auiEncounter[uiType] = uiData;
+            if (uiData == DONE)
+                if (GameObject* go = GetSingleGameObjectFromStorage(GO_CONTROL_SYSTEM))
+                    go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NO_INTERACT);
             break;
         default:
             return;

@@ -586,7 +586,7 @@ void AddSC_boss_lady_nazjar()
     pNewScript->RegisterSelf();
 
     pNewScript = new Script;
-    pNewScript->Name = "npc_lady_nazjar_geyserAI";
+    pNewScript->Name = "npc_lady_nazjar_geyser";
     pNewScript->GetAI = &GetAI_npc_lady_nazjar_geyser;
     pNewScript->RegisterSelf();
 }
