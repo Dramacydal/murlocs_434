@@ -110,7 +110,10 @@ struct MANGOS_DLL_DECL boss_argalothAI : public ScriptedAI
         summons.push_back(unit->GetObjectGuid());
 
         if (unit->GetEntry() == NPC_FEL_FLAME)
+        {
+            unit->setFaction(me->getFaction());
             unit->CastSpell(unit, SPELL_FEL_FLAMES, true);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
