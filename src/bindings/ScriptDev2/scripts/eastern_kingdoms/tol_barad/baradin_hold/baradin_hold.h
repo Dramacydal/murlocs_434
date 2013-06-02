@@ -9,6 +9,10 @@ enum
     TYPE_ARGALOTH               = 0,
     TYPE_OCCUTHAR               = 1,
     TYPE_ALIZABAL               = 2,
+
+    GO_DOOR_ARGALOTH            = 207619,
+    GO_DOOR_OCCUTHAR            = 208953,
+    GO_DOOR_ALIZABAL            = 209849,
 };
 
 class MANGOS_DLL_DECL instance_baradin_hold : public ScriptedInstance

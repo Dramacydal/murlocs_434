@@ -54,6 +54,24 @@ void instance_baradin_hold::OnObjectCreate(GameObject* pGo)
 {
     switch (pGo->GetEntry())
     {
+        case GO_DOOR_ARGALOTH:
+            if (m_auiEncounter[TYPE_ARGALOTH] != IN_PROGRESS)
+                pGo->SetGoState(GO_STATE_ACTIVE);
+            else
+                pGo->SetGoState(GO_STATE_READY);
+            break;
+        case GO_DOOR_OCCUTHAR:
+            if (m_auiEncounter[TYPE_OCCUTHAR] != IN_PROGRESS)
+                pGo->SetGoState(GO_STATE_ACTIVE);
+            else
+                pGo->SetGoState(GO_STATE_READY);
+            break;
+        case GO_DOOR_ALIZABAL:
+            if (m_auiEncounter[TYPE_ALIZABAL] != IN_PROGRESS)
+                pGo->SetGoState(GO_STATE_ACTIVE);
+            else
+                pGo->SetGoState(GO_STATE_READY);
+            break;
         default:
             return;
     }
@@ -66,9 +84,19 @@ void instance_baradin_hold::SetData(uint32 uiType, uint32 uiData)
     switch (uiType)
     {
         case TYPE_ARGALOTH:
+            m_auiEncounter[uiType] = uiData;
+            if (GameObject* go = GetSingleGameObjectFromStorage(GO_DOOR_ARGALOTH))
+                go->SetGoState(uiData == IN_PROGRESS ? GO_STATE_READY : GO_STATE_ACTIVE);
+            break;
         case TYPE_OCCUTHAR:
+            m_auiEncounter[uiType] = uiData;
+            if (GameObject* go = GetSingleGameObjectFromStorage(GO_DOOR_OCCUTHAR))
+                go->SetGoState(uiData == IN_PROGRESS ? GO_STATE_READY : GO_STATE_ACTIVE);
+            break;
         case TYPE_ALIZABAL:
             m_auiEncounter[uiType] = uiData;
+            if (GameObject* go = GetSingleGameObjectFromStorage(GO_DOOR_ALIZABAL))
+                go->SetGoState(uiData == IN_PROGRESS ? GO_STATE_READY : GO_STATE_ACTIVE);
             break;
         default:
             return;
