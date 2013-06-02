@@ -147,6 +147,8 @@ struct MANGOS_DLL_DECL npc_neptulonAI : public ScriptedAI
         for (std::list<ObjectGuid>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
             if (Creature* unit = me->GetMap()->GetAnyTypeCreature(*itr))
                 unit->ForcedDespawn(2000);
+
+        summons.clear();
     }
 
     void Reset() override

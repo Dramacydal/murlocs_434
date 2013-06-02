@@ -93,10 +93,9 @@ struct MANGOS_DLL_DECL boss_echo_of_jainaAI : public ScriptedAI
     void DespawnAllSummons()
     {
         for (std::list<ObjectGuid>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
-        {
             if (Creature* creature = me->GetMap()->GetAnyTypeCreature(*itr))
                 creature->ForcedDespawn();
-        }
+        summons.clear();
     }
 
     void Reset() override

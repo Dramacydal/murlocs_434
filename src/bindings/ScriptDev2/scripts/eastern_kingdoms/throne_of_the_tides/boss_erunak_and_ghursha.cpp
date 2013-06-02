@@ -154,6 +154,7 @@ struct MANGOS_DLL_DECL boss_erunak_stonespeakerAI : public ScriptedAI
     {
         //if (m_pInstance)
         //    m_pInstance->SetData(TYPE_MINDBENDER_GHURSHA, DONE);
+        DespawnAllSummons()
     }
 
     void KilledUnit(Unit* pVictim) override
@@ -176,6 +177,7 @@ struct MANGOS_DLL_DECL boss_erunak_stonespeakerAI : public ScriptedAI
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_MINDBENDER_GHURSHA, FAIL);
+        DespawnAllSummons()
     }
 
     void UpdateAI(const uint32 uiDiff) override

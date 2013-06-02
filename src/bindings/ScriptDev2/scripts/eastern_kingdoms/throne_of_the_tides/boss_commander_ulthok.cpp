@@ -68,6 +68,16 @@ struct MANGOS_DLL_DECL boss_commander_ulthokAI : public ScriptedAI
     ScriptedInstance* m_pInstance;
     bool m_bIsRegularMode;
     EventMap events;
+    std::list<ObjectGuid> summons;
+
+    void DespawnAllSummons()
+    {
+        for (std::list<ObjectGuid>::const_iterator itr = summons.begin(); itr != summons.end(); ++itr)
+            if (Creature* unit = me->GetMap()->GetAnyTypeCreature(*itr))
+                unit->ForcedDespawn();
+
+        summons.clear();
+    }
 
     void Reset() override
     {
@@ -84,6 +94,7 @@ struct MANGOS_DLL_DECL boss_commander_ulthokAI : public ScriptedAI
         me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_DISORIENTED, true);
         me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_CONFUSE, true);
         events.Reset();
+        DespawnAllSummons();
     }
 
     void DoAction(int32 action) override
@@ -116,6 +127,8 @@ struct MANGOS_DLL_DECL boss_commander_ulthokAI : public ScriptedAI
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_COMMANDER_ULTHOK, DONE);
+
+        DespawnAllSummons();
     }
 
     void KilledUnit(Unit* pVictim) override
@@ -126,6 +139,13 @@ struct MANGOS_DLL_DECL boss_commander_ulthokAI : public ScriptedAI
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_COMMANDER_ULTHOK, FAIL);
+
+        DespawnAllSummons();
+    }
+
+    void JustSummoned(Creature* unit) override
+    {
+        summons.push_back(unit->GetObjectGuid());
     }
 
     void UpdateAI(const uint32 uiDiff) override
