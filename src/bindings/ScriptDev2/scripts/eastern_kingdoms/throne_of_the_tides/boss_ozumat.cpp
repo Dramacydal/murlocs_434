@@ -252,6 +252,8 @@ struct MANGOS_DLL_DECL npc_neptulonAI : public ScriptedAI
                 state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_ENCOUNTER_COMPLETE);
 
             m_pInstance->SetData(TYPE_OZUMAT, DONE);
+
+            me->SetPhaseMask(2, true);
         }
         EnterEvadeMode();
     }
