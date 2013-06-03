@@ -44,7 +44,7 @@ void WorldPacket::Compress(z_stream* compressionStream)
     reserve(destsize + sizeof(uint32));
     *this << uint32(size);
     append(&storage[0], destsize);
-    SetOpcode(opcode);
+    SetOpcode(Opcodes(opcode));
 }
 
 //! Compresses another packet and stores it in self (source left intact)
@@ -71,7 +71,7 @@ void WorldPacket::Compress(z_stream* compressionStream, WorldPacket const* sourc
     put<uint32>(sizePos, size);
     resize(destsize + sizeof(uint32));
 
-    SetOpcode(opcode);
+    SetOpcode(Opcodes(opcode));
 }
 
 void WorldPacket::Compress(void* dst, uint32 *dst_size, const void* src, int src_size)
