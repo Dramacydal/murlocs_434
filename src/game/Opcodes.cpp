@@ -23,7 +23,7 @@
 #include "Opcodes.h"
 #include "WorldSession.h"
 
-static void DefineOpcode(uint16 opcode, const char* name, const char* compressedName, SessionStatus status, PacketProcessing packetProcessing, void (WorldSession::*handler)(WorldPacket& recvPacket))
+static void DefineOpcode(uint32 opcode, const char* name, const char* compressedName, SessionStatus status, PacketProcessing packetProcessing, void (WorldSession::*handler)(WorldPacket& recvPacket))
 {
     opcodeTable[opcode].name = name;
     opcodeTable[opcode].compressedName = compressedName;

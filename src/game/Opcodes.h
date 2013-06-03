@@ -1468,8 +1468,7 @@ enum Opcodes
     SMSG_RESEARCH_COMPLETE                                = 0x35A6, // 4.3.4 15595
 };
 
-#define MAX_OPCODE_TABLE_SIZE (0xFFFF + 1)
-#define NUM_OPCODE_HANDLERS (0x7FFF + 1)
+#define MAX_OPCODE_TABLE_SIZE 0xFFFF
 
 extern void InitializeOpcodes();
 
