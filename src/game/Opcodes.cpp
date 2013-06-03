@@ -33,7 +33,7 @@ static void DefineOpcode(uint16 opcode, const char* name, const char* compressed
 }
 
 #define OPCODE(name, status, packetProcessing, handler) \
-    DefineOpcode(name, #name, #name##"_COMPRESSED", status, packetProcessing, handler)
+    DefineOpcode(name, #name, #name"_COMPRESSED", status, packetProcessing, handler)
 
 /// Correspondence between opcodes and their names
 OpcodeHandler opcodeTable[MAX_OPCODE_TABLE_SIZE];
