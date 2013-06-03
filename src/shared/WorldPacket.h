@@ -48,8 +48,12 @@ class WorldPacket : public ByteBuffer
         Opcodes GetOpcode() const { return m_opcode; }
         void SetOpcode(Opcodes opcode) { m_opcode = opcode; }
         inline const char* GetOpcodeName() const { return LookupOpcodeName(m_opcode); }
+        void Compress(z_stream_s* compressionStream);
+        void Compress(z_stream_s* compressionStream, WorldPacket const* source);
 
     protected:
         Opcodes m_opcode;
+        void Compress(void* dst, uint32 *dst_size, const void* src, int src_size);
+        z_stream_s* _compressionStream;
 };
 #endif
