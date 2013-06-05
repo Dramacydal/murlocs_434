@@ -58,17 +58,17 @@ bool BattleFieldTB::InitOutdoorPvPArea()
         {
             case TB_BASE_IRONCLAD_GARRISON:
                 tb->gy = sWorldSafeLocsStore.LookupEntry(TB_GY_IRONCLAD_GARRISON);
-                tb->worldState == m_defender == TEAM_INDEX_ALLIANCE ? TB_WS_GARRISON_ALLIANCE_CONTROLLED : TB_WS_GARRISON_HORDE_CONTROLLED;
+                tb->worldState = m_defender == TEAM_INDEX_ALLIANCE ? TB_WS_GARRISON_ALLIANCE_CONTROLLED : TB_WS_GARRISON_HORDE_CONTROLLED;
                 sObjectMgr.SetGraveYardLinkTeam(tb->gy->ID, ZONE_ID_TOL_BARAD, GetTeamFromIndex(tb->owner));
                 break;
             case TB_BASE_WARDENS_VIGIL:
                 tb->gy = sWorldSafeLocsStore.LookupEntry(TB_GY_WARDENS_VIGIL);
-                tb->worldState == m_defender == TEAM_INDEX_ALLIANCE ? TB_WS_VIGIL_ALLIANCE_CONTROLLED : TB_WS_VIGIL_HORDE_CONTROLLED;
+                tb->worldState = m_defender == TEAM_INDEX_ALLIANCE ? TB_WS_VIGIL_ALLIANCE_CONTROLLED : TB_WS_VIGIL_HORDE_CONTROLLED;
                 sObjectMgr.SetGraveYardLinkTeam(tb->gy->ID, ZONE_ID_TOL_BARAD, GetTeamFromIndex(tb->owner));
                 break;
             case TB_BASE_SLAGWORKS:
                 tb->gy = sWorldSafeLocsStore.LookupEntry(TB_GY_SLAGWORKS);
-                tb->worldState == m_defender == TEAM_INDEX_ALLIANCE ? TB_WS_SLAGWORKS_ALLIANCE_CONTROLLED : TB_WS_SLAGWORKS_HORDE_CONTROLLED;
+                tb->worldState = m_defender == TEAM_INDEX_ALLIANCE ? TB_WS_SLAGWORKS_ALLIANCE_CONTROLLED : TB_WS_SLAGWORKS_HORDE_CONTROLLED;
                 sObjectMgr.SetGraveYardLinkTeam(tb->gy->ID, ZONE_ID_TOL_BARAD, GetTeamFromIndex(tb->owner));
                 break;
         }
