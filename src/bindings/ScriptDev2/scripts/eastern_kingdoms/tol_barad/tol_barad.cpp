@@ -36,23 +36,12 @@ struct MANGOS_DLL_DECL npc_tol_barad_spirit_guideAI : public ScriptedAI
         Reset();
     }
 
-    BattleFieldTB* opvp;
-    bool bInit;
-
     void Reset() override
     {
-        bInit = false;
-        opvp = NULL;
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
-        if (!bInit)
-        {
-            bInit = true;
-            opvp = (BattleFieldTB*)sOutdoorPvPMgr.GetBattlefieldById(BATTLEFIELD_TB);
-        }
-
         // auto cast the whole time this spell
         if (!m_creature->GetCurrentSpell(CURRENT_CHANNELED_SPELL))
         {
@@ -117,7 +106,8 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
 
             if (m_creature->GetEntry() != NPC_SIEGE_ENGINE_TURRET)
             {
-                m_creature->setFaction(BFFactions[opvp->GetAttacker()]);
+                if (opvp)
+                    m_creature->setFaction(BFFactions[opvp->GetAttacker()]);
                 m_creature->CastSpell(m_creature, SPELL_THICK_LAYER_OF_DUST, true);
             }
         }
@@ -190,7 +180,8 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
             m_creature->RemoveAurasDueToSpell(SPELL_THICK_LAYER_OF_DUST);
         else if (unit->GetEntry() == NPC_SIEGE_ENGINE_TURRET)
         {
-            unit->setFaction(BFFactions[opvp->GetAttacker()]);
+            if (opvp)
+                unit->setFaction(BFFactions[opvp->GetAttacker()]);
             unit->CastSpell(unit, SPELL_SIEGE_CANNON_PERIODIC, true);
         }
     }
