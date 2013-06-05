@@ -1211,6 +1211,39 @@ enum MangosStrings
 
     LANG_BUGGED_QUEST_CAN_BE_AUTOCOMPLETED = 11152,
 
+    // Wintergrasp
+    LANG_TB_ABOUT_TO_BEGIN              = 11153,
+    LANG_TB_BATTLE_BEGIN                = 11154,
+    LANG_TB_ALLIANCE_DEFENDED           = 11155,
+    LANG_TB_ALLIANCE_CAPTURED           = 11156,
+    LANG_TB_HORDE_DEFENDED              = 11157,
+    LANG_TB_HORDE_CAPTURED              = 11158,
+
+    LANG_TB_GARRISON_TAKEN_A            = 11159,
+    LANG_TB_GARRISON_TAKEN_H            = 11160,
+    LANG_TB_GARRISON_LOST_A             = 11161,
+    LANG_TB_GARRISON_LOST_H             = 11162,
+
+    LANG_TB_VIGIL_TAKEN_A               = 11163,
+    LANG_TB_VIGIL_TAKEN_H               = 11164,
+    LANG_TB_VIGIL_LOST_A                = 11165,
+    LANG_TB_VIGIL_LOST_H                = 11166,
+
+    LANG_TB_SLAGWORKS_TAKEN_A           = 11167,
+    LANG_TB_SLAGWORKS_TAKEN_H           = 11168,
+    LANG_TB_SLAGWORKS_LOST_A            = 11169,
+    LANG_TB_SLAGWORKS_LOST_H            = 11170,
+
+    LANG_TB_SPIRE_DAMAGED_W             = 11171,
+    LANG_TB_SPIRE_DAMAGED_S             = 11172,
+    LANG_TB_SPIRE_DAMAGED_E             = 11173,
+
+    LANG_TB_SPIRE_DESTROYED_W           = 11174,
+    LANG_TB_SPIRE_DESTROYED_S           = 11175,
+    LANG_TB_SPIRE_DESTROYED_E           = 11176,
+
+    LANG_TB_REACHED_VETERAN             = 11177,
+
     // Strand of the Ancients
     LANG_BG_SA_START_TWO_MINUTE                     = 20000,
     LANG_BG_SA_START_ONE_MINUTE                     = 20001,

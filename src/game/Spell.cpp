@@ -2717,6 +2717,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                     // Select friendly targets for positive effect
                     if (IsPositiveEffect(m_spellInfo, effIndex))
                         targetB = SPELL_TARGETS_FRIENDLY;
+                    break;
             }
 
             UnitList tempTargetUnitMap;
@@ -10473,6 +10474,21 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
                     ++itr;
             }
 
+            return true;
+        }
+        case 85078:                                     // Leave Siege Mode
+        {
+            targetUnitMap.push_back(m_caster);
+            return true;
+        }
+        case 85122:                                     // Siege Cannon
+        {
+            Unit* target = NULL;
+            MaNGOS::NearestCreatureEntryInObjectRangeCheck u_check(*m_caster, 45561, radius, true);
+            MaNGOS::UnitSearcher<MaNGOS::NearestCreatureEntryInObjectRangeCheck> searcher(target,  u_check);
+            Cell::VisitGridObjects(m_caster, searcher, radius);
+            if (target)
+                targetUnitMap.push_back(target);
             return true;
         }
         case 96931:                                     // Eyes of Occu'thar

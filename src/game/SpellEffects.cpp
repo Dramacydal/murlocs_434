@@ -11467,6 +11467,22 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
 
                     return;
                 }
+                case 60603:                                 // Eject Passenger 1
+                {
+                    if (!unitTarget)
+                        return;
+
+                    VehicleKit* vehicle = unitTarget->GetVehicleKit();
+                    if (!vehicle)
+                        return;
+
+                    Unit* passenger = vehicle->GetPassenger(int8(damage));
+                    if (!passenger)
+                        return;
+
+                    vehicle->RemovePassenger(passenger);
+                    return;
+                }
                                                             // random spell learn instead placeholder
                 case 60893:                                 // Northrend Alchemy Research
                 case 61177:                                 // Northrend Inscription Research

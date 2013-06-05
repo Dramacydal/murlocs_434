@@ -30,6 +30,15 @@
 BattleField::BattleField(uint32 id) : OutdoorPvP(id), m_battleFieldId(0)
 {
     m_isBattleField = true;
+
+    m_defender = TeamIndex(urand(0, 1));
+
+    m_state = BF_STATE_COOLDOWN;
+    m_timer = 15 * MINUTE * IN_MILLISECONDS;
+    m_queueUpdateTimer = 30000;
+    m_scoresUpdateTimer = 5000;
+
+    bAboutSend = false;
 }
 
 void BattleField::KickPlayer(Player* plr)
@@ -288,7 +297,7 @@ bool BattleField::OnPlayerPortResponse(Player* plr, bool accept)
 
         return true;
     }
-    else if (m_state == BF_STATE_IN_PROGRESS && plr->GetZoneId() == ZONE_ID_WINTERGRASP)
+    else if (m_state == BF_STATE_IN_PROGRESS && plr->GetZoneId() == m_zoneId)
     {
         plr->GetSession()->SendBfLeaveMessage(GetBattlefieldGuid(), BATTLEFIELD_LEAVE_REASON_EXITED);
         if (m_playerScores.find(plr->GetObjectGuid()) != m_playerScores.end())
@@ -371,17 +380,17 @@ void BattleField::HandlePlayerAFK(Player* plr)
     KickPlayer(plr);
 }
 
-bool BFObject::IsIntact()
+bool BFObject::IsIntact() const
 {
     return state == BF_OBJECTSTATE_NEUTRAL_INTACT || state == BF_OBJECTSTATE_HORDE_INTACT || state == BF_OBJECTSTATE_ALLIANCE_INTACT;
 }
 
-bool BFObject::IsDamaged()
+bool BFObject::IsDamaged() const
 {
     return state == BF_OBJECTSTATE_NEUTRAL_DAMAGED || state == BF_OBJECTSTATE_HORDE_DAMAGED || state == BF_OBJECTSTATE_ALLIANCE_DAMAGED;
 }
 
-bool BFObject::IsDestroyed()
+bool BFObject::IsDestroyed() const
 {
     return state == BF_OBJECTSTATE_NEUTRAL_DESTROYED || state == BF_OBJECTSTATE_HORDE_DESTROYED || state == BF_OBJECTSTATE_ALLIANCE_DESTROYED;
 }
@@ -711,3 +720,59 @@ void BattleField::SendUpdateWorldStatesToAll()
     }
 }
 
+void BFObject::SetIntact()
+{
+    if (owner == TEAM_INDEX_ALLIANCE)
+        state = BF_OBJECTSTATE_ALLIANCE_INTACT;
+    else if (owner == TEAM_INDEX_HORDE)
+        state = BF_OBJECTSTATE_HORDE_INTACT;
+    else
+        state = BF_OBJECTSTATE_NEUTRAL_INTACT;
+}
+
+void BFObject::SetDamaged()
+{
+    if (owner == TEAM_INDEX_ALLIANCE)
+        state = BF_OBJECTSTATE_ALLIANCE_DAMAGED;
+    else if (owner == TEAM_INDEX_HORDE)
+        state = BF_OBJECTSTATE_HORDE_DAMAGED;
+    else
+        state = BF_OBJECTSTATE_NEUTRAL_DAMAGED;
+}
+
+void BFObject::SetDestroyed()
+{
+    if (owner == TEAM_INDEX_ALLIANCE)
+        state = BF_OBJECTSTATE_ALLIANCE_DESTROYED;
+    else if (owner == TEAM_INDEX_HORDE)
+        state = BF_OBJECTSTATE_HORDE_DESTROYED;
+    else
+        state = BF_OBJECTSTATE_NEUTRAL_DESTROYED;
+}
+
+void BFObject::UpdateStateForOwner()
+{
+    if (IsIntact())
+        SetIntact();
+    else if (IsDamaged())
+        SetDamaged();
+    else if (IsDestroyed())
+        SetDestroyed();
+}
+
+void BFObject::InitFor(TeamIndex teamIdx, bool reset)
+{
+    owner = teamIdx;
+    if (reset)
+        SetIntact();
+    else
+        UpdateStateForOwner();
+
+    if (GameObject* obj = opvp->GetMap()->GetGameObject(guid))
+    {
+        if (reset)
+            obj->Rebuild(NULL);
+
+        obj->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[owner]);
+    }
+}

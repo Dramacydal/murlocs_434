@@ -28,10 +28,6 @@ BattleFieldWG::BattleFieldWG(uint32 id) : BattleField(id)
     m_battleFieldId = BATTLEFIELD_WG;
     m_mapId = MAP_ID_NORTHREND;
     m_zoneId = ZONE_ID_WINTERGRASP;
-    m_defender = TeamIndex(urand(0, 1));
-
-    m_state = BF_STATE_COOLDOWN;
-    m_timer = 15 * MINUTE * IN_MILLISECONDS;
 
     m_battleDuration = sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_BATTLE_DURATION) * MINUTE * IN_MILLISECONDS;
     m_startInviteDelay = sWorld.getConfig(CONFIG_UINT32_WINTERGRASP_START_INVITE_TIME);
@@ -48,10 +44,6 @@ BattleFieldWG::BattleFieldWG(uint32 id) : BattleField(id)
     m_startTime = 0;
     bInvited = false;
 
-    m_queueUpdateTimer = 30000;
-    m_scoresUpdateTimer = 5000;
-
-    bAboutSend = false;
     b10MinAchiev = false;
 }
 
@@ -199,14 +191,14 @@ BattleFieldWG::~BattleFieldWG()
 
 void BattleFieldWG::FillInitialWorldStates(WorldPacket& data, uint32& count, Player* player)
 {
-    FillInitialWorldState(data, count, WGClockWorldState[1], uint32(time(NULL) + m_timer / 1000));
+    FillInitialWorldState(data, count, WG_WS_TIME_TO_NEXT_BATTLE, m_state != BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
+    FillInitialWorldState(data, count, WG_WS_TIME_TO_END, m_state == BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
+
     FillInitialWorldState(data, count, WG_WS_SHOW_COOLDOWN_WORLDSTATE, m_state == BF_STATE_IN_PROGRESS ? WORLD_STATE_REMOVE : WORLD_STATE_ADD);
 
     FillInitialWorldState(data, count, WG_WS_SHOW_BATTLE_WORLDSTATE, m_state == BF_STATE_IN_PROGRESS && player->GetZoneId() == ZONE_ID_WINTERGRASP && IsMember(player->GetObjectGuid()) ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
     FillInitialWorldState(data, count, WG_WS_ALLIANCE_DEFENDER, m_defender == TEAM_INDEX_ALLIANCE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
     FillInitialWorldState(data, count, WG_WS_HORDE_DEFENDER, m_defender == TEAM_INDEX_HORDE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
-
-    FillInitialWorldState(data, count, WGClockWorldState[0], m_state == BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
 
     FillInitialWorldState(data, count, WG_WS_VEHICLE_A, uint32(m_vehicleGUIDs[0].size()));
     FillInitialWorldState(data, count, WG_WS_MAX_VEHICLE_A, GetWorkshopsOwnedBy(TEAM_INDEX_ALLIANCE) * 4);
@@ -229,14 +221,14 @@ void BattleFieldWG::FillInitialWorldStates(WorldPacket& data, uint32& count, Pla
 
 void BattleFieldWG::SendUpdateWorldStatesTo(Player* player)
 {
-    player->SendUpdateWorldState(WGClockWorldState[1], time(NULL) + m_timer / 1000);
+    player->SendUpdateWorldState(WG_WS_TIME_TO_NEXT_BATTLE, m_state != BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
+    player->SendUpdateWorldState(WG_WS_TIME_TO_END, m_state == BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
+
     player->SendUpdateWorldState(WG_WS_SHOW_COOLDOWN_WORLDSTATE, m_state == BF_STATE_IN_PROGRESS ? WORLD_STATE_REMOVE : WORLD_STATE_ADD);
 
     player->SendUpdateWorldState(WG_WS_SHOW_BATTLE_WORLDSTATE, m_state == BF_STATE_IN_PROGRESS && player->GetZoneId() == ZONE_ID_WINTERGRASP && IsMember(player->GetObjectGuid()) ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
     player->SendUpdateWorldState(WG_WS_ALLIANCE_DEFENDER, m_defender == TEAM_INDEX_ALLIANCE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
     player->SendUpdateWorldState(WG_WS_HORDE_DEFENDER, m_defender == TEAM_INDEX_HORDE ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
-
-    player->SendUpdateWorldState(WGClockWorldState[0], m_state == BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
 
     player->SendUpdateWorldState(WG_WS_VEHICLE_A, uint32(m_vehicleGUIDs[0].size()));
     player->SendUpdateWorldState(WG_WS_MAX_VEHICLE_A, GetWorkshopsOwnedBy(TEAM_INDEX_ALLIANCE) * 4);
@@ -370,49 +362,49 @@ void BattleFieldWG::HandleCreatureCreate(Creature* pCreature)
             {
                 case WG_LOCATION_SHADOWSIGHT_TOWER:
                     m_towers[WG_TOWER_SHADOWSIGHT]->cannons.push_back(pCreature->GetObjectGuid());
-                    pCreature->setFaction(WGFactions[GetAttacker()]);
+                    pCreature->setFaction(BFFactions[GetAttacker()]);
                     if (!m_towers[WG_TOWER_SHADOWSIGHT]->IsDestroyed())
                         return;
                     break;
                 case WG_LOCATION_WINTERS_EDGE_TOWER:
                     m_towers[WG_TOWER_WINTERS_EDGE]->cannons.push_back(pCreature->GetObjectGuid());
-                    pCreature->setFaction(WGFactions[GetAttacker()]);
+                    pCreature->setFaction(BFFactions[GetAttacker()]);
                     if (!m_towers[WG_TOWER_WINTERS_EDGE]->IsDestroyed())
                         return;
                     break;
                 case WG_LOCATION_FLAMEWATCH_TOWER:
                     m_towers[WG_TOWER_FLAMEWATCH]->cannons.push_back(pCreature->GetObjectGuid());
-                    pCreature->setFaction(WGFactions[GetAttacker()]);
+                    pCreature->setFaction(BFFactions[GetAttacker()]);
                     if (!m_towers[WG_TOWER_FLAMEWATCH]->IsDestroyed())
                         return;
                     break;
                 case WG_LOCATION_KEEP_TOWER_WEST:
                     m_keepTowers[WG_KEEPTOWER_WEST]->cannons.push_back(pCreature->GetObjectGuid());
-                    pCreature->setFaction(WGFactions[m_defender]);
+                    pCreature->setFaction(BFFactions[m_defender]);
                     if (!m_keepTowers[WG_KEEPTOWER_WEST]->IsDestroyed())
                         return;
                     break;
                 case WG_LOCATION_KEEP_TOWER_SOUTHWEST:
                     m_keepTowers[WG_KEEPTOWER_SOUTHWEST]->cannons.push_back(pCreature->GetObjectGuid());
-                    pCreature->setFaction(WGFactions[m_defender]);
+                    pCreature->setFaction(BFFactions[m_defender]);
                     if (!m_keepTowers[WG_KEEPTOWER_SOUTHWEST]->IsDestroyed())
                         return;
                     break;
                 case WG_LOCATION_KEEP_TOWER_SOUTHEAST:
                     m_keepTowers[WG_KEEPTOWER_SOUTHEAST]->cannons.push_back(pCreature->GetObjectGuid());
-                    pCreature->setFaction(WGFactions[m_defender]);
+                    pCreature->setFaction(BFFactions[m_defender]);
                     if (!m_keepTowers[WG_KEEPTOWER_SOUTHEAST]->IsDestroyed())
                         return;
                     break;
                 case WG_LOCATION_KEEP_TOWER_EAST:
                     m_keepTowers[WG_KEEPTOWER_EAST]->cannons.push_back(pCreature->GetObjectGuid());
-                    pCreature->setFaction(WGFactions[m_defender]);
+                    pCreature->setFaction(BFFactions[m_defender]);
                     if (!m_keepTowers[WG_KEEPTOWER_EAST]->IsDestroyed())
                         return;
                     break;
                 default:
                     m_keepCannonGUIDs.push_back(pCreature->GetObjectGuid());
-                    pCreature->setFaction(WGFactions[m_defender]);
+                    pCreature->setFaction(BFFactions[m_defender]);
                     return;
             }
             break;
@@ -453,7 +445,7 @@ void BattleFieldWG::_OnCreatureCreate(Creature* pCreature)
         case NPC_WINTERGRASP_SIEGE_TURRET_A:
         case NPC_WINTERGRASP_SIEGE_TURRET_H:
         {
-            pCreature->setFaction(WGFactions[pCreature->GetEntry() == NPC_WINTERGRASP_SIEGE_TURRET_A ? TEAM_INDEX_ALLIANCE : TEAM_INDEX_HORDE]);
+            pCreature->setFaction(BFFactions[pCreature->GetEntry() == NPC_WINTERGRASP_SIEGE_TURRET_A ? TEAM_INDEX_ALLIANCE : TEAM_INDEX_HORDE]);
             return;
         }
     }
@@ -536,7 +528,7 @@ void BattleFieldWG::HandleGameObjectCreate(GameObject* pGo)
             else if (pGo->GetEntry() == GO_WINTERGRASP_FORTRESS_GATE)
                 m_keepGateGUID = pGo->GetObjectGuid();
 
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_defender]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_defender]);
 
             pGo->SetActiveObjectState(true);
 
@@ -545,91 +537,91 @@ void BattleFieldWG::HandleGameObjectCreate(GameObject* pGo)
         case GO_WINTERGRASP_TOWER_WEST:
         {
             m_keepTowers[WG_KEEPTOWER_WEST]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_defender]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_defender]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_WINTERGRASP_TOWER_SOUTHWEST:
         {
             m_keepTowers[WG_KEEPTOWER_SOUTHWEST]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_defender]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_defender]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_WINTERGRASP_TOWER_SOUTHEAST:
         {
             m_keepTowers[WG_KEEPTOWER_SOUTHEAST]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_defender]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_defender]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_WINTERGRASP_TOWER_EAST:
         {
             m_keepTowers[WG_KEEPTOWER_EAST]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_defender]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_defender]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_WORKSHOP_KEEP_WEST:
         {
             m_workshops[WG_WORKSHOP_KEEP_WEST]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_defender]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_defender]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_WORKSHOP_KEEP_EAST:
         {
             m_workshops[WG_WORKSHOP_KEEP_EAST]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_defender]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_defender]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_WORKSHOP_BROKEN_TEMPLE:
         {
             m_workshops[WG_WORKSHOP_BROKEN_TEMPLE]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_workshops[WG_WORKSHOP_BROKEN_TEMPLE]->owner]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_workshops[WG_WORKSHOP_BROKEN_TEMPLE]->owner]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_WORKSHOP_SUNKEN_RING:
         {
             m_workshops[WG_WORKSHOP_SUNKEN_RING]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_workshops[WG_WORKSHOP_SUNKEN_RING]->owner]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_workshops[WG_WORKSHOP_SUNKEN_RING]->owner]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_WORKSHOP_WESTPARK:
         {
             m_workshops[WG_WORKSHOP_WESTPARK]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_workshops[WG_WORKSHOP_WESTPARK]->owner]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_workshops[WG_WORKSHOP_WESTPARK]->owner]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_WORKSHOP_EASTPARK:
         {
             m_workshops[WG_WORKSHOP_EASTPARK]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_workshops[WG_WORKSHOP_EASTPARK]->owner]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_workshops[WG_WORKSHOP_EASTPARK]->owner]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_TOWER_SHADOWSIGHT:
         {
             m_towers[WG_TOWER_SHADOWSIGHT]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[GetAttacker()]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[GetAttacker()]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_TOWER_WINTERS_EDGE:
         {
             m_towers[WG_TOWER_WINTERS_EDGE]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[GetAttacker()]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[GetAttacker()]);
             pGo->SetActiveObjectState(true);
             break;
         }
         case GO_TOWER_FLAMEWATCH:
         {
             m_towers[WG_TOWER_FLAMEWATCH]->guid = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[GetAttacker()]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[GetAttacker()]);
             pGo->SetActiveObjectState(true);
             break;
         }
@@ -688,7 +680,7 @@ void BattleFieldWG::HandleGameObjectCreate(GameObject* pGo)
         case GO_TITAN_RELIC:
         {
             m_titanRelicGUID = pGo->GetObjectGuid();
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[GetAttacker()]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[GetAttacker()]);
             break;
         }
         case GO_DEFENDERS_PORTAL_1:
@@ -696,7 +688,7 @@ void BattleFieldWG::HandleGameObjectCreate(GameObject* pGo)
         case GO_DEFENDERS_PORTAL_3:
         {
             m_portalGUIDs.push_back(pGo->GetObjectGuid());
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_defender]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_defender]);
             break;
         }
     }
@@ -1008,8 +1000,8 @@ bool BattleFieldWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvo
 
                     if (m_timer > 0)
                     {
-                        SendUpdateWorldState(WGClockWorldState[0], m_state == BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
-                        SendUpdateWorldState(WGClockWorldState[1], uint32(time(NULL) + m_timer / 1000));
+                        SendUpdateWorldState(WG_WS_TIME_TO_NEXT_BATTLE, m_state != BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
+                        SendUpdateWorldState(WG_WS_TIME_TO_END, m_state == BF_STATE_IN_PROGRESS ? uint32(time(NULL) + m_timer / 1000) : 0);
                         sWorld.SendUpdateWintergraspTimerWorldState(this);
                     }
                     // else timer will be updated on battle end
@@ -1215,14 +1207,14 @@ void BattleFieldWG::StartBattle(TeamIndex defender)
 
     for (std::list<ObjectGuid>::iterator itr = m_keepCannonGUIDs.begin(); itr != m_keepCannonGUIDs.end(); ++itr)
         if (Creature* pCreature = SpawnCreature(*itr, HOUR))
-            pCreature->setFaction(WGFactions[m_defender]);
+            pCreature->setFaction(BFFactions[m_defender]);
 
     for (std::list<ObjectGuid>::iterator itr = m_portalGUIDs.begin(); itr != m_portalGUIDs.end(); ++itr)
         if (GameObject* pGo = GetMap()->GetGameObject(*itr))
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_defender]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_defender]);
 
     if (GameObject* obj = GetMap()->GetGameObject(m_titanRelicGUID))
-        obj->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[GetAttacker()]);
+        obj->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[GetAttacker()]);
 
     UpdateTowerControllBuff();
 
@@ -1262,8 +1254,6 @@ void BattleFieldWG::EndBattle(TeamIndex winner, bool byTimer)
 
     BattleField::EndBattle(winner, byTimer);
 
-    RewardPlayersAtEnd(winner);
-
     for (uint8 i = 0; i < WG_WORKSHOP_COUNT; ++i)
         m_workshops[i]->InitFor(m_defender, false);
 
@@ -1281,11 +1271,11 @@ void BattleFieldWG::EndBattle(TeamIndex winner, bool byTimer)
 
     for (std::list<ObjectGuid>::iterator itr = m_keepCannonGUIDs.begin(); itr != m_keepCannonGUIDs.end(); ++itr)
         if (Creature* pCreature = GetMap()->GetCreature(*itr))
-            pCreature->setFaction(WGFactions[m_defender]);
+            pCreature->setFaction(BFFactions[m_defender]);
 
     for (std::list<ObjectGuid>::iterator itr = m_portalGUIDs.begin(); itr != m_portalGUIDs.end(); ++itr)
         if (GameObject* pGo = GetMap()->GetGameObject(*itr))
-            pGo->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[m_defender]);
+            pGo->SetUInt32Value(GAMEOBJECT_FACTION, BFFactions[m_defender]);
 
     UpdateTowerControllBuff();
     BuffTeam(TEAM_NONE, SPELL_RECRUIT, true, false);
@@ -1597,46 +1587,6 @@ void WGWorkShop::SendUpdateWorldState()
     opvp->SendUpdateWorldState(WG_WS_MAX_VEHICLE_H, ((BattleFieldWG*)opvp)->GetWorkshopsOwnedBy(TEAM_INDEX_HORDE) * 4);
 }
 
-void BFObject::SetIntact()
-{
-    if (owner == TEAM_INDEX_ALLIANCE)
-        state = BF_OBJECTSTATE_ALLIANCE_INTACT;
-    else if (owner == TEAM_INDEX_HORDE)
-        state = BF_OBJECTSTATE_HORDE_INTACT;
-    else
-        state = BF_OBJECTSTATE_NEUTRAL_INTACT;
-}
-
-void BFObject::SetDamaged()
-{
-    if (owner == TEAM_INDEX_ALLIANCE)
-        state = BF_OBJECTSTATE_ALLIANCE_DAMAGED;
-    else if (owner == TEAM_INDEX_HORDE)
-        state = BF_OBJECTSTATE_HORDE_DAMAGED;
-    else
-        state = BF_OBJECTSTATE_NEUTRAL_DAMAGED;
-}
-
-void BFObject::SetDestroyed()
-{
-    if (owner == TEAM_INDEX_ALLIANCE)
-        state = BF_OBJECTSTATE_ALLIANCE_DESTROYED;
-    else if (owner == TEAM_INDEX_HORDE)
-        state = BF_OBJECTSTATE_HORDE_DESTROYED;
-    else
-        state = BF_OBJECTSTATE_NEUTRAL_DESTROYED;
-}
-
-void BFObject::UpdateStateForOwner()
-{
-    if (IsIntact())
-        SetIntact();
-    else if (IsDamaged())
-        SetDamaged();
-    else if (IsDestroyed())
-        SetDestroyed();
-}
-
 void WGTower::SpawnCannons(bool despawn)
 {
     for (std::list<ObjectGuid>::iterator itr = cannons.begin(); itr != cannons.end(); ++itr)
@@ -1648,26 +1598,9 @@ void WGTower::SpawnCannons(bool despawn)
             else
             {
                 opvp->SpawnCreature(pCreature, 5 * MINUTE, false);
-                pCreature->setFaction(WGFactions[owner]);
+                pCreature->setFaction(BFFactions[owner]);
             }
         }
-    }
-}
-
-void BFObject::InitFor(TeamIndex teamIdx, bool reset)
-{
-    owner = teamIdx;
-    if (reset)
-        SetIntact();
-    else
-        UpdateStateForOwner();
-
-    if (GameObject* obj = opvp->GetMap()->GetGameObject(guid))
-    {
-        if (reset)
-            obj->Rebuild(NULL);
-
-        obj->SetUInt32Value(GAMEOBJECT_FACTION, WGFactions[owner]);
     }
 }
 
@@ -1742,7 +1675,7 @@ void WGTower::InitFor(TeamIndex teamIdx, bool reset)
         for (std::list<ObjectGuid>::iterator itr = cannons.begin(); itr != cannons.end(); ++itr)
         {
             if (Creature* pCreature = opvp->GetMap()->GetCreature(*itr))
-                pCreature->setFaction(WGFactions[teamIdx]);
+                pCreature->setFaction(BFFactions[teamIdx]);
         }
     }
 }

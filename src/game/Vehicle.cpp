@@ -256,6 +256,7 @@ bool VehicleKit::AddPassenger(Unit *passenger, int8 seatId)
         case 32629:     // Wintergrasp Siege Turret
         case 33062:     // Salvaged Chopper
         case 33109:     // Salvaged Demolisher
+        case 45344:     // Abandoned Siege Engine
             passenger->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             break;
         default:
@@ -378,6 +379,7 @@ void VehicleKit::RemovePassenger(Unit *passenger)
         case 32629:     // Wintergrasp Siege Turret
         case 33062:     // Salvaged Chopper
         case 33109:     // Salvaged Demolisher
+        case 45344:     // Abandoned Siege Engine
             passenger->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             break;
         default:

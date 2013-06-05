@@ -1158,6 +1158,7 @@ bool IsPositiveEffect(SpellEntry const *spellproto, SpellEffectIndex effIndex)
         case 67369:                                         // Grunty Focus
         case 67398:                                         // Zergling Periodic Effect
         case 72771:                                         // Scent of Blood (Saurfang)
+        case 88473:                                         // Slow Fall
             return true;
     }
 
@@ -4682,7 +4683,7 @@ SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spell
             return map_id == 566 && player && player->InBattleGround() ? SPELL_CAST_OK : SPELL_FAILED_REQUIRES_AREA;
         case 2584:                                          // Waiting to Resurrect
         {
-            return player && (player->InBattleGround() || zone_id == 4197) ? SPELL_CAST_OK : SPELL_FAILED_ONLY_BATTLEGROUNDS;
+            return player && (player->InBattleGround() || zone_id == 4197 || zone_id == 5095) ? SPELL_CAST_OK : SPELL_FAILED_ONLY_BATTLEGROUNDS;
         }
         case 42792:                                         // Recently Dropped Flag
         case 43681:                                         // Inactive
@@ -4697,7 +4698,7 @@ SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spell
             MapEntry const* mapEntry = sMapStore.LookupEntry(map_id);
             if (!mapEntry)
                 return SPELL_FAILED_INCORRECT_AREA;
-            return (mapEntry->IsBattleGround() || zone_id == 4197) ? SPELL_CAST_OK : SPELL_FAILED_ONLY_BATTLEGROUNDS;
+            return (mapEntry->IsBattleGround() || zone_id == 4197 || zone_id == 5095) ? SPELL_CAST_OK : SPELL_FAILED_ONLY_BATTLEGROUNDS;
         }
         case 44521:                                         // Preparation
         {
@@ -4766,22 +4767,22 @@ SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spell
             break;
         }
         // Wintergrasp
-        case 33280:
-        case 36444:
-        case 37795:
-        case 55629:
-        case 56617:
-        case 56618:
-        case 58045:
-        case 58549:
-        case 91604:
-        case 59911:
-        case 60027:
-        case 60028:
-        case 62064:
-        {
+        case 33280:     // Corporal
+        case 36444:     // Wintergrasp Water
+        case 37795:     // Recruit
+        case 55629:     // First Lieutenant
+        case 58045:     // Essence of Wintergrasp
+        case 58549:     // Tenacity
+        case 59911:     // Tenacity
+        case 62064:     // Tower Control
+        case 91604:     // Restricted Flight Area
             return zone_id == 4197 ? SPELL_CAST_OK : SPELL_FAILED_INCORRECT_AREA;
-        }
+        // Wintergrasp and Tol Barad
+        case 56617:     // Alliance Controls Factory Phase Shift
+        case 56618:     // Horde Controls Factory Phase Shift
+        case 60027:     // Alliance Control Phase Shift
+        case 60028:     // Horde Control Phase Shift
+            return zone_id != 4197 && zone_id != 5095 ? SPELL_FAILED_INCORRECT_AREA : SPELL_CAST_OK;
     }
 
     return SPELL_CAST_OK;

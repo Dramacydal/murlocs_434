@@ -44,6 +44,7 @@ class Weather;
 class SqlResultQueue;
 class QueryResult;
 class WorldSocket;
+class BattleFieldTB;
 class BattleFieldWG;
 
 // ServerMessages.dbc
@@ -257,6 +258,12 @@ enum eConfigUInt32Values
     CONFIG_UINT32_FAKE_ONLINE_TIMEDIFF,
     CONFIG_UINT32_FAKE_ONLINE_MIN_LEVEL,
     CONFIG_UINT32_FAKE_ONLINE_MAX_LEVEL,
+    CONFIG_UINT32_TOL_BARAD_COOLDOWN_DURATION,
+    CONFIG_UINT32_TOL_BARAD_BATTLE_DURATION,
+    CONFIG_UINT32_TOL_BARAD_TOWER_BONUS,
+    CONFIG_UINT32_TOL_BARAD_MAX_PLAYERS_PER_TEAM,
+    CONFIG_UINT32_TOL_BARAD_START_INVITE_TIME,
+    CONFIG_UINT32_TOL_BARAD_STOP_TELEPORTING_TIME,
     CONFIG_UINT32_VALUE_COUNT
 };
 
@@ -421,6 +428,7 @@ enum eConfigBoolValues
     CONFIG_BOOL_OUTDOORPVP_NA_ENABLED,
     CONFIG_BOOL_OUTDOORPVP_GH_ENABLED,
     CONFIG_BOOL_BATTLEFIELD_WG_ENABLED,
+    CONFIG_BOOL_BATTLEFIELD_TB_ENABLED,
     CONFIG_BOOL_KICK_PLAYER_ON_BAD_PACKET,
     CONFIG_BOOL_STATS_SAVE_ONLY_ON_LOGOUT,
     CONFIG_BOOL_CLEAN_CHARACTER_DB,
@@ -681,6 +689,7 @@ class World
         void SendDefenseMessage(uint32 zoneId, int32 textId);
 
         void SendUpdateWintergraspTimerWorldState(BattleFieldWG* opvp);
+        void SendUpdateTolBaradTimerWorldState(BattleFieldTB* opvp);
 
         void ApplyEvent102Morphs(bool apply);
         void ApplyEvent103Morphs(bool apply);

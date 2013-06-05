@@ -76,6 +76,7 @@
 #include "WardenDataStorage.h"
 #include "ProgressBar.h"
 #include "BattleField/BattleFieldWG.h"
+#include "BattleField/BattleFieldTB.h"
 #include "PhaseMgr.h"
 
 INSTANTIATE_SINGLETON_1( World );
@@ -865,6 +866,7 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_BOOL_OUTDOORPVP_NA_ENABLED,                       "OutdoorPvp.NAEnabled", true);
     setConfig(CONFIG_BOOL_OUTDOORPVP_GH_ENABLED,                       "OutdoorPvp.GHEnabled", true);
     setConfig(CONFIG_BOOL_BATTLEFIELD_WG_ENABLED,                      "Battlefield.WGEnabled", true);
+    setConfig(CONFIG_BOOL_BATTLEFIELD_TB_ENABLED,                      "Battlefield.TBEnabled", true);
 
     setConfig(CONFIG_BOOL_OFFHAND_CHECK_AT_TALENTS_RESET, "OffhandCheckAtTalentsReset", false);
 
@@ -1135,9 +1137,17 @@ void World::LoadConfigSettings(bool reload)
         m_timers[WUPDATE_FAKE_ONLINE].SetCurrent(0);
     }
 
+    //- Archaeology
     setConfig(CONFIG_BOOL_ARCHAEOLOGY_ENABLED, "Archaeology.Enabled", false);
     setConfig(CONFIG_FLOAT_ARCHAEOLOGY_RARE_BASE_CHANCE, "Archaeology.RareBaseChance", 10.0f);
     setConfig(CONFIG_FLOAT_ARCHAEOLOGY_RARE_MAXLEVEL_CHANCE, "Archaeology.RareMaxLevelChance", 10.0f);
+
+    setConfig(CONFIG_UINT32_TOL_BARAD_COOLDOWN_DURATION, "TolBarad.CooldownDuraton", 150);
+    setConfig(CONFIG_UINT32_TOL_BARAD_BATTLE_DURATION, "TolBarad.BattleDuration", 15);
+    setConfig(CONFIG_UINT32_TOL_BARAD_TOWER_BONUS, "TolBarad.TowerBonus", 5);
+    setConfig(CONFIG_UINT32_TOL_BARAD_MAX_PLAYERS_PER_TEAM, "TolBarad.MaxPlayersPerTeam", 80);
+    setConfig(CONFIG_UINT32_TOL_BARAD_START_INVITE_TIME, "TolBarad.StartInviteTime", 15 * MINUTE * IN_MILLISECONDS);
+    setConfig(CONFIG_UINT32_TOL_BARAD_STOP_TELEPORTING_TIME, "TolBarad.StopTeleportingTime", 60 * MINUTE * IN_MILLISECONDS);
 }
 
 /// Initialize the World
@@ -2015,11 +2025,16 @@ void World::SendGMGlobalMessage(WorldPacket *packet, AccountTypes sec, WorldSess
 void World::SendUpdateWintergraspTimerWorldState(BattleFieldWG* opvp)
 {
     WorldPacket data1(SMSG_UPDATE_WORLD_STATE, 9);
-    data1 << uint32(WGClockWorldState[1]);
-    data1 << uint32(time(NULL) + opvp->GetTimer() / 1000);
+    data1 << uint32(WG_WS_TIME_TO_NEXT_BATTLE);
+    data1 << uint32(opvp->GetState() == BF_STATE_IN_PROGRESS ? 0 : uint32(time(NULL) + opvp->GetTimer() / 1000));
     data1 << uint8(0);
 
     WorldPacket data2(SMSG_UPDATE_WORLD_STATE, 9);
+    data2 << uint32(WG_WS_TIME_TO_END);
+    data2 << uint32(opvp->GetState() != BF_STATE_IN_PROGRESS ? 0 : uint32(time(NULL) + opvp->GetTimer() / 1000));
+    data2 << uint8(0);
+
+    WorldPacket data3(SMSG_UPDATE_WORLD_STATE, 9);
     data2 << uint32(WG_WS_SHOW_COOLDOWN_WORLDSTATE);
     data2 << uint32(opvp->GetState() == BF_STATE_IN_PROGRESS ? 0 : 1);
     data2 << uint8(0);
@@ -2034,6 +2049,39 @@ void World::SendUpdateWintergraspTimerWorldState(BattleFieldWG* opvp)
         {
             itr->second->SendPacket(&data1);
             itr->second->SendPacket(&data2);
+            itr->second->SendPacket(&data3);
+        }
+    }
+}
+
+void World::SendUpdateTolBaradTimerWorldState(BattleFieldTB* opvp)
+{
+    WorldPacket data1(SMSG_UPDATE_WORLD_STATE, 9);
+    data1 << uint32(TB_WS_TIME_TO_NEXT_BATTLE);
+    data1 << uint32(opvp->GetState() == BF_STATE_IN_PROGRESS ? 0 : uint32(time(NULL) + opvp->GetTimer() / 1000));
+    data1 << uint8(0);
+
+    WorldPacket data2(SMSG_UPDATE_WORLD_STATE, 9);
+    data2 << uint32(TB_WS_TIME_TO_END);
+    data2 << uint32(opvp->GetState() != BF_STATE_IN_PROGRESS ? 0 : uint32(time(NULL) + opvp->GetTimer() / 1000));
+    data2 << uint8(0);
+
+    WorldPacket data3(SMSG_UPDATE_WORLD_STATE, 9);
+    data2 << uint32(TB_WS_NEXT_BATTLE_TIMER_SHOW);
+    data2 << uint32(opvp->GetState() == BF_STATE_IN_PROGRESS ? 0 : 1);
+    data2 << uint8(0);
+
+    SessionMap::const_iterator itr;
+    for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+    {
+        if (itr->second &&
+            itr->second->GetPlayer() &&
+            itr->second->GetPlayer()->IsInWorld() &&
+            itr->second->GetPlayer()->GetMapId() != 732)
+        {
+            itr->second->SendPacket(&data1);
+            itr->second->SendPacket(&data2);
+            itr->second->SendPacket(&data3);
         }
     }
 }

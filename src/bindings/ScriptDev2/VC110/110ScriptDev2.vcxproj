@@ -388,6 +388,7 @@
     <ClCompile Include="..\scripts\eastern_kingdoms\tol_barad\baradin_hold\boss_argaloth.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\tol_barad\baradin_hold\boss_occuthar.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\tol_barad\baradin_hold\instance_baradin_hold.cpp" />
+    <ClCompile Include="..\scripts\eastern_kingdoms\tol_barad\tol_barad.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\uldaman\boss_archaedas.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\uldaman\instance_uldaman.cpp" />
     <ClCompile Include="..\scripts\eastern_kingdoms\uldaman\uldaman.cpp" />

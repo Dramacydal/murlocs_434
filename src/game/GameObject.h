@@ -783,6 +783,7 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
 
         void SetCapturePointSlider(float value);
         float GetCapturePointSlider() const { return m_captureSlider; }
+        CapturePointState GetCaptureState() const { return m_captureState; }
 
         GridReference<GameObject> &GetGridRef() { return m_gridRef; }
 

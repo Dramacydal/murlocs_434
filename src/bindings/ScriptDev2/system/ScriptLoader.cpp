@@ -611,6 +611,9 @@ extern void AddSC_boss_argaloth();
 extern void AddSC_boss_occuthar();
 extern void AddSC_boss_alizabal();
 
+// Tol Barad
+extern void AddSC_tol_barad();
+
 void AddScripts()
 {
     // battlegrounds
@@ -1208,4 +1211,6 @@ void AddScripts()
     AddSC_boss_argaloth();
     AddSC_boss_occuthar();
     AddSC_boss_alizabal();
+
+    AddSC_tol_barad();
 }

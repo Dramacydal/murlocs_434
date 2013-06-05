@@ -610,7 +610,7 @@ void WorldSession::HandleAreaSpiritHealerQueryOpcode( WorldPacket & recv_data )
     DEBUG_LOG("WORLD: CMSG_AREA_SPIRIT_HEALER_QUERY");
 
     BattleGround *bg = _player->GetBattleGround();
-    if (!bg && _player->GetZoneId() != 4197)
+    if (!bg && _player->GetZoneId() != 4197 && _player->GetZoneId() != 5095)
         return;
 
     ObjectGuid guid;
@@ -631,7 +631,7 @@ void WorldSession::HandleAreaSpiritHealerQueueOpcode( WorldPacket & recv_data )
     DEBUG_LOG("WORLD: CMSG_AREA_SPIRIT_HEALER_QUEUE");
 
     BattleGround *bg = _player->GetBattleGround();
-    if (!bg && _player->GetZoneId() != 4197)
+    if (!bg && _player->GetZoneId() != 4197 && _player->GetZoneId() != 5095)
         return;
 
     ObjectGuid guid;

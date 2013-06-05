@@ -54,6 +54,16 @@ enum BFObjectState
     BF_OBJECTSTATE_ALLIANCE_DESTROYED   = 9,
 };
 
+const uint32 BFFactions[3] = { 1, 2, 35 };
+
+enum
+{
+    SPELL_ALLIANCE_CONTROLS_FACTORY_PHASE_SHIFT = 56617, // PHASE 32
+    SPELL_HORDE_CONTROLS_FACTORY_PHASE_SHIFT    = 56618, // PHASE 16
+
+    SPELL_ALLIANCE_CONTROL_PHASE_SHIFT          = 60027, // PHASE 65
+    SPELL_HORDE_CONTROL_PHASE_SHIFT             = 60028, // PHASE 129
+};
 class BFObject
 {
     public:
@@ -67,9 +77,9 @@ class BFObject
         ObjectGuid guid;
 
         virtual void InitFor(TeamIndex teamIdx, bool reset = true);
-        bool IsIntact();
-        bool IsDamaged();
-        bool IsDestroyed();
+        bool IsIntact() const;
+        bool IsDamaged() const;
+        bool IsDestroyed() const;
 
         void SetIntact();
         void SetDamaged();

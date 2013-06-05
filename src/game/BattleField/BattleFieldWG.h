@@ -67,12 +67,6 @@ enum WintergraspSpells
     SPELL_WINTERGRASP_RESTRICTED_FLIGHT_AREA    = 91604,
 
     // Phasing spells
-    SPELL_ALLIANCE_CONTROLS_FACTORY_PHASE_SHIFT = 56617, // PHASE 32
-    SPELL_HORDE_CONTROLS_FACTORY_PHASE_SHIFT    = 56618, // PHASE 16
-
-    SPELL_ALLIANCE_CONTROL_PHASE_SHIFT          = 60027, // PHASE 65
-    SPELL_HORDE_CONTROL_PHASE_SHIFT             = 60028, // PHASE 129
-
     SPELL_ESSENCE_OF_WINTERGRASP_ZONE           = 58045, // PHASE 257
 
     // Teleport spells
@@ -508,6 +502,9 @@ enum
     WG_WS_TOWER_SHADOWSIGHT             = 3704,
     WG_WS_TOWER_WINTERS_EDGE            = 3705,
     WG_WS_TOWER_FLAMEWATCH              = 3706,
+
+    WG_WS_TIME_TO_END                   = 3781,
+    WG_WS_TIME_TO_NEXT_BATTLE           = 4354,
 };
 
 enum WGSounds
@@ -516,9 +513,6 @@ enum WGSounds
     WG_ALLIANCE_WINS                             = 8455,
     WG_START                                     = 3439,
 };
-
-const uint32 WGClockWorldState[2] = { 3781, 4354 };
-const uint32 WGFactions[3] = { 1, 2, 35 };
 
 typedef struct
 {

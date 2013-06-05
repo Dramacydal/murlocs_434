@@ -85,9 +85,9 @@ struct MANGOS_DLL_DECL npc_wintergrasp_spirit_guideAI : public ScriptedAI
 
     BattleFieldWG* opvp;
     bool bInit;
-    void Reset() { }
+    void Reset() override { }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!bInit)
         {
@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_spirit_guideAI : public ScriptedAI
         }
     }
 
-    void SpellHitTarget (Unit* pUnit, const SpellEntry* pSpellEntry)
+    void SpellHitTarget(Unit* pUnit, const SpellEntry* pSpellEntry) override
     {
         if (pSpellEntry->Id == SPELL_SPIRIT_HEAL && pUnit->GetTypeId() == TYPEID_PLAYER &&
             pUnit->HasAura(SPELL_WAITING_TO_RESURRECT))
@@ -222,7 +222,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_vehicleAI : public ScriptedAI
     bool bInit;
     TeamIndex teamIdx;
 
-    void Reset()
+    void Reset() override
     {
         waterCheckTimer = 1000;
         zoneCheckTimer = 5000;
@@ -231,7 +231,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_vehicleAI : public ScriptedAI
         teamIdx = TEAM_INDEX_NEUTRAL;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!bInit)
         {
@@ -309,7 +309,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_vehicleAI : public ScriptedAI
         }
     }
 
-    bool HandleSpellClick(Unit* caster, Unit* target, uint32 spellId, ObjectGuid casterGuid)
+    bool HandleSpellClick(Unit* caster, Unit* target, uint32 spellId, int32* /*bp0*/, int32* /*bp1*/, int32* /*bp2*/, ObjectGuid casterGuid) override
     {
         if (caster->GetTypeId() != TYPEID_PLAYER)
             return false;
@@ -336,7 +336,7 @@ struct MANGOS_DLL_DECL npc_wintergrasp_vehicleAI : public ScriptedAI
         return false;
     }
 
-    void PassengerBoarded(Unit* unit, int8 seatId, bool apply)
+    void PassengerBoarded(Unit* unit, int8 seatId, bool apply) override
     {
         if (!apply)
         {
@@ -344,14 +344,14 @@ struct MANGOS_DLL_DECL npc_wintergrasp_vehicleAI : public ScriptedAI
                 if (VehicleSeat* seat = vehicle->GetSeat(seatId))
                     if (seat->seatInfo->m_flags & SEAT_FLAG_CAN_CONTROL)
                         if (unit->GetTypeId() == TYPEID_PLAYER) 
-                            m_creature->setFaction(WGFactions[GetTeamIndex(((Player*)unit)->GetTeam())]);
+                            m_creature->setFaction(BFFactions[GetTeamIndex(((Player*)unit)->GetTeam())]);
         }
     }
 
-    void AttackedBy(Unit* pAttacker) { }
-    void AttackStart(Unit* pWho) { }
-    void MoveInLineOfSight(Unit* pWho) { }
-    void EnterCombat(Unit* pEnemy) { }
+    void AttackedBy(Unit* pAttacker) override { }
+    void AttackStart(Unit* pWho) override { }
+    void MoveInLineOfSight(Unit* pWho) override { }
+    void EnterCombat(Unit* pEnemy) override { }
 };
 
 CreatureAI* GetAI_npc_wintergrasp_vehicle(Creature* pCreature)
@@ -377,12 +377,12 @@ struct MANGOS_DLL_DECL npc_wintergrasp_mechanicAI : public ScriptedAI
     bool bInit;
     ObjectGuid armsGuid;
 
-    void Reset()
+    void Reset() override
     {
         //busyTimer = 0;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!bInit)
         {
@@ -399,8 +399,8 @@ struct MANGOS_DLL_DECL npc_wintergrasp_mechanicAI : public ScriptedAI
         }*/
     }
 
-    void MoveInLineOfSight(Unit* pWho) { }
-    void EnterCombat(Unit* pEnemy) { }
+    void MoveInLineOfSight(Unit* pWho) override { }
+    void EnterCombat(Unit* pEnemy) override { }
 };
 
 CreatureAI* GetAI_npc_wintergrasp_mechanic(Creature* pCreature)
@@ -560,9 +560,9 @@ struct MANGOS_DLL_DECL npc_wintergrasp_battlemasterAI : public ScriptedAI
     BattleFieldWG* opvp;
     bool bInit;
 
-    void Reset() { }
+    void Reset() override { }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!bInit)
         {

@@ -2430,6 +2430,19 @@ void Aura::TriggerSpell()
                 }
                 break;
             }
+            // Siege Cannon
+            case 85167:
+            {
+                VehicleKit* vehicle = target->GetVehicle();
+                if (!vehicle)
+                    return;
+
+                // Deploy Siege Engine
+                if (!vehicle->GetBase()->HasAura(84974))
+                    return;
+
+                break;
+            }
             // Molting
             case 99464:
             case 99504:
