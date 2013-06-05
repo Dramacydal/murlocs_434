@@ -540,7 +540,9 @@ bool BattleFieldTB::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvo
                             break;
                     }
                 }
-                break;
+
+                if (GetAttacker() == TEAM_INDEX_ALLIANCE && GetCapturedBases() == TB_BASE_COUNT)
+                    EndBattle(GetAttacker(), false);
             }
             // contested > horde
             else if (uiEventId == info->capturePoint.progressEventID2)
@@ -563,7 +565,9 @@ bool BattleFieldTB::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvo
                             break;
                     }
                 }
-                break;
+
+                if (GetAttacker() == TEAM_INDEX_HORDE && GetCapturedBases() == TB_BASE_COUNT)
+                    EndBattle(GetAttacker(), false);
             }
             // horde > contested
             else if (uiEventId == info->capturePoint.neutralEventID1)
@@ -609,8 +613,6 @@ bool BattleFieldTB::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvo
                 }
             }
 
-            if (GetCapturedBases() == TB_BASE_COUNT)
-                EndBattle(GetAttacker(), false);
             break;
         }
         default:
@@ -828,7 +830,7 @@ uint32 TBBase::GetWorldState() const
 void TBBase::SendUpdateWorldState()
 {
     opvp->SendUpdateWorldState(TB_WS_BUILDINGS_CAPTURED, ((BattleFieldTB*)opvp)->GetCapturedBases());
-    for (int i = 0; i < 7; ++i)
+    for (int i = 0; i < 4; ++i)
         opvp->SendUpdateWorldStateForMap(baseStates[id][i], WORLD_STATE_REMOVE, opvp->GetMap());
 
     opvp->SendUpdateWorldStateForMap(GetWorldState(), WORLD_STATE_ADD, opvp->GetMap());
@@ -1016,16 +1018,11 @@ void BattleFieldTB::UpdateTowerBuff(Player* plr)
         if (!IsMember(plr->GetObjectGuid()) || GetTeamIndex(plr->GetTeam()) == m_defender || m_state == BF_STATE_COOLDOWN)
             return;
 
-        int32 amt = TB_TOWER_COUNT - m_destroyedTowers;
-
-        if (amt > 0)
-            for (int i = 0; i < amt; ++i)
-                plr->CastSpell(plr, SPELL_TOWER_ATTACK_BONUS, true);
+        for (int i = 0; i < m_destroyedTowers; ++i)
+            plr->CastSpell(plr, SPELL_TOWER_ATTACK_BONUS, true);
     }
     else
     {
-        int32 amt = TB_TOWER_COUNT - m_destroyedTowers;
-
         for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
         {
             if (!itr->first)
@@ -1042,9 +1039,8 @@ void BattleFieldTB::UpdateTowerBuff(Player* plr)
             if (m_state == BF_STATE_COOLDOWN)
                 continue;
 
-            if (amt > 1)
-                for (uint8 i = 0; i < amt; ++i)
-                    plr->CastSpell(plr, SPELL_TOWER_ATTACK_BONUS, true);
+            for (uint8 i = 0; i < m_destroyedTowers; ++i)
+                plr->CastSpell(plr, SPELL_TOWER_ATTACK_BONUS, true);
         }
     }
 }
