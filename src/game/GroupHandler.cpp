@@ -458,6 +458,10 @@ void WorldSession::HandleGroupDisbandOpcode( WorldPacket & /*recv_data*/ )
     // everything is fine, do it
     SendPartyResult(PARTY_OP_LEAVE, GetPlayer()->GetName(), ERR_PARTY_RESULT_OK);
 
+    if (BattleField* opvp = (BattleField*)sOutdoorPvPMgr.GetScript(ZONE_ID_TOL_BARAD))
+        if (opvp->IsMember(_player->GetObjectGuid()))
+            opvp->OnPlayerGroupDisband(_player);
+
     if (BattleField* opvp = (BattleField*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP))
         if (opvp->IsMember(_player->GetObjectGuid()))
             opvp->OnPlayerGroupDisband(_player);

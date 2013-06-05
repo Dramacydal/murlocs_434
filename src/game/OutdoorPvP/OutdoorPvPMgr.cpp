@@ -28,6 +28,7 @@
 #include "OutdoorPvPSI.h"
 #include "OutdoorPvPTF.h"
 #include "BattleField/BattleField.h"
+#include "BattleField/BattleFieldTB.h"
 #include "BattleField/BattleFieldWG.h"
 #include "OutdoorPvPZM.h"
 
@@ -85,6 +86,7 @@ void OutdoorPvPMgr::InitOutdoorPvP()
     LOAD_OPVP_ZONE(NA);
     LOAD_OPVP_ZONE(GH);
     LOAD_BATTLEFIELD(WG);
+    LOAD_BATTLEFIELD(TB);
 
     sLog.outString();
     sLog.outString(">> Loaded %u Outdoor PvP zones", counter);

@@ -55,6 +55,7 @@
 #include "BattleGround/BattleGroundMgr.h"
 #include "BattleGround/BattleGroundAV.h"
 #include "OutdoorPvP/OutdoorPvP.h"
+#include "BattleField/BattleFieldTB.h"
 #include "BattleField/BattleFieldWG.h"
 #include "ArenaTeam.h"
 #include "Chat.h"
@@ -9358,6 +9359,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
     uint32 mapid = GetMapId();
     OutdoorPvP* outdoorPvP = sOutdoorPvPMgr.GetScript(zoneid);
     BattleFieldWG* outdoorPvPWG = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+    BattleFieldTB* outdoorPvPTB = (BattleFieldTB*)sOutdoorPvPMgr.GetScript(ZONE_ID_TOL_BARAD);
 
     DEBUG_LOG("Sending SMSG_INIT_WORLD_STATES to Map:%u, Zone: %u", mapid, zoneid);
 
@@ -9381,6 +9383,10 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
     FillInitialWorldState(data, count, 0xC77, sWorld.getConfig(CONFIG_UINT32_ARENA_SEASON_ID));
                                                             // 3901 8 Previous arena season
     FillInitialWorldState(data, count, 0xF3D, sWorld.getConfig(CONFIG_UINT32_ARENA_SEASON_PREVIOUS_ID));
+
+    // fill Tol Barad worldstates
+    if (outdoorPvPTB)
+        outdoorPvPTB->FillInitialWorldStates(data, count, this);
 
     // fill Wintergrasp worldstates
     if (outdoorPvPWG)
@@ -26340,6 +26346,13 @@ AreaLockStatus Player::GetAreaTriggerLockStatus(AreaTrigger const* at, Difficult
     if (at->target_mapId == 624)
     {
         BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
+        if (opvp && (opvp->GetState() == BF_STATE_IN_PROGRESS || opvp->GetDefender() != GetTeamIndex(GetTeam())))
+            return AREA_LOCKSTATUS_NOT_ALLOWED;
+    }
+    // Baradin Hold
+    else if (at->target_mapId == 757)
+    {
+        BattleFieldTB* opvp = (BattleFieldTB*)sOutdoorPvPMgr.GetScript(ZONE_ID_TOL_BARAD);
         if (opvp && (opvp->GetState() == BF_STATE_IN_PROGRESS || opvp->GetDefender() != GetTeamIndex(GetTeam())))
             return AREA_LOCKSTATUS_NOT_ALLOWED;
     }
