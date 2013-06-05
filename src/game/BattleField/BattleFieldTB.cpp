@@ -222,6 +222,7 @@ void BattleFieldTB::HandleCreatureCreate(Creature* pCreature)
         case NPC_ABANDONED_SIEGE_ENGINE:
             vehicles.insert(pCreature->GetObjectGuid());
             pCreature->setFaction(BFFactions[GetAttacker()]);
+            pCreature->SetPhaseMask(m_state == BF_STATE_COOLDOWN ? 2 : 1, true);
             return;
         case NPC_TOWER_RANGE_FINDER:
         case NPC_TOWER_CANNON_TARGET:
