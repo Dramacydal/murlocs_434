@@ -11480,7 +11480,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                     if (!passenger)
                         return;
 
-                    vehicle->RemovePassenger(passenger);
+                    passenger->ExitVehicle();
                     return;
                 }
                                                             // random spell learn instead placeholder

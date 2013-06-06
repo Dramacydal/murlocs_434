@@ -190,7 +190,13 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
     {
         if (creature->GetEntry() == NPC_SIEGE_ENGINE_TURRET)
             if (VehicleKit* vehicle = m_creature->GetVehicleKit())
-                creature->EnterVehicle(vehicle, 1);
+                creature->EnterVehicle(vehicle, 0);
+    }
+
+    void SpellHit(Unit* /*pUnit*/, SpellEntry const* spell) override
+    {
+        if (spell->Id == SPELL_LEAVE_SIEGE_MODE)
+            m_creature->RemoveAurasDueToSpell(SPELL_DEPLOY_SIEGE_MODE);
     }
 
     void AttackedBy(Unit* pAttacker) override { }
