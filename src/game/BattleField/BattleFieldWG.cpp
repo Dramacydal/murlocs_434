@@ -619,8 +619,8 @@ void BattleFieldWG::HandleGameObjectCreate(GameObject* pGo)
         {
             if (m_state == BF_STATE_COOLDOWN)
             {
-                pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_BROKEN_TEMPLE]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
+                pGo->SetLootState(GO_JUST_DEACTIVATED);
             }
             else
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_BROKEN_TEMPLE]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -632,8 +632,8 @@ void BattleFieldWG::HandleGameObjectCreate(GameObject* pGo)
         {
             if (m_state == BF_STATE_COOLDOWN)
             {
-                pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_WESTPARK]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
+                pGo->SetLootState(GO_JUST_DEACTIVATED);
             }
             else
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_WESTPARK]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -645,8 +645,8 @@ void BattleFieldWG::HandleGameObjectCreate(GameObject* pGo)
         {
             if (m_state == BF_STATE_COOLDOWN)
             {
-                pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_EASTPARK]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
+                pGo->SetLootState(GO_JUST_DEACTIVATED);
             }
             else
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_EASTPARK]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -658,8 +658,8 @@ void BattleFieldWG::HandleGameObjectCreate(GameObject* pGo)
         {
             if (m_state == BF_STATE_COOLDOWN)
             {
-                pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_SUNKEN_RING]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
+                pGo->SetLootState(GO_JUST_DEACTIVATED);
             }
             else
                 pGo->SetCapturePointSlider(m_workshops[WG_WORKSHOP_SUNKEN_RING]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -1609,8 +1609,8 @@ void WGWorkShop::InitFor(TeamIndex teamIdx, bool reset)
     {
         if (opvp->GetState() == BF_STATE_COOLDOWN)
         {
-            obj->SetLootState(GO_JUST_DEACTIVATED);
             obj->SetCapturePointSlider(owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
+            obj->SetLootState(GO_JUST_DEACTIVATED);
         }
         else
             obj->SetCapturePointSlider(owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);

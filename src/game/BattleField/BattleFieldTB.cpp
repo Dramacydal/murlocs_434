@@ -275,8 +275,8 @@ void BattleFieldTB::HandleGameObjectCreate(GameObject* pGo)
         {
             if (m_state == BF_STATE_COOLDOWN)
             {
-                pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_bases[TB_BASE_IRONCLAD_GARRISON]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
+                pGo->SetLootState(GO_JUST_DEACTIVATED);
             }
             else
                 pGo->SetCapturePointSlider(m_bases[TB_BASE_IRONCLAD_GARRISON]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -288,8 +288,8 @@ void BattleFieldTB::HandleGameObjectCreate(GameObject* pGo)
         {
             if (m_state == BF_STATE_COOLDOWN)
             {
-                pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_bases[TB_BASE_WARDENS_VIGIL]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
+                pGo->SetLootState(GO_JUST_DEACTIVATED);
             }
             else
                 pGo->SetCapturePointSlider(m_bases[TB_BASE_WARDENS_VIGIL]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -301,8 +301,8 @@ void BattleFieldTB::HandleGameObjectCreate(GameObject* pGo)
         {
             if (m_state == BF_STATE_COOLDOWN)
             {
-                pGo->SetLootState(GO_JUST_DEACTIVATED);
                 pGo->SetCapturePointSlider(m_bases[TB_BASE_SLAGWORKS]->owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
+                pGo->SetLootState(GO_JUST_DEACTIVATED);
             }
             else
                 pGo->SetCapturePointSlider(m_bases[TB_BASE_SLAGWORKS]->owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
@@ -835,8 +835,8 @@ void TBBase::InitFor(TeamIndex teamIdx, bool reset)
         {
             if (opvp->GetState() == BF_STATE_COOLDOWN)
             {
-                obj->SetLootState(GO_JUST_DEACTIVATED);
                 obj->SetCapturePointSlider(owner == TEAM_INDEX_ALLIANCE ? -CAPTURE_SLIDER_ALLIANCE : -CAPTURE_SLIDER_HORDE);
+                obj->SetLootState(GO_JUST_DEACTIVATED);
             }
             else
                 obj->SetCapturePointSlider(owner == TEAM_INDEX_ALLIANCE ? CAPTURE_SLIDER_ALLIANCE : CAPTURE_SLIDER_HORDE);
