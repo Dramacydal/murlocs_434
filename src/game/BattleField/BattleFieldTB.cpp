@@ -17,6 +17,7 @@
  */
 
 #include "BattleFieldTB.h"
+#include "Chat.h"
 #include "GameObject.h"
 #include "MapManager.h"
 #include "Unit.h"
@@ -57,19 +58,13 @@ bool BattleFieldTB::InitOutdoorPvPArea()
         switch (i)
         {
             case TB_BASE_IRONCLAD_GARRISON:
-                tb->gy = sWorldSafeLocsStore.LookupEntry(TB_GY_IRONCLAD_GARRISON);
                 tb->worldState = m_defender == TEAM_INDEX_ALLIANCE ? TB_WS_GARRISON_ALLIANCE_CONTROLLED : TB_WS_GARRISON_HORDE_CONTROLLED;
-                sObjectMgr.SetGraveYardLinkTeam(tb->gy->ID, ZONE_ID_TOL_BARAD, GetTeamFromIndex(tb->owner));
                 break;
             case TB_BASE_WARDENS_VIGIL:
-                tb->gy = sWorldSafeLocsStore.LookupEntry(TB_GY_WARDENS_VIGIL);
                 tb->worldState = m_defender == TEAM_INDEX_ALLIANCE ? TB_WS_VIGIL_ALLIANCE_CONTROLLED : TB_WS_VIGIL_HORDE_CONTROLLED;
-                sObjectMgr.SetGraveYardLinkTeam(tb->gy->ID, ZONE_ID_TOL_BARAD, GetTeamFromIndex(tb->owner));
                 break;
             case TB_BASE_SLAGWORKS:
-                tb->gy = sWorldSafeLocsStore.LookupEntry(TB_GY_SLAGWORKS);
                 tb->worldState = m_defender == TEAM_INDEX_ALLIANCE ? TB_WS_SLAGWORKS_ALLIANCE_CONTROLLED : TB_WS_SLAGWORKS_HORDE_CONTROLLED;
-                sObjectMgr.SetGraveYardLinkTeam(tb->gy->ID, ZONE_ID_TOL_BARAD, GetTeamFromIndex(tb->owner));
                 break;
         }
     }
@@ -133,8 +128,9 @@ void BattleFieldTB::FillInitialWorldStates(WorldPacket& data, uint32& count, Pla
 
     if (player->GetCachedZoneId() == m_zoneId)
     {
-        FillInitialWorldState(data, count, TB_WS_TOWERS_DESTROYED_SHOW, m_state == BF_STATE_IN_PROGRESS ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
-        FillInitialWorldState(data, count, TB_WS_BUILDINGS_CAPTURED_SHOW, m_state == BF_STATE_IN_PROGRESS ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
+        TeamIndex teamIdx = GetTeamIndex(player->GetTeam());
+        FillInitialWorldState(data, count, TB_WS_TOWERS_DESTROYED_SHOW, m_state == BF_STATE_IN_PROGRESS && teamIdx == m_defender ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
+        FillInitialWorldState(data, count, TB_WS_BUILDINGS_CAPTURED_SHOW, m_state == BF_STATE_IN_PROGRESS && teamIdx != m_defender ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
 
         if (m_state == BF_STATE_IN_PROGRESS)
         {
@@ -163,8 +159,9 @@ void BattleFieldTB::SendUpdateWorldStatesTo(Player* player)
     for (int i = 0; i < TB_TOWER_COUNT; ++i)
         player->SendUpdateWorldState(m_towers[i]->GetWorldState(), WORLD_STATE_ADD);
 
-    player->SendUpdateWorldState(TB_WS_TOWERS_DESTROYED_SHOW, m_state == BF_STATE_IN_PROGRESS ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
-    player->SendUpdateWorldState(TB_WS_BUILDINGS_CAPTURED_SHOW, m_state == BF_STATE_IN_PROGRESS ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
+    TeamIndex teamIdx = GetTeamIndex(player->GetTeam());
+    player->SendUpdateWorldState(TB_WS_TOWERS_DESTROYED_SHOW, m_state == BF_STATE_IN_PROGRESS && teamIdx == m_defender ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
+    player->SendUpdateWorldState(TB_WS_BUILDINGS_CAPTURED_SHOW, m_state == BF_STATE_IN_PROGRESS && teamIdx != m_defender ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
 
     if (m_state == BF_STATE_IN_PROGRESS)
     {
@@ -392,11 +389,10 @@ void BattleFieldTB::HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim)
     if (pVictim->GetTypeId() == TYPEID_PLAYER)
     {
         ((Player*)pVictim)->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
-        if (!score->IsVeteran())
+        if (!score->IsVeteran() && GetTeamIndex(pPlayer->GetTeam()) != m_defender)
         {
             score->SetVeteran(true);
             UpdateScoreBuff(pPlayer);
-            pPlayer->MonsterWhisper(LANG_TB_REACHED_VETERAN, pPlayer, true);
         }
     }
     else
@@ -420,6 +416,9 @@ uint32 baseStates[TB_BASE_COUNT][4] =
 bool BattleFieldTB::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvoker, uint32 spellId)
 {
     if (!uiEventId)
+        return false;
+
+    if (m_state != BF_STATE_IN_PROGRESS)
         return false;
 
     if (pInvoker && !IsMember(pInvoker->GetObjectGuid()))
@@ -684,7 +683,7 @@ void BattleFieldTB::StartBattle(TeamIndex defender)
 
     sWorld.SendUpdateTolBaradTimerWorldState(this);
 
-    sObjectMgr.SetGraveYardLinkTeam(TB_GY_BARADIN_HOLD, ZONE_ID_TOL_BARAD, GetTeamFromIndex(m_defender));
+    InitGraveyards();
 
     SendWarningToAll(LANG_TB_BATTLE_BEGIN);
 }
@@ -722,7 +721,7 @@ void BattleFieldTB::EndBattle(TeamIndex winner, bool byTimer)
 
     SendUpdateWorldStatesToAll();
 
-    sObjectMgr.SetGraveYardLinkTeam(TB_GY_BARADIN_HOLD, ZONE_ID_TOL_BARAD, GetTeamFromIndex(m_defender));
+    InitGraveyards();
 
     sWorld.SendUpdateTolBaradTimerWorldState(this);
 }
@@ -792,30 +791,11 @@ bool BattleFieldTB::CanDamageGO(GameObject* pGo, Player* invoker)
     return true;
 }
 
-void BattleFieldTB::GraveYardChanged(uint8 id, TeamIndex newOwner)
-{
-    for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
-    {
-        if (!itr->first || !itr->second)
-            continue;
-
-        Player* plr = sObjectMgr.GetPlayer(itr->first);
-        if (!plr)
-            continue;
-
-        if (newOwner == GetTeamIndex(plr->GetTeam()))
-            continue;
-
-        if (!plr->isDead() || !plr->HasAura(SPELL_TB_SPIRITUAL_IMMUNITY))
-            continue;
-
-        if (plr->GetDistance2d(m_bases[id]->gy->x, m_bases[id]->gy->y) < 50.0f)
-            plr->RepopAtGraveyard();
-    }
-}
-
 bool BattleFieldTB::IsVeteran(Player* player) const
 {
+    if (GetTeamIndex(player->GetTeam()) == m_defender)
+        return false;
+
     BFPlayerScoreMap::const_iterator itr = m_playerScores.find(player->GetObjectGuid());
     if (itr == m_playerScores.end())
         return false;
@@ -839,8 +819,6 @@ void TBBase::SendUpdateWorldState()
 
 void TBBase::InitFor(TeamIndex teamIdx, bool reset)
 {
-    bool gyChanged = teamIdx != owner;
-
     owner = teamIdx;
 
     if (reset)
@@ -850,14 +828,6 @@ void TBBase::InitFor(TeamIndex teamIdx, bool reset)
         else if (owner == TEAM_INDEX_HORDE)
             worldState = baseStates[id][1];
     }
-
-    if (teamIdx == TEAM_INDEX_NEUTRAL)
-        sObjectMgr.SetGraveYardLinkTeam(gy->ID, ZONE_ID_TOL_BARAD, TEAM_NONE);
-    else
-        sObjectMgr.SetGraveYardLinkTeam(gy->ID, ZONE_ID_TOL_BARAD, GetTeamFromIndex(owner));
-
-    if (gyChanged)
-        opvp->GraveYardChanged(id, owner);
 
     if (GameObject* obj = opvp->GetMap()->GetGameObject(capturePoint))
     {
@@ -895,7 +865,7 @@ void TBTower::SpawnTargets(bool spawn)
 {
     for (GuidSet::iterator itr = targets.begin(); itr != targets.end(); ++itr)
     {
-        if (Creature* pCreature = opvp->GetMap()->GetCreature(*itr))
+        if (Creature* pCreature = opvp->GetMap()->GetAnyTypeCreature(*itr))
         {
             pCreature->SetPhaseMask(spawn ? 1 : 2, true);
             if (spawn)
@@ -1075,4 +1045,108 @@ void BattleFieldTB::UpdateScoreBuff(Player* plr)
     }
 
     plr->CastSpell(plr, SPELL_TB_VETERAN, true);
+}
+
+uint32 attackerGraveyards[] = { TB_GY_IRONCLAD_GARRISON, TB_GY_WARDENS_VIGIL, TB_GY_SLAGWORKS };
+
+uint32 cdGraveYards[PVP_TEAM_COUNT] = { TB_GY_ALLIANCE_DAILY, TB_GY_HORDE_DAILY };
+
+void BattleFieldTB::InitGraveyards()
+{
+    sObjectMgr.SetGraveYardLinkTeam(TB_GY_BARADIN_HOLD, ZONE_ID_TOL_BARAD, GetTeamFromIndex(m_defender));
+
+    for (int i = 0; i < 3; ++i)
+        sObjectMgr.SetGraveYardLinkTeam(attackerGraveyards[i], ZONE_ID_TOL_BARAD, GetTeamFromIndex(GetAttacker()));
+}
+
+bool ChatHandler::HandleTBPromoteCommand(char* args)
+{
+    if (!*args)
+        return false;
+
+    int32 mod;
+    if (!ExtractOptInt32(&args, mod, 0))
+        return false;
+
+    Player* target = getSelectedPlayer();
+    if (!target)
+        target = m_session->GetPlayer();
+
+    BattleFieldTB* opvp = (BattleFieldTB*)sOutdoorPvPMgr.GetScript(ZONE_ID_TOL_BARAD);
+    if (!opvp || opvp->GetState() != BF_STATE_IN_PROGRESS)
+        return false;
+
+    BFPlayerScoreMap& playerScores = opvp->GetPlayerScoreMap();
+    BFPlayerScoreMap::iterator itr = playerScores.find(target->GetObjectGuid());
+    if (itr == playerScores.end())
+        return true;
+
+    TBPlayerScore* score = (TBPlayerScore*)itr->second;
+    if (mod >= 0)
+        score->SetVeteran(true);
+    else
+        score->SetVeteran(false);
+
+    opvp->UpdateScoreBuff(target);
+
+    return true;
+}
+
+bool ChatHandler::HandleTBTimerCommand(char* args)
+{
+    if (!*args)
+        return false;
+
+    int32 mod;
+    if (!ExtractInt32(&args, mod))
+        return false;
+    mod *= IN_MILLISECONDS;
+
+    BattleFieldTB* opvp = (BattleFieldTB*)sOutdoorPvPMgr.GetScript(ZONE_ID_TOL_BARAD);
+    if (!opvp)
+        return false;
+
+    uint32 value = opvp->GetTimer();
+    if (mod >= 0)
+        value += mod;
+    else
+        if (abs(mod) >= int32(value))
+            value = 0;
+        else
+            value += mod;
+
+    opvp->SetTimer(value);
+    sWorld.SendUpdateTolBaradTimerWorldState(opvp);
+
+    return true;
+}
+
+bool ChatHandler::HandleTBStartCommand(char* args)
+{
+    BattleFieldTB* opvp = (BattleFieldTB*)sOutdoorPvPMgr.GetScript(ZONE_ID_TOL_BARAD);
+    if (!opvp || opvp->GetState() != BF_STATE_COOLDOWN)
+        return false;
+
+    uint32 teamIdx;
+    if (!ExtractUInt32(&args, teamIdx))
+        teamIdx = uint32(opvp->GetDefender());
+
+    opvp->StartBattle(teamIdx ? TEAM_INDEX_HORDE : TEAM_INDEX_ALLIANCE);
+
+    return true;
+}
+
+bool ChatHandler::HandleTBEndCommand(char* args)
+{
+    BattleFieldTB* opvp = (BattleFieldTB*)sOutdoorPvPMgr.GetScript(ZONE_ID_TOL_BARAD);
+    if (!opvp || opvp->GetState() != BF_STATE_IN_PROGRESS)
+        return false;
+
+    uint32 teamIdx;
+    if (!ExtractUInt32(&args, teamIdx))
+        teamIdx = uint32(opvp->GetDefender());
+
+    opvp->EndBattle(teamIdx ? TEAM_INDEX_HORDE : TEAM_INDEX_ALLIANCE, teamIdx == uint32(opvp->GetDefender()));
+
+    return true;
 }

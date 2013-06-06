@@ -1242,8 +1242,6 @@ enum MangosStrings
     LANG_TB_SPIRE_DESTROYED_S           = 11175,
     LANG_TB_SPIRE_DESTROYED_E           = 11176,
 
-    LANG_TB_REACHED_VETERAN             = 11177,
-
     // Strand of the Ancients
     LANG_BG_SA_START_TWO_MINUTE                     = 20000,
     LANG_BG_SA_START_ONE_MINUTE                     = 20001,

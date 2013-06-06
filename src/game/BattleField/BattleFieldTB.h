@@ -233,6 +233,9 @@ enum
     TB_GY_WARDENS_VIGIL                         = 1785,
     TB_GY_SLAGWORKS                             = 1787,
     TB_GY_BARADIN_HOLD                          = 1789,
+
+    TB_GY_ALLIANCE_DAILY                        = 1808,
+    TB_GY_HORDE_DAILY                           = 1807,
 };
 
 enum
@@ -329,8 +332,6 @@ class MANGOS_DLL_SPEC BattleFieldTB : public BattleField
         void UpdateTowerBuff(Player* plr = NULL);
         void UpdateScoreBuff(Player* plr);
 
-        void GraveYardChanged(uint8 id, TeamIndex newOwner) override;
-
         void OnPlayerGroupDisband(Player* plr) override;
         bool CriteriaMeets(uint32 criteriaId, Player* plr) override;
 
@@ -344,6 +345,7 @@ class MANGOS_DLL_SPEC BattleFieldTB : public BattleField
         bool UpdatePlayerScores() override;
         bool GetKickPosition(Player* plr, float& x, float& y, float& z) override;
         void UpdateBanners();
+        void InitGraveyards();
 
         // counters
         uint32 m_damagedTowers;

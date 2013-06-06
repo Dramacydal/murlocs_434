@@ -177,16 +177,6 @@ BattleFieldWG::~BattleFieldWG()
 
     for (std::list<BFObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
         delete *itr;
-
-    for (BFPlayerScoreMap::iterator itr = m_playerScores.begin(); itr != m_playerScores.end(); ++itr)
-        delete itr->second;
-
-    for (uint32 i = 0; i < PVP_TEAM_COUNT; ++i)
-        for (std::set<Group*>::iterator itr = m_Raids[i].begin(); itr != m_Raids[i].end();)
-        {
-            delete *itr;
-            itr = m_Raids[i].begin();
-        }
 }
 
 void BattleFieldWG::FillInitialWorldStates(WorldPacket& data, uint32& count, Player* player)

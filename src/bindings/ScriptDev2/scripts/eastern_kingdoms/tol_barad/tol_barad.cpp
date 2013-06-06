@@ -108,7 +108,9 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
             {
                 if (opvp)
                     m_creature->setFaction(BFFactions[opvp->GetAttacker()]);
-                m_creature->CastSpell(m_creature, SPELL_THICK_LAYER_OF_DUST, true);
+
+                if (!m_creature->GetCharmerGuid())
+                    m_creature->CastSpell(m_creature, SPELL_THICK_LAYER_OF_DUST, true);
             }
         }
 
@@ -137,11 +139,6 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
                         vehicle->RemoveAllPassengers();
                 }
             }
-            else if (m_creature->GetEntry() == NPC_SIEGE_ENGINE_TURRET)
-            {
-                if (!m_creature->GetVehicle())
-                    m_creature->ForcedDespawn();
-            }
         }
         else
             auraCheckTimer -= uiDiff;
@@ -169,7 +166,10 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
         if (!apply)
         {
             if (unit->GetTypeId() == TYPEID_PLAYER)
+            {
+                m_creature->CastSpell(m_creature, SPELL_THICK_LAYER_OF_DUST, true);
                 m_creature->setFaction(BFFactions[GetTeamIndex(((Player*)unit)->GetTeam())]);
+            }
             else
             {
                 ((Creature*)unit)->ForcedDespawn();

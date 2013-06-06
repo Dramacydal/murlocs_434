@@ -41,6 +41,19 @@ BattleField::BattleField(uint32 id) : OutdoorPvP(id), m_battleFieldId(0)
     bAboutSend = false;
 }
 
+BattleField::~BattleField()
+{
+    for (BFPlayerScoreMap::iterator itr = m_playerScores.begin(); itr != m_playerScores.end(); ++itr)
+        delete itr->second;
+
+    for (uint32 i = 0; i < PVP_TEAM_COUNT; ++i)
+        for (std::set<Group*>::iterator itr = m_Raids[i].begin(); itr != m_Raids[i].end();)
+        {
+            delete *itr;
+            itr = m_Raids[i].begin();
+        }
+}
+
 void BattleField::KickPlayer(Player* plr)
 {
     float x, y, z;

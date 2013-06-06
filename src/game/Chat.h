@@ -431,6 +431,11 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleNpcWhisperCommand(char* args);
         bool HandleNpcYellCommand(char* args);
 
+        bool HandleTBPromoteCommand(char* args);
+        bool HandleTBTimerCommand(char* args);
+        bool HandleTBStartCommand(char* args);
+        bool HandleTBEndCommand(char* args);
+
         bool HandleWGPromoteCommand(char* args);
         bool HandleWGPlayerStatusCommand(char* args);
         bool HandleWGStatusCommand(char* args);

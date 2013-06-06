@@ -146,8 +146,6 @@ OutdoorPvP* OutdoorPvPMgr::GetScriptOfAffectedZone(uint32 zoneId)
         case ZONE_ID_SETHEKK_HALLS:
         case ZONE_ID_MANA_TOMBS:
             return m_scripts[OPVP_ID_TF];
-        case ZONE_ID_TOL_BARAD_PENINSULA:
-            return m_scripts[OPVP_ID_TB];
         default:
             return NULL;
     }

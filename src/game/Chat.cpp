@@ -841,6 +841,15 @@ ChatCommand * ChatHandler::getCommandTable()
         { NULL,             0,                  true,  NULL,                                            "", NULL }
     };
 
+    static ChatCommand tbCommandTable[] = 
+    {
+        { "promote",        SEC_ADMINISTRATOR,  false, &ChatHandler::HandleTBPromoteCommand,            "", NULL },
+        { "timer",          SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleTBTimerCommand,              "", NULL },
+        { "start",          SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleTBStartCommand,              "", NULL },
+        { "end",            SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleTBEndCommand,                "", NULL },
+        { NULL,             0,                  true,  NULL,                                            "", NULL }
+    };
+
     static ChatCommand wgCommandTable[] = 
     {
         { "promote",        SEC_ADMINISTRATOR,  false, &ChatHandler::HandleWGPromoteCommand,            "", NULL },
@@ -961,6 +970,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "leavevehicle",   SEC_PLAYER,         false, &ChatHandler::HandleLeaveVehicleCommand,        "", NULL },
         { "mmr",            SEC_PLAYER,         false, NULL,                                           "", mmrCommandTable },
         { "spectate",       SEC_PLAYER,         false, &ChatHandler::HandleSpectateCommand,            "", NULL },
+        { "tb",             SEC_ADMINISTRATOR,  true,  NULL,                                           "", tbCommandTable },
         { "unspectate",     SEC_PLAYER,         false, &ChatHandler::HandleUnSpectateCommand,          "", NULL },
         { "wg",             SEC_ADMINISTRATOR,  true,  NULL,                                           "", wgCommandTable },
 
