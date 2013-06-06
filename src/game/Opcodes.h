@@ -1495,7 +1495,6 @@ class WorldPacket;
 struct OpcodeHandler
 {
     char const* name;
-    char const* compressedName;
     SessionStatus status;
     PacketProcessing packetProcessing;
     void (WorldSession::*handler)(WorldPacket& recvPacket);
@@ -1506,7 +1505,7 @@ extern OpcodeHandler opcodeTable[MAX_OPCODE_TABLE_SIZE];
 /// Lookup opcode name for human understandable logging
 inline const char* LookupOpcodeName(uint16 id)
 {
-    return id & COMPRESSED_OPCODE_MASK ? opcodeTable[id & 0x7FFF].compressedName : opcodeTable[id & 0x7FFF].name;
+    return opcodeTable[id].name;
 }
 #endif
 /// @}

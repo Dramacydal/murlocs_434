@@ -90,9 +90,6 @@
     <ClCompile Include="..\..\src\shared\DelayExecutor.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\shared\WorldPacket.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\shared\Database\Database.h">
