@@ -172,7 +172,7 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
             }
             else
             {
-                ((Creature*)unit)->ForcedDespawn();
+                ((Creature*)unit)->ForcedDespawn(200);
                 DoCast(m_creature, SPELL_LEAVE_SIEGE_MODE);
             }
         }
