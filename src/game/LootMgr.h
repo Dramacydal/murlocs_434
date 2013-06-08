@@ -105,6 +105,8 @@ struct LootStoreItem
                                                             // Checks correctness of values
 };
 
+struct Loot;
+
 struct LootItem
 {
     uint32  itemid;
@@ -123,7 +125,7 @@ struct LootItem
 
     // Constructor, copies most fields from LootStoreItem, generates random count and random suffixes/properties
     // Should be called for non-reference LootStoreItem entries only (mincountOrRef > 0)
-    explicit LootItem(LootStoreItem const& li);
+    explicit LootItem(LootStoreItem const& li, Loot* loot);
 
     LootItem(uint32 itemid_, uint8 type_, uint32 count_, uint32 randomSuffix_ = 0, int32 randomPropertyId_ = 0);
 
@@ -155,7 +157,6 @@ struct QuestItem
         : index(_index), is_looted(_islooted) {}
 };
 
-struct Loot;
 class LootTemplate;
 
 typedef std::vector<QuestItem> QuestItemList;
@@ -272,7 +273,7 @@ struct Loot
         uint8 unlootedCount;
         LootType loot_type;                                 // required for achievement system
 
-        Loot(WorldObject const* lootTarget, uint32 _gold = 0) : gold(_gold), unlootedCount(0), loot_type(LOOT_CORPSE), m_lootTarget(lootTarget) {}
+        Loot(WorldObject const* lootTarget, uint32 _gold = 0) : gold(_gold), unlootedCount(0), loot_type(LOOT_CORPSE), m_lootTarget(lootTarget), m_lootOwner(NULL) {}
         ~Loot() { clear(); }
 
         // if loot becomes invalid this reference is used to inform the listener
@@ -330,6 +331,7 @@ struct Loot
         void AddAllowedLooter(Player const* player);
         AllowedLooterSet* GetAllowedLooters() { return &allowedGUIDs; }
         WorldObject const* GetLootTarget() const { return m_lootTarget; }
+        Player const* GetLootOwner() const { return m_lootOwner; }
 
     private:
         void FillNotNormalLootFor(Player* player);
@@ -354,6 +356,7 @@ struct Loot
 
         // What is looted
         WorldObject const* m_lootTarget;
+        Player* m_lootOwner;
 };
 
 struct LootView

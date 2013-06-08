@@ -408,7 +408,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleNoImmediateEffect,                         //348 SPELL_AURA_MOD_MONEY_TO_GUILD_BANK 2 spells in 4.3.4, implemented in WorldSession::HandleLootMoneyOpcode
     &Aura::HandleNoImmediateEffect,                         //349 SPELL_AURA_MOD_CURRENCY_GAIN 16 spells in 4.3.4, implemented in Player::ModifyCurrencyCount
     &Aura::HandleNULL,                                      //350 SPELL_AURA_MOD_MATERIAL_GAIN 1 spells in 4.3.4
-    &Aura::HandleNULL,                                      //351 8 spells in 4.3.4 archaeology-related
+    &Aura::HandleNoImmediateEffect,                         //351 SPELL_AURA_MOD_CURRENCY_LOOT 8 spells in 4.3.4
     &Aura::HandleNULL,                                      //352 1 spells in 4.3.4 enables worgen<>human form switches
     &Aura::HandleNULL,                                      //353 SPELL_AURA_CAMOUFLAGE 3 spells in 4.3.4
     &Aura::HandleNoImmediateEffect,                         //354 SPELL_AURA_MOD_HEALING_DONE_FROM_PCT_HEALTH 2 spells in 4.3.4, implemented in Unit::SpellHealingBonusDone
