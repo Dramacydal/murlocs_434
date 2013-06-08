@@ -777,9 +777,8 @@ void WorldSession::HandleGetMirrorimageData( WorldPacket & recv_data ) //Full co
     ObjectGuid guid;
     uint32 displayId;
     recv_data >> guid >> displayId;
-        
-    Creature* pCreature = _player->GetMap()->GetAnyTypeCreature(guid);
 
+    Creature* pCreature = _player->GetMap()->GetAnyTypeCreature(guid);
     if (!pCreature)
         return;
 
@@ -811,7 +810,7 @@ void WorldSession::HandleGetMirrorimageData( WorldPacket & recv_data ) //Full co
 
         // facial hair
         data << (uint8)pPlayer->GetByteValue(PLAYER_BYTES_2, 0);
-        
+
         // guild guid
         data << pPlayer->GetGuildGuid();
 
@@ -854,4 +853,11 @@ void WorldSession::HandleGetMirrorimageData( WorldPacket & recv_data ) //Full co
             data << (uint32)0;
     }
     SendPacket(&data);
+}
+
+void WorldSession::HandleRequestCategoryCooldownsOpcode(WorldPacket& /*recv_data*/)
+{
+    DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "WORLD: CMSG_REQUEST_CATEGORY_COOLDOWNS");
+
+    _player->SendCategoryCooldownMods();
 }

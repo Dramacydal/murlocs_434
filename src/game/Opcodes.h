@@ -1466,6 +1466,8 @@ enum Opcodes
     CMSG_REQUEST_RESEARCH_HISTORY                         = 0x3306, // 4.3.4 15595
     SMSG_RESEARCH_SETUP_HISTORY                           = 0x10B6, // 4.3.4 15595
     SMSG_RESEARCH_COMPLETE                                = 0x35A6, // 4.3.4 15595
+    CMSG_REQUEST_CATEGORY_COOLDOWNS                       = 0x7102, // 4.3.4 15595
+    SMSG_SPELL_CATEGORY_COOLDOWN                          = 0x71B6, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF

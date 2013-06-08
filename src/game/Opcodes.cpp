@@ -1448,4 +1448,6 @@ void InitializeOpcodes()
     OPCODE(CMSG_REQUEST_RESEARCH_HISTORY,                STATUS_LOGGEDIN, PROCESS_THREADUNSAFE, &WorldSession::HandleRequestResearchHistory    );
     OPCODE(SMSG_RESEARCH_SETUP_HISTORY,                  STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
     OPCODE(SMSG_RESEARCH_COMPLETE,                       STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
+    OPCODE(CMSG_REQUEST_CATEGORY_COOLDOWNS,              STATUS_LOGGEDIN, PROCESS_INPLACE,      &WorldSession::HandleRequestCategoryCooldownsOpcode);
+    OPCODE(SMSG_SPELL_CATEGORY_COOLDOWN,                 STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
 };

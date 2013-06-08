@@ -21682,6 +21682,20 @@ void Player::AddSpellAndCategoryCooldowns(SpellEntry const* spellInfo, uint32 it
                 break;
             }
 
+        // Apply SPELL_AURA_MOD_SPELL_CATEGORY_COOLDOWN modifiers
+        // Note: This aura applies its modifiers to all cooldowns of spells with set category, not to category cooldown only
+        if (cat)
+        {
+            if (int32 categoryModifier = GetTotalAuraModifierByMiscValue(SPELL_AURA_MOD_SPELL_CATEGORY_COOLDOWN, cat))
+            {
+                if (rec > 0)
+                    rec += categoryModifier;
+
+                if (catrec > 0)
+                    catrec += categoryModifier;
+            }
+        } 
+
         // replace negative cooldowns by 0
         if (rec < 0) rec = 0;
         if (catrec < 0) catrec = 0;
@@ -21732,6 +21746,30 @@ void Player::SendCooldownEvent(SpellEntry const *spellInfo, uint32 itemId, Spell
     WorldPacket data(SMSG_COOLDOWN_EVENT, (4+8));
     data << uint32(spellInfo->Id);
     data << GetObjectGuid();
+    SendDirectMessage(&data);
+}
+
+void Player::SendCategoryCooldownMods()
+{
+    std::map<uint32, int32> categoryMods;
+    Unit::AuraList const& categoryCooldownAuras = GetAurasByType(SPELL_AURA_MOD_SPELL_CATEGORY_COOLDOWN);
+    for (Unit::AuraList::const_iterator itr = categoryCooldownAuras.begin(); itr != categoryCooldownAuras.end(); ++itr)
+    {
+        std::map<uint32, int32>::iterator cItr = categoryMods.find((*itr)->GetMiscValue());
+        if (cItr == categoryMods.end())
+            categoryMods[(*itr)->GetMiscValue()] = (*itr)->GetModifier()->m_amount;
+        else
+            cItr->second += (*itr)->GetModifier()->m_amount;
+    }
+
+    WorldPacket data(SMSG_SPELL_CATEGORY_COOLDOWN, 11);
+    data.WriteBits(categoryMods.size(), 23);
+    for (std::map<uint32, int32>::const_iterator itr = categoryMods.begin(); itr != categoryMods.end(); ++itr)
+    {
+        data << uint32(itr->first);
+        data << int32(-itr->second);
+    }
+
     SendDirectMessage(&data);
 }
 
