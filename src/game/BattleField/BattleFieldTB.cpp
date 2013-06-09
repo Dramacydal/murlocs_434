@@ -236,8 +236,7 @@ void BattleFieldTB::HandleCreatureCreate(Creature* pCreature)
                 pCreature->SetPhaseMask(m_towers[TB_TOWER_SOUTH]->IsDestroyed() ? 2 : 1, true);
             }
 
-            if (pCreature->GetEntry() == NPC_TOWER_RANGE_FINDER)
-                pCreature->setFaction(BFFactions[GetAttacker()]);
+            pCreature->setFaction(BFFactions[GetAttacker()]);
             return;
         default:
             return;
@@ -662,12 +661,7 @@ void BattleFieldTB::StartBattle(TeamIndex defender)
         if (GameObject* gate = GetMap()->GetGameObject(*itr))
             gate->SetGoState(GO_STATE_READY);
 
-    for (GuidSet::iterator itr = vehicles.begin(); itr != vehicles.end(); ++itr)
-        if (Creature* vehicle = GetMap()->GetAnyTypeCreature(*itr))
-        {
-            vehicle->Respawn();
-            vehicle->SetPhaseMask(1, true);
-        }
+    ResetVehicles(true);
 
     UpdateBanners();
 
@@ -704,9 +698,7 @@ void BattleFieldTB::EndBattle(TeamIndex winner, bool byTimer)
         if (GameObject* gate = GetMap()->GetGameObject(*itr))
             gate->SetGoState(GO_STATE_ACTIVE);
 
-    for (GuidSet::iterator itr = vehicles.begin(); itr != vehicles.end(); ++itr)
-        if (Creature* vehicle = GetMap()->GetAnyTypeCreature(*itr))
-            vehicle->SetPhaseMask(2, true);
+    ResetVehicles(false);
 
     UpdateBanners();
 
@@ -1056,14 +1048,27 @@ void BattleFieldTB::InitGraveyards()
         sObjectMgr.SetGraveYardLinkTeam(attackerGraveyards[i], ZONE_ID_TOL_BARAD, GetTeamFromIndex(GetAttacker()));
 }
 
+void BattleFieldTB::ResetVehicles(bool atStart)
+{
+    for (GuidSet::iterator itr = vehicles.begin(); itr != vehicles.end(); ++itr)
+        if (Creature* vehicle = GetMap()->GetAnyTypeCreature(*itr))
+        {
+            vehicle->SetPhaseMask(atStart ? 1 : 2, true);
+            if (atStart)
+            {
+                vehicle->Respawn();
+                vehicle->setFaction(BFFactions[GetAttacker()]);
+            }
+        }
+}
+
 bool ChatHandler::HandleTBPromoteCommand(char* args)
 {
     if (!*args)
         return false;
 
     int32 mod;
-    if (!ExtractOptInt32(&args, mod, 0))
-        return false;
+    ExtractOptInt32(&args, mod, 0);
 
     Player* target = getSelectedPlayer();
     if (!target)

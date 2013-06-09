@@ -346,6 +346,7 @@ class MANGOS_DLL_SPEC BattleFieldTB : public BattleField
         bool GetKickPosition(Player* plr, float& x, float& y, float& z) override;
         void UpdateBanners();
         void InitGraveyards();
+        void ResetVehicles(bool atStart);
 
         // counters
         uint32 m_damagedTowers;
