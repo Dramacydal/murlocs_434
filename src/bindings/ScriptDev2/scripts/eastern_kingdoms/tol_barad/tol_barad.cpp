@@ -190,7 +190,7 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
     {
         if (creature->GetEntry() == NPC_SIEGE_ENGINE_TURRET)
             if (VehicleKit* vehicle = m_creature->GetVehicleKit())
-                creature->EnterVehicle(vehicle, 0);
+                creature->EnterVehicle(vehicle, 7);
     }
 
     void SpellHit(Unit* /*pUnit*/, SpellEntry const* spell) override

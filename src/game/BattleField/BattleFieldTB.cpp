@@ -126,17 +126,14 @@ void BattleFieldTB::FillInitialWorldStates(WorldPacket& data, uint32& count, Pla
             FillInitialWorldState(data, count, m_towers[i]->GetWorldState(), WORLD_STATE_ADD);
     }
 
-    if (player->GetCachedZoneId() == m_zoneId)
-    {
-        TeamIndex teamIdx = GetTeamIndex(player->GetTeam());
-        FillInitialWorldState(data, count, TB_WS_TOWERS_DESTROYED_SHOW, m_state == BF_STATE_IN_PROGRESS && teamIdx == m_defender ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
-        FillInitialWorldState(data, count, TB_WS_BUILDINGS_CAPTURED_SHOW, m_state == BF_STATE_IN_PROGRESS && teamIdx != m_defender ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
+    TeamIndex teamIdx = GetTeamIndex(player->GetTeam());
+    FillInitialWorldState(data, count, TB_WS_TOWERS_DESTROYED_SHOW, m_state == BF_STATE_IN_PROGRESS && teamIdx == m_defender ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
+    FillInitialWorldState(data, count, TB_WS_BUILDINGS_CAPTURED_SHOW, m_state == BF_STATE_IN_PROGRESS && teamIdx != m_defender ? WORLD_STATE_ADD : WORLD_STATE_REMOVE);
 
-        if (m_state == BF_STATE_IN_PROGRESS)
-        {
-            FillInitialWorldState(data, count, TB_WS_TOWERS_DESTROYED, m_destroyedTowers);
-            FillInitialWorldState(data, count, TB_WS_BUILDINGS_CAPTURED, GetCapturedBases());
-        }
+    if (m_state == BF_STATE_IN_PROGRESS)
+    {
+        FillInitialWorldState(data, count, TB_WS_TOWERS_DESTROYED, m_destroyedTowers);
+        FillInitialWorldState(data, count, TB_WS_BUILDINGS_CAPTURED, GetCapturedBases());
     }
 }
 
