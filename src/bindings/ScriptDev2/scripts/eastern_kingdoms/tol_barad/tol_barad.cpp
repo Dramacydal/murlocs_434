@@ -195,8 +195,13 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
 
     void SpellHit(Unit* /*pUnit*/, SpellEntry const* spell) override
     {
-        if (spell->Id == SPELL_LEAVE_SIEGE_MODE)
+        if (spell->Id == SPELL_DEPLOY_SIEGE_MODE)
+            m_creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+        else if (spell->Id == SPELL_LEAVE_SIEGE_MODE)
+        {
             m_creature->RemoveAurasDueToSpell(SPELL_DEPLOY_SIEGE_MODE);
+            m_creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+        }
     }
 
     void AttackedBy(Unit* pAttacker) override { }
