@@ -10488,7 +10488,11 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
             MaNGOS::UnitSearcher<MaNGOS::NearestCreatureEntryInObjectRangeCheck> searcher(target,  u_check);
             Cell::VisitGridObjects(m_caster, searcher, radius);
             if (target)
+            {
                 targetUnitMap.push_back(target);
+                m_targets.setDestination(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ());
+                m_targets.setUnitTarget(target);
+            }
             return true;
         }
         case 96931:                                     // Eyes of Occu'thar
