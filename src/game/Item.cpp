@@ -552,7 +552,7 @@ void Item::SaveToDB()
 
                 stmt.addUInt32(GetGUIDLow());
                 stmt.addUInt32(owner->GetGUIDLow());
-                stmt.addUInt32(item->itemid);
+                stmt.addInt32(item->currency ? -item->itemid : item->itemid);
                 stmt.addUInt8(item->count);
                 stmt.addUInt32(item->randomSuffix);
                 stmt.addInt32(item->randomPropertyId);
@@ -674,7 +674,7 @@ bool Item::LoadFromDB(uint32 guidLow, Field* fields, ObjectGuid ownerGuid)
 void Item::LoadLootFromDB(Field* fields)
 {
     uint32 item_id     = abs(fields[1].GetInt32());
-    uint8  type        = fields[1].GetInt32() > 0 ? LOOT_ITEM_TYPE_ITEM : LOOT_ITEM_TYPE_CURRENCY;
+    uint8  type        = fields[1].GetInt32() >= 0 ? LOOT_ITEM_TYPE_ITEM : LOOT_ITEM_TYPE_CURRENCY;
     uint32 item_amount = fields[2].GetUInt32();
     uint32 item_suffix = fields[3].GetUInt32();
     int32  item_propid = fields[4].GetInt32();
@@ -690,12 +690,16 @@ void Item::LoadLootFromDB(Field* fields)
     // normal item case
     if (type == LOOT_ITEM_TYPE_ITEM)
     {
-        ItemPrototype const* proto = ObjectMgr::GetItemPrototype(item_id);
-        if (!proto)
+        // gold case
+        if (item_id != 0)
         {
-            CharacterDatabase.PExecute("DELETE FROM item_loot WHERE guid = '%u' AND itemid = '%u'", GetGUIDLow(), item_id);
-            sLog.outError("Item::LoadLootFromDB: %s has an unknown item (id: #%u) in item_loot, deleted.", GetOwnerGuid().GetString().c_str(), item_id);
-            return;
+            ItemPrototype const* proto = ObjectMgr::GetItemPrototype(item_id);
+            if (!proto)
+            {
+                CharacterDatabase.PExecute("DELETE FROM item_loot WHERE guid = '%u' AND itemid = '%u'", GetGUIDLow(), item_id);
+                sLog.outError("Item::LoadLootFromDB: %s has an unknown item (id: #%u) in item_loot, deleted.", GetOwnerGuid().GetString().c_str(), item_id);
+                return;
+            }
         }
 
         loot.items.push_back(LootItem(item_id, type, item_amount, item_suffix, item_propid));
