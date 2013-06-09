@@ -133,7 +133,7 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
 
             if (m_creature->GetEntry() == NPC_ABANDONED_SIEGE_ENGINE)
             {
-                if (m_creature->HasAura(SPELL_DEPLOY_SIEGE_MODE) && !GetClosestCreatureWithEntry(m_creature, NPC_TOWER_CANNON_TARGET, 200.0f))
+                if (m_creature->HasAura(SPELL_DEPLOY_SIEGE_MODE) && !GetClosestCreatureWithEntry(m_creature, NPC_TOWER_CANNON_TARGET, 200.0f, false, false))
                 {
                     if (VehicleKit* vehicle = m_creature->GetVehicleKit())
                         vehicle->RemoveAllPassengers();
