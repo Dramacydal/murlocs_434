@@ -356,6 +356,9 @@ inline bool IsSpellWithCasterSourceTargetsOnly(SpellEntry const* spellInfo)
         if(!effectEntry)
             continue;
 
+        if (effectEntry->Effect == SPELL_EFFECT_TRIGGER_MISSILE)
+            return false;
+
         uint32 targetA = effectEntry->EffectImplicitTargetA;
         if(targetA && !IsCasterSourceTarget(targetA))
             return false;
