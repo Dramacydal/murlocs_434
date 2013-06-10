@@ -1055,6 +1055,7 @@ void BattleFieldTB::ResetVehicles(bool atStart)
         if (Creature* vehicle = GetMap()->GetAnyTypeCreature(*itr))
         {
             vehicle->SetPhaseMask(atStart ? 1 : 2, true);
+            vehicle->CastSpell(vehicle, SPELL_LEAVE_SIEGE_MODE, true);
             if (atStart)
             {
                 vehicle->Respawn();
