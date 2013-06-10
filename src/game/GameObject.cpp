@@ -1848,17 +1848,15 @@ void GameObject::DamageTaken(Unit* pDoneBy, uint32 damage, uint32 spellId)
     else
         m_health = 0;
 
+    DestructibleModelDataEntry const* modelData = sDestructibleModelDataStore.LookupEntry(m_goInfo->destructibleBuilding.destructibleData);
+
     if (HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED)) // from damaged to destroyed
     {
         if (!m_health)
         {
             RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED);
             SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
-            uint32 modelId = m_goInfo->destructibleBuilding.destroyedDisplayId;
-            if (DestructibleModelDataEntry const* modelData = sDestructibleModelDataStore.LookupEntry(m_goInfo->destructibleBuilding.destructibleData))
-                if (modelData->DestroyedDisplayId)
-                    modelId = modelData->DestroyedDisplayId;
-            SetDisplayId(modelId);
+            SetDisplayId(modelData ? modelData->DestroyedDisplayId : m_goInfo->destructibleBuilding.destroyedDisplayId);
 
             if (pWho)
             {
@@ -1878,14 +1876,10 @@ void GameObject::DamageTaken(Unit* pDoneBy, uint32 damage, uint32 spellId)
         if (m_health <= m_goInfo->destructibleBuilding.damagedNumHits)
         {
             SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED);
-            uint32 modelId = m_goInfo->destructibleBuilding.damagedDisplayId;
-            if (DestructibleModelDataEntry const* modelData = sDestructibleModelDataStore.LookupEntry(m_goInfo->destructibleBuilding.destructibleData))
-                if (modelData->DamagedDisplayId)
-                    modelId = modelData->DamagedDisplayId;
-            SetDisplayId(modelId);
+            SetDisplayId(modelData ? modelData->DamagedDisplayId : m_goInfo->destructibleBuilding.damagedDisplayId);
 
             // if we have a "dead" display we can "kill" the building after its damaged
-            if (m_goInfo->destructibleBuilding.destroyedDisplayId)
+            if (m_goInfo->destructibleBuilding.destroyedDisplayId || modelData && modelData->DestroyedDisplayId)
             {
                 m_health = m_goInfo->destructibleBuilding.damagedNumHits;
                 if (!m_health)
