@@ -340,6 +340,7 @@ inline bool IsCasterSourceTarget(uint32 target)
         case TARGET_DIRECTLY_FORWARD:
         case TARGET_NONCOMBAT_PET:
         case TARGET_IN_FRONT_OF_CASTER_30:
+        case TARGET_106:
         case TARGET_119:
             return true;
         default:

@@ -1823,8 +1823,8 @@ void GameObject::DamageTaken(Unit* pDoneBy, uint32 damage, uint32 spellId)
     {
         if (pDoneBy->GetTypeId() == TYPEID_PLAYER)
             pWho = (Player*)pDoneBy;
-        else if (((Creature*)pDoneBy)->GetVehicleKit())
-            pWho = (Player*)pDoneBy->GetCharmerOrOwner();
+        else if (pDoneBy->GetVehicleKit())
+            pWho = pDoneBy->GetCharmerOrOwnerPlayerOrPlayerItself();
     }
 
     DEBUG_FILTER_LOG(LOG_FILTER_DAMAGE, "GO damage taken: %u to health %u", damage, m_health);
@@ -1837,9 +1837,12 @@ void GameObject::DamageTaken(Unit* pDoneBy, uint32 damage, uint32 spellId)
         {
             if (BattleGround *bg = pWho->GetBattleGround())
                 bg->EventPlayerDamageGO(pWho, this, m_goInfo->destructibleBuilding.damageEvent, spellId);
+        }
 
-            if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
-                opvp->HandleEvent(m_goInfo->destructibleBuilding.damageEvent, this, pWho, spellId);
+        if (pDoneBy)
+        {
+            if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho ? pWho->GetCachedZoneId() : pDoneBy->GetZoneId()))
+                opvp->HandleEvent(m_goInfo->destructibleBuilding.damageEvent, this, pWho ? pWho : pDoneBy, spellId);
         }
     }
     else
@@ -1856,14 +1859,17 @@ void GameObject::DamageTaken(Unit* pDoneBy, uint32 damage, uint32 spellId)
                 if (modelData->DestroyedDisplayId)
                     modelId = modelData->DestroyedDisplayId;
             SetDisplayId(modelId);
-            
+
             if (pWho)
             {
-                if (BattleGround *bg = pWho->GetBattleGround())
+                if (BattleGround* bg = pWho->GetBattleGround())
                     bg->EventPlayerDamageGO(pWho, this, m_goInfo->destructibleBuilding.destroyedEvent, spellId);
+            }
 
-                if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
-                    opvp->HandleEvent(m_goInfo->destructibleBuilding.destroyedEvent, this, pWho, spellId);
+            if (pDoneBy)
+            {
+                if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho ? pWho->GetCachedZoneId() : pDoneBy->GetZoneId()))
+                    opvp->HandleEvent(m_goInfo->destructibleBuilding.destroyedEvent, this, pWho ? pWho : pDoneBy, spellId);
             }
         }
     }
@@ -1893,9 +1899,12 @@ void GameObject::DamageTaken(Unit* pDoneBy, uint32 damage, uint32 spellId)
             {
                 if (BattleGround *bg = pWho->GetBattleGround())
                     bg->EventPlayerDamageGO(pWho, this, m_goInfo->destructibleBuilding.damagedEvent, spellId);
+            }
 
-                if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
-                    opvp->HandleEvent(m_goInfo->destructibleBuilding.damagedEvent, this, pWho, spellId);
+            if (pDoneBy)
+            {
+                if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho ? pWho->GetCachedZoneId() : pDoneBy->GetZoneId()))
+                    opvp->HandleEvent(m_goInfo->destructibleBuilding.damagedEvent, this, pWho ? pWho : pDoneBy, spellId);
             }
          }
     }

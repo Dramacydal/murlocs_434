@@ -60,7 +60,7 @@ class MANGOS_DLL_SPEC OutdoorPvP
         virtual void FillInitialWorldStates(WorldPacket& /*data*/, uint32& /*count*/) {}
 
         // Process Capture event
-        virtual bool HandleEvent(uint32 /*eventId*/, GameObject* /*go*/, Player* pInvoker = NULL, uint32 spellId = 0) { return false; }
+        virtual bool HandleEvent(uint32 /*eventId*/, GameObject* /*go*/, Unit* pInvoker = NULL, uint32 spellId = 0) { return false; }
 
         // handle capture objective complete
         virtual void HandleObjectiveComplete(uint32 /*eventId*/, std::list<Player*> /*players*/, Team /*team*/) {}

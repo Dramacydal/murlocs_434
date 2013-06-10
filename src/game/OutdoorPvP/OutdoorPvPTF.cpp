@@ -135,7 +135,7 @@ void OutdoorPvPTF::HandleObjectiveComplete(uint32 eventId, std::list<Player*> pl
 }
 
 // process the capture events
-bool OutdoorPvPTF::HandleEvent(uint32 eventId, GameObject* go, Player* pInvoker, uint32 spellId)
+bool OutdoorPvPTF::HandleEvent(uint32 eventId, GameObject* go, Unit* pInvoker, uint32 spellId)
 {
     for (uint8 i = 0; i < MAX_TF_TOWERS; ++i)
     {

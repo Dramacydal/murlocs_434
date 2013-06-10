@@ -5919,8 +5919,8 @@ void Spell::EffectTriggerSpell(SpellEffectEntry const* effect)
 
         m_caster->CastSpell(x, y, z, spellInfo, true, NULL, NULL, m_originalCasterGUID);
         return;
-    }
-    else*/
+    }*/
+    else
     {
         // Note: not exist spells with weapon req. and IsSpellHaveCasterSourceTargets == true
         // so this just for speedup places in else
@@ -14848,8 +14848,8 @@ void Spell::EffectWMODamage(SpellEffectEntry const* effect)
     if (caster->GetTypeId() == TYPEID_PLAYER)
         pWho = (Player*)caster;
     else if (((Creature*)caster)->GetVehicleKit())
-        pWho = (Player*)caster->GetCharmerOrOwner();
-    
+        pWho = caster->GetCharmerOrOwnerPlayerOrPlayerItself();
+
     if (pWho)
     {
         if (BattleGround* bg = pWho->GetBattleGround())

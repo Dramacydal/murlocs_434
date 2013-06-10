@@ -165,7 +165,7 @@ void OutdoorPvPHP::HandlePlayerKillInsideArea(Player* player, Unit* /*victim*/)
 }
 
 // process the capture events
-bool OutdoorPvPHP::HandleEvent(uint32 eventId, GameObject* go, Player* pInvoker, uint32 spellId)
+bool OutdoorPvPHP::HandleEvent(uint32 eventId, GameObject* go, Unit* pInvoker, uint32 spellId)
 {
     for (uint8 i = 0; i < MAX_HP_TOWERS; ++i)
     {

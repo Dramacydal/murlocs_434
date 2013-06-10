@@ -155,7 +155,7 @@ class OutdoorPvPHP : public OutdoorPvP
         void FillInitialWorldStates(WorldPacket& data, uint32& count) override;
         void SendRemoveWorldStates(Player* player) override;
 
-        bool HandleEvent(uint32 eventId, GameObject* go, Player* pInvoker, uint32 spellId) override;
+        bool HandleEvent(uint32 eventId, GameObject* go, Unit* pInvoker, uint32 spellId) override;
         void HandleObjectiveComplete(uint32 eventId, std::list<Player*> players, Team team) override;
 
         void HandleGameObjectCreate(GameObject* go) override;

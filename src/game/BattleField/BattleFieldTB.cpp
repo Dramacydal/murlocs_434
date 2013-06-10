@@ -409,15 +409,15 @@ uint32 baseStates[TB_BASE_COUNT][4] =
 };
 
 // process the capture events
-bool BattleFieldTB::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvoker, uint32 spellId)
+bool BattleFieldTB::HandleEvent(uint32 uiEventId, GameObject* pGo, Unit* pInvoker, uint32 spellId)
 {
     if (!uiEventId)
         return false;
 
-    if (m_state != BF_STATE_IN_PROGRESS)
+    if (!pInvoker || m_state != BF_STATE_IN_PROGRESS)
         return false;
 
-    if (pInvoker && !IsMember(pInvoker->GetObjectGuid()))
+    if (pInvoker->GetEntry() != NPC_SIEGE_ENGINE_TURRET)
         return false;
 
     GameObjectInfo const * info = pGo->GetGOInfo();

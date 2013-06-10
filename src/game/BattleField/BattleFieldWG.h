@@ -751,7 +751,7 @@ class MANGOS_DLL_SPEC BattleFieldWG : public BattleField
         void _OnCreatureCreate(Creature* pCreature);
         void HandleCreatureDeath(Creature * pCreature) override;
         void HandleGameObjectCreate(GameObject* pGo) override;
-        bool HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvoker = NULL, uint32 spellId = 0) override;
+        bool HandleEvent(uint32 uiEventId, GameObject* pGo, Unit* pInvoker = NULL, uint32 spellId = 0) override;
 
         void HandlePlayerEnterZone(Player* pPlayer, bool isMainZone) override;
         void HandlePlayerLeaveZone(Player* pPlayer, bool isMainZone) override;

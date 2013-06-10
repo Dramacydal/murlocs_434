@@ -765,12 +765,16 @@ void BattleFieldWG::HandlePlayerKillInsideArea(Player* pPlayer, Unit* pVictim)
 }
 
 // process the capture events
-bool BattleFieldWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Player* pInvoker, uint32 spellId)
+bool BattleFieldWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Unit* _pInvoker, uint32 spellId)
 {
     if (!uiEventId)
         return false;
 
-    if (pInvoker && !IsMember(pInvoker->GetObjectGuid()))
+    if (!_pInvoker || _pInvoker->GetTypeId() != TYPEID_PLAYER)
+        return false;
+
+    Player* pInvoker = (Player*)_pInvoker;
+    if (!IsMember(pInvoker->GetObjectGuid()))
         return false;
 
     GameObjectInfo const * info = pGo->GetGOInfo();
