@@ -417,18 +417,18 @@ bool BattleFieldTB::HandleEvent(uint32 uiEventId, GameObject* pGo, Unit* pInvoke
     if (!pInvoker || m_state != BF_STATE_IN_PROGRESS)
         return false;
 
-    if (pInvoker->GetEntry() != NPC_SIEGE_ENGINE_TURRET)
-        return false;
-
     GameObjectInfo const * info = pGo->GetGOInfo();
 
     int32 textId = 0;
-    switch(pGo->GetEntry())
+    switch (pGo->GetEntry())
     {
         case GO_WEST_SPIRE:
         case GO_EAST_SPIRE:
         case GO_SOUTH_SPIRE:
         {
+            if (pInvoker->GetEntry() != NPC_SIEGE_ENGINE_TURRET)
+                return false;
+
             uint8 idx = 0;
             switch(pGo->GetEntry())
             {
