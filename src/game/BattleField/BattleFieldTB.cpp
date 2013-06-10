@@ -704,6 +704,7 @@ void BattleFieldTB::EndBattle(TeamIndex winner, bool byTimer)
 
     BuffTeam(TEAM_NONE, winner == TEAM_INDEX_ALLIANCE ? SPELL_ALLIANCE_CONTROL_PHASE_SHIFT : SPELL_HORDE_CONTROL_PHASE_SHIFT, false, false);
     BuffTeam(TEAM_NONE, SPELL_TOWER_ATTACK_BONUS, true, false);
+    BuffTeam(TEAM_NONE, SPELL_TB_VETERAN, true, false);
 
     m_damagedTowers = 0;
     m_destroyedTowers = 0;

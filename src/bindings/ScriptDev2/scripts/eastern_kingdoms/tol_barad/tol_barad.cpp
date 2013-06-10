@@ -75,6 +75,8 @@ CreatureAI* GetAI_npc_tol_barad_spirit_guide(Creature* pCreature)
     return new npc_tol_barad_spirit_guideAI(pCreature);
 }
 
+#define SIEGE_TURRET_SEAT_ID 7
+
 struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
 {
     npc_tol_barad_vehicleAI(Creature* pCreature) : ScriptedAI(pCreature)
@@ -139,6 +141,12 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
                         vehicle->RemoveAllPassengers();
                 }
             }
+            else if (m_creature->GetEntry() == NPC_SIEGE_ENGINE_TURRET)
+            {
+                Unit* creator = m_creature->GetCreator();
+                if (!creator || !creator->IsInMap(m_creature))
+                    m_creature->ForcedDespawn(200);
+            }
         }
         else
             auraCheckTimer -= uiDiff;
@@ -166,10 +174,7 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
         if (!apply)
         {
             if (unit->GetTypeId() == TYPEID_PLAYER)
-            {
-                m_creature->CastSpell(m_creature, SPELL_THICK_LAYER_OF_DUST, true);
                 m_creature->setFaction(BFFactions[GetTeamIndex(((Player*)unit)->GetTeam())]);
-            }
             else
             {
                 ((Creature*)unit)->ForcedDespawn(200);
@@ -190,7 +195,7 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
     {
         if (creature->GetEntry() == NPC_SIEGE_ENGINE_TURRET)
             if (VehicleKit* vehicle = m_creature->GetVehicleKit())
-                creature->EnterVehicle(vehicle, 7);
+                creature->EnterVehicle(vehicle, SIEGE_TURRET_SEAT_ID);
     }
 
     void SpellHit(Unit* /*pUnit*/, SpellEntry const* spell) override

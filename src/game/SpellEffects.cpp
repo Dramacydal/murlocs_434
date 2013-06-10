@@ -14850,14 +14850,14 @@ void Spell::EffectWMODamage(SpellEffectEntry const* effect)
     else if (((Creature*)caster)->GetVehicleKit())
         pWho = caster->GetCharmerOrOwnerPlayerOrPlayerItself();
 
+    if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho ? pWho->GetCachedZoneId() : caster->GetZoneId()))
+        if (!opvp->CanDamageGO(gameObjTarget, pWho))
+            return;
+
     if (pWho)
     {
         if (BattleGround* bg = pWho->GetBattleGround())
             if (!bg->CanDamageGO(gameObjTarget, pWho))
-                return;
-
-        if (OutdoorPvP* opvp = sOutdoorPvPMgr.GetScript(pWho->GetCachedZoneId()))
-            if (!opvp->CanDamageGO(gameObjTarget, pWho))
                 return;
 
         float mod = 1.0f;
@@ -14885,7 +14885,7 @@ void Spell::EffectWMODamage(SpellEffectEntry const* effect)
     data << gameObjTarget->GetPackGUID();
     data << caster->GetPackGUID();
 
-    if (Unit *who = caster->GetCharmerOrOwner()) //check for pet / vehicle
+    if (Unit* who = caster->GetCharmerOrOwner()) //check for pet / vehicle
         data << who->GetPackGUID();
     else
         data << caster->GetPackGUID();
