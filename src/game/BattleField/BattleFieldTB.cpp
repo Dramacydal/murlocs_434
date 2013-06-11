@@ -980,6 +980,8 @@ bool BattleFieldTB::OnPlayerPortResponse(Player* plr, bool accept)
             UpdateTowerBuff(plr);
             UpdateScoreBuff(plr);
         }
+
+        plr->GetAchievementMgr().ResetAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, ACHIEVEMENT_CRITERIA_CONDITION_MAP, plr->GetMapId());
         return true;
     }
 

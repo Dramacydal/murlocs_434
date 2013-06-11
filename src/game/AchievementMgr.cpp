@@ -566,6 +566,7 @@ void AchievementMgr<T>::ResetAchievementCriteria(AchievementCriteriaTypes type, 
             case ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA:
             case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET:
             case ACHIEVEMENT_CRITERIA_TYPE_CAST_SPELL:
+            case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE:
             {
                 switch(achievementCriteria->referredAchievement) // All achievements that should reset its progress.
                 {
@@ -597,8 +598,11 @@ void AchievementMgr<T>::ResetAchievementCriteria(AchievementCriteriaTypes type, 
                     case 5226:      // Cloud Nine
                     case 5227:      // Cloud Nine
                     case 5228:      // Wild Hammering
+                    case 5488:      // Towers of Power
                         SetCriteriaProgress(achievementCriteria, achievement, 0, referencePlayer, PROGRESS_SET);
-                    default: continue; // Do not reset progress for other achievements.
+                        break;
+                    default:
+                        continue; // Do not reset progress for other achievements.
                 }
                 break;
             }
