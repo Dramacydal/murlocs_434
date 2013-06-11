@@ -10486,16 +10486,18 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
         }
         case 85122:                                     // Siege Cannon
         {
-            Unit* target = NULL;
+            UnitList targets;
             MaNGOS::NearestCreatureEntryInObjectRangeCheck u_check(*m_caster, 45561, radius, true);
-            MaNGOS::UnitSearcher<MaNGOS::NearestCreatureEntryInObjectRangeCheck> searcher(target,  u_check);
+            MaNGOS::UnitListSearcher<MaNGOS::NearestCreatureEntryInObjectRangeCheck> searcher(targets, u_check);
             Cell::VisitGridObjects(m_caster, searcher, radius);
-            if (target)
-            {
-                targetUnitMap.push_back(target);
-                m_targets.setDestination(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ());
-                m_targets.setUnitTarget(target);
-            }
+            if (targets.empty())
+                return true;
+
+            UnitList::iterator itr = targets.begin();
+            std::advance(itr, urand(0, targets.size() - 1));
+            targetUnitMap.push_back(*itr);
+            m_targets.setDestination((*itr)->GetPositionX(), (*itr)->GetPositionY(), (*itr)->GetPositionZ());
+            m_targets.setUnitTarget((*itr));
             return true;
         }
         case 96931:                                     // Eyes of Occu'thar

@@ -236,7 +236,7 @@ void BattleFieldTB::HandleCreatureCreate(Creature* pCreature)
                 pCreature->SetPhaseMask(m_towers[TB_TOWER_SOUTH]->IsDestroyed() ? 2 : 1, true);
             }
 
-            pCreature->setFaction(BFFactions[GetAttacker()]);
+            pCreature->setFaction(BFFactions[pCreature->GetEntry() == NPC_TOWER_RANGE_FINDER ? GetAttacker() : m_defender]);
             return;
         default:
             return;
@@ -874,7 +874,7 @@ void TBTower::SpawnTargets(bool spawn)
         {
             pCreature->SetPhaseMask(spawn ? 1 : 2, true);
             if (spawn)
-                pCreature->setFaction(BFFactions[opvp->GetAttacker()]);
+                pCreature->setFaction(BFFactions[pCreature->GetEntry() == NPC_TOWER_RANGE_FINDER ? opvp->GetAttacker() : opvp->GetDefender()]);
         }
     }
 }
