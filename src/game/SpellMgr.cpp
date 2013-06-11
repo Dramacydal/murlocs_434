@@ -1147,6 +1147,7 @@ bool IsPositiveEffect(SpellEntry const *spellproto, SpellEffectIndex effIndex)
         case 39288:                                         // Kargath's Executioner
         case 39289:                                         // Kargath's Executioner
         case 39290:                                         // Kargath's Executioner
+        case 85123:                                         // Siege Cannon
             return false;
         case 552:                                           // Abolish Disease
         case 12042:                                         // Arcane Power

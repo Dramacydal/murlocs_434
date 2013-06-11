@@ -112,7 +112,7 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
                     m_creature->setFaction(BFFactions[opvp->GetAttacker()]);
 
                 if (!m_creature->GetCharmerGuid())
-                    m_creature->CastSpell(m_creature, SPELL_THICK_LAYER_OF_DUST, true);
+                    m_creature->CastSpell(m_creature, SPELL_THICK_LAYER_OF_RUST, true);
             }
         }
 
@@ -182,7 +182,7 @@ struct MANGOS_DLL_DECL npc_tol_barad_vehicleAI : public ScriptedAI
             }
         }
         else if (unit->GetTypeId() == TYPEID_PLAYER)
-            m_creature->RemoveAurasDueToSpell(SPELL_THICK_LAYER_OF_DUST);
+            m_creature->RemoveAurasDueToSpell(SPELL_THICK_LAYER_OF_RUST);
         else if (unit->GetEntry() == NPC_SIEGE_ENGINE_TURRET)
         {
             if (opvp)

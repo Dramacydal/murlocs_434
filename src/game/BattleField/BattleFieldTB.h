@@ -30,7 +30,7 @@ class BattleFieldTB;
 
 enum TolBaradSpells
 {
-    SPELL_THICK_LAYER_OF_DUST                   = 95330,
+    SPELL_THICK_LAYER_OF_RUST                   = 95330,
 
     SPELL_WIN_ALLIANCE_REWARD                   = 89789,
     SPELL_WIN_HORDE_REWARD                      = 89791,
@@ -57,6 +57,8 @@ enum TolBaradSpells
     SPELL_LEAVE_SIEGE_MODE                      = 85078,
 
     SPELL_TB_SPIRITUAL_IMMUNITY                 = 95332,
+
+    SPELL_ACH_TOWER_PLOWER                      = 95765,
 };
 
 enum

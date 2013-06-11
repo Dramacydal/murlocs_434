@@ -494,6 +494,21 @@ bool BattleFieldTB::HandleEvent(uint32 uiEventId, GameObject* pGo, Unit* pInvoke
                         textId = LANG_TB_SPIRE_DESTROYED_E;
                         break;
                 }
+
+                for (GuidZoneMap::iterator itr = m_zonePlayers.begin(); itr != m_zonePlayers.end(); ++itr)
+                {
+                    if (itr->first.IsEmpty() || !IsMember(itr->first))
+                        continue;
+
+                    Player* plr = sObjectMgr.GetPlayer(itr->first);
+                    if (!plr)
+                        continue;
+
+                    if (GetTeamIndex(plr->GetTeam()) == m_defender || pGo->GetDistance2d(plr->GetPositionX(), plr->GetPositionY()) > 40.0f)
+                        continue;
+
+                    plr->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_ACH_TOWER_PLOWER, 1);
+                }
             }
             break;
         }
@@ -1058,7 +1073,11 @@ void BattleFieldTB::ResetVehicles(bool atStart)
             vehicle->CastSpell(vehicle, SPELL_LEAVE_SIEGE_MODE, true);
             if (atStart)
             {
+                float x, y, z, o;
+                vehicle->GetRespawnCoord(x, y, z, &o);
+                GetMap()->CreatureRelocation(vehicle, x, y, z, o);
                 vehicle->Respawn();
+                vehicle->CastSpell(vehicle, SPELL_THICK_LAYER_OF_RUST, true);
                 vehicle->setFaction(BFFactions[GetAttacker()]);
             }
         }

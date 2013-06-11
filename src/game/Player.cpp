@@ -23254,7 +23254,7 @@ void Player::RewardSinglePlayerAtKill(Unit* pVictim)
             {
                 KilledMonster(normalInfo, pVictim->GetObjectGuid());
                 if(uint32 normalType = normalInfo->type)
-                    UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, normalType, xp);
+                    UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, normalType, xp, pVictim);
             }
     }
 }
