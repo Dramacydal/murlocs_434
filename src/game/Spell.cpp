@@ -3689,6 +3689,9 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
 
             if (IsPositiveSpell(m_spellInfo->Id))
                 targetUnitMap.push_back(m_caster);
+            // Siege Cannon
+            else if (m_spellInfo->Id == 85123)
+                targetUnitMap.push_back(m_targets.getUnitTarget());
             break;
         }
         case TARGET_EFFECT_SELECT:
