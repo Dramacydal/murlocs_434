@@ -64,6 +64,9 @@ struct MANGOS_DLL_DECL npc_tol_barad_spirit_guideAI : public ScriptedAI
 
 bool GossipHello_npc_tol_barad_spirit_guide(Player* pPlayer, Creature* pCreature)
 {
+    if (pPlayer->GetCachedZoneId() != ZONE_ID_TOL_BARAD)
+        return false;
+
     if (pPlayer->isDead())
         pPlayer->CastSpell(pPlayer, SPELL_WAITING_TO_RESURRECT, true);
 

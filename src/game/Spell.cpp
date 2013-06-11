@@ -10487,8 +10487,8 @@ bool Spell::FillCustomTargetMap(SpellEffectIndex effIndex, UnitList &targetUnitM
         case 85122:                                     // Siege Cannon
         {
             UnitList targets;
-            MaNGOS::NearestCreatureEntryInObjectRangeCheck u_check(*m_caster, 45561, radius, true);
-            MaNGOS::UnitListSearcher<MaNGOS::NearestCreatureEntryInObjectRangeCheck> searcher(targets, u_check);
+            MaNGOS::AllCreaturesOfEntryInRangeCheck u_check(m_caster, 45561, radius);
+            MaNGOS::UnitListSearcher<MaNGOS::AllCreaturesOfEntryInRangeCheck> searcher(targets, u_check);
             Cell::VisitGridObjects(m_caster, searcher, radius);
             if (targets.empty())
                 return true;
