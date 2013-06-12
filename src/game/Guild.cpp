@@ -513,7 +513,7 @@ bool Guild::LoadMembersFromDB(QueryResult *guildMembersResult)
             newmember.BankRemSlotsTab[i]  = fields[8+(2*i)].GetUInt32();
         }
 
-        newmember.Name                  = fields[32].GetCppString();
+        newmember.Name                  = fields[23].GetCppString();
         newmember.Level                 = fields[24].GetUInt8();
         newmember.Class                 = fields[25].GetUInt8();
         newmember.ZoneId                = fields[26].GetUInt32();
