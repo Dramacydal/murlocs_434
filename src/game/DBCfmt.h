@@ -128,6 +128,7 @@ const std::string CustomSpellEntryIndex = "Id";
 const char SpellAuraOptionsEntryfmt[]="diiii";
 const char SpellAuraRestrictionsEntryfmt[]="diiiiiiii";
 const char SpellCastingRequirementsEntryfmt[]="dixxixi";
+const char SpellCategoryEntryfmt[] = "dixx";
 const char SpellCategoriesEntryfmt[]="diiiiii";
 const char SpellClassOptionsEntryfmt[]="dxiiiix";
 const char SpellCooldownsEntryfmt[]="diii";

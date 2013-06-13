@@ -1468,6 +1468,8 @@ enum Opcodes
     SMSG_RESEARCH_COMPLETE                                = 0x35A6, // 4.3.4 15595
     CMSG_REQUEST_CATEGORY_COOLDOWNS                       = 0x7102, // 4.3.4 15595
     SMSG_SPELL_CATEGORY_COOLDOWN                          = 0x71B6, // 4.3.4 15595
+    SMSG_WEEKLY_SPELL_USAGE                               = 0x39B7, // 4.3.4 15595
+    SMSG_WEEKLY_SPELL_USAGE_UPDATE                        = 0x11B5, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF

@@ -801,6 +801,7 @@ class World
         void ResetDailyQuests();
         void ResetWeeklyQuests();
         void ResetRandomBG();
+        void ResetWeeklySpellUsage();
         void ResetMonthlyQuests();
         void GetNewGifts();
         void GetConsoleCommands();

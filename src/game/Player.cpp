@@ -4139,8 +4139,8 @@ void Player::RemoveSpellCooldown( uint32 spell_id, bool update /* = false */ )
 
 void Player::RemoveSpellCategoryCooldown(uint32 cat, bool update /* = false */)
 {
-    SpellCategoryStore::const_iterator ct = sSpellCategoryStore.find(cat);
-    if (ct == sSpellCategoryStore.end())
+    SpellCategoryMap::const_iterator ct = sSpellCategoryMap.find(cat);
+    if (ct == sSpellCategoryMap.end())
         return;
 
     const SpellCategorySet& ct_set = ct->second;
@@ -4269,6 +4269,68 @@ void Player::_SaveSpellCooldowns()
         }
         else
             ++itr;
+    }
+}
+
+void Player::_LoadWeeklySpellUsage(QueryResult* result)
+{
+    // "SELECT spell, count FROM character_weekly_spell_usage WHERE guid = %u"
+    if (!result)
+        return;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 spell_id = fields[0].GetUInt32();
+        uint8 count = fields[1].GetUInt8();
+
+        SpellEntry const* entry = sSpellStore.LookupEntry(spell_id);
+        if (!entry)
+        {
+            ERROR_LOG("Player %u has unknown spell %u in `character_weekly_spell_usage`, skipping.", GetGUIDLow(), spell_id);
+            continue;
+        }
+
+        SpellCategoriesEntry const* categoriesEntry = entry->GetSpellCategories();
+        if (!categoriesEntry)
+        {
+            ERROR_LOG("Player %u has spell %u in `character_weekly_spell_usage`, but that spell does not have category, skipping.", GetGUIDLow(), spell_id);
+            continue;
+        }
+
+        SpellCategoryEntry const* categoryEntry = sSpellCategoryStore.LookupEntry(categoriesEntry->Category);
+        if (!categoryEntry)
+        {
+            ERROR_LOG("Player %u has spell %u in `character_weekly_spell_usage`, but that spell has unexistant category %u, skipping.", GetGUIDLow(), spell_id, categoriesEntry->Category);
+            continue;
+        }
+
+        if ((categoryEntry->flags & SPELL_CATEGORY_FLAG_WEEKLY) == 0)
+        {
+            ERROR_LOG("Player %u has spell %u in `character_weekly_spell_usage`, but that spell is not 'weekly' spell, skipping.", GetGUIDLow(), spell_id);
+            continue;
+        }
+
+        m_weeklySpells[spell_id] = count;
+    }
+    while (result->NextRow());
+
+    delete result;
+}
+
+void Player::_SaveWeeklySpellUsage()
+{
+    static SqlStatementID deleteWeeklySpells;
+    static SqlStatementID insertWeeklySpells;
+
+    SqlStatement stmt = CharacterDatabase.CreateStatement(deleteWeeklySpells, "DELETE FROM character_weekly_spell_usage WHERE guid = ?");
+    stmt.PExecute(GetGUIDLow());
+
+    for (WeeklySpells::iterator itr = m_weeklySpells.begin(); itr != m_weeklySpells.end(); ++itr)
+    {
+        stmt = CharacterDatabase.CreateStatement(insertWeeklySpells, "INSERT INTO character_weekly_spell_usage (guid, spell, count) VALUES (?, ?, ?)");
+        stmt.PExecute(GetGUIDLow(), itr->first, uint32(itr->second));
     }
 }
 
@@ -17095,6 +17157,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
     SetFallInformation(0, GetPositionZ());
 
     _LoadSpellCooldowns(holder->GetResult(PLAYER_LOGIN_QUERY_LOADSPELLCOOLDOWNS));
+    _LoadWeeklySpellUsage(holder->GetResult(PLAYER_LOGIN_QUERY_LOAD_WEEKLY_SPELL_USAGE));
 
     // Spell code allow apply any auras to dead character in load time in aura/spell/item loading
     // Do now before stats re-calculation cleanup for ghost state unexpected auras
@@ -19090,6 +19153,7 @@ void Player::SaveToDB()
     _SaveMonthlyQuestStatus();
     _SaveSpells();
     _SaveSpellCooldowns();
+    _SaveWeeklySpellUsage();
     _SaveActions();
     _SaveAuras();
     _SaveSkills();
@@ -21645,6 +21709,14 @@ void Player::AddSpellAndCategoryCooldowns(SpellEntry const* spellInfo, uint32 it
         catrec = spellInfo->GetCategoryRecoveryTime();
     }
 
+    // process weekly spell usages
+    if (cat)
+    {
+        if (SpellCategoryEntry const* categoryEntry = sSpellCategoryStore.LookupEntry(cat))
+            if (categoryEntry->flags & SPELL_CATEGORY_FLAG_WEEKLY)
+                AddWeeklySpellUsage(spellInfo->Id);
+    }
+
     time_t curTime = time(NULL);
 
     time_t catrecTime;
@@ -21715,8 +21787,8 @@ void Player::AddSpellAndCategoryCooldowns(SpellEntry const* spellInfo, uint32 it
     // category spells
     if (cat && catrec > 0)
     {
-        SpellCategoryStore::const_iterator i_scstore = sSpellCategoryStore.find(cat);
-        if(i_scstore != sSpellCategoryStore.end())
+        SpellCategoryMap::const_iterator i_scstore = sSpellCategoryMap.find(cat);
+        if(i_scstore != sSpellCategoryMap.end())
         {
             for(SpellCategorySet::const_iterator i_scset = i_scstore->second.begin(); i_scset != i_scstore->second.end(); ++i_scset)
             {
@@ -22345,6 +22417,7 @@ void Player::SendInitialPacketsBeforeAddToMap()
         m_movementInfo.AddMovementFlag(MOVEFLAG_FLYING);
 
     SendCurrencies();
+    SendWeeklySpellUsage();
 
     SetMover(this);
 }
@@ -27904,4 +27977,24 @@ uint32 Player::GetChampioningFaction()
         return 0;
 
     return faction;
+}
+
+void Player::ResetWeeklySpellUsage()
+{
+    m_weeklySpells.clear();
+    SendWeeklySpellUsage();
+}
+
+void Player::SendWeeklySpellUsage()
+{
+    WorldPacket data(SMSG_WEEKLY_SPELL_USAGE, 3 + m_weeklySpells.size() * (4 + 1));
+    data.WriteBits(m_weeklySpells.size(), 23);
+
+    for (WeeklySpells::const_iterator itr = m_weeklySpells.begin(); itr != m_weeklySpells.end(); ++itr)
+    {
+        data << uint32(itr->first);
+        data << uint8(itr->second);
+    }
+
+    SendDirectMessage(&data);
 }

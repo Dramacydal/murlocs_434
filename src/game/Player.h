@@ -241,6 +241,7 @@ struct SpellCooldown
 };
 
 typedef std::map<uint32, SpellCooldown> SpellCooldowns;
+typedef std::map<uint32, uint8> WeeklySpells;
 
 enum TrainerSpellState
 {
@@ -983,6 +984,7 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOAD_VOID_STORAGE,
     PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY,
     PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_FINDS,
+    PLAYER_LOGIN_QUERY_LOAD_WEEKLY_SPELL_USAGE,
 
     MAX_PLAYER_LOGIN_QUERY
 };
@@ -1893,7 +1895,11 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool HasSpellCooldown(uint32 spell_id) const
         {
             SpellCooldowns::const_iterator itr = m_spellCooldowns.find(spell_id);
-            return itr != m_spellCooldowns.end() && itr->second.end > time(NULL);
+            if (itr != m_spellCooldowns.end() && itr->second.end > time(NULL))
+                return true;
+
+            WeeklySpells::const_iterator itr2 = m_weeklySpells.find(spell_id);
+            return itr2 != m_weeklySpells.end();
         }
         time_t GetSpellCooldownDelay(uint32 spell_id) const
         {
@@ -1910,13 +1916,18 @@ class MANGOS_DLL_SPEC Player : public Unit
         void RemoveSpellCategoryCooldown(uint32 cat, bool update = false);
         void SendClearCooldown( uint32 spell_id, Unit* target );
         void SendModifyCooldown( uint32 spell_id, int32 delta);
+        uint32 AddWeeklySpellUsage(uint32 spell) { ++m_weeklySpells[spell]; }
+        void ResetWeeklySpellUsage();
+        void SendWeeklySpellUsage();
 
         GlobalCooldownMgr& GetGlobalCooldownMgr() { return m_GlobalCooldownMgr; }
 
         void RemoveArenaSpellCooldowns();
         void RemoveAllSpellCooldown();
-        void _LoadSpellCooldowns(QueryResult *result);
+        void _LoadSpellCooldowns(QueryResult* result);
         void _SaveSpellCooldowns();
+        void _LoadWeeklySpellUsage(QueryResult* result);
+        void _SaveWeeklySpellUsage();
         void SetLastPotionId(uint32 item_id) { m_lastPotionId = item_id; }
         uint32 GetLastPotionId() { return m_lastPotionId; }
         void UpdatePotionCooldown(Spell* spell = NULL);
@@ -2982,6 +2993,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         PlayerTalentMap m_talents[MAX_TALENT_SPEC_COUNT];
         uint32 m_talentsPrimaryTree[MAX_TALENT_SPEC_COUNT];
         SpellCooldowns m_spellCooldowns;
+        WeeklySpells m_weeklySpells;
 
         uint32 m_lastPotionId;                              // last used health/mana potion in combat, that block next potion use
 

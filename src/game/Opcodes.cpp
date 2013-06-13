@@ -1450,4 +1450,6 @@ void InitializeOpcodes()
     OPCODE(SMSG_RESEARCH_COMPLETE,                       STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
     OPCODE(CMSG_REQUEST_CATEGORY_COOLDOWNS,              STATUS_LOGGEDIN, PROCESS_INPLACE,      &WorldSession::HandleRequestCategoryCooldownsOpcode);
     OPCODE(SMSG_SPELL_CATEGORY_COOLDOWN,                 STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
+    OPCODE(SMSG_WEEKLY_SPELL_USAGE,                      STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
+    OPCODE(SMSG_WEEKLY_SPELL_USAGE_UPDATE,               STATUS_NEVER,    PROCESS_INPLACE,      &WorldSession::Handle_ServerSide               );
 };

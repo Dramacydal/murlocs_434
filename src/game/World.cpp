@@ -1810,6 +1810,7 @@ void World::Update(uint32 diff)
     if (m_gameTime > m_NextDailyQuestReset)
     {
         ResetDailyQuests();
+        ResetWeeklySpellUsage();
         sGuildMgr.ResetExperienceCaps();
     }
 
@@ -2825,6 +2826,15 @@ void World::ResetRandomBG()
 
     m_NextRandomBGReset = time_t(m_NextRandomBGReset + DAY);
     CharacterDatabase.PExecute("UPDATE saved_variables SET NextRandomBGResetTime = '"UI64FMTD"'", uint64(m_NextRandomBGReset));
+}
+
+void World::ResetWeeklySpellUsage()
+{
+    DETAIL_LOG("Weekly spell usage reset for all characters.");
+    CharacterDatabase.Execute("DELETE FROM character_weekly_spell_usage");
+    for(SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+        if (itr->second->GetPlayer())
+            itr->second->GetPlayer()->ResetWeeklySpellUsage();
 }
 
 void World::ResetMonthlyQuests()
