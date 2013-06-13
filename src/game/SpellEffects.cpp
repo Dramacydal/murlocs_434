@@ -6762,6 +6762,12 @@ void Spell::EffectCreateItem2(SpellEffectEntry const* effect)
 
     // explicit item (possible fake)
     uint32 item_id = effect->EffectItemType;
+    // Random Volatile Element
+    if (item_id == 54464)
+    {
+        uint32 volatiles[4] = { 52325, 52326, 52327, 52328 };
+        item_id = volatiles[urand(0, 3)];
+    }
 
     if (item_id)
         DoCreateItem(effect, item_id);
