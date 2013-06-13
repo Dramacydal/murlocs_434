@@ -2249,7 +2249,7 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
         case SPELL_AURA_MOD_STAT:
         {
             // only single stats in scaling auras (otherwise scaling not possible)
-            if (effect->EffectMiscValue < 0 || effect->EffectMiscValue > 4)
+            if (effect->EffectMiscValue < STAT_STRENGTH || effect->EffectMiscValue > STAT_SPIRIT)
                 return;
 
             ownerValue = uint32(owner->GetTotalStatValue(Stats(effect->EffectMiscValue)));
@@ -2272,37 +2272,10 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
 
                     switch (spellInfo->Id)
                     {
-                        // hunter pet scaling aura
-                        case 34902:
-                        {
-                            scale = 0.4493f;
-
-                            float baseHP = GetModifierValue(UNIT_MOD_HEALTH, BASE_VALUE) + GetCreateHealth();
-                            baseHP *= GetModifierValue(UNIT_MOD_HEALTH, BASE_PCT);
-                            // Endurance Training
-                            Unit::AuraList const& flatmodauras = owner->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
-                            for (Unit::AuraList::const_iterator i = flatmodauras.begin(); i != flatmodauras.end(); ++i)
-                            {
-                                SpellClassOptionsEntry const * opt = (*i)->GetSpellProto()->GetSpellClassOptions();
-                                if (opt && opt->SpellFamilyName == SPELLFAMILY_HUNTER && (*i)->GetSpellProto()->SpellIconID == 24 && (*i)->GetEffIndex() == EFFECT_INDEX_0)
-                                {
-                                    bonusValue += float(baseHP * (*i)->GetModifier()->m_amount + 100) / 100.0f;
-                                    scale *= ((*i)->GetModifier()->m_amount + 100) / 100.0f;
-                                    break;
-                                }
-                            }
-                            break;
-                        }
-                        // wl scaling aura
-                        case 34947:
-                        {
-                            scale = 0.75f;
-                            break;
-                        }
-                        // dk pet scaling aura
+                        // Death Knight Pet Scaling 01
                         case 54566:
                         {
-                            scale = 0.3928f;
+                            scale = 0.45;
 
                             // skip gargoyle
                             if (GetEntry() == 27829)
