@@ -770,12 +770,10 @@ bool BattleFieldWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Unit* _pInvok
     if (!uiEventId)
         return false;
 
-    if (!_pInvoker || _pInvoker->GetTypeId() != TYPEID_PLAYER)
+    if (_pInvoker && (_pInvoker->GetTypeId() != TYPEID_PLAYER || !IsMember(_pInvoker->GetObjectGuid())))
         return false;
 
     Player* pInvoker = (Player*)_pInvoker;
-    if (!IsMember(pInvoker->GetObjectGuid()))
-        return false;
 
     GameObjectInfo const * info = pGo->GetGOInfo();
 
@@ -808,6 +806,9 @@ bool BattleFieldWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Unit* _pInvok
         case GO_WINTERGRASP_WALL_2:
         case GO_WINTERGRASP_WALL_3:
         {
+            if (!pInvoker)
+                return false;
+
             if (uiEventId == info->destructibleBuilding.damagedEvent)
             {
                 for (std::list<BFObject*>::iterator itr = m_keepWalls.begin(); itr != m_keepWalls.end(); ++itr)
@@ -840,6 +841,9 @@ bool BattleFieldWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Unit* _pInvok
         case GO_WINTERGRASP_TOWER_SOUTHEAST:
         case GO_WINTERGRASP_TOWER_EAST:
         {
+            if (!pInvoker)
+                return false;
+
             uint8 idx = 0;
             switch(pGo->GetEntry())
             {
@@ -910,6 +914,9 @@ bool BattleFieldWG::HandleEvent(uint32 uiEventId, GameObject* pGo, Unit* _pInvok
         case GO_TOWER_WINTERS_EDGE:
         case GO_TOWER_FLAMEWATCH:
         {
+            if (!pInvoker)
+                return false;
+
             uint8 idx = 0;
             switch(pGo->GetEntry())
             {
