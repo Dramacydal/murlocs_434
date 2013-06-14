@@ -2982,7 +2982,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         PlayerTalentMap m_talents[MAX_TALENT_SPEC_COUNT];
         uint32 m_talentsPrimaryTree[MAX_TALENT_SPEC_COUNT];
         SpellCooldowns m_spellCooldowns;
-        WeeklySpells m_weeklySpells;
 
         uint32 m_lastPotionId;                              // last used health/mana potion in combat, that block next potion use
 
