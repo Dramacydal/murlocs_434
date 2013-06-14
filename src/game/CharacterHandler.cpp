@@ -113,7 +113,6 @@ bool LoginQueryHolder::Initialize()
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOAD_VOID_STORAGE,   "SELECT itemId, itemEntry, slot, creatorGuid, randomProperty, suffixFactor FROM character_void_storage WHERE playerGuid = %u", m_guid.GetCounter());
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY,    "SELECT sites, counts, projects FROM character_archaeology WHERE guid = %u", m_guid.GetCounter());
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_FINDS, "SELECT id, count, UNIX_TIMESTAMP(date) FROM character_archaeology_finds WHERE guid = %u", m_guid.GetCounter());
-    res &= SetPQuery(PLAYER_LOGIN_QUERY_LOAD_WEEKLY_SPELL_USAGE, "SELECT spell, count FROM character_weekly_spell_usage WHERE guid = %u", m_guid.GetCounter());
 
     return res;
 }
