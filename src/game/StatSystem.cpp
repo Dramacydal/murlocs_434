@@ -948,24 +948,28 @@ bool Pet::UpdateStats(Stats stat)
                     break;
                 case STAT_STAMINA:
                 {
+                    float bonus = 0.0f;
                     if (CreatureFamilyEntry const* pet_family = sCreatureFamilyStore.LookupEntry(GetCreatureInfo()->family))
                     {
                         switch (pet_family->petTalentType)
                         {
                             case PET_TALENT_TYPE_NONE:
-                                value += owner->GetStat(STAT_STAMINA) * 0.5f;
+                                bonus += owner->GetStat(STAT_STAMINA) * 0.5f;
                                 break;
                             case PET_TALENT_TYPE_FEROCITY:
-                                value += owner->GetStat(STAT_STAMINA) * 0.67f;
+                                bonus += owner->GetStat(STAT_STAMINA) * 0.67f;
                                 break;
                             case PET_TALENT_TYPE_TENACITY:
-                                value += owner->GetStat(STAT_STAMINA) * 0.78f;
+                                bonus += owner->GetStat(STAT_STAMINA) * 0.78f;
                                 break;
                             case PET_TALENT_TYPE_CUNNING:
-                                value += owner->GetStat(STAT_STAMINA) * 0.725f;
+                                bonus += owner->GetStat(STAT_STAMINA) * 0.725f;
                                 break;
                         }
                     }
+
+                    bonus *= GetModifierValue(UNIT_MOD_STAT_STAMINA, TOTAL_PCT);
+                    value += bonus;
                     break;
                 }
                 case STAT_INTELLECT:
