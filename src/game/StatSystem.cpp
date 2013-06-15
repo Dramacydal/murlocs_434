@@ -936,6 +936,45 @@ bool Pet::UpdateStats(Stats stat)
 
     // value = ((base_value * base_pct) + total_value) * total_pct
     float value  = GetTotalStatValue(stat);
+    if (Unit* owner = GetOwner())
+    {
+        if (owner->GetTypeId() == TYPEID_PLAYER)
+        {
+            switch (stat)
+            {
+                case STAT_STRENGTH:
+                    break;
+                case STAT_AGILITY:
+                    break;
+                case STAT_STAMINA:
+                {
+                    if (CreatureFamilyEntry const* pet_family = sCreatureFamilyStore.LookupEntry(GetCreatureInfo()->family))
+                    {
+                        switch (pet_family->petTalentType)
+                        {
+                            case PET_TALENT_TYPE_NONE:
+                                value += owner->GetStat(STAT_STAMINA) * 0.5f;
+                                break;
+                            case PET_TALENT_TYPE_FEROCITY:
+                                value += owner->GetStat(STAT_STAMINA) * 0.67f;
+                                break;
+                            case PET_TALENT_TYPE_TENACITY:
+                                value += owner->GetStat(STAT_STAMINA) * 0.78f;
+                                break;
+                            case PET_TALENT_TYPE_CUNNING:
+                                value += owner->GetStat(STAT_STAMINA) * 0.725f;
+                                break;
+                        }
+                    }
+                    break;
+                }
+                case STAT_INTELLECT:
+                    break;
+                case STAT_SPIRIT:
+                    break;
+            }
+        }
+    }
 
     SetStat(stat, int32(value));
 
