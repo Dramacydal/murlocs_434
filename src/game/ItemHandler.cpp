@@ -1729,7 +1729,7 @@ void WorldSession::SendItemSparseDb2Reply(uint32 entry)
     buff << int32(proto->RandomProperty);
     buff << int32(proto->RandomSuffix);
     buff << uint32(proto->ItemSet);
-
+    buff << uint32(proto->MaxDurability);
     buff << uint32(proto->Area);
     buff << uint32(proto->Map);
     buff << uint32(proto->BagFamily);
