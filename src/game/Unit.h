@@ -816,6 +816,7 @@ class MovementInfo
         {
             JumpInfo() : velocity(0.f), sinAngle(0.f), cosAngle(0.f), xyspeed(0.f) {}
             float   velocity, sinAngle, cosAngle, xyspeed;
+            void Clear() { velocity = sinAngle = cosAngle = xyspeed = 0.0f; }
         };
 
         // used only for SMSG_PLAYER_MOVE currently
