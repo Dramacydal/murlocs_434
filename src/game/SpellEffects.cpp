@@ -8367,7 +8367,7 @@ void Spell::EffectEnchantItemPerm(SpellEffectEntry const* effect)
     // remove old enchanting before applying new if equipped
     if (!dontApply) item_owner->ApplyEnchantment(itemTarget,PERM_ENCHANTMENT_SLOT,false);
 
-    itemTarget->SetEnchantment(PERM_ENCHANTMENT_SLOT, enchant_id, 0, 0);
+    itemTarget->SetEnchantment(PERM_ENCHANTMENT_SLOT, enchant_id, 0, 0, m_caster->GetObjectGuid());
 
     // add new enchanting if equipped
     if (!dontApply) item_owner->ApplyEnchantment(itemTarget,PERM_ENCHANTMENT_SLOT,true);
@@ -8432,7 +8432,7 @@ void Spell::EffectEnchantItemPrismatic(SpellEffectEntry const* effect)
     // remove old enchanting before applying new if equipped
     if (!dontApply) item_owner->ApplyEnchantment(itemTarget,PRISMATIC_ENCHANTMENT_SLOT,false);
 
-    itemTarget->SetEnchantment(PRISMATIC_ENCHANTMENT_SLOT, enchant_id, 0, 0);
+    itemTarget->SetEnchantment(PRISMATIC_ENCHANTMENT_SLOT, enchant_id, 0, 0, m_caster->GetObjectGuid());
 
     // add new enchanting if equipped
     if (!dontApply) item_owner->ApplyEnchantment(itemTarget,PRISMATIC_ENCHANTMENT_SLOT,true);
@@ -8557,7 +8557,7 @@ void Spell::EffectEnchantItemTmp(SpellEffectEntry const* effect)
     // remove old enchanting before applying new if equipped
     if (!dontApply) item_owner->ApplyEnchantment(itemTarget,TEMP_ENCHANTMENT_SLOT, false);
 
-    itemTarget->SetEnchantment(TEMP_ENCHANTMENT_SLOT, enchant_id, duration * 1000, 0);
+    itemTarget->SetEnchantment(TEMP_ENCHANTMENT_SLOT, enchant_id, duration * 1000, 0, m_caster->GetObjectGuid());
 
     // add new enchanting if equipped
     if (!dontApply) item_owner->ApplyEnchantment(itemTarget, TEMP_ENCHANTMENT_SLOT, true);
@@ -13341,7 +13341,7 @@ void Spell::EffectEnchantHeldItem(SpellEffectEntry const* effect)
             && !item_owner->CanUseEquippedWeapon(Player::GetAttackBySlot(item->GetSlot()));
 
         // Apply the temporary enchantment
-        item->SetEnchantment(slot, enchant_id, duration*IN_MILLISECONDS, 0);
+        item->SetEnchantment(slot, enchant_id, duration*IN_MILLISECONDS, 0, m_caster->GetObjectGuid());
         if (!dontApply) item_owner->ApplyEnchantment(item, slot, true);
     }
 }
