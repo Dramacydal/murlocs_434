@@ -1050,6 +1050,11 @@ void LoadDBCStores(const std::string& dataPath)
                 //intr->AuraInterruptFlags = 0x1F;
                 break;
             }
+            case 5420:                          // Tree of Life (Passive)
+            {
+                spell->SpellShapeshiftId = 700;
+                break;
+            }
             case 6358:                          // Seduction
             {
                 spell->SchoolMask = SPELL_SCHOOL_MASK_MAGIC;
