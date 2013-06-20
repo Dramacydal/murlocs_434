@@ -1470,6 +1470,21 @@ enum Opcodes
     SMSG_SPELL_CATEGORY_COOLDOWN                          = 0x71B6, // 4.3.4 15595
     SMSG_WEEKLY_SPELL_USAGE                               = 0x39B7, // 4.3.4 15595
     SMSG_WEEKLY_SPELL_USAGE_UPDATE                        = 0x11B5, // 4.3.4 15595
+    CMSG_LF_GUILD_ADD_RECRUIT                             = 0x4448, // 4.3.4 15595
+    CMSG_LF_GUILD_BROWSE                                  = 0x0548, // 4.3.4 15595
+    CMSG_LF_GUILD_DECLINE_RECRUIT                         = 0x1031, // 4.3.4 15595
+    CMSG_LF_GUILD_GET_APPLICATIONS                        = 0x1230, // 4.3.4 15595
+    CMSG_LF_GUILD_GET_RECRUITS                            = 0x3230, // 4.3.4 15595
+    CMSG_LF_GUILD_POST_REQUEST                            = 0x3237, // 4.3.4 15595
+    CMSG_LF_GUILD_REMOVE_RECRUIT                          = 0x3027, // 4.3.4 15595
+    CMSG_LF_GUILD_SET_GUILD_POST                          = 0x0448, // 4.3.4 15595
+    SMSG_LF_GUILD_APPLICANT_LIST_UPDATED                  = 0x10A4, // 4.3.4 15595
+    SMSG_LF_GUILD_APPLICATIONS_LIST_CHANGED               = 0x71A5, // 4.3.4 15595
+    SMSG_LF_GUILD_BROWSE_UPDATED                          = 0x1DA3, // 4.3.4 15595
+    SMSG_LF_GUILD_COMMAND_RESULT                          = 0x54A6, // 4.3.4 15595
+    SMSG_LF_GUILD_MEMBERSHIP_LIST_UPDATED                 = 0x1CA5, // 4.3.4 15595
+    SMSG_LF_GUILD_POST_UPDATED                            = 0x35B7, // 4.3.4 15595
+    SMSG_LF_GUILD_RECRUIT_LIST_UPDATED                    = 0x1CB2, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF

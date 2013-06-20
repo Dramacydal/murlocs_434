@@ -42,6 +42,7 @@
 #include "ObjectMgr.h"
 #include "CreatureEventAIMgr.h"
 #include "GuildMgr.h"
+#include "GuildFinderMgr.h"
 #include "SpellMgr.h"
 #include "Mail.h"
 #include "Chat.h"
@@ -1531,6 +1532,9 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading Guilds..." );
     sGuildMgr.LoadGuilds();
 
+    sLog.outString("Loading Guild Finder data...");
+    sGuildFinderMgr.LoadFromDB();
+
     sLog.outString( "Loading ArenaTeams..." );
     sObjectMgr.LoadArenaTeams();
 
@@ -1728,6 +1732,9 @@ void World::SetInitialWorldSettings()
 
     // Delete all characters which have been deleted X days before
     Player::DeleteOldCharacters();
+
+    sLog.outString("Loading character name data...");
+    sObjectMgr.LoadCharacterNameData();
 
     sLog.outString("Initialize AuctionHouseBot...");
     sAuctionBot.Initialize();

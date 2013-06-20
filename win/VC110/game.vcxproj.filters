@@ -616,6 +616,12 @@
     <ClCompile Include="..\..\src\game\BattleField\BattleFieldTB.cpp">
       <Filter>BattleField</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\game\GuildFinderMgr.cpp">
+      <Filter>World/Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\GuildFinderHandler.cpp">
+      <Filter>World/Handlers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\AccountMgr.h">
@@ -1182,6 +1188,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\game\BattleField\BattleFieldTB.h">
       <Filter>BattleField</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\GuildFinderMgr.h">
+      <Filter>World/Handlers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

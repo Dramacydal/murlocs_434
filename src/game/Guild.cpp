@@ -24,6 +24,7 @@
 #include "ObjectMgr.h"
 #include "Guild.h"
 #include "GuildMgr.h"
+#include "GuildFinderMgr.h"
 #include "Chat.h"
 #include "SocialMgr.h"
 #include "SpellMgr.h"
@@ -314,6 +315,8 @@ bool Guild::AddMember(ObjectGuid plGuid, uint32 plRank)
     }
 
     UpdateAccountsNumber();
+
+    sGuildFinderMgr.RemoveMembershipRequest(lowguid, m_Id);
 
     return true;
 }
@@ -888,7 +891,9 @@ void Guild::Disband()
     CharacterDatabase.PExecute("DELETE FROM guild_bank_right WHERE guildid = '%u'", m_Id);
     CharacterDatabase.PExecute("DELETE FROM guild_bank_eventlog WHERE guildid = '%u'", m_Id);
     CharacterDatabase.PExecute("DELETE FROM guild_eventlog WHERE guildid = '%u'", m_Id);
+    sGuildFinderMgr.DeleteGuild(m_Id);
     CharacterDatabase.CommitTransaction();
+
     sGuildMgr.RemoveGuild(m_Id);
 }
 

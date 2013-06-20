@@ -281,9 +281,7 @@ class MANGOS_DLL_SPEC WorldSession
         /// Handle the authentication waiting queue (to be completed)
         void SendAuthWaitQue(uint32 position);
 
-        void SendNameQueryOpcode(Player* p);
-        void SendNameQueryOpcodeFromDB(ObjectGuid guid);
-        static void SendNameQueryOpcodeFromDBCallBack(QueryResult *result, uint32 accountId);
+        void SendNameQueryOpcode(ObjectGuid guid);
 
         void SendTrainerList(ObjectGuid guid);
         void SendTrainerList(ObjectGuid guid, const std::string& strTitle );
@@ -956,6 +954,16 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleRequestResearchHistory(WorldPacket& recv_data);
 
         void HandleRequestCategoryCooldownsOpcode(WorldPacket& /*recv_data*/);
+
+        // Guild Finder
+        void HandleGuildFinderAddRecruit(WorldPacket& recvPacket);
+        void HandleGuildFinderBrowse(WorldPacket& recvPacket);
+        void HandleGuildFinderDeclineRecruit(WorldPacket& recvPacket);
+        void HandleGuildFinderGetApplications(WorldPacket& recvPacket);
+        void HandleGuildFinderGetRecruits(WorldPacket& recvPacket);
+        void HandleGuildFinderPostRequest(WorldPacket& recvPacket);
+        void HandleGuildFinderRemoveRecruit(WorldPacket& recvPacket);
+        void HandleGuildFinderSetGuildPost(WorldPacket& recvPacket);
 
     private:
         // private trade methods
