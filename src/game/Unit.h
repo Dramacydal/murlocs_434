@@ -837,7 +837,9 @@ class MovementInfo
         };
 
         JumpInfo const& GetJumpInfo() const { return jump; }
+        JumpInfo& GetJumpInfo() { return jump; }
         StatusInfo const& GetStatusInfo() const { return si; }
+        StatusInfo& GetStatusInfo() { return si; }
         float GetSplineElevation() const { return splineElevation; }
         float GetPitch() const { return s_pitch; }
 
