@@ -552,7 +552,7 @@ void Item::SaveToDB()
 
                 stmt.addUInt32(GetGUIDLow());
                 stmt.addUInt32(owner->GetGUIDLow());
-                stmt.addInt32(item->currency ? -item->itemid : item->itemid);
+                stmt.addInt32(item->currency ? -int32(item->itemid) : item->itemid);
                 stmt.addUInt8(item->count);
                 stmt.addUInt32(item->randomSuffix);
                 stmt.addInt32(item->randomPropertyId);

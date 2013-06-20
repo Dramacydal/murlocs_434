@@ -2275,7 +2275,7 @@ void Pet::CalcScalingAuraBonus(int32* value, SpellEntry const* spellInfo, SpellE
                         // Death Knight Pet Scaling 01
                         case 54566:
                         {
-                            scale = 0.45;
+                            scale = 0.45f;
 
                             // skip gargoyle
                             if (GetEntry() == 27829)
