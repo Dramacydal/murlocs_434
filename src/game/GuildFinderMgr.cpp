@@ -128,7 +128,10 @@ void GuildFinderMgr::AddMembershipRequest(uint32 guildGuid, MembershipRequest co
 {
     _membershipRequests[guildGuid].push_back(request);
 
-    CharacterDatabase.PExecute("REPLACE INTO guild_finder_applicant (guildId, playerGuid, availability, classRole, interests, comment, submitTime) VALUES('%u', '%u', '%u', '%u', '%u', '%s', '%u')", request.GetGuildId(), request.GetPlayerGUID(), request.GetAvailability(), request.GetClassRoles(), request.GetInterests(), request.GetComment().c_str(), request.GetSubmitTime());
+    std::string comment = request.GetComment();
+    CharacterDatabase.escape_string(comment);
+
+    CharacterDatabase.PExecute("REPLACE INTO guild_finder_applicant (guildId, playerGuid, availability, classRole, interests, comment, submitTime) VALUES('%u', '%u', '%u', '%u', '%u', '%s', '%u')", request.GetGuildId(), request.GetPlayerGUID(), request.GetAvailability(), request.GetClassRoles(), request.GetInterests(), comment.c_str(), request.GetSubmitTime());
 
     // Notify the applicant his submittion has been added
     if (Player* player = sObjectAccessor.FindPlayer(ObjectGuid(HIGHGUID_PLAYER, request.GetPlayerGUID())))
@@ -262,7 +265,9 @@ void GuildFinderMgr::SetGuildSettings(uint32 guildGuid, LFGuildSettings const& s
 {
     _guildSettings[guildGuid] = settings;
 
-    CharacterDatabase.PExecute("REPLACE INTO guild_finder_guild_settings (guildId, availability, classRoles, interests, level, listed, comment) VALUES('%u', '%u', '%u', '%u', '%u', '%u', '%s')", settings.GetGUID(), settings.GetAvailability(), settings.GetClassRoles(), settings.GetInterests(), settings.GetLevel(), settings.IsListed(), settings.GetComment().c_str());
+    std::string comment = settings.GetComment();
+    CharacterDatabase.escape_string(comment);
+    CharacterDatabase.PExecute("REPLACE INTO guild_finder_guild_settings (guildId, availability, classRoles, interests, level, listed, comment) VALUES('%u', '%u', '%u', '%u', '%u', '%u', '%s')", settings.GetGUID(), settings.GetAvailability(), settings.GetClassRoles(), settings.GetInterests(), settings.GetLevel(), settings.IsListed(), comment.c_str());
 }
 
 void GuildFinderMgr::DeleteGuild(uint32 guildId)
