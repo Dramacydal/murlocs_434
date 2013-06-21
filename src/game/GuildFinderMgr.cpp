@@ -244,7 +244,7 @@ LFGuildStore GuildFinderMgr::GetGuildsMatchingSetting(LFGuildPlayer& settings, T
         if (!(guildSettings.GetInterests() & settings.GetInterests()))
             continue;
 
-        if (!(guildSettings.GetLevel() & settings.GetLevel()))
+        if (!(guildSettings.GetLevel() & settings.GetLevel()) && (guildSettings.GetLevel() & ANY_FINDER_LEVEL) == 0)
             continue;
 
         resultSet.insert(std::make_pair(itr->first, guildSettings));

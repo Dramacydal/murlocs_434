@@ -73,10 +73,10 @@ void WorldSession::HandleGuildFinderAddRecruit(WorldPacket& recvPacket)
 void WorldSession::HandleGuildFinderBrowse(WorldPacket& recvPacket)
 {
     sLog.outDebug("WORLD: Received CMSG_LF_GUILD_BROWSE");
-    uint32 classRoles = 0;
-    uint32 availability = 0;
-    uint32 guildInterests = 0;
-    uint32 playerLevel = 0; // Raw player level (1-85), do they use MAX_FINDER_LEVEL when on level 85 ?
+    uint32 classRoles;
+    uint32 availability;
+    uint32 guildInterests;
+    uint32 playerLevel; // Raw player level (1-85), do they use MAX_FINDER_LEVEL when on level 85 ?
 
     recvPacket >> classRoles >> availability >> guildInterests >> playerLevel;
 
@@ -235,8 +235,6 @@ void WorldSession::HandleGuildFinderGetApplications(WorldPacket& /*recvPacket*/)
 // Lists all recruits for a guild - Misses times
 void WorldSession::HandleGuildFinderGetRecruits(WorldPacket& recvPacket)
 {
-    return;
-
     sLog.outDebug("WORLD: Received CMSG_LF_GUILD_GET_RECRUITS");
 
     uint32 unkTime;
