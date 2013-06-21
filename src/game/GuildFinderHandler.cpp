@@ -380,13 +380,13 @@ void WorldSession::HandleGuildFinderSetGuildPost(WorldPacket& recvPacket)
     bool listed = recvPacket.ReadBit();
     comment = recvPacket.ReadString(length);
 
-    if (!(classRoles & GUILDFINDER_ALL_ROLES) || classRoles > GUILDFINDER_ALL_ROLES)
+    if (classRoles > GUILDFINDER_ALL_ROLES)
         return;
-    if (!(availability & ALL_WEEK) || availability > ALL_WEEK)
+    if (availability > ALL_WEEK)
         return;
-    if (!(guildInterests & ALL_INTERESTS) || guildInterests > ALL_INTERESTS)
+    if (guildInterests > ALL_INTERESTS)
         return;
-    if (!(level & ALL_GUILDFINDER_LEVELS) || level > ALL_GUILDFINDER_LEVELS)
+    if (level != ANY_FINDER_LEVEL && level != MAX_FINDER_LEVEL)
         return;
 
     if (!_player->GetGuildId()) // Player must be in guild
