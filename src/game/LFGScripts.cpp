@@ -44,7 +44,7 @@ void LFGMgr::OnLogout(Player* player)
     if (!player->GetGroup())
     {
         player->GetSession()->SendLfgLfrList(false);
-        LeaveLfg(player->GetGUID());
+        LeaveLfg(player->GetObjectGuid());
     }
 }
 
@@ -54,7 +54,7 @@ void LFGMgr::OnLogin(Player* player)
         return;
 
     // Temporal: Trying to determine when group data and LFG data gets desynched
-    uint64 guid = player->GetGUID();
+    ObjectGuid guid = player->GetObjectGuid();
     ObjectGuid gguid = GetGroup(guid);
 
     if (Group const* group = player->GetGroup())
@@ -67,7 +67,7 @@ void LFGMgr::OnLogin(Player* player)
     }
 
     InitializeLockedDungeons(player);
-    SetTeam(player->GetGUID(), player->GetTeam());
+    SetTeam(player->GetObjectGuid(), player->GetTeam());
     // TODO - Restore LfgPlayerData and send proper status to player if it was in a group
 }
 
@@ -135,13 +135,13 @@ void LFGMgr::OnRemoveMember(Group* group, ObjectGuid guid, RemoveMethod method, 
     if (state == LFG_STATE_PROPOSAL && method == GROUP_REMOVEMETHOD_DEFAULT)
     {
         // LfgData: Remove player from group
-        SetGroup(guid, 0);
+        SetGroup(guid, ObjectGuid());
         RemovePlayerFromGroup(gguid, guid);
         return;
     }
 
     LeaveLfg(guid);
-    SetGroup(guid, 0);
+    SetGroup(guid, ObjectGuid());
     uint8 players = RemovePlayerFromGroup(gguid, guid);
 
     if (Player* player = ObjectAccessor::FindPlayer(guid))

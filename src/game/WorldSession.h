@@ -891,7 +891,7 @@ class MANGOS_DLL_SPEC WorldSession
         void SendLfgRoleChosen(ObjectGuid guid, uint8 roles);
         void SendLfgRoleCheckUpdate(LfgRoleCheck const& pRoleCheck);
         void SendLfgLfrList(bool update);
-        void SendLfgJoinResult(uint64 jguid, LfgJoinResultData const& joinData);
+        void SendLfgJoinResult(ObjectGuid jguid, LfgJoinResultData const& joinData);
         void SendLfgQueueStatus(LfgQueueStatusData const& queueData);
         void SendLfgPlayerReward(LfgPlayerRewardData const& lfgPlayerRewardData);
         void SendLfgBootProposalUpdate(LfgPlayerBoot const& boot);

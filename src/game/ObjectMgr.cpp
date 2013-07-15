@@ -5379,8 +5379,22 @@ void ObjectMgr::LoadInstanceEncounters()
                 continue;
         }
 
-        DungeonEncounterList& encounters = _dungeonEncounterStore[MAKE_PAIR32(dungeonEncounter->mapId, dungeonEncounter->Difficulty)];
-        encounters.push_back(new DungeonEncounter(dungeonEncounter, difficulty, EncounterCreditType(creditType), creditEntry, lastEncounterDungeon));
+        if (dungeonEncounter->Difficulty == -1)
+        {
+            for (uint32 i = 0; i < MAX_DIFFICULTY; ++i)
+            {
+                if (GetMapDifficultyData(dungeonEncounter->mapId, Difficulty(i)))
+                {
+                    DungeonEncounterList& encounters = _dungeonEncounterStore[MAKE_PAIR32(dungeonEncounter->mapId, i)];
+                    encounters.push_back(new DungeonEncounter(dungeonEncounter, difficulty, EncounterCreditType(creditType), creditEntry, lastEncounterDungeon));
+                }
+            }
+        }
+        else
+        {
+            DungeonEncounterList& encounters = _dungeonEncounterStore[MAKE_PAIR32(dungeonEncounter->mapId, dungeonEncounter->Difficulty)];
+            encounters.push_back(new DungeonEncounter(dungeonEncounter, difficulty, EncounterCreditType(creditType), creditEntry, lastEncounterDungeon));
+        }
         ++count;
     }
     while (result->NextRow());

@@ -19,7 +19,7 @@
 #include "LFGPlayerData.h"
 
 LfgPlayerData::LfgPlayerData(): m_State(LFG_STATE_NONE), m_OldState(LFG_STATE_NONE),
-    m_Team(0), m_Group(0), m_Roles(0), m_Comment("")
+    m_Team(0), m_Roles(0), m_Comment("")
 {}
 
 LfgPlayerData::~LfgPlayerData()
@@ -64,7 +64,7 @@ void LfgPlayerData::SetTeam(uint8 team)
     m_Team = team;
 }
 
-void LfgPlayerData::SetGroup(uint64 group)
+void LfgPlayerData::SetGroup(ObjectGuid group)
 {
     m_Group = group;
 }
@@ -104,7 +104,7 @@ uint8 LfgPlayerData::GetTeam() const
     return m_Team;
 }
 
-uint64 LfgPlayerData::GetGroup() const
+ObjectGuid LfgPlayerData::GetGroup() const
 {
     return m_Group;
 }

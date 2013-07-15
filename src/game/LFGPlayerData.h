@@ -34,7 +34,7 @@ class LfgPlayerData
         void RestoreState();
         void SetLockedDungeons(LfgLockMap const& lock);
         void SetTeam(uint8 team);
-        void SetGroup(uint64 group);
+        void SetGroup(ObjectGuid group);
 
         // Queue
         void SetRoles(uint8 roles);
@@ -46,7 +46,7 @@ class LfgPlayerData
         LfgState GetOldState() const;
         LfgLockMap const& GetLockedDungeons() const;
         uint8 GetTeam() const;
-        uint64 GetGroup() const;
+        ObjectGuid GetGroup() const;
 
         // Queue
         uint8 GetRoles() const;
@@ -60,7 +60,7 @@ class LfgPlayerData
         // Player
         LfgLockMap m_LockedDungeons;                       ///< Dungeons player can't do and reason
         uint8 m_Team;                                      ///< Player team - determines the queue to join
-        uint64 m_Group;                                    ///< Original group of player when joined LFG
+        ObjectGuid m_Group;                                ///< Original group of player when joined LFG
 
         // Queue
         uint8 m_Roles;                                     ///< Roles the player selected when joined LFG
