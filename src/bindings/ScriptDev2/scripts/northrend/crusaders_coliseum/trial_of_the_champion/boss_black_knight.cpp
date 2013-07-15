@@ -199,7 +199,7 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 
             #ifndef WIN32
             if (DungeonPersistentState* state = ((DungeonMap*)m_pInstance->instance)->GetPersistanceState())
-                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_BLACK_KNIGHT);
+                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_BLACK_KNIGHT, m_creature);
             #endif
 
             m_pInstance->UpdateAchievementCriteria(28, SPELL_CREDIT_BLACK_KNIGHT);

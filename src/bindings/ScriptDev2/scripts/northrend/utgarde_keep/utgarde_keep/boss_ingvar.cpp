@@ -206,7 +206,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public ScriptedAI
             if (m_pInstance)
             {
                 if (DungeonPersistentState* state = ((DungeonMap*)m_pInstance->instance)->GetPersistanceState())
-                    state->UpdateEncounterState(ENCOUNTER_CREDIT_KILL_CREATURE, BOSS_INGVAR_ENTRY_MORPHED);
+                    state->UpdateEncounterState(ENCOUNTER_CREDIT_KILL_CREATURE, BOSS_INGVAR_ENTRY_MORPHED, m_creature);
 
                 m_pInstance->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, BOSS_INGVAR_ENTRY_MORPHED);
             }

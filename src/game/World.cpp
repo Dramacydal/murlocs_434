@@ -1141,6 +1141,8 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_UINT32_TOL_BARAD_MAX_PLAYERS_PER_TEAM, "TolBarad.MaxPlayersPerTeam", 80);
     setConfig(CONFIG_UINT32_TOL_BARAD_START_INVITE_TIME, "TolBarad.StartInviteTime", 15 * MINUTE * IN_MILLISECONDS);
     setConfig(CONFIG_UINT32_TOL_BARAD_STOP_TELEPORTING_TIME, "TolBarad.StopTeleportingTime", 60 * MINUTE * IN_MILLISECONDS);
+
+    setConfig(CONFIG_UINT32_LFG_OPTIONSMASK, "DungeonFinder.OptionsMask", 1);
 }
 
 /// Initialize the World

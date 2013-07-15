@@ -249,7 +249,7 @@ struct MANGOS_DLL_DECL npc_neptulonAI : public ScriptedAI
             //}
 
             if (DungeonPersistentState* state = ((DungeonMap*)m_pInstance->instance)->GetPersistanceState())
-                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_ENCOUNTER_COMPLETE);
+                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_ENCOUNTER_COMPLETE, me);
 
             m_pInstance->SetData(TYPE_OZUMAT, DONE);
 

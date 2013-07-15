@@ -110,7 +110,7 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 
             #ifndef WIN32
             if (DungeonPersistentState* state = ((DungeonMap*)m_pInstance->instance)->GetPersistanceState())
-                state->UpdateEncounterState(ENCOUNTER_CREDIT_KILL_CREATURE, NPC_ELEMENTAL);
+                state->UpdateEncounterState(ENCOUNTER_CREDIT_KILL_CREATURE, NPC_ELEMENTAL, m_creature);
             #endif
         }
     }

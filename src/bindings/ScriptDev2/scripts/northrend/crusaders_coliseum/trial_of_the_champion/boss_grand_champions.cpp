@@ -130,7 +130,7 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
 
             #ifndef WIN32
             if (DungeonPersistentState* state = ((DungeonMap*)m_pInstance->instance)->GetPersistanceState())
-                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_GRAND_CHAMP);
+                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_GRAND_CHAMP, m_creature);
             #endif
 
             if (Creature* pTemp = m_pInstance->GetSingleCreatureFromStorage(DATA_CHAMPION_1))
@@ -271,7 +271,7 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
 
             #ifndef WIN32
             if (DungeonPersistentState* state = ((DungeonMap*)m_pInstance->instance)->GetPersistanceState())
-                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_GRAND_CHAMP);
+                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_GRAND_CHAMP, m_creature);
             #endif
 
             if (Creature* pTemp = m_pInstance->GetSingleCreatureFromStorage(DATA_CHAMPION_1))
@@ -412,7 +412,7 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 
             #ifndef WIN32
             if (DungeonPersistentState* state = ((DungeonMap*)m_pInstance->instance)->GetPersistanceState())
-                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_GRAND_CHAMP);
+                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_GRAND_CHAMP, m_creature);
             #endif
 
             if (Creature* pTemp = m_pInstance->GetSingleCreatureFromStorage(DATA_CHAMPION_1))
@@ -612,7 +612,7 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
 
             #ifndef WIN32
             if (DungeonPersistentState* state = ((DungeonMap*)m_pInstance->instance)->GetPersistanceState())
-                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_GRAND_CHAMP);
+                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_GRAND_CHAMP, m_creature);
             #endif
 
             if (Creature* pTemp = m_pInstance->GetSingleCreatureFromStorage(DATA_CHAMPION_1))
@@ -769,7 +769,7 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
 
             #ifndef WIN32
             if (DungeonPersistentState* state = ((DungeonMap*)m_pInstance->instance)->GetPersistanceState())
-                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_GRAND_CHAMP);
+                state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_CREDIT_GRAND_CHAMP, m_creature);
             #endif
 
             if (Creature* pTemp = m_pInstance->GetSingleCreatureFromStorage(DATA_CHAMPION_1))

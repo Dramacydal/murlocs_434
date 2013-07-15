@@ -167,7 +167,7 @@ struct MANGOS_DLL_DECL instance_violet_hold : public ScriptedInstance
                 {
                     #ifndef WIN32
                     if (DungeonPersistentState* state = ((DungeonMap*)this->instance)->GetPersistanceState())
-                        state->UpdateEncounterState(ENCOUNTER_CREDIT_KILL_CREATURE, ENCOUNTER_CREDIT_1ST_BOSS);
+                        state->UpdateEncounterState(ENCOUNTER_CREDIT_KILL_CREATURE, ENCOUNTER_CREDIT_1ST_BOSS, m_creature);
                     #endif
                 }
                 break;
@@ -177,7 +177,7 @@ struct MANGOS_DLL_DECL instance_violet_hold : public ScriptedInstance
                 {
                     #ifndef WIN32
                     if (DungeonPersistentState* state = ((DungeonMap*)this->instance)->GetPersistanceState())
-                        state->UpdateEncounterState(ENCOUNTER_CREDIT_KILL_CREATURE, ENCOUNTER_CREDIT_2ND_BOSS);
+                        state->UpdateEncounterState(ENCOUNTER_CREDIT_KILL_CREATURE, ENCOUNTER_CREDIT_2ND_BOSS, m_creature);
                     #endif
                 }
                 break;
