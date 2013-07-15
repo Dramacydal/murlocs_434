@@ -223,8 +223,7 @@ class MANGOS_DLL_DECL DungeonPersistentState : public MapPersistentState
         void SetCanReset(bool canReset) { m_canReset = canReset; }
 
         // DBC encounter state update at kill/spell cast
-        void UpdateEncounterState(EncounterCreditType type, uint32 creditEntry);
-        bool IsCompleted();
+        void UpdateEncounterState(EncounterCreditType type, uint32 creditEntry, Unit* source);
 
         // mask of completed encounters
         uint32 GetCompletedEncountersMask() { return m_completedEncountersMask; }

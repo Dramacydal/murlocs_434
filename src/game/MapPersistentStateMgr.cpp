@@ -274,76 +274,45 @@ InstanceTemplate const* DungeonPersistentState::GetTemplate() const
     return ObjectMgr::GetInstanceTemplate(GetMapId());
 }
 
-bool DungeonPersistentState::IsCompleted()
+void DungeonPersistentState::UpdateEncounterState(EncounterCreditType type, uint32 creditEntry, Unit* source)
 {
-    DungeonEncounterMap const* encounterList = sObjectMgr.GetDungeonEncounters();
+    DungeonEncounterList const* encounters = sObjectMgr.GetDungeonEncounterList(GetInstanceId(), GetDifficulty());
+    if (!encounters)
+        return;
 
-    if (!encounterList)
-        return false;
-
-    for (DungeonEncounterMap::const_iterator itr = encounterList->begin(); itr != encounterList->end(); ++itr)
+    uint32 dungeonId = 0;
+    for (DungeonEncounterList::const_iterator itr = encounters->begin(); itr != encounters->end(); ++itr)
     {
-        DungeonEncounter const* encounter = itr->second;
-
-        if (!encounter)
-            continue;
-
-        if (GetMapId() != encounter->dbcEntry->mapId  || GetDifficulty() != encounter->dbcEntry->Difficulty )
-            continue;
-
-        if (!(m_completedEncountersMask & ( 1 << encounter->dbcEntry->encounterIndex)))
-            return false;
-    }
-    return true;
-}
-
-void DungeonPersistentState::UpdateEncounterState(EncounterCreditType type, uint32 creditEntry)
-{
-    DungeonEncounterMapBounds bounds = sObjectMgr.GetDungeonEncounterBounds(creditEntry);
-
-    for (DungeonEncounterMap::const_iterator itr = bounds.first; itr != bounds.second; ++itr)
-    {
-        DungeonEncounterEntry const* dbcEntry = itr->second->dbcEntry;
-
-        if (itr->second->creditType == type && Difficulty(dbcEntry->Difficulty) == GetDifficulty() && dbcEntry->mapId == GetMapId())
+        DungeonEncounter const* encounter = *itr;
+        if (encounter->creditType == type && encounter->creditEntry == creditEntry &&
+            encounter->difficulty == -1 || (encounter->difficulty == GetDifficulty()))
         {
-            uint32 oldMask = m_completedEncountersMask;
-            m_completedEncountersMask |= 1 << dbcEntry->encounterIndex;
-
-            if (m_completedEncountersMask != oldMask)
+            m_completedEncountersMask |= 1 << encounter->dbcEntry->encounterIndex;
+            if (encounter->lastEncounterDungeon)
             {
-                DEBUG_LOG("DungeonPersistentState: Dungeon %s (Id %u) completed encounter %s", GetMap()->GetMapName(), GetInstanceId(), dbcEntry->encounterName[sWorld.GetDefaultDbcLocale()]);
+                dungeonId = encounter->lastEncounterDungeon;
+                sLog.outDebug("UpdateEncounterState: Instance %s (instanceId %u) completed encounter %s. Credit Dungeon: %u", GetMap()->GetMapName(), GetInstanceId(), encounter->dbcEntry->encounterName[0], dungeonId);
+                break;
+            }
+        }
+    }
 
-                uint32 dungeonId = itr->second->lastEncounterDungeon;
-
-                if (dungeonId)
-                    DEBUG_LOG("DungeonPersistentState:: Dungeon %s (Id %u) completed last encounter %s", GetMap()->GetMapName(), GetInstanceId(), dbcEntry->encounterName[sWorld.GetDefaultDbcLocale()]);
-
-                DungeonMap* dungeon = (DungeonMap*)GetMap();
-
-                if (!dungeon || dungeon->GetPlayers().isEmpty())
+    if (dungeonId)
+    {
+        Map::PlayerList const& players = GetMap()->GetPlayers();
+        for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i)
+        {
+            if (Player* player = i->getSource())
+            {
+                if (Group* grp = player->GetGroup())
                 {
-                    CharacterDatabase.PExecute("UPDATE instance SET encountersMask = '%u' WHERE id = '%u'", m_completedEncountersMask, GetInstanceId());
-                    return;
-                }
-
-                Player* player = dungeon->GetPlayers().begin()->getSource();
-
-                if (dungeon && player)
-                    dungeon->PermBindAllPlayers(player, dungeon->IsRaidOrHeroicDungeon());
-
-                SaveToDB();
-
-                if (dungeon && player->GetGroup() && player->GetGroup()->isLFGGroup())
-                {
-                    sLFGMgr.DungeonEncounterReached(player->GetGroup());
-
-                    if ((sWorld.getConfig(CONFIG_BOOL_LFG_ONLYLASTENCOUNTER) && dungeonId)
-                        || IsCompleted())
-                        sLFGMgr.SendLFGRewards(player->GetGroup());
+                    if (grp->isLFGGroup())
+                    {
+                        sLFGMgr.FinishDungeon(grp->GetObjectGuid(), dungeonId);
+                        return;
+                    }
                 }
             }
-            return;
         }
     }
 }

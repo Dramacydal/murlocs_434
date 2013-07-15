@@ -3471,6 +3471,14 @@ enum WorldStateType
     WORLD_STATE_ADD                 = 1
 };
 
+enum RemoveMethod
+{
+    GROUP_REMOVEMETHOD_DEFAULT  = 0,
+    GROUP_REMOVEMETHOD_KICK     = 1,
+    GROUP_REMOVEMETHOD_LEAVE    = 2,
+    GROUP_REMOVEMETHOD_KICK_LFG = 3
+};
+
 enum ActivateTaxiReply
 {
     ERR_TAXIOK                      = 0,

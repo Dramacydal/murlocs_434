@@ -154,7 +154,7 @@ bool BattleField::AddPlayerToRaid(Player* player)
     if (Group* group = player->GetGroup())
     {
         DEBUG_LOG("Battlefield: Player %s already has group %s, uninviting", player->GetGuidStr().c_str(), group->GetObjectGuid().GetString().c_str());
-        group->RemoveMember(player->GetObjectGuid(), 0);
+        group->RemoveMember(player->GetObjectGuid(), GROUP_REMOVEMETHOD_DEFAULT);
     }
 
     TeamIndex teamIdx = GetTeamIndex(player->GetTeam());
@@ -202,7 +202,7 @@ bool BattleField::RemovePlayerFromRaid(ObjectGuid guid)
 {
     if (Group* group = GetGroupFor(guid))
     {
-        if (group->RemoveMember(guid, 0) == 0)
+        if (group->RemoveMember(guid, GROUP_REMOVEMETHOD_DEFAULT) == 0)
             delete group;
 
         return true;

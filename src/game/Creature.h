@@ -55,6 +55,7 @@ enum CreatureFlagsExtra
     CREATURE_FLAG_EXTRA_GUARD           = 0x00000400,       // creature is a guard
     CREATURE_FLAG_EXTRA_NO_TALKTO_CREDIT= 0x00000800,       // creature doesn't give quest-credits when talked to (temporarily flag)
     CREATURE_FLAG_EXTRA_KEEP_AI         = 0x00001000,       // creature keeps ScriptedAI even after being charmed / controlled (instead of getting PetAI)
+    CREATURE_FLAG_EXTRA_DUNGEON_BOSS    = 0x10000000,       // creature is a dungeon boss (SET DYNAMICALLY, DO NOT ADD IN DB)
 };
 
 // GCC have alternative #pragma pack(N) syntax and old gcc version not support pack(push,N), also any gcc version not support it at some platform

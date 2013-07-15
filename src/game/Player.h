@@ -493,14 +493,6 @@ struct EnchantDuration
 typedef std::list<EnchantDuration> EnchantDurationList;
 typedef std::list<Item*> ItemDurationList;
 
-enum LfgRoles
-{
-    LEADER                      = 0x01,
-    TANK                        = 0x02,
-    HEALER                      = 0x04,
-    DAMAGE                      = 0x08
-};
-
 enum RaidGroupError
 {
     ERR_RAID_GROUP_NONE                 = 0,
@@ -1083,7 +1075,7 @@ std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi);
 struct BGData
 {
     BGData() : bgInstanceID(0), bgTypeID(BATTLEGROUND_TYPE_NONE), bgAfkReportedCount(0), bgAfkReportedTimer(0),
-        bgTeam(TEAM_NONE), mountSpell(0), m_needSave(false), forLFG(false) { ClearTaxiPath(); }
+        bgTeam(TEAM_NONE), mountSpell(0), m_needSave(false) { ClearTaxiPath(); }
 
     uint32 bgInstanceID;                                    ///< This variable is set to bg->m_InstanceID, saved
                                                             ///  when player is teleported to BG - (it is battleground's GUID)
@@ -1101,8 +1093,6 @@ struct BGData
     WorldLocation joinPos;                                  ///< From where player entered BG, saved
 
     bool m_needSave;                                        ///< true, if saved to DB fields modified after prev. save (marked as "saved" above)
-
-    bool forLFG;                                            // true, if data used for LFG entry point set ( fields modified after prev. save (instanceID = 0!)
 
     void ClearTaxiPath()     { taxiPath[0] = taxiPath[1] = 0; }
     bool HasTaxiPath() const { return taxiPath[0] && taxiPath[1]; }
@@ -1984,8 +1974,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool IsInSameGroupWith(Player const* p) const;
         bool IsInSameRaidWith(Player const* p) const { return p==this || (GetGroup() != NULL && GetGroup() == p->GetGroup()); }
         void UninviteFromGroup();
-        static void RemoveFromGroup(Group* group, ObjectGuid guid);
-        void RemoveFromGroup() { RemoveFromGroup(GetGroup(), GetObjectGuid()); }
+        static void RemoveFromGroup(Group* group, ObjectGuid guid, RemoveMethod method = GROUP_REMOVEMETHOD_DEFAULT, ObjectGuid kicker = ObjectGuid(), const char* reason = NULL);
+        void RemoveFromGroup(RemoveMethod method = GROUP_REMOVEMETHOD_DEFAULT) { RemoveFromGroup(GetGroup(), GetObjectGuid(), method); }
         void SendUpdateToOutOfRangeGroupMembers();
         void SetAllowLowLevelRaid(bool allow) { ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_ENABLE_LOW_LEVEL_RAID, allow); }
         bool GetAllowLowLevelRaid() const { return HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_ENABLE_LOW_LEVEL_RAID); }
@@ -2410,7 +2400,7 @@ class MANGOS_DLL_SPEC Player : public Unit
             return false;
         }
         WorldLocation const& GetBattleGroundEntryPoint() const { return m_bgData.joinPos; }
-        void SetBattleGroundEntryPoint(bool forLFG = false);
+        void SetBattleGroundEntryPoint();
 
         void SetBGTeam(Team team) { m_bgData.bgTeam = team; m_bgData.m_needSave = true; }
         Team GetBGTeam() const { return m_bgData.bgTeam ? m_bgData.bgTeam : GetTeam(); }
@@ -2636,7 +2626,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool CanUseAreaTrigger(AreaTrigger const* at, Difficulty difficulty) { return GetAreaTriggerLockStatus(at, difficulty) == AREA_LOCKSTATUS_OK; };
 
         // LFG
-        LFGPlayerState* GetLFGState() { return m_LFGState; }
         uint32 GetEquipGearScore(bool withBags = true, bool withBank = false);
         void ResetCachedGearScore() { m_cachedGS = 0; }
         typedef std::vector<uint32/*item level*/> GearScoreVec;
@@ -2659,7 +2648,10 @@ class MANGOS_DLL_SPEC Player : public Unit
         const uint64& GetAuraUpdateMask() const { return m_auraUpdateMask; }
         void SetAuraUpdateMask(uint8 slot) { m_auraUpdateMask |= (uint64(1) << slot); }
         Player* GetNextRandomRaidMember(float radius);
-        PartyResult CanUninviteFromGroup() const;
+        PartyResult CanUninviteFromGroup();
+        bool isUsingLfg();
+        bool inRandomLfgDungeon();
+        InventoryResult CanRollForItemInLFG(ItemPrototype const* proto, WorldObject const* lootedObject) const;
         // BattleGround Group System
         void SetBattleRaid(Group *group, int8 subgroup = -1);
         void RemoveFromBattleRaid();
@@ -2802,6 +2794,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void _SaveVoidStorage();
 
         uint32 GetChampioningFaction();
+
+        bool IsMirrorTimerActive(MirrorTimerType type) { return m_MirrorTimer[type] == getMaxTimer(type); }
 
         struct SoulSwapData
         {
@@ -3185,7 +3179,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         SummonUnitList m_summonList;
 
         // LFG
-        LFGPlayerState* m_LFGState;
         void _fillGearScoreData(Item* item, GearScoreVec* gearScore, uint32& twoHandScore);
         uint32 m_cachedGS;
         uint8  m_cachedTC[3];

@@ -700,14 +700,6 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_BOOL_INSTANCE_IGNORE_RAID,  "Instance.IgnoreRaid", false);
     setConfig(CONFIG_BOOL_INSTANCE_ALLOW_OBJECT_SPAWNING,  "Instance.AllowObjectSpawning", false);
 
-    setConfig(CONFIG_BOOL_LFG_ENABLE, "LFG.Enable", false);
-    setConfig(CONFIG_BOOL_LFR_ENABLE, "LFR.Enable",false);
-    setConfigMinMax(CONFIG_UINT32_LFG_MAXKICKS, "LFG.MaxKicks", 5, 1, 10);
-    setConfig(CONFIG_BOOL_LFG_DEBUG_ENABLE, "LFG.Debug",false);
-    setConfig(CONFIG_BOOL_LFR_EXTEND, "LFR.Extend",false);
-    setConfig(CONFIG_BOOL_LFG_ONLYLASTENCOUNTER, "LFG.OnlyLastEncounterForCompleteDungeon", false);
-    setConfig(CONFIG_BOOL_RAID_FLAGS_UNIQUE,    "RaidFlags.Unique", false);
-
     setConfig(CONFIG_BOOL_CAST_UNSTUCK, "CastUnstuck", true);
     setConfig(CONFIG_UINT32_MAX_SPELL_CASTS_IN_CHAIN, "MaxSpellCastsInChain", 10);
     setConfig(CONFIG_UINT32_BIRTHDAY_TIME, "BirthdayTime", 1125180000);
@@ -1409,6 +1401,15 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading event id script names..." );
     sScriptMgr.LoadEventIdScripts();
 
+    sLog.outString("Loading LFG entrance positions..."); // Must be after areatriggers
+    sLFGMgr.LoadLFGDungeons();
+
+    sLog.outString("Loading Dungeon boss data...");
+    sObjectMgr.LoadInstanceEncounters();
+
+    sLog.outString("Loading LFG rewards...");
+    sLFGMgr.LoadRewards();
+
     sLog.outString( "Loading Graveyard-zone links...");
     sObjectMgr.LoadGraveyardZones();
 
@@ -1473,9 +1474,6 @@ void World::SetInitialWorldSettings()
     sLog.outString( ">>> Achievements loaded" );
     sLog.outString();
 
-    sLog.outString( "Loading Instance encounters data..." );  // must be after Creature loading
-    sObjectMgr.LoadInstanceEncounters();
-
     sLog.outString( "Loading Npc Text Id..." );
     sObjectMgr.LoadNpcGossips();                            // must be after load Creature and LoadGossipText
 
@@ -1511,9 +1509,6 @@ void World::SetInitialWorldSettings()
     sObjectMgr.LoadPointOfInterestLocales();                // must be after POI loading
     sLog.outString( ">>> Localization strings loaded" );
     sLog.outString();
-
-    sLog.outString("Loading LFG rewards...");               // After load all static data
-    sLFGMgr.LoadRewards();
 
     ///- Load dynamic data tables from the database
     sLog.outString( "Loading Auctions..." );
@@ -1921,6 +1916,7 @@ void World::Update(uint32 diff)
 
     sBattleGroundMgr.Update(diff);
     sOutdoorPvPMgr.Update(diff);
+    sLFGMgr.Update(diff);
 
     ///- Delete all characters which have been deleted X days before
     if (m_timers[WUPDATE_DELETECHARS].Passed())
@@ -1928,9 +1924,6 @@ void World::Update(uint32 diff)
         m_timers[WUPDATE_DELETECHARS].Reset();
         Player::DeleteOldCharacters();
     }
-
-    // Check if any group can be created by dungeon finder
-    sLFGMgr.Update(diff);
 
     // execute callbacks from sql queries that were queued recently
     UpdateResultQueue();

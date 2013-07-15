@@ -493,9 +493,6 @@ void WorldSession::LogoutPlayer(bool Save)
         ///- Leave all channels before player delete...
         _player->CleanupChannels();
 
-        // LFG cleanup
-        sLFGMgr.Leave(_player);
-
         ///- If the player is in a group (or invited), remove him. If the group if then only 1 person, disband the group.
         _player->UninviteFromGroup();
 
@@ -511,6 +508,8 @@ void WorldSession::LogoutPlayer(bool Save)
         ///- Broadcast a logout message to the player's friends
         sSocialMgr.SendFriendStatus(_player, FRIEND_OFFLINE, _player->GetObjectGuid(), true);
         sSocialMgr.RemovePlayerSocial (_player->GetGUIDLow ());
+
+        sLFGMgr.OnLogout(_player);
 
         ///- Remove the player from the world
         // the player may not be in the world when logging out

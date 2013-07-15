@@ -147,7 +147,7 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
     if( group && group->isBattleGroup() )
         group = GetPlayer()->GetOriginalGroup();
 
-    if (group && group->isLFDGroup())
+    if (group && group->isLFGGroup())
     {
         SendPartyResult(PARTY_OP_INVITE, "", ERR_INVITE_RESTRICTED);
         return;
@@ -316,12 +316,6 @@ void WorldSession::HandleGroupUninviteGuidOpcode(WorldPacket & recv_data)
     if(!grp)
         return;
 
-    if (grp->IsMember(guid) && grp->isLFGGroup())
-    {
-        sLFGMgr.InitBoot(GetPlayer(), guid, reason);
-        return;
-    }
-
     PartyResult res = GetPlayer()->CanUninviteFromGroup();
     if (res != ERR_PARTY_RESULT_OK)
     {
@@ -370,12 +364,6 @@ void WorldSession::HandleGroupUninviteOpcode(WorldPacket & recv_data)
         return;
 
     ObjectGuid guid = grp->GetMemberGuid(membername);
-
-    if (grp->IsMember(guid) && grp->isLFGGroup())
-    {
-        sLFGMgr.InitBoot(GetPlayer(), guid, "");
-        return;
-    }
 
     PartyResult res = GetPlayer()->CanUninviteFromGroup();
     if (res != ERR_PARTY_RESULT_OK)
@@ -437,7 +425,6 @@ void WorldSession::HandleGroupSetLeaderOpcode( WorldPacket & recv_data )
     }
 
     // everything's fine, do it
-    GetPlayer()->GetLFGState()->RemoveRole(ROLE_LEADER);
     group->ChangeLeader(guid);
 }
 
@@ -619,7 +606,7 @@ void WorldSession::HandleGroupRaidConvertOpcode( WorldPacket & /*recv_data*/ )
         return;
     /********************/
 
-    if(group->isLFDGroup())
+    if(group->isLFGGroup())
         return;
 
     // everything is fine, do it (is it 0 (PARTY_OP_INVITE) correct code)

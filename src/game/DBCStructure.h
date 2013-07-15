@@ -1365,28 +1365,23 @@ struct ItemSetEntry
 
 struct LFGDungeonEntry
 {
-    uint32 ID;                                              // 0     m_ID
-    //DBCString name;                                       // 1     m_name_lang
-    uint32 minlevel;                                        // 2     m_minLevel
-    uint32 maxlevel;                                        // 3     m_maxLevel
-    uint32 reclevel;                                        // 4     m_target_level
-    uint32 recminlevel;                                     // 5     m_target_level_min
-    uint32 recmaxlevel;                                     // 6     m_target_level_max
-    uint32 map;                                             // 7     m_mapID
-    uint32 difficulty;                                      // 8     m_difficulty
-    uint32 flags;                                           // 9     m_flags
-    uint32 type;                                            // 10    m_typeID
-    uint32 faction;                                         // 11    m_faction
-    //char* texture;                                        // 12    m_textureFilename
-    uint32 expansion;                                       // 13    m_expansionLevel
-    uint32 index;                                           // 14    m_order_index
-    uint32 grouptype;                                       // 15    m_group_id
-    //DBCString desc;                                       // 16    m_description_lang
-    //uint32 unk17                                          // 17
-    //uint32 unk18                                          // 18
-    //uint32 unk19                                          // 19
-    //uint32 unk20                                          // 20
-
+    uint32  ID;                                             // 0
+    DBCString name;                                         // 1
+    uint32  minlevel;                                       // 2
+    uint32  maxlevel;                                       // 3
+    uint32  reclevel;                                       // 4
+    uint32  recminlevel;                                    // 5
+    uint32  recmaxlevel;                                    // 6
+    int32   map;                                            // 7
+    uint32  difficulty;                                     // 8
+    uint32  flags;                                          // 9
+    uint32  type;                                           // 10
+    //uint32  unk2;                                         // 11
+    //char*   iconname;                                     // 12
+    uint32  expansion;                                      // 13
+    //uint32  unk4;                                         // 14
+    uint32  grouptype;                                      // 15
+    //DBCString desc;                                       // 16 Description
     // Helpers
     uint32 Entry() const { return ID + (type << 24); }
 };

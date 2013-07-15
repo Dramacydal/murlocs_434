@@ -566,8 +566,6 @@ enum Opcodes
     SMSG_ENVIRONMENTALDAMAGELOG                           = 0x6C05, // 4.3.4 15595
     CMSG_CHANGEPLAYER_DIFFICULTY                          = 0x6107, // 4.3.4 15595
     SMSG_RWHOIS                                           = 0x11FF,
-    SMSG_LFG_PLAYER_REWARD                                = 0x1200,
-    SMSG_LFG_TELEPORT_DENIED                              = 0x1201,
     CMSG_UNLEARN_SPELL                                    = 0x1202,
     CMSG_UNLEARN_SKILL                                    = 0x6106, // 4.3.4 15595
     SMSG_REMOVED_SPELL                                    = 0x4804, // 4.3.4 15595
@@ -709,10 +707,8 @@ enum Opcodes
     CMSG_BUYBACK_ITEM                                     = 0x6C17, // 4.3.4 15595
     SMSG_SERVER_MESSAGE                                   = 0x6C04, // 4.3.4 15595
     CMSG_SET_SAVED_INSTANCE_EXTEND                        = 0x1293,
-    SMSG_LFG_OFFER_CONTINUE                               = 0x1294,
     CMSG_TEST_DROP_RATE                                   = 0x1295,
     SMSG_TEST_DROP_RATE_RESULT                            = 0x1296,
-    CMSG_LFG_GET_STATUS                                   = 0x1297,
     SMSG_SHOW_MAILBOX                                     = 0x1298,
     SMSG_RESET_RANGED_COMBAT_TIMER                        = 0x1299,
     SMSG_CHAT_NOT_IN_PARTY                                = 0x6A14, // 4.3.4 15595
@@ -915,29 +911,6 @@ enum Opcodes
     CMSG_MOVE_START_ASCEND                                = 0x390A,
     CMSG_MOVE_STOP_ASCEND                                 = 0x7B00, // 4.3.4 15595
     SMSG_ARENA_TEAM_STATS                                 = 0x4425, // 4.3.4 15595
-    CMSG_LFG_JOIN                                         = 0x135D,
-    CMSG_LFG_LEAVE                                        = 0x135E,
-    CMSG_LFG_SEARCH_JOIN                                  = 0x135F,
-    CMSG_LFG_SEARCH_LEAVE                                 = 0x1360,
-    SMSG_LFG_SEARCH_RESULTS                               = 0x1361,
-    SMSG_LFG_PROPOSAL_UPDATE                              = 0x1362,
-    CMSG_LFG_PROPOSAL_RESPONSE                            = 0x1363,
-    SMSG_LFG_ROLE_CHECK_UPDATE                            = 0x1364,
-    SMSG_LFG_JOIN_RESULT                                  = 0x1365,
-    SMSG_LFG_QUEUE_STATUS                                 = 0x1366,
-    CMSG_SET_LFG_COMMENT                                  = 0x1367,
-    SMSG_LFG_UPDATE_PLAYER                                = 0x1368,
-    SMSG_LFG_UPDATE_PARTY                                 = 0x1369,
-    SMSG_LFG_UPDATE_SEARCH                                = 0x136A,
-    CMSG_LFG_SET_ROLES                                    = 0x136B,
-    CMSG_LFG_SET_NEEDS                                    = 0x136C,
-    CMSG_LFG_BOOT_PLAYER_VOTE                             = 0x136D,
-    SMSG_LFG_BOOT_PLAYER                                  = 0x136E,
-    CMSG_LFG_GET_PLAYER_INFO                              = 0x136F,
-    SMSG_LFG_PLAYER_INFO                                  = 0x1370,
-    CMSG_LFG_TELEPORT                                     = 0x1371,
-    CMSG_LFG_GET_PARTY_INFO                               = 0x1372,
-    SMSG_LFG_PARTY_INFO                                   = 0x1373,
     SMSG_TITLE_EARNED                                     = 0x2426, // 4.3.4 15595
     CMSG_SET_TITLE                                        = 0x2117, // 4.3.4 15595
     CMSG_CANCEL_MOUNT_AURA                                = 0x0635, // 4.3.4 15595
@@ -975,7 +948,6 @@ enum Opcodes
     CMSG_MAELSTROM_GM_SENT_MAIL                           = 0x1396,
     SMSG_RESET_FAILED_NOTIFY                              = 0x4616, // 4.3.4 15595
     SMSG_REAL_GROUP_UPDATE                                = 0x1398,
-    SMSG_LFG_DISABLED                                     = 0x1399,
     CMSG_ACTIVE_PVP_CHEAT                                 = 0x139A,
     CMSG_CHEAT_DUMP_ITEMS_DEBUG_ONLY                      = 0x139B,
     SMSG_CHEAT_DUMP_ITEMS_DEBUG_ONLY_RESPONSE             = 0x139C,
@@ -1360,7 +1332,6 @@ enum Opcodes
     CMSG_AUTH_CONTINUED_SESSION                           = 0x1513,
     CMSG_DROP_NEW_CONNECTION                              = 0x1514,
     SMSG_SEND_ALL_COMBAT_LOG                              = 0x1515,
-    SMSG_OPEN_LFG_DUNGEON_FINDER                          = 0x1516,
     SMSG_MOVE_SET_COLLISION_HGT                           = 0x11B0, // 4.3.4 15595
     CMSG_MOVE_SET_COLLISION_HGT_ACK                       = 0x1518,
     MSG_MOVE_SET_COLLISION_HGT                            = 0x1519,
@@ -1485,6 +1456,41 @@ enum Opcodes
     SMSG_LF_GUILD_MEMBERSHIP_LIST_UPDATED                 = 0x1CA5, // 4.3.4 15595
     SMSG_LF_GUILD_POST_UPDATED                            = 0x35B7, // 4.3.4 15595
     SMSG_LF_GUILD_RECRUIT_LIST_UPDATED                    = 0x1CB2, // 4.3.4 15595
+
+    CMSG_DUNGEON_FINDER_GET_SYSTEM_INFO                   = 0x0412, // 4.3.4 15595
+    CMSG_LFG_GET_PLAYER_INFO                              = 0x0000,
+    CMSG_LFG_GET_STATUS                                   = 0x2581, // 4.3.4 15595
+    CMSG_LFG_JOIN                                         = 0x2430, // 4.3.4 15595
+    CMSG_LFG_LEAVE                                        = 0x2433, // 4.3.4 15595
+    CMSG_LFG_LFR_JOIN                                     = 0x0531, // 4.3.4 15595
+    CMSG_LFG_LFR_LEAVE                                    = 0x0500, // 4.3.4 15595
+    CMSG_LFG_PARTY_LOCK_INFO_REQUEST                      = 0x0000,
+    CMSG_LFG_PROPOSAL_RESULT                              = 0x0403, // 4.3.4 15595
+    CMSG_LFG_SET_BOOT_VOTE                                = 0x04B3, // 4.3.4 15595
+    CMSG_LFG_SET_COMMENT                                  = 0x0530, // 4.3.4 15595
+    CMSG_LFG_SET_ROLES                                    = 0x0480, // 4.3.4 15595
+    CMSG_LFG_TELEPORT                                     = 0x2482, // 4.3.4 15595
+    CMSG_SEARCH_LFG_JOIN                                  = 0x0000,
+    CMSG_SEARCH_LFG_LEAVE                                 = 0x0000,
+
+    SMSG_LFG_BOOT_PROPOSAL_UPDATE                         = 0x0F05, // 4.3.4 15595
+    SMSG_LFG_DISABLED                                     = 0x0815, // 4.3.4 15595
+    SMSG_LFG_JOIN_RESULT                                  = 0x38B6, // 4.3.4 15595
+    SMSG_LFG_OFFER_CONTINUE                               = 0x6B27, // 4.3.4 15595
+    SMSG_LFG_PARTY_INFO                                   = 0x2325, // 4.3.4 15595
+    SMSG_LFG_PLAYER_INFO                                  = 0x4B36, // 4.3.4 15595
+    SMSG_LFG_PLAYER_REWARD                                = 0x6834, // 4.3.4 15595
+    SMSG_LFG_PROPOSAL_UPDATE                              = 0x7DA6, // 4.3.4 15595
+    SMSG_LFG_QUEUE_STATUS                                 = 0x78B4, // 4.3.4 15595
+    SMSG_LFG_ROLE_CHECK_UPDATE                            = 0x0336, // 4.3.4 15595
+    SMSG_LFG_ROLE_CHOSEN                                  = 0x6A26, // 4.3.4 15595
+    SMSG_LFG_SLOT_INVALID                                 = 0x54B5, // 4.3.4 15595
+    SMSG_LFG_TELEPORT_DENIED                              = 0x0E14, // 4.3.4 15595
+    SMSG_LFG_UPDATE_LIST                                  = 0x0000,
+    SMSG_LFG_UPDATE_SEARCH                                = 0x54A1, // 4.3.4 15595
+    SMSG_LFG_UPDATE_STATUS                                = 0x31A4, // 4.3.4 15595
+    SMSG_LFG_UPDATE_STATUS_NONE                           = 0x7CA1, // 4.3.4 15595
+    SMSG_OPEN_LFG_DUNGEON_FINDER                          = 0x2C37, // 4.3.4 15595
 };
 
 #define MAX_OPCODE_TABLE_SIZE 0xFFFF

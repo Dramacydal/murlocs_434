@@ -5040,7 +5040,7 @@ void Spell::finish(bool ok)
     if (map && map->IsDungeon())
     {
         if (DungeonPersistentState* state = ((DungeonMap*)map)->GetPersistanceState())
-            state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, m_spellInfo->Id);
+            state->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, m_spellInfo->Id, NULL);
     }
 }
 

@@ -147,8 +147,6 @@ DBCStorage <ItemReforgeEntry>             sItemReforgeStore(ItemReforgefmt);
 DBCStorage <ItemSetEntry> sItemSetStore(ItemSetEntryfmt);
 
 DBCStorage <LFGDungeonEntry> sLFGDungeonStore(LFGDungeonEntryfmt);
-DBCStorage <LFGDungeonExpansionEntry> sLFGDungeonExpansionStore(LFGDungeonExpansionEntryfmt);
-LFGDungeonExpansionMap sLFGDungeonExpansionMap;
 
 DBCStorage <LiquidTypeEntry> sLiquidTypeStore(LiquidTypefmt);
 DBCStorage <LockEntry> sLockStore(LockEntryfmt);
@@ -635,13 +633,6 @@ void LoadDBCStores(const std::string& dataPath)
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemBagFamilyStore,       dbcPath,"ItemBagFamily.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemReforgeStore,         dbcPath, "ItemReforge.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sLFGDungeonStore,          dbcPath,"LFGDungeons.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sLFGDungeonExpansionStore, dbcPath,"LFGDungeonExpansion.dbc");
-    // fill data
-    for(uint32 i = 1; i < sLFGDungeonExpansionStore.GetNumRows(); ++i)
-    {
-        if(LFGDungeonExpansionEntry const* entry = sLFGDungeonExpansionStore.LookupEntry(i))
-            sLFGDungeonExpansionMap[MAKE_PAIR32(entry->dungeonID,entry->expansion)] = entry;
-    }
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemClassStore,           dbcPath,"ItemClass.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemDamageAmmoStore,      dbcPath,"ItemDamageAmmo.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sItemDamageOneHandStore,   dbcPath,"ItemDamageOneHand.dbc");
@@ -1907,12 +1898,6 @@ MapDifficultyEntry const* GetMapDifficultyData(uint32 mapId, Difficulty difficul
 {
     MapDifficultyMap::const_iterator itr = sMapDifficultyMap.find(MAKE_PAIR32(mapId,difficulty));
     return itr != sMapDifficultyMap.end() ? itr->second : NULL;
-}
-
-LFGDungeonExpansionEntry const* GetLFGExpansionEntry(uint32 dungeonId, uint32 expansion)
-{
-    LFGDungeonExpansionMap::const_iterator itr = sLFGDungeonExpansionMap.find(MAKE_PAIR32(dungeonId,expansion));
-    return itr != sLFGDungeonExpansionMap.end() ? itr->second : NULL;
 }
 
 PvPDifficultyEntry const* GetBattlegroundBracketByLevel( uint32 mapid, uint32 level )

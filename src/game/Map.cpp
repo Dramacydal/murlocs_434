@@ -327,8 +327,6 @@ bool Map::Add(Player *player)
     if (i_data)
         i_data->OnPlayerEnter(player);
 
-    sLFGMgr.OnPlayerEnterMap(player, this);
-
     return true;
 }
 
@@ -620,8 +618,6 @@ void Map::Remove(Player *player, bool remove)
 {
     if (i_data)
         i_data->OnPlayerLeave(player);
-
-    sLFGMgr.OnPlayerLeaveMap(player, this);
 
     if(remove)
         player->CleanupsBeforeDelete();
@@ -1444,6 +1440,15 @@ bool DungeonMap::Add(Player *player)
                     player->GetSession()->SendPacket(&data);
                     player->SetPendingBind(GetPersistanceState(), 60000);
                 }
+            }
+
+            if (IsDungeon() && pGroup->isLFGGroup())
+            {
+                if (uint32 dungeonId = sLFGMgr.GetDungeon(pGroup->GetObjectGuid(), true))
+                    if (LFGDungeonData const* dungeon = sLFGMgr.GetLFGDungeon(dungeonId))
+                        if (LFGDungeonData const* randomDungeon = sLFGMgr.GetLFGDungeon(*(sLFGMgr.GetSelectedDungeons(player->GetGUID()).begin())))
+                            if (uint32(dungeon->map) == GetId() && dungeon->difficulty == uint32(GetDifficulty()) && randomDungeon->type == uint32(LFG_TYPE_RANDOM))
+                                player->CastSpell(player, LFG_SPELL_LUCK_OF_THE_DRAW, true);
             }
         }
         else

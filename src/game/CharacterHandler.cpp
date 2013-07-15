@@ -926,6 +926,8 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
         ChatHandler(this).PSendSysMessage("%u: %s", event_id, eventData.description.c_str());
     }
 
+    sLFGMgr.OnLogin(pCurrChar);
+
     delete holder;
 }
 

@@ -596,8 +596,6 @@ Player::Player (WorldSession *session): Unit(), m_mover(this), m_camera(this), m
     m_vehicleCheckTimer = 0;
     m_lastOkVehicleAreaId = 0;
 
-    m_LFGState = new LFGPlayerState(this);
-
     // Refer-A-Friend
     m_GrantableLevelsCount = 0;
 
@@ -663,8 +661,6 @@ Player::~Player ()
 
     if(m_vis)
         delete m_vis;
-
-    delete m_LFGState;
 
     for (uint8 i = 0; i < MAX_CUF_PROFILES; ++i)
         delete _CUFProfiles[i];
@@ -2902,11 +2898,11 @@ void Player::UninviteFromGroup()
     }
 }
 
-void Player::RemoveFromGroup(Group* group, ObjectGuid guid)
+void Player::RemoveFromGroup(Group* group, ObjectGuid guid, RemoveMethod method /* = GROUP_REMOVEMETHOD_DEFAULT*/, ObjectGuid kicker /* = ObjectGuid() */, const char* reason /* = NULL */)
 {
     if (group)
     {
-        if (group->RemoveMember(guid, 0) <= (group->isBattleGroup() ? 0 : 1))
+        if (group->RemoveMember(guid, method, kicker, reason) <= (group->isBattleGroup() ? 0 : 1))
         {
             // group->Disband(); already disbanded in RemoveMember
             sObjectMgr.RemoveGroup(group);
@@ -3039,7 +3035,8 @@ void Player::GiveXP(uint32 xp, Unit* victim)
 // Current player experience not update (must be update by caller)
 void Player::GiveLevel(uint32 level)
 {
-    if ( level == getLevel() )
+    uint8 oldLevel = getLevel();
+    if (level == oldLevel)
         return;
 
     PlayerLevelInfo info;
@@ -3108,8 +3105,6 @@ void Player::GiveLevel(uint32 level)
 
     UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
 
-    GetLFGState()->Update();
-
     PhaseUpdateData phaseUdateData;
     phaseUdateData.AddConditionType(CONDITION_LEVEL);
 
@@ -3125,6 +3120,8 @@ void Player::GiveLevel(uint32 level)
     // learn Sinister Strike Enabler
     if (level >= 3 && getClass() == CLASS_ROGUE && !HasSpell(79327))
         learnSpell(79327, false);
+
+    sLFGMgr.OnLevelChanged(this, oldLevel);
 }
 
 void Player::UpdateFreeTalentPoints(bool resetIfNeed)
@@ -7571,8 +7568,15 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
     UpdateLocalChannels( newZone );
 
     // group update
-    if(GetGroup())
+    if (Group* group = GetGroup())
+    {
         SetGroupUpdateFlag(GROUP_UPDATE_FLAG_ZONE);
+
+        if (GetSession() && group->isLFGGroup() && sLFGMgr.IsTeleported(GetGUID()))
+            for (GroupReference* itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+                if (Player* member = itr->getSource())
+                    GetSession()->SendNameQueryOpcode(member->GetObjectGuid());
+    }
 
     UpdateZoneDependentAuras();
     UpdateZoneDependentPets();
@@ -17320,11 +17324,6 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder *holder )
             m_Played_time[PLAYED_TIME_GM] = 0;
     }
 
-    if (!GetGroup() || !GetGroup()->isLFDGroup())
-    {
-        sLFGMgr.RemoveMemberFromLFDGroup(GetGroup(),GetObjectGuid());
-    }
-
     if (IsSpectator() && !GetMap()->IsBattleArena())
         SetSpectator(false);
 
@@ -18500,8 +18499,6 @@ void Player::_LoadGroup(QueryResult *result)
                 SetDungeonDifficulty(group->GetDungeonDifficulty());
                 SetRaidDifficulty(group->GetRaidDifficulty());
             }
-            if (group->isLFDGroup())
-                sLFGMgr.LoadLFDGroupPropertiesForPlayer(this);
         }
     }
 }
@@ -18636,6 +18633,7 @@ InstancePlayerBind* Player::BindToInstance(DungeonPersistentState *state, bool p
         if (!load)
             DEBUG_LOG("Player::BindToInstance: %s(%d) is now bound to map %d, instance %d, difficulty %d",
                 GetName(), GetGUIDLow(), state->GetMapId(), state->GetInstanceId(), state->GetDifficulty());
+        sLFGMgr.OnBindToInstance(this, state->GetDifficulty(), state->GetMapId(), permanent);
         return &bind;
     }
     else
@@ -21979,10 +21977,8 @@ void Player::ToggleMetaGemsActive(uint8 exceptslot, bool apply)
     }
 }
 
-void Player::SetBattleGroundEntryPoint(bool forLFG)
+void Player::SetBattleGroundEntryPoint()
 {
-    m_bgData.forLFG = forLFG;
-
     // Taxi path store
     if (!m_taxi.empty())
     {
@@ -23569,19 +23565,71 @@ Player* Player::GetNextRandomRaidMember(float radius)
     return nearMembers[randTarget];
 }
 
-PartyResult Player::CanUninviteFromGroup() const
+PartyResult Player::CanUninviteFromGroup()
 {
-    const Group* grp = GetGroup();
+    Group* grp = GetGroup();
     if (!grp)
         return ERR_NOT_IN_GROUP;
 
-    if (!grp->IsLeader(GetObjectGuid()) && !grp->IsAssistant(GetObjectGuid()))
-        return ERR_NOT_LEADER;
+    if (grp->isLFGGroup())
+    {
+        ObjectGuid gguid = grp->GetObjectGuid();
+        if (!sLFGMgr.GetKicksLeft(gguid))
+            return ERR_PARTY_LFG_BOOT_LIMIT;
 
-    if (InBattleGround() || grp->isBattleGroup())
-        return ERR_INVITE_RESTRICTED;
+        LfgState state = sLFGMgr.GetState(gguid);
+        if (state == LFG_STATE_BOOT)
+            return ERR_PARTY_LFG_BOOT_IN_PROGRESS;
+
+        if (grp->GetMembersCount() <= LFG_GROUP_KICK_VOTES_NEEDED)
+            return ERR_PARTY_LFG_BOOT_TOO_FEW_PLAYERS;
+
+        if (state == LFG_STATE_FINISHED_DUNGEON)
+            return ERR_PARTY_LFG_BOOT_DUNGEON_COMPLETE;
+
+        if (grp->isRollLootActive())
+            return ERR_PARTY_LFG_BOOT_LOOT_ROLLS;
+
+        // TODO: Should also be sent when anyone has recently left combat, with an aprox ~5 seconds timer.
+        for (GroupReference* itr = grp->GetFirstMember(); itr != NULL; itr = itr->next())
+            if (itr->getSource() && itr->getSource()->isInCombat())
+                return ERR_PARTY_LFG_BOOT_IN_COMBAT;
+
+        /* Missing support for these types
+            return ERR_PARTY_LFG_BOOT_COOLDOWN_S;
+            return ERR_PARTY_LFG_BOOT_NOT_ELIGIBLE_S;
+        */
+    }
+    else
+    {
+        if (!grp->IsLeader(GetObjectGuid()) && !grp->IsAssistant(GetObjectGuid()))
+            return ERR_NOT_LEADER;
+
+        if (InBattleGround() || grp->isBattleGroup())
+            return ERR_INVITE_RESTRICTED;
+    }
 
     return ERR_PARTY_RESULT_OK;
+}
+
+bool Player::isUsingLfg()
+{
+    return sLFGMgr.GetState(GetObjectGuid()) != LFG_STATE_NONE;
+}
+
+bool Player::inRandomLfgDungeon()
+{
+    if (isUsingLfg())
+    {
+        const LfgDungeonSet& dungeons = sLFGMgr.GetSelectedDungeons(GetObjectGuid());
+        if (!dungeons.empty())
+        {
+             LFGDungeonData const* dungeon = sLFGMgr.GetLFGDungeon(*dungeons.begin());
+             if (dungeon && (dungeon->type == LFG_TYPE_RANDOM || dungeon->seasonal))
+                 return true;
+        }
+    }
+    return false;
 }
 
 void Player::SetBattleRaid(Group* group, int8 subgroup)
@@ -25207,7 +25255,7 @@ void Player::_SaveBGData()
 
     stmt.PExecute(GetGUIDLow());
 
-    if (m_bgData.bgInstanceID || m_bgData.forLFG)
+    if (m_bgData.bgInstanceID)
     {
         stmt = CharacterDatabase.CreateStatement(insBGData, "INSERT INTO character_battleground_data VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         /* guid, bgInstanceID, bgTeam, x, y, z, o, map, taxi[0], taxi[1], mountSpell */
@@ -26418,14 +26466,14 @@ AreaLockStatus Player::GetAreaTriggerLockStatus(AreaTrigger const* at, Difficult
     {
         BattleFieldWG* opvp = (BattleFieldWG*)sOutdoorPvPMgr.GetScript(ZONE_ID_WINTERGRASP);
         if (opvp && (opvp->GetState() == BF_STATE_IN_PROGRESS || opvp->GetDefender() != GetTeamIndex(GetTeam())))
-            return AREA_LOCKSTATUS_NOT_ALLOWED;
+            return AREA_LOCKSTATUS_RAID_LOCKED;
     }
     // Baradin Hold
     else if (at->target_mapId == 757)
     {
         BattleFieldTB* opvp = (BattleFieldTB*)sOutdoorPvPMgr.GetScript(ZONE_ID_TOL_BARAD);
         if (opvp && (opvp->GetState() == BF_STATE_IN_PROGRESS || opvp->GetDefender() != GetTeamIndex(GetTeam())))
-            return AREA_LOCKSTATUS_NOT_ALLOWED;
+            return AREA_LOCKSTATUS_RAID_LOCKED;
     }
     // End of Time, Well of Eternity, Hour of Twilight
     else if (at->target_mapId == 938 || at->target_mapId == 939 || at->target_mapId == 940)
@@ -26944,7 +26992,7 @@ bool Player::Spectate(Player* target, bool sendErrors)
         return false;
     }
 
-    if (InBattleGroundQueue() || GetLFGState()->GetState() != LFG_STATE_NONE)
+    if (InBattleGroundQueue() || isUsingLfg())
     {
         if (sendErrors)
             ChatHandler(this).SendSysMessage(LANG_CANT_SPECTATE_WHILE_IN_QUEUE);
@@ -27941,4 +27989,91 @@ uint32 Player::GetChampioningFaction()
         return 0;
 
     return faction;
+}
+
+InventoryResult Player::CanRollForItemInLFG(ItemPrototype const* proto, WorldObject const* lootedObject) const
+{
+    LfgDungeonSet const& dungeons = sLFGMgr.GetSelectedDungeons(GetGUID());
+    if (dungeons.empty())
+        return EQUIP_ERR_OK;    // not using LFG
+
+    if (!GetGroup() || !GetGroup()->isLFGGroup())
+        return EQUIP_ERR_OK;    // not in LFG group
+
+    // check if looted object is inside the lfg dungeon
+    bool lootedObjectInDungeon = false;
+    Map const* map = lootedObject->GetMap();
+    if (uint32 dungeonId = sLFGMgr.GetDungeon(GetGroup()->GetObjectGuid(), true))
+        if (LFGDungeonData const* dungeon = sLFGMgr.GetLFGDungeon(dungeonId))
+            if (uint32(dungeon->map) == map->GetId() && dungeon->difficulty == uint32(map->GetDifficulty()))
+                lootedObjectInDungeon = true;
+
+    if (!lootedObjectInDungeon)
+        return EQUIP_ERR_OK;
+
+    if (!proto)
+        return EQUIP_ERR_ITEM_NOT_FOUND;
+   // Used by group, function NeedBeforeGreed, to know if a prototype can be used by a player
+
+    const static uint32 item_weapon_skills[MAX_ITEM_SUBCLASS_WEAPON] =
+    {
+        SKILL_AXES,     SKILL_2H_AXES,  SKILL_BOWS,          SKILL_GUNS,      SKILL_MACES,
+        SKILL_2H_MACES, SKILL_POLEARMS, SKILL_SWORDS,        SKILL_2H_SWORDS, 0,
+        SKILL_STAVES,   0,              0,                   SKILL_FIST_WEAPONS,   0,
+        SKILL_DAGGERS,  SKILL_THROWN,   SKILL_ASSASSINATION, SKILL_CROSSBOWS, SKILL_WANDS,
+        SKILL_FISHING
+    }; //Copy from function Item::GetSkill()
+
+    if ((proto->AllowableClass & getClassMask()) == 0 || (proto->AllowableRace & getRaceMask()) == 0)
+        return EQUIP_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
+
+    if (proto->RequiredSpell != 0 && !HasSpell(proto->RequiredSpell))
+        return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
+
+    if (proto->RequiredSkill != 0)
+    {
+        if (!GetSkillValue(proto->RequiredSkill))
+            return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
+        else if (GetSkillValue(proto->RequiredSkill) < proto->RequiredSkillRank)
+            return EQUIP_ERR_CANT_EQUIP_SKILL;
+    }
+
+    uint8 _class = getClass();
+
+    if (proto->Class == ITEM_CLASS_WEAPON && GetSkillValue(item_weapon_skills[proto->SubClass]) == 0)
+        return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
+
+    if (proto->Class == ITEM_CLASS_ARMOR && proto->SubClass > ITEM_SUBCLASS_ARMOR_MISC && proto->SubClass < ITEM_SUBCLASS_ARMOR_BUCKLER && proto->InventoryType != INVTYPE_CLOAK)
+    {
+        if (_class == CLASS_WARRIOR || _class == CLASS_PALADIN || _class == CLASS_DEATH_KNIGHT)
+        {
+            if (getLevel() < 40)
+            {
+                if (proto->SubClass != ITEM_SUBCLASS_ARMOR_MAIL)
+                    return EQUIP_ERR_CANT_DO_RIGHT_NOW;
+            }
+            else if (proto->SubClass != ITEM_SUBCLASS_ARMOR_PLATE)
+                return EQUIP_ERR_CANT_DO_RIGHT_NOW;
+        }
+        else if (_class == CLASS_HUNTER || _class == CLASS_SHAMAN)
+        {
+            if (getLevel() < 40)
+            {
+                if (proto->SubClass != ITEM_SUBCLASS_ARMOR_LEATHER)
+                    return EQUIP_ERR_CANT_DO_RIGHT_NOW;
+            }
+            else if (proto->SubClass != ITEM_SUBCLASS_ARMOR_MAIL)
+                return EQUIP_ERR_CANT_DO_RIGHT_NOW;
+        }
+
+        if (_class == CLASS_ROGUE || _class == CLASS_DRUID)
+            if (proto->SubClass != ITEM_SUBCLASS_ARMOR_LEATHER)
+                return EQUIP_ERR_CANT_DO_RIGHT_NOW;
+
+        if (_class == CLASS_MAGE || _class == CLASS_PRIEST || _class == CLASS_WARLOCK)
+            if (proto->SubClass != ITEM_SUBCLASS_ARMOR_CLOTH)
+                return EQUIP_ERR_CANT_DO_RIGHT_NOW;
+    }
+
+    return EQUIP_ERR_OK;
 }

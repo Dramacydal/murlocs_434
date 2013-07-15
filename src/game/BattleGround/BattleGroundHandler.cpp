@@ -178,7 +178,7 @@ void WorldSession::HandleBattlemasterJoinOpcode(WorldPacket& recv_data)
             return;
 
         // can't use bg while in lfg
-        if (_player->GetLFGState()->GetState() != LFG_STATE_NONE)
+        if (_player->isUsingLfg())
         {
             WorldPacket data;
             sBattleGroundMgr.BuildBattleGroundStatusFailedPacket(&data, bg, _player, 0, ERR_LFG_CANT_USE_BATTLEGROUND);

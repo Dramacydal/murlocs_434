@@ -388,16 +388,18 @@ struct WeatherZoneChances
 
 struct DungeonEncounter
 {
-    DungeonEncounter(DungeonEncounterEntry const* _dbcEntry, EncounterCreditType _creditType, uint32 _creditEntry, uint32 _lastEncounterDungeon)
-        : dbcEntry(_dbcEntry), creditType(_creditType), creditEntry(_creditEntry), lastEncounterDungeon(_lastEncounterDungeon) { }
+    DungeonEncounter(DungeonEncounterEntry const* _dbcEntry, int32 _difficulty, EncounterCreditType _creditType, uint32 _creditEntry, uint32 _lastEncounterDungeon)
+        : dbcEntry(_dbcEntry), difficulty(_difficulty), creditType(_creditType), creditEntry(_creditEntry), lastEncounterDungeon(_lastEncounterDungeon) { }
+
     DungeonEncounterEntry const* dbcEntry;
+    int32 difficulty;
     EncounterCreditType creditType;
     uint32 creditEntry;
     uint32 lastEncounterDungeon;
 };
 
-typedef std::multimap<uint32, DungeonEncounter const*> DungeonEncounterMap;
-typedef std::pair<DungeonEncounterMap::const_iterator, DungeonEncounterMap::const_iterator> DungeonEncounterMapBounds;
+typedef std::list<DungeonEncounter const*> DungeonEncounterList;
+typedef UNORDERED_MAP<uint32, DungeonEncounterList> DungeonEncounterContainer;
 
 struct GraveYardData
 {
@@ -1206,16 +1208,6 @@ class ObjectMgr
             return m_ItemRequiredTarget.equal_range(uiItemEntry);
         }
 
-        DungeonEncounterMapBounds GetDungeonEncounterBounds(uint32 creditEntry) const
-        {
-            return m_DungeonEncounters.equal_range(creditEntry);
-        }
-
-        DungeonEncounterMap const* GetDungeonEncounters()
-        {
-            return &m_DungeonEncounters;
-        }
-
         GossipMenusMapBounds GetGossipMenusMapBounds(uint32 uiMenuId) const
         {
             return m_mGossipMenusMap.equal_range(uiMenuId);
@@ -1308,6 +1300,19 @@ class ObjectMgr
         void UpdateCharacterNameDataLevel(uint32 guid, uint8 level);
         void DeleteCharacterNameData(uint32 guid) { _characterNameDataMap.erase(guid); }
         bool HasCharacterNameData(uint32 guid) { return _characterNameDataMap.find(guid) != _characterNameDataMap.end(); }
+
+        DungeonEncounterList const* GetDungeonEncounterList(uint32 mapId, Difficulty difficulty)
+        {
+            UNORDERED_MAP<uint32, DungeonEncounterList>::const_iterator itr1 = _dungeonEncounterStore.find(MAKE_PAIR32(mapId, difficulty));
+            if (itr1 != _dungeonEncounterStore.end())
+                return &itr1->second;
+            // There are bad difficulties in DBC store (-1)
+            // So we check again
+            UNORDERED_MAP<uint32, DungeonEncounterList>::const_iterator itr2 = _dungeonEncounterStore.find(MAKE_PAIR32(mapId, -1));
+            if (itr2 != _dungeonEncounterStore.end())
+                return &itr2->second;
+            return NULL;
+        }
 
     protected:
 
@@ -1447,7 +1452,6 @@ class ObjectMgr
         MangosStringLocaleMap mMangosStringLocaleMap;
         GossipMenuItemsLocaleMap mGossipMenuItemsLocaleMap;
         PointOfInterestLocaleMap mPointOfInterestLocaleMap;
-        DungeonEncounterMap m_DungeonEncounters;
 
         CreatureModelRaceMap    m_mCreatureModelRaceMap;
 
@@ -1477,6 +1481,8 @@ class ObjectMgr
         SiteToZoneMap _zoneByResearchSite;
 
         std::map<uint32, CharacterNameData> _characterNameDataMap;
+
+        DungeonEncounterContainer _dungeonEncounterStore;
 };
 
 #define sObjectMgr MaNGOS::Singleton<ObjectMgr>::Instance()

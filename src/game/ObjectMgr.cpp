@@ -3990,8 +3990,9 @@ void ObjectMgr::LoadGroups()
 {
     // -- loading groups --
     uint32 count = 0;
-    //                                                    0           1           2              3      4      5      6      7      8      9      10     11         12          13              14          15
-    QueryResult *result = CharacterDatabase.Query("SELECT lootMethod, looterGuid, lootThreshold, icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, groupType, difficulty, raiddifficulty, leaderGuid, groupId FROM groups");
+    //                                                    0             1             2                3        4        5        6        7        8        9        10       11           12            13                14            15         16           17
+    QueryResult *result = CharacterDatabase.Query("SELECT g.lootMethod, g.looterGuid, g.lootThreshold, g.icon1, g.icon2, g.icon3, g.icon4, g.icon5, g.icon6, g.icon7, g.icon8, g.groupType, g.difficulty, g.raiddifficulty, g.leaderGuid, g.groupId, lfg.dungeon, lfg.state "
+        "FROM groups g LEFT JOIN lfg_data lfg ON lfg.guid = g.groupId ORDER BY g.guid ASC");
 
     if (!result)
     {
@@ -5301,10 +5302,8 @@ void ObjectMgr::LoadPageTextLocales()
 
 void ObjectMgr::LoadInstanceEncounters()
 {
-    m_DungeonEncounters.clear();         // need for reload case
-
-    QueryResult* result = WorldDatabase.Query("SELECT entry, creditType, creditEntry, lastEncounterDungeon FROM instance_encounters");
-    
+    //                                                0      1           2           3            4
+    QueryResult* result = WorldDatabase.Query("SELECT entry, difficulty, creditType, creditEntry, lastEncounterDungeon FROM instance_encounters");
     if (!result)
     {
         BarGoLink bar(1);
@@ -5318,58 +5317,78 @@ void ObjectMgr::LoadInstanceEncounters()
 
     BarGoLink bar(result->GetRowCount());
 
+    uint32 count = 0;
+    std::map<uint32, DungeonEncounterEntry const*> dungeonLastBosses;
     do
     {
-        Field *fields = result->Fetch();
         bar.step();
 
+        Field* fields = result->Fetch();
         uint32 entry = fields[0].GetUInt32();
+        int32 difficulty = fields[1].GetInt16();
+        uint8 creditType = fields[2].GetUInt8();
+        uint32 creditEntry = fields[3].GetUInt32();
+        uint32 lastEncounterDungeon = fields[4].GetUInt16();
         DungeonEncounterEntry const* dungeonEncounter = sDungeonEncounterStore.LookupEntry(entry);
-        
         if (!dungeonEncounter)
         {
-            sLog.outErrorDb("Table `instance_encounters` has an invalid encounter id %u, skipped!", entry);
+            sLog.outError("Table `instance_encounters` has an invalid encounter id %u, skipped!", entry);
             continue;
         }
-        
-        uint8 creditType = fields[1].GetUInt8();
-        uint32 creditEntry = fields[2].GetUInt32();
+
+        if (lastEncounterDungeon && !sLFGMgr.GetLFGDungeon(lastEncounterDungeon))
+        {
+            sLog.outError("Table `instance_encounters` has an encounter %u (%s) marked as final for invalid dungeon id %u, skipped!", entry, dungeonEncounter->encounterName, lastEncounterDungeon);
+            continue;
+        }
+
+        std::map<uint32, DungeonEncounterEntry const*>::const_iterator itr = dungeonLastBosses.find(lastEncounterDungeon);
+        if (lastEncounterDungeon)
+        {
+            if (itr != dungeonLastBosses.end())
+            {
+                sLog.outError("Table `instance_encounters` specified encounter %u (%s) as last encounter but %u (%s) is already marked as one, skipped!", entry, dungeonEncounter->encounterName, itr->second->Id, itr->second->encounterName);
+                continue;
+            }
+
+            dungeonLastBosses[lastEncounterDungeon] = dungeonEncounter;
+        }
+
         switch (creditType)
         {
             case ENCOUNTER_CREDIT_KILL_CREATURE:
             {
-                CreatureInfo const* cInfo = sCreatureStorage.LookupEntry<CreatureInfo>(creditEntry);
-                if (!cInfo)
+                CreatureInfo const* creatureInfo = sObjectMgr.GetCreatureTemplate(creditEntry);
+                if (!creatureInfo)
                 {
-                    sLog.outErrorDb("Table `instance_encounters` has an invalid creature (entry %u) linked to the encounter %u (%s), skipped!", creditEntry, entry, dungeonEncounter->encounterName[0]);
+                    sLog.outError("Table `instance_encounters` has an invalid creature (entry %u) linked to the encounter %u (%s), skipped!", creditEntry, entry, dungeonEncounter->encounterName);
                     continue;
                 }
+                const_cast<CreatureInfo*>(creatureInfo)->flags_extra |= CREATURE_FLAG_EXTRA_DUNGEON_BOSS;
                 break;
             }
             case ENCOUNTER_CREDIT_CAST_SPELL:
-            {
-                if (!sSpellStore.LookupEntry(creditEntry))
+                /*if (!sSpellMgr->GetSpellInfo(creditEntry))
                 {
-                    // skip spells that aren't in dbc for now
-                    //sLog.outErrorDb("Table `instance_encounters` has an invalid spell (entry %u) linked to the encounter %u (%s), skipped!", creditEntry, entry, dungeonEncounter->encounterName[0]);
+                    sLog.outError("Table `instance_encounters` has an invalid spell (entry %u) linked to the encounter %u (%s), skipped!", creditEntry, entry, dungeonEncounter->encounterName);
                     continue;
-                }
+                }*/
                 break;
-            }
             default:
-                sLog.outErrorDb("Table `instance_encounters` has an invalid credit type (%u) for encounter %u (%s), skipped!", creditType, entry, dungeonEncounter->encounterName[0]);
+                sLog.outError("Table `instance_encounters` has an invalid credit type (%u) for encounter %u (%s), skipped!", creditType, entry, dungeonEncounter->encounterName);
                 continue;
         }
-        uint32 lastEncounterDungeon = fields[3].GetUInt32();
 
-        m_DungeonEncounters.insert(DungeonEncounterMap::value_type(creditEntry, new DungeonEncounter(dungeonEncounter, EncounterCreditType(creditType), creditEntry, lastEncounterDungeon)));
+        DungeonEncounterList& encounters = _dungeonEncounterStore[MAKE_PAIR32(dungeonEncounter->mapId, dungeonEncounter->Difficulty)];
+        encounters.push_back(new DungeonEncounter(dungeonEncounter, difficulty, EncounterCreditType(creditType), creditEntry, lastEncounterDungeon));
+        ++count;
     }
     while (result->NextRow());
 
     delete result;
 
     sLog.outString();
-    sLog.outString(">> Loaded " SIZEFMTD " Instance Encounters", m_DungeonEncounters.size());
+    sLog.outString(">> Loaded %u Instance Encounters", count);
 }
 
 struct SQLInstanceLoader : public SQLStorageLoaderBase<SQLInstanceLoader, SQLStorage>

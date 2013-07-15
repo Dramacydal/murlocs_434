@@ -104,7 +104,7 @@ enum GroupType                                              // group type flags?
     GROUPTYPE_RAID   = 0x02,
     GROUPTYPE_BGRAID = GROUPTYPE_BG | GROUPTYPE_RAID,       // mask
     GROUPTYPE_UNK1   = 0x04,                                // 0x04?
-    GROUPTYPE_LFD    = 0x08,
+    GROUPTYPE_LFG    = 0x08,
     GROUPTYPE_UNK2   = 0x10,
     // 0x10, leave/change group?, I saw this flag when leaving group and after leaving BG while in group
 };
@@ -276,7 +276,7 @@ class MANGOS_DLL_SPEC Group
         void   RemoveAllInvites();
         bool   AddLeaderInvite(Player *player);
         bool   AddMember(ObjectGuid guid, const char* name);
-        uint32 RemoveMember(ObjectGuid guid, uint8 method); // method: 0=just remove, 1=kick
+        uint32 RemoveMember(ObjectGuid guid, RemoveMethod method, ObjectGuid kicker = ObjectGuid(), const char* reason = NULL); // method: 0=just remove, 1=kick
         void   ChangeLeader(ObjectGuid guid);
         void   SetLootMethod(LootMethod method) { m_lootMethod = method; }
         void   SetLooterGuid(ObjectGuid guid) { m_looterGuid = guid; }
@@ -288,6 +288,7 @@ class MANGOS_DLL_SPEC Group
         uint32 GetId() const { return m_Id; }
         ObjectGuid GetObjectGuid() const { return ObjectGuid(HIGHGUID_GROUP, GetId()); }
         bool IsFull() const { return (m_groupType == GROUPTYPE_NORMAL) ? (m_memberSlots.size() >= MAX_GROUP_SIZE) : (m_memberSlots.size() >= MAX_RAID_SIZE); }
+        bool isLFGGroup() const { return m_groupType & GROUPTYPE_LFG; }
         bool isRaidGroup() const { return m_groupType & GROUPTYPE_RAID; }
         bool isBattleGroup()   const { return m_bgGroup != NULL || m_bfGroup != NULL; }
         bool IsCreated()   const { return GetMembersCount() > 0; }
@@ -296,6 +297,7 @@ class MANGOS_DLL_SPEC Group
         LootMethod    GetLootMethod() const { return m_lootMethod; }
         ObjectGuid GetLooterGuid() const { return m_looterGuid; }
         ItemQualities GetLootThreshold() const { return m_lootThreshold; }
+        bool isRollLootActive() const { return !RollId.empty(); }
 
         // member manipulation methods
         bool IsMember(ObjectGuid guid) const { return _getMemberCSlot(guid) != m_memberSlots.end(); }
@@ -401,14 +403,9 @@ class MANGOS_DLL_SPEC Group
         InstanceGroupBind* GetBoundInstance(Map* aMap, Difficulty difficulty);
         BoundInstancesMap& GetBoundInstances(Difficulty difficulty) { return m_boundInstances[difficulty]; }
 
-        // LFG
-        LFGGroupState* GetLFGState() { return m_LFGState; };
-        bool ConvertToLFG(LFGType type);
-        bool isLFDGroup()  const { return m_groupType & GROUPTYPE_LFD; }
-        bool isLFGGroup()  const { return (m_groupType & GROUPTYPE_LFD && !(m_groupType & GROUPTYPE_RAID)) ; }
-        bool isLFRGroup()  const { return (m_groupType & GROUPTYPE_LFD && m_groupType & GROUPTYPE_RAID) ; }
         void SetGroupRoles(ObjectGuid guid, uint8 roles);
         uint8 GetGroupRoles(ObjectGuid guid);
+        void ConvertToLFG();
         ObjectGuid GetRaidMarker(uint8 id) const { return m_raidMarkers[id]; }
         bool HasRaidMarker(ObjectGuid guid) const;
 
@@ -490,6 +487,5 @@ class MANGOS_DLL_SPEC Group
         Rolls               RollId;
         BoundInstancesMap   m_boundInstances[MAX_DIFFICULTY];
         uint8*              m_subGroupsCounts;
-        LFGGroupState*      m_LFGState;
 };
 #endif

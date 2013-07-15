@@ -1624,7 +1624,7 @@ void Unit::JustKilledCreature(Creature* victim, Player* responsiblePlayer)
             }
 
             // update encounter state if needed
-            ((DungeonMap*)m)->GetPersistanceState()->UpdateEncounterState(ENCOUNTER_CREDIT_KILL_CREATURE, victim->GetEntry());
+            ((DungeonMap*)m)->GetPersistanceState()->UpdateEncounterState(ENCOUNTER_CREDIT_KILL_CREATURE, victim->GetEntry(), victim);
         }
     }
 

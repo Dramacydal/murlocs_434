@@ -40,6 +40,9 @@
     <Filter Include="BattleField">
       <UniqueIdentifier>{bfa81e56-49ac-41b6-b4f1-3ea1876c44da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DungeonFinder">
+      <UniqueIdentifier>{2be9efd3-eaa7-48cc-a3d8-b95b3fc201e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\game\AccountMgr.cpp">
@@ -115,9 +118,6 @@
       <Filter>World/Handlers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\game\ItemHandler.cpp">
-      <Filter>World/Handlers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\game\LFGHandler.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\game\LootHandler.cpp">
@@ -505,12 +505,6 @@
     <ClCompile Include="..\..\src\game\OutdoorPvP\OutdoorPvPZM.cpp">
       <Filter>OutdoorPvP</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\game\LFG.cpp">
-      <Filter>World/Handlers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\game\LFGMgr.cpp">
-      <Filter>World/Handlers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\game\WardenBase.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
@@ -621,6 +615,27 @@
     </ClCompile>
     <ClCompile Include="..\..\src\game\GuildFinderHandler.cpp">
       <Filter>World/Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\LFG.cpp">
+      <Filter>DungeonFinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\LFGHandler.cpp">
+      <Filter>DungeonFinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\LFGMgr.cpp">
+      <Filter>DungeonFinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\LFGPlayerData.cpp">
+      <Filter>DungeonFinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\LFGQueue.cpp">
+      <Filter>DungeonFinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\LFGGroupData.cpp">
+      <Filter>DungeonFinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\LFGScripts.cpp">
+      <Filter>DungeonFinder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1072,12 +1087,6 @@
     <ClInclude Include="..\..\src\game\OutdoorPvP\OutdoorPvPZM.h">
       <Filter>OutdoorPvP</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\game\LFG.h">
-      <Filter>World/Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\game\LFGMgr.h">
-      <Filter>World/Handlers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\game\WardenBase.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
@@ -1191,6 +1200,21 @@
     </ClInclude>
     <ClInclude Include="..\..\src\game\GuildFinderMgr.h">
       <Filter>World/Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\LFG.h">
+      <Filter>DungeonFinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\LFGMgr.h">
+      <Filter>DungeonFinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\LFGPlayerData.h">
+      <Filter>DungeonFinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\LFGQueue.h">
+      <Filter>DungeonFinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\LFGGroupData.h">
+      <Filter>DungeonFinder</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
