@@ -4949,7 +4949,7 @@ void Player::DeleteFromDB(ObjectGuid playerguid, uint32 accountId, bool updateRe
             CharacterDatabase.PExecute("DELETE FROM guild_eventlog WHERE PlayerGuid1 = '%u' OR PlayerGuid2 = '%u'", lowguid, lowguid);
             CharacterDatabase.PExecute("DELETE FROM guild_bank_eventlog WHERE PlayerGuid = '%u'", lowguid);
             CharacterDatabase.PExecute("DELETE FROM character_currencies WHERE guid = '%u'", lowguid);
-            CharacterDatabase.PExecute("DELETE FROM character_void_storage WHERE guid = '%u'", lowguid);
+            CharacterDatabase.PExecute("DELETE FROM character_void_storage WHERE playerGuid = '%u'", lowguid);
             CharacterDatabase.PExecute("DELETE FROM character_archaeology WHERE guid = '%u'", lowguid);
             CharacterDatabase.PExecute("DELETE FROM character_archaeology_finds WHERE guid = '%u'", lowguid);
             CharacterDatabase.PExecute("DELETE FROM character_mmr WHERE guid = '%u'", lowguid);
