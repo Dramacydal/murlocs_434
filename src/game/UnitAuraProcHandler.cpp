@@ -328,7 +328,7 @@ pAuraProcHandler AuraProcHandler[TOTAL_AURAS]=
     &Unit::HandleNULLProc,                                  //293 3 spells
     &Unit::HandleNULLProc,                                  //294 2 spells, possible prevent mana regen
     &Unit::HandleNULLProc,                                  //295 unused (4.3.4)
-    &Unit::HandleNULLProc,                                  //296 62 spells in 4.3.4
+    &Unit::HandleNULLProc,                                  //SPELL_AURA_SET_VEHICLE_ID 296 62 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //297 14 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //298 6 spells in 4.3.4
     &Unit::HandleNULLProc,                                  //299 unused (3.2.2a-4.3.4)

@@ -353,7 +353,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleAuraAddMechanicAbilities,                  //293 SPELL_AURA_ADD_MECHANIC_ABILITIES  replaces target's action bars with a predefined spellset
     &Aura::HandleAuraStopNaturalManaRegen,                  //294 SPELL_AURA_STOP_NATURAL_MANA_REGEN implemented in Player:Regenerate
     &Aura::HandleUnused,                                    //295 unused (4.3.4)
-    &Aura::HandleAuraSetVehicle,                            //296 62 spells in 4.3.4
+    &Aura::HandleAuraSetVehicle,                            //296 SPELL_AURA_SET_VEHICLE_ID 62 spells in 4.3.4
     &Aura::HandleNULL,                                      //297 14 spells in 4.3.4
     &Aura::HandleUnused,                                    //298 6 spells in 4.3.4
     &Aura::HandleUnused,                                    //299 unused (3.2.2a-4.3.4)

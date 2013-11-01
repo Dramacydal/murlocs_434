@@ -7935,7 +7935,7 @@ int32 Unit::SpellBaseDamageBonusDone(SpellSchoolMask schoolMask)
             if (schoolMask & (*itr)->GetModifier()->m_miscvalue)
                 DoneAdvertisedBenefit += (*itr)->GetModifier()->m_amount;
 
-        return int32(GetTotalAttackPowerValue(BASE_ATTACK) * (100.0f + DoneAdvertisedBenefit) / 100.0f);
+        return int32(GetTotalAttackPowerValue(BASE_ATTACK) * DoneAdvertisedBenefit / 100.0f);
     }
 
     // ..done
@@ -8633,7 +8633,7 @@ int32 Unit::SpellBaseHealingBonusDone(SpellSchoolMask schoolMask)
             if (schoolMask & (*itr)->GetModifier()->m_miscvalue)
                 AdvertisedBenefit += (*itr)->GetModifier()->m_amount;
 
-        return int32(GetTotalAttackPowerValue(BASE_ATTACK) * (100.0f + AdvertisedBenefit) / 100.0f);
+        return int32(GetTotalAttackPowerValue(BASE_ATTACK) * AdvertisedBenefit / 100.0f);
     }
 
     AuraList const& mHealingDone = GetAurasByType(SPELL_AURA_MOD_HEALING_DONE);
